@@ -19,9 +19,12 @@ import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.ddirules.DDIDataLoader;
 import edu.njit.cs.saboc.blu.sno.ddirules.RuleObject;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.ConceptGroupHierarchicalViewPanel;
+import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.ConceptGroupHierarchicalViewPanel;
+import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.HierarchyPanelClickListener;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.RuleViewPanel;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.SCTConceptGroupDetailsPanel;
+import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptHierarchyViewPanel;
+import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTPAreaHierarchyLoader;
 import edu.njit.cs.saboc.blu.sno.utils.filterable.entry.FilterableConceptEntry;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -78,12 +81,14 @@ public class ConceptGroupDetailsDialog extends JDialog {
     private JTextField filterField = new JTextField();
     private JButton closeButton = new JButton();
 
-    public ConceptGroupDetailsDialog(GenericConceptGroup group, 
-            SCTAbstractionNetwork abstractionNetwork, DialogType dialogType,
-            SCTDisplayFrameListener displayFrameListener) {
+    public ConceptGroupDetailsDialog(
+            final GenericConceptGroup group, 
+            final SCTAbstractionNetwork abstractionNetwork, 
+            final DialogType dialogType,
+            final SCTDisplayFrameListener displayFrameListener) {
         
-        resultsList = new JList();
-        conceptModel = new FilterableListModel(true);
+        this.resultsList = new JList();
+        this.conceptModel = new FilterableListModel(true);
 
         SCTConceptGroupDetailsPanel detailsPanel;
         String dialogTypeStr;
@@ -366,15 +371,27 @@ public class ConceptGroupDetailsDialog extends JDialog {
         detailsPanel.setSummaryText(builder.toString());
 
         JTabbedPane tabbedPane = new JTabbedPane();
+        
+        String groupType;
 
         if(dialogType == DialogType.PartialArea) {
             tabbedPane.addTab("Partial-area Details", detailsPanel);
+            groupType = "Partial-area";
         } else {
             tabbedPane.addTab("Cluster Details", detailsPanel);
+            groupType = "Cluster";
         }
         
-        tabbedPane.addTab("Hierarchical View (Graphical)", new JScrollPane(
-                    new ConceptGroupHierarchicalViewPanel(group, abstractionNetwork)));
+        tabbedPane.addTab("Hierarchical View (Graphical)", new JScrollPane(new SCTConceptHierarchyViewPanel(group,
+                abstractionNetwork,
+                groupType,
+                new HierarchyPanelClickListener<Concept>() {
+                    public void conceptDoubleClicked(Concept c) {
+                        displayFrameListener.addNewBrowserFrame(c, abstractionNetwork.getSCTDataSource());
+                    }
+                })
+            )
+        );
         
         tabbedPane.addTab("Rule Information", createRulePanel(group, abstractionNetwork));
         add(tabbedPane);
