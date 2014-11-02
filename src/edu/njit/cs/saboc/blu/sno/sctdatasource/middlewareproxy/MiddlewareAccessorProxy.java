@@ -1,36 +1,37 @@
 package edu.njit.cs.saboc.blu.sno.sctdatasource.middlewareproxy;
 
-import SnomedShared.pareataxonomy.Area;
 import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.ConceptPAreaInfo;
-import SnomedShared.pareataxonomy.InheritedRelationship;
-import SnomedShared.pareataxonomy.InheritedRelationship.InheritanceType;
 import SnomedShared.OutgoingLateralRelationship;
 import SnomedShared.PAreaDetailsForConcept;
 import SnomedShared.pareataxonomy.GroupParentInfo;
 import SnomedShared.pareataxonomy.PAreaSummary;
-import SnomedShared.pareataxonomy.Region;
 import SnomedShared.SearchResult;
 import SnomedShared.overlapping.ClusterSummary;
-import SnomedShared.overlapping.CommonOverlapSet;
-import SnomedShared.overlapping.EntryPoint;
-import SnomedShared.overlapping.EntryPointSet;
+import SnomedShared.pareataxonomy.Area;
+import SnomedShared.pareataxonomy.InheritedRelationship;
+import SnomedShared.pareataxonomy.InheritedRelationship.InheritanceType;
+import SnomedShared.pareataxonomy.Region;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.properties.AreaToolProperties;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRemoteDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.utils.ServletWriter;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.net.ConnectException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Scanner;
 import javax.swing.JOptionPane;
 
 /**
@@ -43,7 +44,6 @@ import javax.swing.JOptionPane;
  * @author Chris
  */
 public class MiddlewareAccessorProxy {
-    
     
     /**
      * The full address of where the middleware servlet is located
@@ -309,25 +309,6 @@ public class MiddlewareAccessorProxy {
     }
 
     /**
-     * Returns the set of tribal bands that exist within in the hierarchy that corresponds
-     * to the given root.
-     * @param version The version of SNOMED CT used.
-     * @param hierarchyRoot The root of the hierarchy
-     * @return The set of tribal bands that exist in the hierarchy
-     */
-    public TribalAbstractionNetwork getClusterHierarchyData(String version, Concept hierarchyRoot) {
-        if(!clusterTaxonomies.containsKey(version)) {
-            clusterTaxonomies.put(version, new HashMap<Concept, TribalAbstractionNetwork>());
-        }
-
-        if(!clusterTaxonomies.get(version).containsKey(hierarchyRoot)) {
-            clusterTaxonomies.get(version).put(hierarchyRoot, loadClusterHierarchyData(version, hierarchyRoot));
-        }
-
-        return clusterTaxonomies.get(version).get(hierarchyRoot);
-    }
-
-    /**
      * Searches for terms that exactly match the given term
      * @param version The version of SNOMED CT used.
      * @param term The term that will be matched to other terms
@@ -432,10 +413,6 @@ public class MiddlewareAccessorProxy {
             ObjectInputStream in = ServletWriter.postObjects(servlet, objs);
             Object ret = isVoid ? null : in.readObject();
             
-            if(ret instanceof String) {
-                System.out.println(ret);
-            }
-
             in.close();
             return ret;
         }
@@ -450,347 +427,232 @@ public class MiddlewareAccessorProxy {
 
             System.exit(-1);
         }
-        catch(Exception e) 
-        {
-            // Invokes method in ConnectionStateMonitor to record an exception occurence.  If more
-            // than 3 exceptions occur within 20 seconds of each other, a ConnectionStateMonitor 
-            // thread begins to monitor whether the connection is alive and which GUI elements to 
-            // enable/disable depending on the connection's status. - John
-            
-//            MainToolFrame.getMainFrame().getConnectionStateMonitor().recordConnectionError();
-//            System.out.println("ERROR calling meta-function " + (String)objs[1] + " with args " + Arrays.toString(objs) + ":\n" + e);
-//            e.printStackTrace();
+        catch(Exception e) {
             return null;
         }
 
         return null;
     }
+    
+    /**
+     * TODO: Cache this data locally.
+     * 
+     * @param version
+     * @param hierarchyRoot
+     * @return 
+     */
+    private String loadRemotePAreaTaxonomyDataFile(String version, Concept hierarchyRoot) {
+        InputStream inputStream = null;
+        
+        try {
+            URL url = new URL(
+                    String.format("http://nat.njit.edu/blusnodata/pareadata/%s/%s_%s.txt",
+                            version.replaceAll("_", ""), hierarchyRoot.getId(), version.replaceAll("us", "US")));
+
+            inputStream = url.openStream();  // throws an IOException
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+
+            String line;
+            StringBuilder builder = new StringBuilder();
+            
+            while ((line = br.readLine()) != null) {
+                builder.append(line);
+                builder.append("\n");
+            }
+            
+            return builder.toString();
+            
+        } catch (MalformedURLException mue) {
+            mue.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException ioe) {
+            }
+        }
+        
+        return null;
+    }
 
     /**
      * Loads PArea Taxonomy data from an XML file.
+     * 
      * @param version The version of SNOMED CT used.
      * @param hierarchyRoot The root concept of a SNOMED CT hierarchy.
      * @return Returns the taxonomy data for the given version of the given hierarchy.
      */
     private PAreaTaxonomy loadPAreaHierarchyData(String version, Concept hierarchyRoot) {
-//        try {
-//            Scanner scanner = new Scanner(MainToolFrame.class.getResourceAsStream("pareadata/" + version.replaceAll("_", "") + "/" + hierarchyRoot.getId() +
-//                    "_" + version.replaceAll("us", "US") + ".txt"));
-//
-//            StringBuilder builder = new StringBuilder();
-//
-//            while(scanner.hasNext()) {
-//                String line = scanner.nextLine().trim().replace("\n", "");
-//
-//                builder.append(line);
-//                builder.append("\n");
-//            }
-//            
-//            String input = builder.toString().replaceAll("\n\n", "\n");
-//
-//            scanner.close();
-//            
-//            scanner = new Scanner(input);
-//
-//            ArrayList<Area> areas = new ArrayList<Area>();
-//            HashMap<Integer, PAreaSummary> pareas = new HashMap<Integer, PAreaSummary>();
-//            HashMap<Integer, HashSet<Integer>> pareaHierarchy = new HashMap<Integer, HashSet<Integer>>();
-//            
-//            final HashMap<Long, String> hierarchyRels = this.getUniqueLateralRelationshipsInHierarchy(version, hierarchyRoot);
-//
-//            while (scanner.hasNext()) {
-//                String line = scanner.nextLine();
-//
-//                if (line.startsWith("<area")) { // Read the area
-//                    String areaIdStr = line.substring(line.indexOf("id=") + 3, line.length() - 1); // Get the AreaId
-//                    int id = Integer.parseInt(areaIdStr);
-//
-//                    Area area = new Area(id, false);
-//
-//                    areas.add(area);
-//
-//                    line = scanner.nextLine().trim();
-//
-//                    boolean newArea = true;
-//
-//                    while (line.equals("<region>")) {
-//                        ArrayList<InheritedRelationship> rels = new ArrayList<InheritedRelationship>();
-//
-//                        if (id != 0) {
-//                            while ((line = scanner.nextLine()).trim().startsWith("<rel")) {
-//                                String typeStr = line.substring(line.indexOf("type=") + 5, line.indexOf("inherit=") - 1);
-//                                String inherit = line.substring(line.indexOf("inherit=") + 8, line.length() - 1);
-//                                long typeId = Long.parseLong(typeStr);
-//
-//                                InheritanceType type = inherit.equals("*") ? InheritanceType.INHERITED : InheritanceType.INTRODUCED;
-//
-//                                rels.add(new InheritedRelationship(type, typeId));
-//                            }
-//
-//                            Collections.sort(rels, new Comparator<InheritedRelationship>() {
-//                                public int compare(InheritedRelationship a, InheritedRelationship b) {
-//                                    String aStr = hierarchyRels.get(a.getRelationshipTypeId());
-//                                    String bStr = hierarchyRels.get(b.getRelationshipTypeId());
-//
-//                                    return aStr.compareToIgnoreCase(bStr);
-//                                }
-//                            });
-//
-//                            if(newArea) {
-//                                ArrayList<Long> relIds = new ArrayList<Long>();
-//
-//                                for(InheritedRelationship ir : rels) {
-//                                    relIds.add(ir.getRelationshipTypeId());
-//                                }
-//
-//                                area.setRels(relIds);
-//
-//                                newArea = false;
-//                            }
-//                        } else {
-//                            line = scanner.nextLine().trim();
-//                        }
-//
-//                        do {
-//                            String pareaIdStr = line.substring(line.indexOf("id=") + 3, line.indexOf("pids") - 1);
-//                            String pidsStr = line.substring(line.indexOf("pids=") + 5, line.indexOf("ccount") - 1);
-//                            String ccountStr = line.substring(line.indexOf("ccount=") + 7, line.length() - 1);
-//
-//                            int pareaId = Integer.parseInt(pareaIdStr);
-//
-//                            String[] pidStrs = pidsStr.split(",");
-//                            HashSet<Integer> pids = new HashSet<Integer>();
-//
-//                            if (id != 0) {
-//                                for (String s : pidStrs) {
-//                                    pids.add(Integer.parseInt(s));
-//                                }
-//                            }
-//
-//                            int conceptCount = Integer.parseInt(ccountStr);
-//
-//                            line = scanner.nextLine().trim();
-//                            
-//                            String conceptName = "NULL CONCEPT";
-//                            long conceptid = -1;
-//
-//                            if (line.startsWith("<root")) {
-//                                String cidStr = line.substring(line.indexOf("id=") + 3, line.length() - 1);
-//
-//                                conceptid = Long.parseLong(cidStr);
-//                                conceptName = scanner.nextLine().trim();
-//                                line = scanner.nextLine().trim();
-//                            }
-//
-//                            PAreaSummary parea = new PAreaSummary(pareaId, new Concept(conceptid, conceptName, false), conceptCount, pids);
-//                            parea.setRelationships(rels);
-//
-//                            pareas.put(pareaId, parea);
-//
-//                            for(int pid : pids) {
-//                                HashSet<Integer> parentChildren;
-//
-//                                if(!pareaHierarchy.containsKey(pid)) {
-//                                    pareaHierarchy.put(pid, parentChildren = new HashSet<Integer>());
-//                                } else {
-//                                    parentChildren = pareaHierarchy.get(pid);
-//                                }
-//
-//                                parentChildren.add(pareaId);
-//                            }
-//                            
-//                            area.addPArea(parea);
-//
-//                            line = scanner.nextLine().trim();
-//                        } while ((line = scanner.nextLine()).trim().startsWith("<parea"));
-//
-//                        line = scanner.nextLine().trim();
-//                    }
-//                }
-//            }
-//
-//            scanner.close();
-//
-//            for(Area a : areas) {
-//                for(Region region : a.getRegions()) {
-//                    ArrayList<PAreaSummary> summaries = region.getPAreasInRegion();
-//
-//                    Collections.sort(summaries, new Comparator<PAreaSummary>() {
-//                        public int compare(PAreaSummary a, PAreaSummary b) {
-//                            if (a.getConceptCount() == b.getConceptCount()) {
-//                                return a.getRoot().getName().compareToIgnoreCase(b.getRoot().getName());
-//                            }
-//
-//                            return a.getConceptCount() > b.getConceptCount() ? -1 : 1;
-//                        }
-//                    });
-//                }
-//            }
-//
-//            PAreaTaxonomy hd = new PAreaTaxonomy(hierarchyRoot, pareas.get(0), areas, pareas, pareaHierarchy,
-//                    hierarchyRels, version, new SCTRemoteDataSource(version));
-//
-//            return hd;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-        
-        return null;
-    }
+        try {
+            String taxonomyFile = loadRemotePAreaTaxonomyDataFile(version, hierarchyRoot);
+            
+            if(taxonomyFile == null) {
+                return null;
+            }
+            
+            Scanner scanner = new Scanner(taxonomyFile);
 
-    public TribalAbstractionNetwork loadClusterHierarchyData(String version, Concept hierarchyRoot) {
-//        try {
-//            Scanner scanner = new Scanner(MainToolFrame.class.getResourceAsStream(
-//                    "clusterdata/" + version.replaceAll("_", "") + "/" + hierarchyRoot.getId() +
-//                    "_" + version + "_overlap.txt"));
-//
-//            ArrayList<String> lines = new ArrayList<String>();
-//
-//            while(scanner.hasNext()) {
-//                lines.add(scanner.nextLine());
-//            }
-//
-//            String strHierarchyId = lines.get(0).split("hierarchy=")[1];
-//            strHierarchyId = strHierarchyId.substring(0, strHierarchyId.length() - 1);
-//
-//            HashMap<Integer, HashSet<Integer>> clusterHierarchy = new HashMap<Integer, HashSet<Integer>>();
-//            HashMap<Integer, ClusterSummary> clusters = new HashMap<Integer, ClusterSummary>();
-//
-//            ArrayList<ClusterSummary> entryPoints = new ArrayList<ClusterSummary>();
-//
-//            for(int i = 1; i < lines.size() - 1; i++) {
-//                String summaryLine = lines.get(i);
-//
-//                String clusterIdStr = summaryLine.substring(summaryLine.indexOf("id=") + 3, summaryLine.indexOf("pids") - 1).trim();
-//                String pidsStr = summaryLine.substring(summaryLine.indexOf("pids=") + 5, summaryLine.indexOf("ccount") - 1).trim();
-//                String ccountStr = summaryLine.substring(summaryLine.indexOf("ccount=") + 7, summaryLine.indexOf(">")).trim();
-//
-//                HashSet<Integer> parents = new HashSet<Integer>();
-//
-//                String [] pids = pidsStr.split(",");
-//
-//                if(pids.length != 0) {
-//                    for(String pid : pids) {
-//                        if(!pid.trim().isEmpty()) {
-//                            parents.add(Integer.parseInt(pid));
-//                        }
-//                    }
-//                }
-//
-//                String entryPointSetStr = summaryLine.substring(summaryLine.indexOf("<entrypointset>") + 15, summaryLine.indexOf("</entrypointset>"));
-//
-//                String [] entryPointStrs = entryPointSetStr.split("/>");
-//
-//                EntryPointSet epSet = new EntryPointSet();
-//
-//                for (String entryPointStr : entryPointStrs) {
-//                    String entryPointIdStr = entryPointStr.substring(entryPointStr.indexOf("id=") + 3, entryPointStr.indexOf("inherit") - 1).trim();
-//                    String inheritStr = entryPointStr.substring(entryPointStr.length() - 1);
-//
-//                    epSet.add(new EntryPoint(Long.parseLong(entryPointIdStr),
-//                            (inheritStr.equals("+") ? EntryPoint.InheritanceType.INTRODUCED : EntryPoint.InheritanceType.INHERITED)));
-//                }
-//
-//                String headerStr = summaryLine.substring(summaryLine.indexOf("<header"), summaryLine.indexOf("</header>"));
-//                String headerIdStr = headerStr.substring(headerStr.indexOf("id=") + 3, headerStr.indexOf(">"));
-//                String headerNameStr = headerStr.substring(headerStr.indexOf(">") + 1);
-//
-//                Concept header = new Concept(Long.parseLong(headerIdStr), headerNameStr);
-//
-//                ClusterSummary cluster = new ClusterSummary(Integer.parseInt(clusterIdStr),
-//                        header,
-//                        Integer.parseInt(ccountStr),
-//                        parents,
-//                        epSet);
-//
-//                clusters.put(cluster.getId(), cluster);
-//
-//                if(cluster.getEntryPointSet().size() == 1) {
-//                    entryPoints.add(cluster);
-//                }
-//
-//                for (int parent : parents) {
-//                    HashSet<Integer> parentChildren;
-//
-//                    if (!clusterHierarchy.containsKey(parent)) {
-//                        clusterHierarchy.put(parent, parentChildren = new HashSet<Integer>());
-//                    } else {
-//                        parentChildren = clusterHierarchy.get(parent);
-//                    }
-//
-//                    parentChildren.add(cluster.getId());
-//                }
-//            }
-//
-//            ArrayList<CommonOverlapSet> commonOverlapSets = new ArrayList<CommonOverlapSet>();
-//
-//            int areaId = 0;
-//
-//            for(ClusterSummary cluster : clusters.values()) {
-//
-//                if(cluster.getEntryPointSet().size() == 1) {
-//                    continue;
-//                }
-//
-//                boolean setFound = false;
-//
-//                for(CommonOverlapSet set : commonOverlapSets) {
-//                    if(set.clusterBelongsIn(cluster)) {
-//                        set.addClusterToSet(cluster);
-//                        setFound = true;
-//                        break;
-//                    }
-//                }
-//
-//                if(!setFound) {
-//                    areaId++;
-//
-//                    HashSet<Long> epSet = new HashSet<Long>();
-//
-//                    for(EntryPoint ep : cluster.getEntryPointSet()) {
-//                        epSet.add(ep.getEntryPointConceptId());
-//                    }
-//
-//                    CommonOverlapSet cos = new CommonOverlapSet(areaId, epSet);
-//                    cos.addClusterToSet(cluster);
-//                    commonOverlapSets.add(cos);
-//                }
-//            }
-//            
-//            ArrayList<ClusterSummary> nonOverlappingEntryPoints = new ArrayList<ClusterSummary>();
-//
-//            for(ClusterSummary entryPoint : entryPoints) {
-//                boolean overlaps = false;
-//
-//                long rootId = entryPoint.getHeaderConcept().getId();
-//
-//                for(ClusterSummary cluster : clusters.values()) {
-//                    for(EntryPoint ep : cluster.getEntryPointSet()) {
-//                        if(ep.getEntryPointConceptId() == rootId) {
-//                            overlaps = true;
-//                            break;
-//                        }
-//                    }
-//
-//                    if(!overlaps) {
-//                        nonOverlappingEntryPoints.add(entryPoint);
-//                    }
-//                }
-//            }
-//
-//            scanner.close();
-//
-//            return new TribalAbstractionNetwork(hierarchyRoot, commonOverlapSets, clusters,
-//                    clusterHierarchy, version, entryPoints, nonOverlappingEntryPoints,
-//                    new SCTRemoteDataSource(version));
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-        
-        return null;
+            StringBuilder builder = new StringBuilder();
+
+            while(scanner.hasNext()) {
+                String line = scanner.nextLine().trim().replace("\n", "");
+
+                builder.append(line);
+                builder.append("\n");
+            }
+            
+            String input = builder.toString().replaceAll("\n\n", "\n");
+
+            scanner.close();
+            
+            scanner = new Scanner(input);
+
+            ArrayList<Area> areas = new ArrayList<Area>();
+            HashMap<Integer, PAreaSummary> pareas = new HashMap<Integer, PAreaSummary>();
+            HashMap<Integer, HashSet<Integer>> pareaHierarchy = new HashMap<Integer, HashSet<Integer>>();
+            
+            final HashMap<Long, String> hierarchyRels = this.getUniqueLateralRelationshipsInHierarchy(version, hierarchyRoot);
+
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
+
+                if (line.startsWith("<area")) { // Read the area
+                    String areaIdStr = line.substring(line.indexOf("id=") + 3, line.length() - 1); // Get the AreaId
+                    int id = Integer.parseInt(areaIdStr);
+
+                    Area area = new Area(id, false);
+
+                    areas.add(area);
+
+                    line = scanner.nextLine().trim();
+
+                    boolean newArea = true;
+
+                    while (line.equals("<region>")) {
+                        ArrayList<InheritedRelationship> rels = new ArrayList<InheritedRelationship>();
+
+                        if (id != 0) {
+                            while ((line = scanner.nextLine()).trim().startsWith("<rel")) {
+                                String typeStr = line.substring(line.indexOf("type=") + 5, line.indexOf("inherit=") - 1);
+                                String inherit = line.substring(line.indexOf("inherit=") + 8, line.length() - 1);
+                                long typeId = Long.parseLong(typeStr);
+
+                                InheritanceType type = inherit.equals("*") ? InheritanceType.INHERITED : InheritanceType.INTRODUCED;
+
+                                rels.add(new InheritedRelationship(type, typeId));
+                            }
+
+                            Collections.sort(rels, new Comparator<InheritedRelationship>() {
+                                public int compare(InheritedRelationship a, InheritedRelationship b) {
+                                    String aStr = hierarchyRels.get(a.getRelationshipTypeId());
+                                    String bStr = hierarchyRels.get(b.getRelationshipTypeId());
+
+                                    return aStr.compareToIgnoreCase(bStr);
+                                }
+                            });
+
+                            if(newArea) {
+                                ArrayList<Long> relIds = new ArrayList<Long>();
+
+                                for(InheritedRelationship ir : rels) {
+                                    relIds.add(ir.getRelationshipTypeId());
+                                }
+
+                                area.setRels(relIds);
+
+                                newArea = false;
+                            }
+                        } else {
+                            line = scanner.nextLine().trim();
+                        }
+
+                        do {
+                            String pareaIdStr = line.substring(line.indexOf("id=") + 3, line.indexOf("pids") - 1);
+                            String pidsStr = line.substring(line.indexOf("pids=") + 5, line.indexOf("ccount") - 1);
+                            String ccountStr = line.substring(line.indexOf("ccount=") + 7, line.length() - 1);
+
+                            int pareaId = Integer.parseInt(pareaIdStr);
+
+                            String[] pidStrs = pidsStr.split(",");
+                            HashSet<Integer> pids = new HashSet<Integer>();
+
+                            if (id != 0) {
+                                for (String s : pidStrs) {
+                                    pids.add(Integer.parseInt(s));
+                                }
+                            }
+
+                            int conceptCount = Integer.parseInt(ccountStr);
+
+                            line = scanner.nextLine().trim();
+                            
+                            String conceptName = "NULL CONCEPT";
+                            long conceptid = -1;
+
+                            if (line.startsWith("<root")) {
+                                String cidStr = line.substring(line.indexOf("id=") + 3, line.length() - 1);
+
+                                conceptid = Long.parseLong(cidStr);
+                                conceptName = scanner.nextLine().trim();
+                                line = scanner.nextLine().trim();
+                            }
+
+                            PAreaSummary parea = new PAreaSummary(pareaId, new Concept(conceptid, conceptName, false), conceptCount, pids);
+                            parea.setRelationships(rels);
+
+                            pareas.put(pareaId, parea);
+
+                            for(int pid : pids) {
+                                HashSet<Integer> parentChildren;
+
+                                if(!pareaHierarchy.containsKey(pid)) {
+                                    pareaHierarchy.put(pid, parentChildren = new HashSet<Integer>());
+                                } else {
+                                    parentChildren = pareaHierarchy.get(pid);
+                                }
+
+                                parentChildren.add(pareaId);
+                            }
+                            
+                            area.addPArea(parea);
+
+                            line = scanner.nextLine().trim();
+                        } while ((line = scanner.nextLine()).trim().startsWith("<parea"));
+
+                        line = scanner.nextLine().trim();
+                    }
+                }
+            }
+
+            scanner.close();
+
+            for(Area a : areas) {
+                for(Region region : a.getRegions()) {
+                    ArrayList<PAreaSummary> summaries = region.getPAreasInRegion();
+
+                    Collections.sort(summaries, new Comparator<PAreaSummary>() {
+                        public int compare(PAreaSummary a, PAreaSummary b) {
+                            if (a.getConceptCount() == b.getConceptCount()) {
+                                return a.getRoot().getName().compareToIgnoreCase(b.getRoot().getName());
+                            }
+
+                            return a.getConceptCount() > b.getConceptCount() ? -1 : 1;
+                        }
+                    });
+                }
+            }
+
+            PAreaTaxonomy hd = new PAreaTaxonomy(hierarchyRoot, pareas.get(0), areas, pareas, pareaHierarchy,
+                    hierarchyRels, version, new SCTRemoteDataSource(version));
+
+            return hd;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public ArrayList<ConceptPAreaInfo> getConceptPAreaInfo(String version, long conceptId) {

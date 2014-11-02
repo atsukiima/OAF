@@ -171,10 +171,6 @@ public class RuleViewPanel extends JPanel {
 
                     if (clickedEntry != null) {
 
-                        if (e.getClickCount() >= 2) {
-                            //MainToolFrame.getMainFrame().addNewBrowserFrame(clickedEntry.getConcept(), ruleData.getSCTDataSource());
-                        }
-
                         clickedEntry.selected = true;
 
                         Concept concept = clickedEntry.getConcept();

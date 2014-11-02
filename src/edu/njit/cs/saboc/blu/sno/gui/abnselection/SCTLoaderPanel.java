@@ -53,6 +53,8 @@ import javax.swing.border.BevelBorder;
  */
 public class SCTLoaderPanel extends JPanel {
 
+    private JTabbedPane blusnoTabbedPane = new JTabbedPane();
+    
     private final JRadioButton remoteSourceBtn = new JRadioButton("NJIT Hosted Releases");
     private final JRadioButton localSourceBtn = new JRadioButton("Local SNOMED Release");
 
@@ -76,6 +78,9 @@ public class SCTLoaderPanel extends JPanel {
             public void actionPerformed(ActionEvent ae) {
                 CardLayout cl = (CardLayout) (versionSelectPanel.getLayout());
                 cl.show(versionSelectPanel, "Remote");
+                
+                blusnoTabbedPane.setEnabledAt(1, false);
+                blusnoTabbedPane.setSelectedIndex(0);
             }
         });
 
@@ -84,6 +89,9 @@ public class SCTLoaderPanel extends JPanel {
             public void actionPerformed(ActionEvent ae) {
                 CardLayout cl = (CardLayout) (versionSelectPanel.getLayout());
                 cl.show(versionSelectPanel, "Local");
+                
+                blusnoTabbedPane.setEnabledAt(1, true);
+                blusnoTabbedPane.setSelectedIndex(0);
             }
         });
 
@@ -97,8 +105,7 @@ public class SCTLoaderPanel extends JPanel {
         sctDataSourcePanel.add(remoteSourceBtn);
         sctDataSourcePanel.add(localSourceBtn);
         sctDataSourcePanel.setBorder(BorderFactory.createTitledBorder("1: Select a SNOMED CT Data Source"));
-
-        final JTabbedPane blusnoTabbedPane = new JTabbedPane();
+        
 
         remoteReleasePanel = new RemoteReleaseSelectionPanel();
         localReleasePanel = new LocalReleaseSelectionPanel(blusnoTabbedPane);
@@ -283,28 +290,23 @@ public class SCTLoaderPanel extends JPanel {
      * @param root
      */
     private void loadTAN(Concept root) {
-        TribalAbstractionNetwork tan;
 
-        if (remoteSourceBtn.isSelected()) {
-            tan = MiddlewareAccessorProxy.getProxy().getClusterHierarchyData(
-                    "july_2011", root);
-        } else {
+        if (localSourceBtn.isSelected()) {
             try {
                 SCTLocalDataSource dataSource = localReleasePanel.getLoadedDataSource();
 
-                tan = TANGenerator.createTANFromConceptHierarchy(
+                TribalAbstractionNetwork tan = TANGenerator.createTANFromConceptHierarchy(
                         root,
                         dataSource.getSelectedVersion(),
                         (SCTConceptHierarchy) dataSource.getConceptHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getId())));
 
+                displayFrameListener.addNewClusterGraphFrame(tan, false, false);
             } catch (NoSCTDataSourceLoadedException e) {
-                    // TODO: Show error...
+                // TODO: Show error...
 
                 return;
             }
         }
-
-        displayFrameListener.addNewClusterGraphFrame(tan, false, false);
     }
 
     private SCTDataSource getSelectedDataSource() {

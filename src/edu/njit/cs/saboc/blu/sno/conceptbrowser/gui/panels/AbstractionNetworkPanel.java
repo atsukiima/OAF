@@ -90,12 +90,12 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             descTaxonomyBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     Concept c = focusConcept.getConcept();
-                    
+
                     PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
-                    
-                    PAreaTaxonomy taxonomy = generator.createPAreaTaxonomy(c, (SCTLocalDataSource)dataSource);
-                    
-                    //MainToolFrame.getMainFrame().addNewPAreaGraphFrame(taxonomy, true, false);
+
+                    PAreaTaxonomy taxonomy = generator.createPAreaTaxonomy(c, (SCTLocalDataSource) dataSource);
+
+                    mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
                 }
             });
 
@@ -113,7 +113,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                     PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
                     PAreaTaxonomy taxonomy = generator.createFocusTaxonomy(c, (SCTLocalDataSource)dataSource);
                     
-                    //MainToolFrame.getMainFrame().addNewPAreaGraphFrame(taxonomy, true, false);
+                    mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
                 }
             });
             
