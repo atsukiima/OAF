@@ -1,25 +1,20 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
 import SnomedShared.Concept;
-import SnomedShared.generic.GenericConceptGroup;
-import SnomedShared.generic.GenericContainerPartition;
 import SnomedShared.pareataxonomy.Area;
 import SnomedShared.pareataxonomy.PAreaSummary;
-import edu.njit.cs.saboc.blu.core.abn.AbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
-import edu.njit.cs.saboc.blu.core.gui.gep.utils.GEPActionListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
-import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.export.ExportAbN;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.AreaReportDialog;
-import edu.njit.cs.saboc.blu.sno.gui.dialogs.ConceptGroupDetailsDialog;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.LevelReportDialog;
-import edu.njit.cs.saboc.blu.sno.gui.dialogs.PartitionConceptDialog;
+import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.PAreaOptionsConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.PAreaTaxonomyGEPListener;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.GraphOptionsButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.RelationshipSelectionButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.PAreaInternalSearchButton;
@@ -157,17 +152,9 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         
         BluGraph graph = new PAreaBluGraph(parentFrame, data, areaGraph, conceptCountLabels, options, displayListener);
 
-        initializeGraphTabs(graph, new AbNPainter(), new GEPActionListener() {
-                    public void containerPartitionSelected(GenericContainerPartition partition, boolean treatedAsContainer, AbstractionNetwork abn) {
-                        PartitionConceptDialog dialog = new PartitionConceptDialog(parentFrame, partition, (SCTAbstractionNetwork)abn,
-                                    treatedAsContainer, displayListener);
-                    }
-                    
-                    public void groupSelected(GenericConceptGroup group, AbstractionNetwork abn) {
-                        ConceptGroupDetailsDialog dialog = new ConceptGroupDetailsDialog(group, (SCTAbstractionNetwork)abn,
-                                    ConceptGroupDetailsDialog.DialogType.PartialArea, displayListener);
-                    }
-                });
+        initializeGraphTabs(graph, new AbNPainter(), 
+                new PAreaTaxonomyGEPListener(parentFrame, displayListener), 
+                new PAreaOptionsConfiguration(parentFrame, this, data, displayListener));
         
         tbp = null;
 

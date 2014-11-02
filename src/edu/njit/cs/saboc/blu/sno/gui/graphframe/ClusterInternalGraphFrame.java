@@ -1,24 +1,19 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
 import SnomedShared.Concept;
-import SnomedShared.generic.GenericConceptGroup;
-import SnomedShared.generic.GenericContainerPartition;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.CommonOverlapSet;
-import edu.njit.cs.saboc.blu.core.abn.AbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
-import edu.njit.cs.saboc.blu.core.gui.gep.utils.GEPActionListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
-import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.export.ExportAbN;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.graph.ClusterBluGraph;
 import edu.njit.cs.saboc.blu.sno.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.dialogs.ConceptGroupDetailsDialog;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.LevelReportDialog;
-import edu.njit.cs.saboc.blu.sno.gui.dialogs.PartitionConceptDialog;
+import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.ClusterOptionsConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.TribalGEPListener;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.TANInternalSearchButton;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.utils.UtilityMethods;
@@ -136,17 +131,9 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         
         searchButton.setGraph(graph);
     
-        initializeGraphTabs(graph, new AbNPainter(), new GEPActionListener() {
-                    public void containerPartitionSelected(GenericContainerPartition partition, boolean treatedAsContainer, AbstractionNetwork abn) {
-                        PartitionConceptDialog dialog = new PartitionConceptDialog(parentFrame, partition, (SCTAbstractionNetwork)abn,
-                                    treatedAsContainer, displayListener);
-                    }
-                    
-                    public void groupSelected(GenericConceptGroup group, AbstractionNetwork abn) {
-                        ConceptGroupDetailsDialog dialog = new ConceptGroupDetailsDialog(group, (SCTAbstractionNetwork)abn,
-                                    ConceptGroupDetailsDialog.DialogType.Cluster, displayListener);
-                    }
-                });
+        initializeGraphTabs(graph, new AbNPainter(), 
+                new TribalGEPListener(parentFrame, displayListener), 
+                new ClusterOptionsConfiguration(parentFrame, this, data, displayListener));
         
         updateHierarchyInfoLabel(data);
     }
