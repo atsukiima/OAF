@@ -35,14 +35,18 @@ public class PAreaTaxonomyGenerator {
      */
     private class PAreaSet extends HashSet<LocalPArea> {}
 
-    public LocalPAreaTaxonomy createPAreaTaxonomy(Concept hierarchyRoot, SCTLocalDataSource dataSource) {
-        SCTConceptHierarchy hierarchy = (SCTConceptHierarchy)dataSource.getConceptHierarchy().getSubhierarchyRootedAt(hierarchyRoot);
+    public LocalPAreaTaxonomy createPAreaTaxonomy(Concept hierarchyRoot, SCTLocalDataSource dataSource, 
+            ConceptRelationshipsRetriever conceptRelsRetriever) {
         
-        return createPAreaTaxonomyForHierarchy(hierarchy, dataSource);
+        SCTConceptHierarchy hierarchy = conceptRelsRetriever.getConceptHierarchy(dataSource, hierarchyRoot);
+        
+        return createPAreaTaxonomyForHierarchy(hierarchy, dataSource, conceptRelsRetriever);
     }
         
-    public LocalPAreaTaxonomy createPAreaTaxonomyForHierarchy(SCTConceptHierarchy hierarchy, SCTLocalDataSource dataSource) {
-                HashSet<Concept> hierarchyConcepts = hierarchy.getConceptsInHierarchy();
+    public LocalPAreaTaxonomy createPAreaTaxonomyForHierarchy(SCTConceptHierarchy hierarchy, SCTLocalDataSource dataSource, 
+            ConceptRelationshipsRetriever conceptRelsRetriever) {
+        
+        HashSet<Concept> hierarchyConcepts = hierarchy.getConceptsInHierarchy();
                 
         Concept hierarchyRoot = hierarchy.getRoot();
         
@@ -57,7 +61,7 @@ public class PAreaTaxonomyGenerator {
         // The set of partial-areas a given concept belongs to
         HashMap<Concept, PAreaSet> pareaSets = new HashMap<Concept, PAreaSet>();
         
-        HashMap<Concept, HashSet<Long>> definingAttributeRels = new HashMap<Concept, HashSet<Long>>();
+        HashMap<Concept, HashSet<Long>> definingAttributeRels = conceptRelsRetriever.getDefiningRelationships(hierarchy);
         
         HashMap<Long, String> relHashMap = new HashMap<Long, String>();
 
@@ -68,16 +72,8 @@ public class PAreaTaxonomyGenerator {
         for (Concept concept : hierarchyConcepts) {
             pareaSets.put(concept, new PAreaSet());
 
-            definingAttributeRels.put(concept, new HashSet<Long>());
-
             LocalSnomedConcept localConcept = (LocalSnomedConcept) concept;
             
-            for (LocalLateralRelationship lr : localConcept.getAttributeRelationships()) {
-                if (lr.getCharacteristicType() == 0) {
-                    definingAttributeRels.get(concept).add(lr.getRelationship().getId());
-                }
-            }
-
             for (LocalLateralRelationship lr : localConcept.getAttributeRelationships()) {
                 if (lr.getCharacteristicType() == 0) {
                     relHashMap.put(lr.getRelationship().getId(), lr.getRelationship().getName());
@@ -292,7 +288,9 @@ public class PAreaTaxonomyGenerator {
                 dataSource);
     }
     
-    public LocalPAreaTaxonomy createFocusTaxonomy(Concept c, SCTLocalDataSource dataSource) {
+    public LocalPAreaTaxonomy createFocusTaxonomy(Concept c, SCTLocalDataSource dataSource, 
+            ConceptRelationshipsRetriever conceptRelsRetriever) {
+        
         ArrayList<Concept> hierarchies = dataSource.getHierarchiesConceptBelongTo(c);
         
         SCTConceptHierarchy conceptHierarchy = new SCTConceptHierarchy(hierarchies.get(0)); // Multi rooted partial-area taxonomy needs research...
@@ -306,7 +304,7 @@ public class PAreaTaxonomyGenerator {
             conceptHierarchy.addAllHierarchicalRelationships(ancestors);
         }
 
-        return createPAreaTaxonomyForHierarchy(conceptHierarchy, dataSource);
+        return createPAreaTaxonomyForHierarchy(conceptHierarchy, dataSource, conceptRelsRetriever);
     }
 
     private static boolean relationshipSetsEqual(HashSet<Long> c, HashSet<Long> p) {

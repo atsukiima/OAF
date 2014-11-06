@@ -8,6 +8,7 @@ package edu.njit.cs.saboc.blu.sno.localdatasource.load;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalLateralRelationship;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSCTConceptStated;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSnomedConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSourceWithStated;
@@ -48,12 +49,14 @@ public class ImportLocalData {
                 relFile = child;
             }
         }
-               
-        long startingUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         
+        File statedRelationshipsFile = LoadLocalRelease.getStatedRelationshipsFile(releaseDirectory);
+        
+        boolean includesStatedRelationships = (statedRelationshipsFile != null);
+               
         loadMonitor.setCurrentProcess("Loading Concepts", 0);
 
-        final HashMap<Long, LocalSnomedConcept> concepts = loadConcepts(conceptsFile);
+        final HashMap<Long, LocalSnomedConcept> concepts = loadConcepts(conceptsFile, includesStatedRelationships);
         
         loadMonitor.setCurrentProcess("Loading Descriptions", 25);
         
@@ -62,12 +65,10 @@ public class ImportLocalData {
         loadMonitor.setCurrentProcess("Loading Relationships", 50);
 
         SCTConceptHierarchy hierarchy = loadRelationships(relFile, concepts);
-        
-        File statedRelationshipsFile = LoadLocalRelease.getStatedRelationshipsFile(releaseDirectory);
-        
+               
         SCTLocalDataSource localDS;
         
-        if(statedRelationshipsFile != null) {
+        if(includesStatedRelationships) {
             loadMonitor.setCurrentProcess("Loading Stated Relationships", 75);
             
             SCTConceptHierarchy statedHierarchy = loadStatedRelationships(statedRelationshipsFile, concepts);
@@ -146,10 +147,12 @@ public class ImportLocalData {
         ArrayList<LocalLateralRelationship> emptyArrayList = new ArrayList<LocalLateralRelationship>();
 
         for (LocalSnomedConcept concept : concepts.values()) {
+            LocalSCTConceptStated statedConcept = (LocalSCTConceptStated)concept;
+            
             if (statedAttributeRelationships.containsKey(concept.getId())) {
-                concept.setStatedRelationships(statedAttributeRelationships.get(concept.getId()));
+                statedConcept.setStatedRelationships(statedAttributeRelationships.get(concept.getId()));
             } else {
-                concept.setStatedRelationships(emptyArrayList);
+                statedConcept.setStatedRelationships(emptyArrayList);
             }
         }
 
@@ -225,7 +228,7 @@ public class ImportLocalData {
         return hierarchy;
     }
     
-    private HashMap<Long, LocalSnomedConcept> loadConcepts(File conceptsFile) throws FileNotFoundException {
+    private HashMap<Long, LocalSnomedConcept> loadConcepts(File conceptsFile, boolean statedRelationships) throws FileNotFoundException {
         Scanner scanner = new Scanner(conceptsFile);
         
         if (scanner.hasNext()) {
@@ -247,8 +250,12 @@ public class ImportLocalData {
                 prim = true;
             }
             
-            concepts.put(id, new LocalSnomedConcept(id, null, prim));
-            
+            if(statedRelationships) {
+                concepts.put(id, new LocalSCTConceptStated(id, null, prim));
+            } else {
+                concepts.put(id, new LocalSnomedConcept(id, null, prim));
+            }
+
             processedConcepts++;
             
             double loadProgress = (processedConcepts / 450000.0);

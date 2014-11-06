@@ -7,6 +7,7 @@ import SnomedShared.pareataxonomy.InheritedRelationship;
 import SnomedShared.pareataxonomy.PAreaSummary;
 import SnomedShared.pareataxonomy.Region;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.PAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
@@ -497,7 +498,7 @@ public class PAreaTaxonomy extends SCTAbstractionNetwork {
         if(dataSource instanceof SCTLocalDataSource) {
             PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
             
-            fullTaxonomy = generator.createPAreaTaxonomy(SNOMEDHierarchyRoot, (SCTLocalDataSource)dataSource);
+            fullTaxonomy = generator.createPAreaTaxonomy(SNOMEDHierarchyRoot, (SCTLocalDataSource)dataSource, new InferredRelationshipsRetriever());
         } else {
             fullTaxonomy = MiddlewareAccessorProxy.getProxy().getPAreaHierarchyData(SNOMEDVersion, SNOMEDHierarchyRoot);
         }

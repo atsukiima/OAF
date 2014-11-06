@@ -24,6 +24,7 @@ import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHi
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSnomedConcept;
 import edu.njit.cs.saboc.blu.sno.localdatasource.conceptdata.HierarchyMetrics;
+import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.PAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.SearchResultComparator;
@@ -217,7 +218,7 @@ public class SCTLocalDataSource implements SCTDataSource {
             
             PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
             
-            LocalPAreaTaxonomy taxonomy = generator.createPAreaTaxonomy(hierarchies.get(0), this);
+            LocalPAreaTaxonomy taxonomy = generator.createPAreaTaxonomy(hierarchies.get(0), this, new InferredRelationshipsRetriever());
             
             for(PAreaSummary parea : taxonomy.getPAreas().values()) {
                 ArrayList<Concept> pareaConcepts = this.getConceptsInPArea(taxonomy, parea);

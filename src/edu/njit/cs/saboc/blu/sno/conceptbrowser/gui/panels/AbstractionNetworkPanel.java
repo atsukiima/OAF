@@ -9,6 +9,7 @@ import edu.njit.cs.saboc.blu.sno.conceptbrowser.SnomedConceptBrowser;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.ConceptGroupDetailsDialog;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
+import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.PAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
@@ -93,7 +94,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
                     PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
 
-                    PAreaTaxonomy taxonomy = generator.createPAreaTaxonomy(c, (SCTLocalDataSource) dataSource);
+                    PAreaTaxonomy taxonomy = generator.createPAreaTaxonomy(c, (SCTLocalDataSource) dataSource, new InferredRelationshipsRetriever());
 
                     mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
                 }
@@ -111,7 +112,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                     Concept c = focusConcept.getConcept();
                     
                     PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
-                    PAreaTaxonomy taxonomy = generator.createFocusTaxonomy(c, (SCTLocalDataSource)dataSource);
+                    PAreaTaxonomy taxonomy = generator.createFocusTaxonomy(c, (SCTLocalDataSource)dataSource, new InferredRelationshipsRetriever());
                     
                     mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
                 }

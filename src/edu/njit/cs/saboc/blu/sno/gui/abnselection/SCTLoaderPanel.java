@@ -9,9 +9,11 @@ import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.ImportLocalData;
+import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LoadLocalRelease;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LocalLoadStateMonitor;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.PAreaTaxonomyGenerator;
+import edu.njit.cs.saboc.blu.sno.localdatasource.load.RelationshipsRetrieverFactory;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRemoteDataSource;
@@ -34,6 +36,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -62,6 +65,8 @@ public class SCTLoaderPanel extends JPanel {
     private LocalReleaseSelectionPanel localReleasePanel;
 
     private SCTDisplayFrameListener displayFrameListener;
+    
+    private JCheckBox chkUseStatedRelationships;
     
     private JFrame parentFrame;
 
@@ -108,7 +113,7 @@ public class SCTLoaderPanel extends JPanel {
         
 
         remoteReleasePanel = new RemoteReleaseSelectionPanel();
-        localReleasePanel = new LocalReleaseSelectionPanel(blusnoTabbedPane);
+        localReleasePanel = new LocalReleaseSelectionPanel(this);
 
         versionSelectPanel.add(remoteReleasePanel, "Remote");
         versionSelectPanel.add(localReleasePanel, "Local");
@@ -176,11 +181,18 @@ public class SCTLoaderPanel extends JPanel {
         blusnoTabbedPane.addTab("Tribal Abstraction Network", tanSelectionPanel);
         blusnoTabbedPane.addTab("Concept Browser", createConceptBrowserPanel());
 
+        chkUseStatedRelationships = new JCheckBox("Use Stated Relationships");
+        
+        
         JPanel blusnoTabPanel = new JPanel(new BorderLayout());
+        blusnoTabPanel.add(chkUseStatedRelationships, BorderLayout.NORTH);
+        
         blusnoTabPanel.add(blusnoTabbedPane, BorderLayout.CENTER);
         blusnoTabPanel.setBorder(BorderFactory.createTitledBorder("3: Select Abstraction Network and Hierarchy"));
 
         this.add(blusnoTabPanel, BorderLayout.CENTER);
+        
+        this.setStatedRelationshipsEnabled(false);
     }
 
     /**
@@ -257,8 +269,9 @@ public class SCTLoaderPanel extends JPanel {
                                 AbNLoadStatusDialog.display(parentFrame, generator.getLoadStatusMonitor(), AbNLoadStatusDialog.TYPE_PAREA);
                             }
                         });
-
-                        taxonomy = generator.createPAreaTaxonomy(dataSource.getConceptFromId(root.getId()), dataSource);
+                                                
+                        taxonomy = generator.createPAreaTaxonomy(dataSource.getConceptFromId(root.getId()), dataSource, 
+                                RelationshipsRetrieverFactory.getRelationshipsRetriever(chkUseStatedRelationships.isSelected()));
 
                         monitor.updateState(AbNLoadingStatusMonitor.STATE_BUILD_GRAPH, 80);
                     } catch (NoSCTDataSourceLoadedException e) {
@@ -385,6 +398,19 @@ public class SCTLoaderPanel extends JPanel {
 
         return IconManager.getIconManager().getIcon(iconName);
     }
+    
+    public void setTabsEnabled(boolean value) {
+        blusnoTabbedPane.setEnabled(value);
+    }
+    
+    public void setStatedRelationshipsEnabled(boolean value) {
+        chkUseStatedRelationships.setEnabled(value);
+        chkUseStatedRelationships.setVisible(value);
+        
+        if(value == false){
+            chkUseStatedRelationships.setSelected(false);
+        }
+    }
 }
 
 /**
@@ -466,7 +492,7 @@ class LocalReleaseSelectionPanel extends JPanel {
         }
     }
 
-    private JTabbedPane sctTabs;
+    private SCTLoaderPanel sctLoaderPanel;
 
     private JComboBox localVersionBox;
 
@@ -478,8 +504,8 @@ class LocalReleaseSelectionPanel extends JPanel {
 
     private JProgressBar loadProgressBar;
 
-    public LocalReleaseSelectionPanel(final JTabbedPane sctTabs) {
-        this.sctTabs = sctTabs;
+    public LocalReleaseSelectionPanel(final SCTLoaderPanel sctLoaderPanel) {
+        this.sctLoaderPanel = sctLoaderPanel;
 
         localVersionBox = new JComboBox();
         localVersionBox.setBackground(Color.WHITE);
@@ -504,7 +530,7 @@ class LocalReleaseSelectionPanel extends JPanel {
                         return;
                     }
 
-                    sctTabs.setEnabled(false);
+                    sctLoaderPanel.setTabsEnabled(false);
 
                     loadProgressBar.setValue(0);
                     loadProgressBar.setString("Detecting Files...");
@@ -543,8 +569,14 @@ class LocalReleaseSelectionPanel extends JPanel {
         loadButton.setEnabled(true);
 
         loadProgressBar.setVisible(false);
+        
+        if(loadedDataSource.supportsStatedRelationships()) {
+            sctLoaderPanel.setStatedRelationshipsEnabled(true);
+        } else {
+            sctLoaderPanel.setStatedRelationshipsEnabled(false);
+        }
 
-        sctTabs.setEnabled(true);
+        sctLoaderPanel.setTabsEnabled(true);
     }
 
     private void startLocalReleaseThread() {

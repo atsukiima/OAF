@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.conceptbrowser;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.gui.panels.BaseNavPanel;
-import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSnomedConcept;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSCTConceptStated;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSourceWithStated;
@@ -291,7 +291,7 @@ public class FocusConcept {
                     break;
                     
                 case STATEDCONCEPTRELS:
-                    result = ((LocalSnomedConcept)concept).getStatedAttributeRelationships();
+                    result = ((LocalSCTConceptStated)concept).getStatedRelationships();
                     break;
             }
 
