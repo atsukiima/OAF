@@ -261,4 +261,10 @@ public interface SCTDataSource {
      * @param version 
      */
     public void setVersion(String version);
+    
+    /**
+     * Returns if this SCT data support includes support for stated relationships.
+     * @return 
+     */
+    public boolean supportsStatedRelationships();
 }

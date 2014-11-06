@@ -30,19 +30,23 @@ import javax.swing.JTabbedPane;
 public class RelationshipPanel extends BaseNavPanel {
     private SCTFilterableList conRelList;
     private SCTFilterableList siblingList;
+    private SCTFilterableList statedConRelList;
 
     private JTabbedPane tabbedPane;
     private BaseNavPanel conRelPanel;
     private BaseNavPanel siblingPanel;
+    private BaseNavPanel statedConRelPanel;
 
     private final int CON_REL_IDX = 0;
-    private final int SIBLING_IDX = 1;
+    private final int STATED_CON_REL_IDX = 1;
+    private final int SIBLING_IDX = 2;
 
     public RelationshipPanel(final SnomedConceptBrowser mainPanel, SCTDataSource dataSource) {
         super(mainPanel, dataSource);
 
         conRelList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
         siblingList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
+        statedConRelList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
 
         setBackground(mainPanel.getNeighborhoodBGColor());
         setLayout(new BorderLayout());
@@ -51,12 +55,12 @@ public class RelationshipPanel extends BaseNavPanel {
         conRelPanel = new BaseNavPanel(mainPanel, dataSource) {
             @Override
             public void dataPending() {
-                tabbedPane.setTitleAt(CON_REL_IDX, "CONCEPT RELATIONSHIPS");
+                tabbedPane.setTitleAt(CON_REL_IDX, "ATTRIBUTE RELATIONSHIPS");
                 conRelList.showPleaseWait();
             }
 
             public void dataEmpty() {
-                tabbedPane.setTitleAt(CON_REL_IDX, "CONCEPT RELATIONSHIPS");
+                tabbedPane.setTitleAt(CON_REL_IDX, "ATTRIBUTE RELATIONSHIPS");
                 conRelList.showDataEmpty();
             }
 
@@ -73,13 +77,47 @@ public class RelationshipPanel extends BaseNavPanel {
                 }
 
                 conRelList.setContents(entries);
-                int relCount = ((ArrayList<OutgoingLateralRelationship>)focusConcept.getConceptList(FocusConcept.Fields.CONCEPTREL)).size();
-                tabbedPane.setTitleAt(CON_REL_IDX, "CONCEPT RELATIONSHIPS (" + relCount + ")");
+                int relCount = relationships.size();
+                tabbedPane.setTitleAt(CON_REL_IDX, "ATTRIBUTE RELATIONSHIPS (" + relCount + ")");
             }
         };
         
         conRelPanel.setLayout(new BorderLayout());
         conRelPanel.add(conRelList, BorderLayout.CENTER);
+        
+        statedConRelPanel = new BaseNavPanel(mainPanel, dataSource) {
+            @Override
+            public void dataPending() {
+                tabbedPane.setTitleAt(STATED_CON_REL_IDX, "STATED ATTRIBUTE RELATIONSHIPS");
+                statedConRelList.showPleaseWait();
+            }
+
+            public void dataEmpty() {
+                tabbedPane.setTitleAt(STATED_CON_REL_IDX, "STATED ATTRIBUTE RELATIONSHIPS");
+                statedConRelList.showDataEmpty();
+            }
+
+            @Override
+            public void dataReady() {
+                ArrayList<Filterable> entries = new ArrayList<Filterable>();
+
+                ArrayList<OutgoingLateralRelationship> relationships =
+                        (ArrayList<OutgoingLateralRelationship>)focusConcept.getConceptList(
+                        FocusConcept.Fields.STATEDCONCEPTRELS);
+
+                for(OutgoingLateralRelationship olr : relationships) {
+                    entries.add(new FilterableLateralRelationshipEntry(olr));
+                }
+
+                statedConRelList.setContents(entries);
+                
+                int relCount = relationships.size();
+                tabbedPane.setTitleAt(STATED_CON_REL_IDX, "STATED ATTRIBUTE RELATIONSHIPS (" + relCount + ")");
+            }
+        };
+        
+        statedConRelPanel.setLayout(new BorderLayout());
+        statedConRelPanel.add(statedConRelList, BorderLayout.CENTER);
 
         // Siblings Panel
         siblingPanel = new BaseNavPanel(mainPanel, dataSource) {
@@ -142,14 +180,15 @@ public class RelationshipPanel extends BaseNavPanel {
 
                 button.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        SCTFilterableList list = null;
-
                         switch(tabbedPane.getSelectedIndex()) {
                             case CON_REL_IDX:
                                 conRelList.toggleFilterPanel();
                                 return;
                             case SIBLING_IDX:
                                 siblingList.toggleFilterPanel();
+                                return;
+                            case STATED_CON_REL_IDX:
+                                statedConRelList.toggleFilterPanel();
                                 return;
                         }
                     }
@@ -168,13 +207,19 @@ public class RelationshipPanel extends BaseNavPanel {
             }
         });
 
-        tabbedPane.addTab("CONCEPT RELATIONSHIPS", conRelPanel);
+        tabbedPane.addTab("ATTRIBUTE RELATIONSHIPS", conRelPanel);
+        
+        if(dataSource.supportsStatedRelationships()) {
+            tabbedPane.addTab("STATED ATTRIBUTE RELATIONSHIPS", statedConRelPanel);
+            focusConcept.addDisplayPanel(FocusConcept.Fields.STATEDCONCEPTRELS, statedConRelPanel);
+        }
+        
         tabbedPane.addTab("SIBLINGS", siblingPanel);
         
         add(tabbedPane, BorderLayout.CENTER);
 
         focusConcept.addDisplayPanel(FocusConcept.Fields.CONCEPTREL, conRelPanel);
         focusConcept.addDisplayPanel(FocusConcept.Fields.SIBLINGS, siblingPanel);
-        focusConcept.addDisplayPanel(FocusConcept.Fields.CONCEPTRELQUALIFIERS, conRelPanel);
+        focusConcept.addDisplayPanel(FocusConcept.Fields.STATEDCONCEPTRELS, statedConRelPanel);
     }
 }

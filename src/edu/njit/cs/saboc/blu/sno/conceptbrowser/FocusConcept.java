@@ -1,12 +1,11 @@
-/*******************************************************************************
- * $Id: FocusConcept.java,v 1.12 2014/07/28 17:57:00 uid57051 Exp $
- */
 package edu.njit.cs.saboc.blu.sno.conceptbrowser;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.gui.panels.BaseNavPanel;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSnomedConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSourceWithStated;
 
 import javax.swing.SwingUtilities;
 
@@ -26,10 +25,10 @@ public class FocusConcept {
     private Concept concept = null;
 
     public enum Fields {
-        CONCEPT, PARENTS, GRANDPARENTS, CHILDREN, GRANDCHILDREN,
-        SYNONYMS, SIBLINGS, CONCEPTREL, CONCEPTRELQUALIFIERS,
-        PARTIALAREA, TRIBALAN, HIERARCHYMETRICS, ALLANCESTORS, 
-        ALLDESCENDANTS, ALLPATHS
+        CONCEPT, PARENTS, CHILDREN, SYNONYMS, SIBLINGS, CONCEPTREL, 
+        PARTIALAREA, TRIBALAN, HIERARCHYMETRICS, 
+        ALLANCESTORS, ALLDESCENDANTS, ALLPATHS, STATEDPARENTS, STATEDCHILDREN,
+        STATEDCONCEPTRELS
     };
 
     // Concept data
@@ -161,14 +160,23 @@ public class FocusConcept {
 
         update(Fields.TRIBALAN);
         
-        update(Fields.HIERARCHYMETRICS);
-        
-        update(Fields.ALLANCESTORS);
-        
-        update(Fields.ALLDESCENDANTS);
-        
-        update(Fields.ALLPATHS);
+        if (dataSource instanceof SCTLocalDataSource) {
+            update(Fields.HIERARCHYMETRICS);
 
+            update(Fields.ALLANCESTORS);
+
+            update(Fields.ALLDESCENDANTS);
+
+            update(Fields.ALLPATHS);
+
+            if (dataSource.supportsStatedRelationships()) {
+                update(Fields.STATEDPARENTS);
+
+                update(Fields.STATEDCHILDREN);
+
+                update(Fields.STATEDCONCEPTRELS);
+            }
+        }       
     }
 
     // Updates the given field of the Focus Concept
@@ -272,6 +280,18 @@ public class FocusConcept {
                     
                 case ALLPATHS:
                     result = ((SCTLocalDataSource)dataSource).getAllPathsToConcept(concept);
+                    break;
+                    
+                case STATEDPARENTS:
+                    result = ((SCTLocalDataSourceWithStated)dataSource).getStatedParents(concept);
+                    break;
+                    
+                case STATEDCHILDREN:
+                    result = ((SCTLocalDataSourceWithStated)dataSource).getStatedChildren(concept);
+                    break;
+                    
+                case STATEDCONCEPTRELS:
+                    result = ((LocalSnomedConcept)concept).getStatedAttributeRelationships();
                     break;
             }
 

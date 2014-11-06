@@ -10,6 +10,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalLateralRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSnomedConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSourceWithStated;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -47,76 +48,114 @@ public class ImportLocalData {
                 relFile = child;
             }
         }
-        
+               
         long startingUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         
         loadMonitor.setCurrentProcess("Loading Concepts", 0);
 
         final HashMap<Long, LocalSnomedConcept> concepts = loadConcepts(conceptsFile);
         
-        System.gc();
-        
-        try {
-            Thread.sleep(1000);
-        } catch (Exception e) {
-            
-        }
-        
-        long conceptsMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        
-        System.out.println("Concepts Memory: " + (conceptsMemory - startingUsedMemory));
-
         loadMonitor.setCurrentProcess("Loading Descriptions", 25);
         
         loadDescriptions(descFile, concepts);
-        
-        System.gc();
-        
-        try {
-            Thread.sleep(1000);
-        } catch (Exception e) {
-            
-        }
-        
-        long descriptionMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        
-        System.out.println("Descriptions Memory: " + (descriptionMemory - conceptsMemory));
 
         loadMonitor.setCurrentProcess("Loading Relationships", 50);
 
         SCTConceptHierarchy hierarchy = loadRelationships(relFile, concepts);
-
-        System.gc();
-
-        try {
-            Thread.sleep(1000);
-        } catch (Exception e) {
-
-        }
-
-        long relationshipsMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-
-        System.out.println("Relationships Memory: " + (relationshipsMemory - descriptionMemory));
-
-        loadMonitor.setCurrentProcess("Building Search Index", 75);
         
-        SCTLocalDataSource localDS = new SCTLocalDataSource(concepts, hierarchy, true, version);
+        File statedRelationshipsFile = LoadLocalRelease.getStatedRelationshipsFile(releaseDirectory);
         
-        System.gc();
-
-        try {
-            Thread.sleep(1000);
-        } catch (Exception e) {
-
+        SCTLocalDataSource localDS;
+        
+        if(statedRelationshipsFile != null) {
+            loadMonitor.setCurrentProcess("Loading Stated Relationships", 75);
+            
+            SCTConceptHierarchy statedHierarchy = loadStatedRelationships(statedRelationshipsFile, concepts);
+            
+            loadMonitor.setCurrentProcess("Building Search Index", 85);
+            
+            localDS = new SCTLocalDataSourceWithStated(concepts, hierarchy, true, version, statedHierarchy);
+        } else {
+            
+            loadMonitor.setCurrentProcess("Building Search Index", 75);
+            localDS = new SCTLocalDataSource(concepts, hierarchy, true, version);
         }
-
-        long indexMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-
-        System.out.println("Index Memory: " + (indexMemory - relationshipsMemory));
-
+        
         loadMonitor.setCurrentProcess("Complete", 100);
 
         return localDS;
+    }
+    
+    /**
+     * Basically just copy/pasted loadRelationships here.
+     * @param relationshipsFile
+     * @param concepts
+     * @return
+     * @throws IOException 
+     */
+    private SCTConceptHierarchy loadStatedRelationships(File relationshipsFile, HashMap<Long, LocalSnomedConcept> concepts) throws IOException {
+        Scanner scanner = new Scanner(relationshipsFile);
+
+        if (scanner.hasNext()) {
+            scanner.nextLine();
+        }
+
+        SCTConceptHierarchy hierarchy = new SCTConceptHierarchy(concepts.get(138875005l));
+
+        Map<Long, ArrayList<LocalLateralRelationship>> statedAttributeRelationships
+                = new HashMap<Long, ArrayList<LocalLateralRelationship>>();
+
+        int processedRelationships = 0;
+
+        while (scanner.hasNext()) {
+            String line = scanner.nextLine();
+            String[] parts = line.split("\t");
+
+            long relType = Long.parseLong(parts[2]);
+
+            if (relType == 116680003l) {
+                long concept1 = Long.parseLong(parts[1]);
+                long concept2 = Long.parseLong(parts[3]);
+
+                LocalSnomedConcept child = concepts.get(concept1);
+                LocalSnomedConcept parent = concepts.get(concept2);
+
+                hierarchy.addIsA(child, parent);
+            } else {
+                long sourceId = Long.parseLong(parts[1]);
+                long targetId = Long.parseLong(parts[3]);
+
+                if (!statedAttributeRelationships.containsKey(sourceId)) {
+                    statedAttributeRelationships.put(sourceId, new ArrayList<LocalLateralRelationship>());
+                }
+
+                statedAttributeRelationships.get(sourceId).add(new LocalLateralRelationship(
+                        concepts.get(relType),
+                        concepts.get(targetId),
+                        Integer.parseInt(parts[6]),
+                        Integer.parseInt(parts[4])));
+            }
+
+            processedRelationships++;
+
+            double loadProgress = (processedRelationships / 500000.0);
+
+            loadMonitor.setOverallProgress(75 + Math.min((int) (loadProgress * 10), 10));
+        }
+        
+        ArrayList<LocalLateralRelationship> emptyArrayList = new ArrayList<LocalLateralRelationship>();
+
+        for (LocalSnomedConcept concept : concepts.values()) {
+            if (statedAttributeRelationships.containsKey(concept.getId())) {
+                concept.setStatedRelationships(statedAttributeRelationships.get(concept.getId()));
+            } else {
+                concept.setStatedRelationships(emptyArrayList);
+            }
+        }
+
+        scanner.close();
+
+        return hierarchy;
     }
 
     private SCTConceptHierarchy loadRelationships (
@@ -171,11 +210,13 @@ public class ImportLocalData {
             loadMonitor.setOverallProgress(50 + Math.min((int)(loadProgress * 20), 20));
         }
         
+        ArrayList<LocalLateralRelationship> emptyArrayList = new ArrayList<LocalLateralRelationship>();
+        
         for(LocalSnomedConcept concept : concepts.values()) {
             if(attributeRels.containsKey(concept.getId())) {
-                concept.setRels(attributeRels.get(concept.getId()));
+                concept.setLateralRelationships(attributeRels.get(concept.getId()));
             } else {
-                concept.setRels(new ArrayList<LocalLateralRelationship>());
+                concept.setLateralRelationships(emptyArrayList);
             }
         }
 
@@ -201,8 +242,6 @@ public class ImportLocalData {
             String[] parts = line.split("\t");
             boolean prim = false;
             long id = Long.parseLong(parts[0]);
-            
-            String fsn = parts[2];
             
             if (!parts[5].equals("0")) {
                 prim = true;

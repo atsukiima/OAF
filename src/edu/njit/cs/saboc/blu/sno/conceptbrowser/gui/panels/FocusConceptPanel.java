@@ -1,6 +1,3 @@
-/*******************************************************************************
- * $Id: FocusConceptPanel.java,v 1.9 2014/06/14 22:12:03 uid57051 Exp $
- */
 package edu.njit.cs.saboc.blu.sno.conceptbrowser.gui.panels;
 
 import SnomedShared.Concept;
@@ -36,6 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.ToolTipManager;
 import javax.swing.border.TitledBorder;
@@ -57,7 +55,7 @@ public class FocusConceptPanel extends BaseNavPanel {
     private JButton backButton;
     private JButton forwardButton;
     private JButton homeButton;
-
+    
     private JPanel editPanel;
     private JButton undoButton;
     private JButton redoButton;

@@ -9,14 +9,21 @@ import java.util.ArrayList;
 public class LocalSnomedConcept extends SnomedShared.Concept {
 
     private ArrayList<Description> descList = new ArrayList<Description>();
+    
     private ArrayList<LocalLateralRelationship> lateralRelationships = new ArrayList<LocalLateralRelationship>();
+    
+    private ArrayList<LocalLateralRelationship> statedRelationships = new ArrayList<LocalLateralRelationship>();
 
     public LocalSnomedConcept(long id, String name, boolean isPrimitive) {
         super(id, name, isPrimitive);
     }
 
-    public void setRels(ArrayList<LocalLateralRelationship> rels) {
-        lateralRelationships = rels;
+    public void setLateralRelationships(ArrayList<LocalLateralRelationship> rels) {
+        this.lateralRelationships = rels;
+    }
+    
+    public void setStatedRelationships(ArrayList<LocalLateralRelationship> statedRelationships) {
+        this.statedRelationships = statedRelationships;
     }
     
     public void setDescriptions(ArrayList<Description> descriptions) {
@@ -25,6 +32,10 @@ public class LocalSnomedConcept extends SnomedShared.Concept {
 
     public ArrayList<LocalLateralRelationship> getAttributeRelationships() {
         return lateralRelationships;
+    }
+    
+    public ArrayList<LocalLateralRelationship> getStatedAttributeRelationships() {
+        return statedRelationships;
     }
 
     public ArrayList<Description> getDescriptions() {

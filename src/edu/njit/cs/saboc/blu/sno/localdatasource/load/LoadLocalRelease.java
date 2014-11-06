@@ -17,6 +17,28 @@ public class LoadLocalRelease {
         
         return dirList;
     }
+    
+    public static File getStatedRelationshipsFile(File releaseDirectory) {
+        String dirName = releaseDirectory.getAbsolutePath();
+        
+        if(dirName.contains("RF1Release")) {
+            String topLevelDir = dirName.substring(0, dirName.lastIndexOf("RF1Release") + "RF1Release".length());
+            
+            String statedRelationshipsDir = topLevelDir + "\\OtherResources\\StatedRelationships\\";
+            
+            File statedRelsDir = new File(statedRelationshipsDir);
+            
+            if(statedRelsDir.exists() && statedRelsDir.isDirectory()) {
+                File [] filesList = statedRelsDir.listFiles();
+                
+                if(filesList.length == 1) {
+                    return filesList[0];
+                }
+            }
+        }
+        
+        return null;
+    }
 
     public static ArrayList<String> getReleaseFileNames(ArrayList<File> releaseDirectories) {
         
@@ -46,6 +68,8 @@ public class LoadLocalRelease {
         
         return releaseNames;
     }
+    
+    
 
     private static ArrayList<File> findSub(File directory, ArrayList<File> dirList) {
 

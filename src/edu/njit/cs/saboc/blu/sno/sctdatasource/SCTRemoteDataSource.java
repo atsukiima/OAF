@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package edu.njit.cs.saboc.blu.sno.sctdatasource;
 
 import SnomedShared.Concept;
@@ -218,5 +212,9 @@ public class SCTRemoteDataSource implements SCTDataSource {
     
     public void setVersion(String version) {
         this.sctVersion = version;
+    }
+    
+    public boolean supportsStatedRelationships() {
+        return false;
     }
 }

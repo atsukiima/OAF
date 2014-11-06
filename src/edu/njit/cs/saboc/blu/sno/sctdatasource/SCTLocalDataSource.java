@@ -70,7 +70,7 @@ public class SCTLocalDataSource implements SCTDataSource {
     public SCTLocalDataSource(Map<Long, LocalSnomedConcept> concepts,
             SCTConceptHierarchy conceptHierarchy, boolean processDescriptions, String version) {
 
-        this.conceptHierarchy = conceptHierarchy; // SNOMED CT Concept
+        this.conceptHierarchy = conceptHierarchy;
 
         this.concepts = concepts;
         
@@ -861,5 +861,9 @@ public class SCTLocalDataSource implements SCTDataSource {
     
     public String getSelectedVersion() {
         return version;
+    }
+    
+    public boolean supportsStatedRelationships() {
+        return false;
     }
 }
