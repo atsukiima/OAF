@@ -43,7 +43,7 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
         public final void setData(HierarchyMetrics metrics) {
             this.data = new Object[6][2];
             
-            String hierarchies = metrics.getHierarchies().get(0).getName();
+            String hierarchies = metrics.getHierarchies().isEmpty() ? "[None, SNOMED CT Root]" : metrics.getHierarchies().get(0).getName();
             
             for(int c = 1; c < metrics.getHierarchies().size(); c++) {
                 hierarchies += (", " + metrics.getHierarchies().get(c));
@@ -111,6 +111,7 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
         super(mainPanel, dataSource);
 
         this.setLayout(new BorderLayout());
+        this.setBackground(mainPanel.getNeighborhoodBGColor());
 
         tabbedPane = new JTabbedPane();
 

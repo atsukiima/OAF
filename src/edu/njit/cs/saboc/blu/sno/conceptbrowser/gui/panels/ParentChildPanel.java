@@ -61,6 +61,8 @@ public class ParentChildPanel extends BaseNavPanel implements ActionListener {
         
         this.setLayout(new BorderLayout());
         
+        this.setBackground(mainPanel.getNeighborhoodBGColor());
+        
         this.inferredList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
         this.statedList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
 
