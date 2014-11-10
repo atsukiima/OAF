@@ -38,11 +38,19 @@ public class RelationshipPanel extends BaseNavPanel {
     private BaseNavPanel statedConRelPanel;
 
     private final int CON_REL_IDX = 0;
-    private final int STATED_CON_REL_IDX = 1;
-    private final int SIBLING_IDX = 2;
+    private int STATED_CON_REL_IDX = 1;
+    private int SIBLING_IDX;
 
     public RelationshipPanel(final SnomedConceptBrowser mainPanel, SCTDataSource dataSource) {
         super(mainPanel, dataSource);
+        
+        if(dataSource.supportsStatedRelationships()) {
+            this.STATED_CON_REL_IDX = 1;
+            this.SIBLING_IDX = 2;
+        } else {
+            this.STATED_CON_REL_IDX = -1;
+            this.SIBLING_IDX = 1;
+        }
 
         conRelList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
         siblingList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
@@ -180,16 +188,12 @@ public class RelationshipPanel extends BaseNavPanel {
 
                 button.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        switch(tabbedPane.getSelectedIndex()) {
-                            case CON_REL_IDX:
-                                conRelList.toggleFilterPanel();
-                                return;
-                            case SIBLING_IDX:
-                                siblingList.toggleFilterPanel();
-                                return;
-                            case STATED_CON_REL_IDX:
-                                statedConRelList.toggleFilterPanel();
-                                return;
+                        if(tabbedPane.getSelectedIndex() == CON_REL_IDX) {
+                            conRelList.toggleFilterPanel();
+                        } else if(tabbedPane.getSelectedIndex() == STATED_CON_REL_IDX) {
+                            statedConRelList.toggleFilterPanel();
+                        } else if(tabbedPane.getSelectedIndex() == SIBLING_IDX) {
+                            siblingList.toggleFilterPanel();
                         }
                     }
                 });

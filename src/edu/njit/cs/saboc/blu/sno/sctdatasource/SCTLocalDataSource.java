@@ -747,12 +747,8 @@ public class SCTLocalDataSource implements SCTDataSource {
         int childCount = this.getConceptChildren(c).size();
         int siblingCount = this.getConceptSiblings(c).size();
         
-        int descendantCount = this.conceptHierarchy.getSubhierarchyRootedAt(c).getNodesInHierarchy().size() - 1;
-        
-        if(descendantCount < 0) {
-            descendantCount = 0;
-        }
-        
+        int descendantCount = -1; // TODO: Write a method for computing the number of descendants
+
         int ancestorCount = 0;
         
         for(Concept hierarchy : hierarchies) {

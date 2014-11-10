@@ -239,6 +239,8 @@ public class FocusConcept {
         // The thread entry function
         @Override
         public void run() {
+            
+            System.out.println("RUNNING\t" + field.name());
 
             switch(field) {
                 case PARENTS:
@@ -275,7 +277,8 @@ public class FocusConcept {
                     break;
                     
                 case ALLDESCENDANTS:
-                    result = ((SCTLocalDataSource)dataSource).getAllDescendantsAsList(concept);
+                    //result = ((SCTLocalDataSource)dataSource).getAllDescendantsAsList(concept);
+                    result = new ArrayList<Concept>();
                     break;
                     
                 case ALLPATHS:
@@ -294,6 +297,8 @@ public class FocusConcept {
                     result = ((LocalSCTConceptStated)concept).getStatedRelationships();
                     break;
             }
+            
+            System.out.println("FINISHED\t" + field.name());
 
             // Send the notification to the main thread that we're done.
             try {

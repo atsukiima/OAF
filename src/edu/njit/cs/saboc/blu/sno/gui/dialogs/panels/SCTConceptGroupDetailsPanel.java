@@ -22,12 +22,13 @@ public class SCTConceptGroupDetailsPanel extends GroupDetailsPanel {
     private JEditorPane groupConceptsPane;
     private JEditorPane groupChildrenPane;
     
-    private final SCTDisplayFrameListener displayFrameListener;
-    
     public SCTConceptGroupDetailsPanel(SCTAbstractionNetwork abn, GroupType type, SCTDisplayFrameListener displayFrameListener) {
         super(abn, type);
-        
-        this.displayFrameListener = displayFrameListener;
+                
+         groupSummaryPane.addHyperlinkListener(new BrowserLauncher(displayFrameListener, (SCTAbstractionNetwork)abstractionNetwork));
+         groupParentsPane.addHyperlinkListener(new BrowserLauncher(displayFrameListener, (SCTAbstractionNetwork)abstractionNetwork));
+         groupConceptsPane.addHyperlinkListener(new BrowserLauncher(displayFrameListener, (SCTAbstractionNetwork)abstractionNetwork));
+         groupChildrenPane.addHyperlinkListener(new BrowserLauncher(displayFrameListener, (SCTAbstractionNetwork)abstractionNetwork));
     }
     
     protected void initialize() {
@@ -86,7 +87,7 @@ public class SCTConceptGroupDetailsPanel extends GroupDetailsPanel {
             childPanel.setBorder(BorderFactory.createTitledBorder("Child Disjoint Partial-areas"));
         }
 
-        this.setChildrenComponent(childPanel);
+        this.setChildrenComponent(childPanel); 
     }
     
     public void setSummaryText(String text) {
@@ -112,9 +113,7 @@ public class SCTConceptGroupDetailsPanel extends GroupDetailsPanel {
     
     protected JEditorPane makeTextDetailsPane() {
         JEditorPane editorPane = super.makeTextDetailsPane();
-        
-        editorPane.addHyperlinkListener(new BrowserLauncher(displayFrameListener, (SCTAbstractionNetwork)abstractionNetwork));
-        
+                
         return editorPane;
     } 
 }
