@@ -300,7 +300,7 @@ public class PAreaTaxonomyGenerator {
         conceptHierarchy.addAllHierarchicalRelationships(descdendants);
         
         for(Concept hierarchy : hierarchies) {
-            SCTConceptHierarchy ancestors = dataSource.getAncestorHierarchy(hierarchy, c);
+            SCTConceptHierarchy ancestors = dataSource.getAncestorHierarchy(dataSource.getConceptHierarchy(), hierarchy, c);
             conceptHierarchy.addAllHierarchicalRelationships(ancestors);
         }
 

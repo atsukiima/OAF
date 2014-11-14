@@ -25,6 +25,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -83,10 +84,12 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
         tabbedPane = new JTabbedPane();
         
+        tabbedPane.addTab("Partial-Area Details", partialAreaPanel);
+        
         if(dataSource instanceof SCTLocalDataSource) {
-            JPanel subtaxonomyOptionsPanel = new JPanel(new GridLayout(2, 1, 2, 2));
-            
-            JButton descTaxonomyBtn = new JButton("Create Descendent Taxonomy");
+            JPanel subtaxonomyOptionsPanel = new JPanel(new GridLayout(1, 2, 2, 2));
+
+            JButton descTaxonomyBtn = new JButton("Create Subject Subtaxonomy");
             
             descTaxonomyBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
@@ -99,13 +102,21 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                     mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
                 }
             });
+            
+            JEditorPane subjectSubtaxonomyDesc = new JEditorPane();
+            subjectSubtaxonomyDesc.setEditable(false);
+            subjectSubtaxonomyDesc.setContentType("text/html");
+            subjectSubtaxonomyDesc.setText("A <b>subject subtaxonomy</b> is a taxonomy derived using the chosen focus concept and all of its "
+                    + "descendants. It summarizes the subhierarchy of classes rooted at the chosen focus concept.");
 
-            JPanel descBtnPanel = new JPanel();
-            descBtnPanel.add(descTaxonomyBtn);
+            JPanel descBtnPanel = new JPanel(new BorderLayout());
+            descBtnPanel.setBorder(BorderFactory.createEtchedBorder());
+            descBtnPanel.add(descTaxonomyBtn, BorderLayout.NORTH);
+            descBtnPanel.add(subjectSubtaxonomyDesc, BorderLayout.CENTER);
             
             subtaxonomyOptionsPanel.add(descBtnPanel);
             
-            JButton focusTaxonomyBtn = new JButton("Create Focus Taxonomy");
+            JButton focusTaxonomyBtn = new JButton("Create Focus Subtaxonomy");
             
             focusTaxonomyBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
@@ -118,20 +129,26 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                 }
             });
             
-            JPanel focusBtnPanel = new JPanel();
-            focusBtnPanel.add(focusTaxonomyBtn);
+            JEditorPane focusSubtaxonomyDesc = new JEditorPane();
+            focusSubtaxonomyDesc.setEditable(false);
+            focusSubtaxonomyDesc.setContentType("text/html");
+            focusSubtaxonomyDesc.setText("A <b>focus subtaxonomy</b> is a taxonomy derived using the chosen focus concept and all of its "
+                    + "ancestors descendants. A focus subtaxonomy summarizes the ancestors and descendants of the chosen concept.");
+            
+            JPanel focusBtnPanel = new JPanel(new BorderLayout());
+            focusBtnPanel.setBorder(BorderFactory.createEtchedBorder());
+            focusBtnPanel.add(focusTaxonomyBtn, BorderLayout.NORTH);
+            focusBtnPanel.add(focusSubtaxonomyDesc, BorderLayout.CENTER);
             
             subtaxonomyOptionsPanel.add(focusBtnPanel);
             
-            
-            tabbedPane.addTab("Focus Concept Taxonomies", subtaxonomyOptionsPanel);
+            tabbedPane.addTab("Create Focus Concept Subtaxonomy", subtaxonomyOptionsPanel);
         }
         
-        tabbedPane.addTab("Partial-Area Details", partialAreaPanel);
+        
 
         focusConcept.addDisplayPanel(FocusConcept.Fields.TRIBALAN, tribalANPanel);
         focusConcept.addDisplayPanel(FocusConcept.Fields.PARTIALAREA, partialAreaPanel);
-
 
         add(tabbedPane, BorderLayout.CENTER);
     }

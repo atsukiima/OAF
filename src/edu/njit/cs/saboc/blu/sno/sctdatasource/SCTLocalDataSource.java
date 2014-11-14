@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
@@ -665,7 +666,7 @@ public class SCTLocalDataSource implements SCTDataSource {
      * @param c
      * @return 
      */
-    public SCTConceptHierarchy getAncestorHierarchy(Concept hierarchyRoot, Concept c) {
+    public SCTConceptHierarchy getAncestorHierarchy(SCTConceptHierarchy completeHierarchy, Concept hierarchyRoot, Concept c) {
         SCTConceptHierarchy hierarchy = new SCTConceptHierarchy(hierarchyRoot);
         
         Queue<Concept> queue = new ArrayDeque<Concept>();
@@ -678,7 +679,7 @@ public class SCTLocalDataSource implements SCTDataSource {
         while(!queue.isEmpty()) {
             Concept concept = queue.remove();
             
-            HashSet<Concept> parents = conceptHierarchy.getParents(concept);
+            HashSet<Concept> parents = completeHierarchy.getParents(concept);
             
             for(Concept parent : parents) {
                 if(!processed.contains(parent)) {
@@ -696,23 +697,58 @@ public class SCTLocalDataSource implements SCTDataSource {
         return hierarchy;
     }
     
-    public ArrayList<Concept> getAllAncestorsAsList(Concept c) {
-
+    protected ArrayList<Concept> createAncestorList(SCTConceptHierarchy completeHierarchy, Concept c) {
         ArrayList<Concept> hierarchies = this.getHierarchiesConceptBelongTo(c);
         
-        HashSet<Concept> ancestorSet = new HashSet<Concept>();
+        ArrayList<Concept> topologicalAncestors = new ArrayList<Concept>();
         
-        for(Concept hierarchy : hierarchies) {
-            ancestorSet.addAll(this.getAncestorHierarchy(hierarchy, c).getConceptsInHierarchy());
+        SCTMultiRootedConceptHierarchy ancestorHierarchy = new SCTMultiRootedConceptHierarchy(new HashSet<Concept>(hierarchies));
+        
+        for(Concept hierarchyRoot : hierarchies) {
+            SCTConceptHierarchy hierarchy = this.getAncestorHierarchy(completeHierarchy, hierarchyRoot, c);
+            ancestorHierarchy.addAllHierarchicalRelationships(hierarchy);
+        }
+        
+        HashMap<Concept, Integer> parentCounts = new HashMap<Concept, Integer>();
+        
+        for(Concept root : ancestorHierarchy.getRoots()) {
+            parentCounts.put(root, 0);
+        }
+        
+        for(Concept concept : ancestorHierarchy.getConceptsInHierarchy()) {
+            if(!parentCounts.containsKey(concept)) {
+                parentCounts.put(concept, ancestorHierarchy.getParents(concept).size());
+            }
+        }
+        
+        Queue<Concept> queue = new LinkedList<Concept>();
+        queue.addAll(ancestorHierarchy.getRoots());
+        
+        while(!queue.isEmpty()) {
+            Concept concept = queue.remove();
+            
+            if(!concept.equals(c)) {
+                topologicalAncestors.add(concept);
+                
+                HashSet<Concept> children = ancestorHierarchy.getChildren(concept);
+                
+                for(Concept child : children) {
+                    int childParentCount = parentCounts.get(child) - 1;
+                    
+                    if(childParentCount == 0) {
+                        queue.add(child);
+                    } else {
+                        parentCounts.put(child, childParentCount);
+                    }
+                }
+            }
         }
 
-        ancestorSet.remove(c);
-
-        ArrayList<Concept> ancestorList = new ArrayList<Concept>(ancestorSet);
-
-        Collections.sort(ancestorList, new ConceptNameComparator());
-
-        return ancestorList;
+        return topologicalAncestors;
+    }
+    
+    public ArrayList<Concept> getAllAncestorsAsList(Concept c) {
+        return createAncestorList(conceptHierarchy, c);
     }
     
     /**
@@ -747,15 +783,13 @@ public class SCTLocalDataSource implements SCTDataSource {
         int childCount = this.getConceptChildren(c).size();
         int siblingCount = this.getConceptSiblings(c).size();
         
-        int descendantCount = -1; // TODO: Write a method for computing the number of descendants
-
         int ancestorCount = 0;
         
         for(Concept hierarchy : hierarchies) {
-            ancestorCount += this.getAncestorHierarchy(hierarchy, c).getConceptsInHierarchy().size() - 1;
+            ancestorCount += this.getAncestorHierarchy(conceptHierarchy, hierarchy, c).getConceptsInHierarchy().size() - 1;
         }
         
-        return new HierarchyMetrics(c, hierarchies, ancestorCount, descendantCount, parentCount, childCount, siblingCount);
+        return new HierarchyMetrics(c, hierarchies, ancestorCount, -1, parentCount, childCount, siblingCount);
     }
     
     
@@ -777,7 +811,7 @@ public class SCTLocalDataSource implements SCTDataSource {
     }
     
     private ArrayList<ArrayList<Concept>> getAllPathsFromHierarchyRoot(Concept hierarchyRoot, Concept c) {
-        SCTConceptHierarchy hierarchy = (SCTConceptHierarchy)this.getAncestorHierarchy(hierarchyRoot, c);
+        SCTConceptHierarchy hierarchy = (SCTConceptHierarchy)this.getAncestorHierarchy(conceptHierarchy, hierarchyRoot, c);
         
         HashMap<Concept, Integer> parentCounts = new HashMap<Concept, Integer>();
         

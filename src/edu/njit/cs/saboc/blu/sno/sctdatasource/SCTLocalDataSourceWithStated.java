@@ -6,6 +6,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSnomedConcept;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -39,6 +40,28 @@ public class SCTLocalDataSourceWithStated extends SCTLocalDataSource {
         Collections.sort(statedChildren, new ConceptNameComparator());
         
         return statedChildren;
+    }
+    
+    public ArrayList<Concept> getStatedSiblings(Concept c) {
+        ArrayList<Concept> parents = this.getStatedParents(c);
+        
+        HashSet<Concept> siblings = new HashSet<Concept>();
+        
+        for(Concept parent : parents) {
+            siblings.addAll(this.getStatedChildren(parent));
+        }
+        
+        siblings.remove(c);
+        
+        ArrayList<Concept> statedSiblings = new ArrayList<Concept>(siblings);
+        
+        Collections.sort(statedSiblings, new ConceptNameComparator());
+        
+        return statedSiblings;
+    }
+    
+    public ArrayList<Concept> getStatedAncestors(Concept c) {
+        return createAncestorList(statedHierarchy, c);
     }
     
     public SCTConceptHierarchy getStatedHierarchy() {

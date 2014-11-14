@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Stack;
 
 
@@ -112,9 +113,9 @@ public class TANGenerator {
 
             if (parents != null) {
                 for (Concept parent : parents) { // For each parent
-                    HashSet<Concept> parentGroup = conceptTribes.get(parent);
+                    HashSet<Concept> parentTribes = conceptTribes.get(parent);
 
-                    if (parentGroup.equals(myCluster)) { // If a parent has the same group of tribes
+                    if (parentTribes.equals(myCluster)) { // If a parent has the same group of tribes
                         isRoot = false; // Then this is not a root concept
                         break;
                     }
@@ -163,7 +164,7 @@ public class TANGenerator {
                     HashSet<Concept> children = hierarchy.getChildren(concept);
 
                     for (Concept child : children) { // Process all children
-                        if (stack.contains(child) || roots.contains(child)) {
+                        if (stack.contains(child) || roots.contains(child) || !conceptTribes.get(child).equals(rootTribalSet)) {
                             continue;
                         }
 
@@ -172,7 +173,6 @@ public class TANGenerator {
                         stack.add(child);
                     }
                 }
-
             }
         }
 

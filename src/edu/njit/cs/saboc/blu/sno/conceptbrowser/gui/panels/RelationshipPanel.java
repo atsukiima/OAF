@@ -31,32 +31,31 @@ public class RelationshipPanel extends BaseNavPanel {
     private SCTFilterableList conRelList;
     private SCTFilterableList siblingList;
     private SCTFilterableList statedConRelList;
+    private SCTFilterableList statedSiblingsList;
 
     private JTabbedPane tabbedPane;
+    
     private BaseNavPanel conRelPanel;
     private BaseNavPanel siblingPanel;
     private BaseNavPanel statedConRelPanel;
+    private BaseNavPanel statedSiblingsPanel;
 
     private final int CON_REL_IDX = 0;
-    private int STATED_CON_REL_IDX = 1;
-    private int SIBLING_IDX;
+    private final int SIBLING_IDX = 1;
+    private final int STATED_CON_REL_IDX = 2;
+    private final int STATED_SIBLING_IDX = 3;
 
     public RelationshipPanel(final SnomedConceptBrowser mainPanel, SCTDataSource dataSource) {
         super(mainPanel, dataSource);
         
-        if(dataSource.supportsStatedRelationships()) {
-            this.STATED_CON_REL_IDX = 1;
-            this.SIBLING_IDX = 2;
-        } else {
-            this.STATED_CON_REL_IDX = -1;
-            this.SIBLING_IDX = 1;
-        }
 
         conRelList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
         siblingList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
         statedConRelList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
+        statedSiblingsList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true); 
 
         setBackground(mainPanel.getNeighborhoodBGColor());
+        
         setLayout(new BorderLayout());
 
         // Concept Relationships Panel
@@ -161,6 +160,38 @@ public class RelationshipPanel extends BaseNavPanel {
         };
         siblingPanel.setLayout(new BorderLayout());
         siblingPanel.add(siblingList, BorderLayout.CENTER);
+        
+        // Stated siblings Panel
+        statedSiblingsPanel = new BaseNavPanel(mainPanel, dataSource) {
+            @Override
+            public void dataPending() {
+                tabbedPane.setTitleAt(STATED_SIBLING_IDX, "SIBLINGS");
+                statedSiblingsList.showPleaseWait();
+            }
+
+            public void dataEmpty() {
+                tabbedPane.setTitleAt(STATED_SIBLING_IDX, "STATED SIBLINGS");
+                statedSiblingsList.showDataEmpty();
+            }
+
+            @Override
+            public void dataReady() {
+                ArrayList<Concept> siblings = (ArrayList<Concept>)focusConcept.getConceptList(FocusConcept.Fields.STATEDSIBLINGS);
+                
+                 tabbedPane.setTitleAt(STATED_SIBLING_IDX, "STATED SIBLINGS (" + siblings.size() + ")");
+                
+                ArrayList<Filterable> conceptEntries = new ArrayList<Filterable>();
+
+                for(Concept c : siblings) {
+                    conceptEntries.add(new FilterableConceptEntry(c));
+                }
+                
+                statedSiblingsList.setContents(conceptEntries);
+            }
+        };
+        
+        statedSiblingsPanel.setLayout(new BorderLayout());
+        statedSiblingsPanel.add(statedSiblingsList, BorderLayout.CENTER);
 
         // Tabbed Pane
         tabbedPane = new JTabbedPane();
@@ -212,18 +243,19 @@ public class RelationshipPanel extends BaseNavPanel {
         });
 
         tabbedPane.addTab("ATTRIBUTE RELATIONSHIPS", conRelPanel);
+        tabbedPane.addTab("SIBLINGS", siblingPanel);
+        
+        focusConcept.addDisplayPanel(FocusConcept.Fields.CONCEPTREL, conRelPanel);
+        focusConcept.addDisplayPanel(FocusConcept.Fields.SIBLINGS, siblingPanel);
         
         if(dataSource.supportsStatedRelationships()) {
             tabbedPane.addTab("STATED ATTRIBUTE RELATIONSHIPS", statedConRelPanel);
             focusConcept.addDisplayPanel(FocusConcept.Fields.STATEDCONCEPTRELS, statedConRelPanel);
+            
+            tabbedPane.addTab("STATED SIBLINGS", statedSiblingsList);
+            focusConcept.addDisplayPanel(FocusConcept.Fields.STATEDSIBLINGS, statedSiblingsPanel);
         }
-        
-        tabbedPane.addTab("SIBLINGS", siblingPanel);
-        
-        add(tabbedPane, BorderLayout.CENTER);
 
-        focusConcept.addDisplayPanel(FocusConcept.Fields.CONCEPTREL, conRelPanel);
-        focusConcept.addDisplayPanel(FocusConcept.Fields.SIBLINGS, siblingPanel);
-        focusConcept.addDisplayPanel(FocusConcept.Fields.STATEDCONCEPTRELS, statedConRelPanel);
+        add(tabbedPane, BorderLayout.CENTER);
     }
 }

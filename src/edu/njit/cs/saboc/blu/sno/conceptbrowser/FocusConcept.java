@@ -28,7 +28,7 @@ public class FocusConcept {
         CONCEPT, PARENTS, CHILDREN, SYNONYMS, SIBLINGS, CONCEPTREL, 
         PARTIALAREA, TRIBALAN, HIERARCHYMETRICS, 
         ALLANCESTORS, ALLDESCENDANTS, ALLPATHS, STATEDPARENTS, STATEDCHILDREN,
-        STATEDCONCEPTRELS
+        STATEDCONCEPTRELS, STATEDSIBLINGS, STATEDANCESTORS
     };
 
     // Concept data
@@ -175,6 +175,10 @@ public class FocusConcept {
                 update(Fields.STATEDCHILDREN);
 
                 update(Fields.STATEDCONCEPTRELS);
+                
+                update(Fields.STATEDSIBLINGS);
+                
+                update(Fields.STATEDANCESTORS);
             }
         }       
     }
@@ -293,6 +297,14 @@ public class FocusConcept {
                     
                 case STATEDCONCEPTRELS:
                     result = ((LocalSCTConceptStated)concept).getStatedRelationships();
+                    break;
+                    
+                case STATEDSIBLINGS:
+                    result = ((SCTLocalDataSourceWithStated)dataSource).getStatedSiblings(concept);
+                    break;
+                    
+                case STATEDANCESTORS:
+                    result = ((SCTLocalDataSourceWithStated)dataSource).getStatedAncestors(concept);
                     break;
             }
 
