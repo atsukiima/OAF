@@ -10,11 +10,11 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.GenericInternalS
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.SearchButtonResult;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
-import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.JFrame;
 
 /**
  *
@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class PAreaInternalSearchButton extends GenericInternalSearchButton {
 
-    public PAreaInternalSearchButton(Frame parent, final PAreaInternalGraphFrame igf) {
+    public PAreaInternalSearchButton(JFrame parent, final PAreaInternalGraphFrame igf) {
         super(parent);
         
         this.addSearchAction(new BluGraphSearchAction("Concepts", igf) {

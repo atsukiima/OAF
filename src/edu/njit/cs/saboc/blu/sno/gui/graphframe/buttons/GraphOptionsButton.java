@@ -8,7 +8,6 @@ import edu.njit.cs.saboc.blu.sno.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.properties.AuditReportProperties;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -21,6 +20,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -36,7 +36,7 @@ import javax.swing.event.ChangeListener;
  */
 public class GraphOptionsButton extends PopupToggleButton {
 
-    public GraphOptionsButton(Frame parent, final PAreaInternalGraphFrame igf, final PAreaTaxonomy data) {
+    public GraphOptionsButton(JFrame parent, final PAreaInternalGraphFrame igf, final PAreaTaxonomy data) {
         super(parent, "Options");
         
         JPanel popupPanel  = new JPanel();

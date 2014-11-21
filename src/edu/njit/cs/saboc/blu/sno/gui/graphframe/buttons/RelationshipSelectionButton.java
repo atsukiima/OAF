@@ -13,7 +13,6 @@ import edu.njit.cs.saboc.blu.sno.sctdatasource.middlewareproxy.MiddlewareAccesso
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -35,7 +35,7 @@ import javax.swing.JScrollPane;
  */
 public class RelationshipSelectionButton extends PopupToggleButton {
 
-    public RelationshipSelectionButton(Frame parent, final PAreaInternalGraphFrame igf, final PAreaTaxonomy data) {
+    public RelationshipSelectionButton(JFrame parent, final PAreaInternalGraphFrame igf, final PAreaTaxonomy data) {
 
         super(parent, "Create Subtaxonomy");
 
