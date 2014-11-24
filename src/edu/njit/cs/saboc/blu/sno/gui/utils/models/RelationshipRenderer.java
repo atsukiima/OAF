@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package edu.njit.cs.saboc.blu.sno.gui.utils.models;
 
 import java.awt.Component;
@@ -9,8 +6,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.table.TableCellRenderer;
 
-public class RelationshipRenderer extends JTextArea
-        implements TableCellRenderer {
+public class RelationshipRenderer extends JTextArea implements TableCellRenderer {
 
     public RelationshipRenderer() {
         super();

@@ -24,11 +24,13 @@ public class SCTConceptGroupDetailsPanel extends GroupDetailsPanel {
     
     public SCTConceptGroupDetailsPanel(SCTAbstractionNetwork abn, GroupType type, SCTDisplayFrameListener displayFrameListener) {
         super(abn, type);
-                
-         groupSummaryPane.addHyperlinkListener(new BrowserLauncher(displayFrameListener, (SCTAbstractionNetwork)abstractionNetwork));
-         groupParentsPane.addHyperlinkListener(new BrowserLauncher(displayFrameListener, (SCTAbstractionNetwork)abstractionNetwork));
-         groupConceptsPane.addHyperlinkListener(new BrowserLauncher(displayFrameListener, (SCTAbstractionNetwork)abstractionNetwork));
-         groupChildrenPane.addHyperlinkListener(new BrowserLauncher(displayFrameListener, (SCTAbstractionNetwork)abstractionNetwork));
+        
+        this.initialize();
+
+        groupSummaryPane.addHyperlinkListener(new BrowserLauncher(displayFrameListener, (SCTAbstractionNetwork) abstractionNetwork));
+        groupParentsPane.addHyperlinkListener(new BrowserLauncher(displayFrameListener, (SCTAbstractionNetwork) abstractionNetwork));
+        groupConceptsPane.addHyperlinkListener(new BrowserLauncher(displayFrameListener, (SCTAbstractionNetwork) abstractionNetwork));
+        groupChildrenPane.addHyperlinkListener(new BrowserLauncher(displayFrameListener, (SCTAbstractionNetwork) abstractionNetwork));
     }
     
     protected void initialize() {
