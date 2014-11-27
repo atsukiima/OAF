@@ -129,10 +129,11 @@ public class SnomedConceptBrowser {
         childPanel = new ParentChildPanel(this, ParentChildPanel.PanelType.CHILD, dataSource);
         panel.add(childPanel, c);
 
+        
         c.gridx = 0;
         c.gridy = 2;
         abstractionNetworkPanel = new AbstractionNetworkPanel(this, dataSource);
-        panel.add(abstractionNetworkPanel, c);     
+        panel.add(abstractionNetworkPanel, c);
         
         if (dataSource instanceof SCTLocalDataSource) {
             c.gridx = 2;
