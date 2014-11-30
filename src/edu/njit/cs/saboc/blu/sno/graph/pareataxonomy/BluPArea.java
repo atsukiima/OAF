@@ -5,7 +5,6 @@ import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphEdge;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphGroupLevel;
 import edu.njit.cs.saboc.blu.core.graph.nodes.GenericGroupEntry;
-import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.event.MouseInputListener;
