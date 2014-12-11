@@ -62,12 +62,12 @@ public class RelationshipPanel extends BaseNavPanel {
         conRelPanel = new BaseNavPanel(mainPanel, dataSource) {
             @Override
             public void dataPending() {
-                tabbedPane.setTitleAt(CON_REL_IDX, "ATTRIBUTE RELATIONSHIPS");
+                tabbedPane.setTitleAt(CON_REL_IDX, "INFERRED ATTRIBUTE RELATIONSHIPS");
                 conRelList.showPleaseWait();
             }
 
             public void dataEmpty() {
-                tabbedPane.setTitleAt(CON_REL_IDX, "ATTRIBUTE RELATIONSHIPS");
+                tabbedPane.setTitleAt(CON_REL_IDX, "INFERRED ATTRIBUTE RELATIONSHIPS");
                 conRelList.showDataEmpty();
             }
 
@@ -85,7 +85,7 @@ public class RelationshipPanel extends BaseNavPanel {
 
                 conRelList.setContents(entries);
                 int relCount = relationships.size();
-                tabbedPane.setTitleAt(CON_REL_IDX, "ATTRIBUTE RELATIONSHIPS (" + relCount + ")");
+                tabbedPane.setTitleAt(CON_REL_IDX, "INFERRED ATTRIBUTE RELATIONSHIPS (" + relCount + ")");
             }
         };
         
@@ -130,12 +130,12 @@ public class RelationshipPanel extends BaseNavPanel {
         siblingPanel = new BaseNavPanel(mainPanel, dataSource) {
             @Override
             public void dataPending() {
-                tabbedPane.setTitleAt(SIBLING_IDX, "SIBLINGS");
+                tabbedPane.setTitleAt(SIBLING_IDX, "INFERRED SIBLINGS");
                 siblingList.showPleaseWait();
             }
 
             public void dataEmpty() {
-                tabbedPane.setTitleAt(SIBLING_IDX, "SIBLINGS");
+                tabbedPane.setTitleAt(SIBLING_IDX, "INFERRED SIBLINGS");
                 siblingList.showDataEmpty();
             }
 
@@ -146,7 +146,7 @@ public class RelationshipPanel extends BaseNavPanel {
                 field = FocusConcept.Fields.SIBLINGS;
                 
                 int count = ((ArrayList<String>)focusConcept.getConceptList(field)).size();
-                tabbedPane.setTitleAt(SIBLING_IDX, "SIBLINGS (" + count + ")");
+                tabbedPane.setTitleAt(SIBLING_IDX, "INFERRED SIBLINGS (" + count + ")");
 
                 ArrayList<Concept> siblings = (ArrayList<Concept>)focusConcept.getConceptList(field);
                 ArrayList<Filterable> conceptEntries = new ArrayList<Filterable>();
@@ -165,7 +165,7 @@ public class RelationshipPanel extends BaseNavPanel {
         statedSiblingsPanel = new BaseNavPanel(mainPanel, dataSource) {
             @Override
             public void dataPending() {
-                tabbedPane.setTitleAt(STATED_SIBLING_IDX, "SIBLINGS");
+                tabbedPane.setTitleAt(STATED_SIBLING_IDX, "STATED SIBLINGS");
                 statedSiblingsList.showPleaseWait();
             }
 
@@ -242,8 +242,8 @@ public class RelationshipPanel extends BaseNavPanel {
             }
         });
 
-        tabbedPane.addTab("ATTRIBUTE RELATIONSHIPS", conRelPanel);
-        tabbedPane.addTab("SIBLINGS", siblingPanel);
+        tabbedPane.addTab("INFERRED ATTRIBUTE RELATIONSHIPS", conRelPanel);
+        tabbedPane.addTab("INFERRED SIBLINGS", siblingPanel);
         
         focusConcept.addDisplayPanel(FocusConcept.Fields.CONCEPTREL, conRelPanel);
         focusConcept.addDisplayPanel(FocusConcept.Fields.SIBLINGS, siblingPanel);

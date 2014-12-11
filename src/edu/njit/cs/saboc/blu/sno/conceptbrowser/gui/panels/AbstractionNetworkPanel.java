@@ -41,7 +41,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
     private JTabbedPane tabbedPane;
     private BaseNavPanel partialAreaPanel;
     private BaseNavPanel tribalANPanel;
-    private ANDetailsPanel pareaDetailsPanel = new ANDetailsPanel();
+    private PAreaTaxonomyDetailsPanel pareaDetailsPanel = new PAreaTaxonomyDetailsPanel();
 
     public AbstractionNetworkPanel(final SnomedConceptBrowser mainPanel, final SCTDataSource dataSource) {
         super(mainPanel, dataSource);
@@ -61,8 +61,22 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             public void dataReady() {
                 ArrayList<PAreaDetailsForConcept> details =
                         (ArrayList<PAreaDetailsForConcept>) focusConcept.getConceptList(FocusConcept.Fields.PARTIALAREA);
+                
+                PAreaTaxonomy data;
 
-                pareaDetailsPanel.displayDetails(details);
+                if (dataSource.supportsMultipleVersions()) {
+                    String version = MiddlewareAccessorProxy.getProxy().getSnomedVersionAtIndex(
+                            focusConcept.getAssociatedBrowser().getLogoPanel().getSelectedVersion());
+
+                    
+                    data = MiddlewareAccessorProxy.getProxy().getPAreaHierarchyData(version, details.get(0).getHierarchyRoot());
+                } else {
+                    PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
+
+                    data = generator.createPAreaTaxonomy(details.get(0).getHierarchyRoot(), (SCTLocalDataSource) dataSource, new InferredRelationshipsRetriever());
+                }
+
+                pareaDetailsPanel.displayDetails(data, details);
             }
         };
 
@@ -153,12 +167,14 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
         add(tabbedPane, BorderLayout.CENTER);
     }
 
-    private class ANDetailsPanel extends JPanel {
+    private class PAreaTaxonomyDetailsPanel extends JPanel {
 
         private JLabel detailsLabel = new JLabel();
         private JPanel individualDetailsListPanel = new JPanel();
+        
+        private PAreaTaxonomy pareaTaxonomy;
 
-        public ANDetailsPanel() {
+        public PAreaTaxonomyDetailsPanel() {
             this.setBackground(Color.WHITE);
 
             this.setLayout(new BorderLayout());
@@ -180,15 +196,16 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             detailsLabel.setText(text);
         }
 
-        public void displayDetails(ArrayList<PAreaDetailsForConcept> details) {
+        public void displayDetails(PAreaTaxonomy taxonomy, ArrayList<PAreaDetailsForConcept> details) {
             if (details.isEmpty()) {
                 displayLabel("");
                 return;
             }
+            
+            this.pareaTaxonomy = taxonomy;
 
             detailsLabel.setVisible(false);
 
-            
             // TODO: There are 11 concepts that overlap between two hierarchies.
             PAreaDetailsForConcept firstDetail = details.get(0);
 
@@ -284,31 +301,20 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             }
             
             private void displayGroupSummary() {
-                String version = 
-                        MiddlewareAccessorProxy.getProxy().getSnomedVersionAtIndex(focusConcept.getAssociatedBrowser().getLogoPanel().getSelectedVersion());
-
-                PAreaTaxonomy data = 
-                        MiddlewareAccessorProxy.getProxy().getPAreaHierarchyData(version, details.getHierarchyRoot());
-                
                 ConceptGroupDetailsDialog dialog = new ConceptGroupDetailsDialog(
-                        data.getPAreaFromRootConceptId(details.getPAreaRoot().getId()), 
-                        data,
+                        pareaTaxonomy.getPAreaFromRootConceptId(details.getPAreaRoot().getId()), 
+                        pareaTaxonomy,
                         ConceptGroupDetailsDialog.DialogType.PartialArea,
                         mainPanel.getDisplayFrameListener());
             }
 
             private void displayAN() {
-                String version = MiddlewareAccessorProxy.getProxy().getSnomedVersionAtIndex(focusConcept.getAssociatedBrowser().getLogoPanel().getSelectedVersion());
-
-                PAreaTaxonomy data = MiddlewareAccessorProxy.getProxy().getPAreaHierarchyData(version, details.getHierarchyRoot());
-                
-                PAreaInternalGraphFrame igf = mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(data, true, false);
+                PAreaInternalGraphFrame igf = mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(pareaTaxonomy, true, false);
 
                 PAreaBluGraph graph = (PAreaBluGraph) igf.getGraph();
 
                 igf.focusOnComponent(graph.getGroupEntries().get(graph.getPAreaTaxonomy().getPAreaFromRootConceptId(
                         details.getHierarchyRoot().getId()).getId()));
-
             }
         }
     }

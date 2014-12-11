@@ -41,6 +41,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
@@ -59,7 +60,7 @@ public class SCTLoaderPanel extends JPanel {
     private JTabbedPane blusnoTabbedPane = new JTabbedPane();
     
     private final JRadioButton remoteSourceBtn = new JRadioButton("NJIT Hosted Releases");
-    private final JRadioButton localSourceBtn = new JRadioButton("Local SNOMED Release");
+    private final JRadioButton localSourceBtn = new JRadioButton("Local SNOMED CT Release");
 
     private RemoteReleaseSelectionPanel remoteReleasePanel;
     private LocalReleaseSelectionPanel localReleasePanel;
@@ -104,20 +105,30 @@ public class SCTLoaderPanel extends JPanel {
         sourceGroup.add(localSourceBtn);
         sourceGroup.add(remoteSourceBtn);
 
-        remoteSourceBtn.setSelected(true);
-
+        localSourceBtn.setSelected(true);
+        
         JPanel sctDataSourcePanel = new JPanel();
-        sctDataSourcePanel.add(remoteSourceBtn);
         sctDataSourcePanel.add(localSourceBtn);
+        sctDataSourcePanel.add(remoteSourceBtn);
         sctDataSourcePanel.setBorder(BorderFactory.createTitledBorder("1: Select a SNOMED CT Data Source"));
         
-
-        remoteReleasePanel = new RemoteReleaseSelectionPanel();
         localReleasePanel = new LocalReleaseSelectionPanel(this);
-
-        versionSelectPanel.add(remoteReleasePanel, "Remote");
+        
         versionSelectPanel.add(localReleasePanel, "Local");
-
+        
+        if(MiddlewareAccessorProxy.getProxy().getSupportedSnomedVersions() == null) {
+            remoteSourceBtn.setEnabled(false);
+            
+            JOptionPane.showMessageDialog(parentFrame, 
+                    "No internet connection detected or we are experiencing technical difficulties.\n"
+                            + "To use BLUSNO you will need to open a local SNOMED CT release.\n"
+                            + "Once you have reconnected to the internet please restart BLUSNO.", "No Internet Connection Detected", JOptionPane.ERROR_MESSAGE);
+        } else {
+            remoteReleasePanel = new RemoteReleaseSelectionPanel();
+            
+            versionSelectPanel.add(remoteReleasePanel, "Remote");
+        }
+        
         JPanel dataSelectionPanel = new JPanel();
         dataSelectionPanel.setLayout(new BoxLayout(dataSelectionPanel, BoxLayout.X_AXIS));
 
@@ -132,9 +143,7 @@ public class SCTLoaderPanel extends JPanel {
         JPanel tanSelectionPanel = new JPanel(new GridLayout(4, 5, 2, 2));
         tanSelectionPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
-        final MiddlewareAccessorProxy proxy = MiddlewareAccessorProxy.getProxy();
-
-        ArrayList<Concept> rootConcepts = proxy.getHierarchyRootConcepts(proxy.getSnomedVersionAtIndex(0));
+        Concept [] rootConcepts = getRootConcepts();
 
         ArrayList<Long> taxonomyHierarchies = new ArrayList<Long>(
                 Arrays.asList(272379006l, 71388002l, 404684003l, 123037004l,
@@ -183,7 +192,6 @@ public class SCTLoaderPanel extends JPanel {
 
         chkUseStatedRelationships = new JCheckBox("Use Stated Relationships");
         
-        
         JPanel blusnoTabPanel = new JPanel(new BorderLayout());
         blusnoTabPanel.add(chkUseStatedRelationships, BorderLayout.NORTH);
         
@@ -193,6 +201,31 @@ public class SCTLoaderPanel extends JPanel {
         this.add(blusnoTabPanel, BorderLayout.CENTER);
         
         this.setStatedRelationshipsEnabled(false);
+    }
+    
+    private Concept[] getRootConcepts() {
+        
+        return new Concept[] {
+            new Concept(123037004, "Body structure (body structure)"),
+            new Concept(404684003, "Clinical finding (finding)"),
+            new Concept(308916002, "Environment or geographical location (environment / location)"),
+            new Concept(272379006, "Event (event)"),
+            new Concept(106237007, "Linkage concept (linkage concept)"),
+            new Concept(363787002, "Observable entity (observable entity)"),
+            new Concept(410607006, "Organism (organism)"),
+            new Concept(373873005, "Pharmaceutical / biologic product (product)"),
+            new Concept(78621006, "Physical force (physical force)"),
+            new Concept(260787004, "Physical object (physical object)"),
+            new Concept(71388002, "Procedure (procedure)"),
+            new Concept(362981000, "Qualifier value (qualifier value)"),
+            new Concept(419891008, "Record artifact (record artifact)"),
+            new Concept(243796009, "Situation with explicit context (situation)"),
+            new Concept(48176007, "Social context (social concept)"),
+            new Concept(370115009, "Special concept (special concept)"),
+            new Concept(123038009, "Specimen (specimen)"),
+            new Concept(254291000, "Staging and scales (staging scale)"),
+            new Concept(105590001, "Substance (substance)")
+        };
     }
 
     /**
@@ -647,7 +680,7 @@ class LocalReleaseSelectionPanel extends JPanel {
             }
         }
     }
-
+    
     public File getSelectedVersion() {
         return availableReleases.get(localVersionBox.getSelectedIndex());
     }

@@ -55,19 +55,19 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
             this.data[0][1] = hierarchies;
             
             
-            this.data[1][0] = "Ancestors";
+            this.data[1][0] = "Inferred Ancestors";
             this.data[1][1] = metrics.getAncestorCount();
             
-            this.data[2][0] = "Descendants";
+            this.data[2][0] = "Inferred Descendants";
             this.data[2][1] = "[Disabled]";
             
-            this.data[3][0] = "Parents";
+            this.data[3][0] = "Inferred Parents";
             this.data[3][1] = metrics.getParentCount();
             
-            this.data[4][0] = "Children";
+            this.data[4][0] = "Inferred Children";
             this.data[4][1] = metrics.getChildCount();
             
-            this.data[5][0] = "Siblings";
+            this.data[5][0] = "Inferred Siblings";
             this.data[5][1] = metrics.getSiblingCount();
             
             this.fireTableDataChanged();
@@ -120,7 +120,7 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
         tabbedPane = new JTabbedPane();
 
         tabbedPane.addTab("Hierarchy Metrics", createMetricsPanel());
-        tabbedPane.addTab("All Ancestors", createAncestorsPanel());
+        tabbedPane.addTab("All Inferred Ancestors", createAncestorsPanel());
         
         if(dataSource.supportsStatedRelationships()) {
             tabbedPane.addTab("Add Stated Ancestors", createStatedAncestorsPanel());
@@ -165,12 +165,12 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
 
         ancestorsPanel = new BaseNavPanel(mainPanel, dataSource) {
             public void dataPending() {
-                tabbedPane.setTitleAt(ANCESTOR_IDX, "All Ancestors");
+                tabbedPane.setTitleAt(ANCESTOR_IDX, "All Inferred Ancestors");
                 ancestorsList.showPleaseWait();
             }
 
             public void dataEmpty() {
-                tabbedPane.setTitleAt(ANCESTOR_IDX, "All Ancestors");
+                tabbedPane.setTitleAt(ANCESTOR_IDX, "All Inferred Ancestors");
                 ancestorsList.showDataEmpty();
             }
 
@@ -185,7 +185,7 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
                 
                 ancestorsList.setContents(conceptEntries);
                 
-                tabbedPane.setTitleAt(ANCESTOR_IDX, String.format("All Ancestors (%d)", allAncestors.size()));
+                tabbedPane.setTitleAt(ANCESTOR_IDX, String.format("All Inferred Ancestors (%d)", allAncestors.size()));
             }
         };
 

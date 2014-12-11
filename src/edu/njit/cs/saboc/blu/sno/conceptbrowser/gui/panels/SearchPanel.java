@@ -242,25 +242,11 @@ public class SearchPanel extends BaseNavPanel implements ActionListener {
         pnlHistory.add(historyPanel, BorderLayout.SOUTH);
         pnlHistory.add(new JScrollPane(lstHistory), BorderLayout.CENTER);
 
-        // Options Panel
-        pnlOptions = new JPanel(new GridBagLayout());
-        c = new GridBagConstraints();
-
-        c.gridx = 0;
-        c.gridy = GridBagConstraints.RELATIVE;
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
-        c.gridwidth = 2;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(0, 20, 0, 0);
-        group = new ButtonGroup();
-        chkCUI = makeCheckBox("Display Concept Ids", pnlOptions, true, c);
-        chkToolTip = makeCheckBox("Display tooltips on concepts", pnlOptions, true, c);
 
         // Glue
         JTabbedPane tpane = new JTabbedPane();
         tpane.addTab("Search", pnlSearch);
         tpane.addTab("History", pnlHistory);
-        tpane.addTab("Display Options", new JScrollPane(pnlOptions));
         add(tpane, BorderLayout.CENTER);
 
         updateHistory();
