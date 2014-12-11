@@ -9,7 +9,6 @@ import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.ImportLocalData;
-import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LoadLocalRelease;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LocalLoadStateMonitor;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.PAreaTaxonomyGenerator;
@@ -38,6 +37,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -265,8 +265,25 @@ public class SCTLoaderPanel extends JPanel {
         leftPanel.add(browserBtnPanel, BorderLayout.NORTH);
         leftPanel.add(searchPanel, BorderLayout.CENTER);
 
-        JPanel rightPanel = new JPanel();
+        JPanel rightPanel = new JPanel(new BorderLayout());
         rightPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        
+        JEditorPane detailsPane = new JEditorPane();
+        detailsPane.setContentType("text/html");
+        
+        String detailsString = "<html>The BLUSNO concept browser allows you to review individual concepts. "
+                + "BLUSNO's concept browser is unique in that it displays information derived "
+                + "from various abstraction networks. Additionally, when a local release is loaded, BLUSNO's concept browser displays information from "
+                + "both the inferred and stated versions of SNOMED CT. <p>"
+                + ""
+                + "<b>Subject subtaxonomies</b>, <b>Focus subtaxonomies</b>, and <b>Tribal Abstraction Networks</b> can be derived "
+                + "for individual concepts from within the concept browser when using a local SNOMED CT release."
+                + "<p>"
+                + "Click \"Open Concept Browser\" or search for a concept and then double click on a search result to begin.";
+        
+        detailsPane.setText(detailsString);
+        
+        rightPanel.add(detailsPane, BorderLayout.CENTER);
 
         browserPanel.add(leftPanel);
         browserPanel.add(rightPanel);
@@ -299,7 +316,7 @@ public class SCTLoaderPanel extends JPanel {
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
-                                AbNLoadStatusDialog.display(parentFrame, generator.getLoadStatusMonitor(), AbNLoadStatusDialog.TYPE_PAREA);
+                                AbNLoadStatusDialog.display(parentFrame, monitor, AbNLoadStatusDialog.TYPE_PAREA);
                             }
                         });
                                                 
@@ -373,6 +390,12 @@ public class SCTLoaderPanel extends JPanel {
     }
 
     private void openConceptBrowser() {
+        if (getSelectedDataSource() == null) {
+            JOptionPane.showMessageDialog(null, "Please open a SNOMED CT release.",
+                    "No Local Release Opened", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         displayFrameListener.addNewBrowserFrame(getSelectedDataSource());
     }
 

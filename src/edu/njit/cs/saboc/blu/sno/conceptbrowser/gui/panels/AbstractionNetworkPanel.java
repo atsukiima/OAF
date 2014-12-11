@@ -17,10 +17,13 @@ import edu.njit.cs.saboc.blu.sno.sctdatasource.middlewareproxy.MiddlewareAccesso
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -59,24 +62,25 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             }
 
             public void dataReady() {
-                ArrayList<PAreaDetailsForConcept> details =
-                        (ArrayList<PAreaDetailsForConcept>) focusConcept.getConceptList(FocusConcept.Fields.PARTIALAREA);
-                
-                PAreaTaxonomy data;
+                ArrayList<PAreaDetailsForConcept> details
+                        = (ArrayList<PAreaDetailsForConcept>) focusConcept.getConceptList(FocusConcept.Fields.PARTIALAREA);
 
-                if (dataSource.supportsMultipleVersions()) {
-                    String version = MiddlewareAccessorProxy.getProxy().getSnomedVersionAtIndex(
-                            focusConcept.getAssociatedBrowser().getLogoPanel().getSelectedVersion());
+                if (!details.isEmpty()) {
+                    PAreaTaxonomy data;
 
-                    
-                    data = MiddlewareAccessorProxy.getProxy().getPAreaHierarchyData(version, details.get(0).getHierarchyRoot());
+                    if (dataSource.supportsMultipleVersions()) {
+                        String version = MiddlewareAccessorProxy.getProxy().getSnomedVersionAtIndex(
+                                focusConcept.getAssociatedBrowser().getLogoPanel().getSelectedVersion());
+
+                        data = MiddlewareAccessorProxy.getProxy().getPAreaHierarchyData(version, details.get(0).getHierarchyRoot());
+                    } else {
+                        data = ((SCTLocalDataSource)dataSource).getCompleteTaxonomy(details.get(0).getHierarchyRoot());
+                    }
+
+                    pareaDetailsPanel.displayDetails(data, details);
                 } else {
-                    PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
-
-                    data = generator.createPAreaTaxonomy(details.get(0).getHierarchyRoot(), (SCTLocalDataSource) dataSource, new InferredRelationshipsRetriever());
+                    pareaDetailsPanel.displayLabel("SNOMED CT Concept does not belong to any partial-area taxonomies.");
                 }
-
-                pareaDetailsPanel.displayDetails(data, details);
             }
         };
 
@@ -181,10 +185,12 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
             this.add(detailsLabel, BorderLayout.NORTH);
 
-            individualDetailsListPanel.setLayout(new BoxLayout(individualDetailsListPanel, BoxLayout.Y_AXIS));
             individualDetailsListPanel.setOpaque(false);
 
             individualDetailsListPanel.setVisible(false);
+            
+            individualDetailsListPanel.setLayout(new GridBagLayout());
+            
             this.add(individualDetailsListPanel, BorderLayout.CENTER);
         }
 
@@ -212,36 +218,62 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             String labelText = "<html>";
             labelText += "<b>Hierarchy:</b> " + firstDetail.getHierarchyRoot().getName() + "<br>";
 
-            labelText += "<b>Area:</b><br>";
+            labelText += "<b>Area:</b> ";
 
             if (firstDetail.getPAreaRelationships().isEmpty()) {
-                labelText += "&nbsp;&nbsp; None; root.<br>";
+                labelText += "&nbsp;&nbsp; None; root area.<br>";
             } else {
+                ArrayList<String> sortedRelNames = new ArrayList<String>();
+                
                 for (OutgoingLateralRelationship rel : firstDetail.getPAreaRelationships()) {
                     String relName = rel.getRelationship().getName();
+                    relName = relName.substring(0, relName.lastIndexOf("(") - 1);
 
-                    relName = relName.substring(0, relName.lastIndexOf("("));
-
-                    labelText += "&nbsp;&nbsp; " + relName + "<br>";
+                    sortedRelNames.add(relName);
                 }
+                
+                Collections.sort(sortedRelNames);
+                
+                for(String relName : sortedRelNames) {
+                    labelText += relName + ", ";
+                }
+                
+                labelText = labelText.substring(0, labelText.length() - 2);
             }
 
-            labelText += "Partial-areas:";
+            labelText += "<p>Partial-area(s):<p>";
             
             JPanel labelPanel = new JPanel(new BorderLayout());
             labelPanel.setOpaque(true);
             labelPanel.setBackground(Color.WHITE);
             
             labelPanel.add(new JLabel(labelText));
+            
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.anchor = GridBagConstraints.PAGE_START;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.weightx = 1.0;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.gridwidth = GridBagConstraints.REMAINDER;
 
-            individualDetailsListPanel.add(labelPanel);
+            individualDetailsListPanel.add(labelPanel, gbc);
+            
+            JPanel pareaDetailsPanel = new JPanel(new GridLayout(details.size(), 1));
 
             for (PAreaDetailsForConcept detail : details) {
-                individualDetailsListPanel.add(new PAreaDetailsEntry(detail));
+                pareaDetailsPanel.add(new PAreaDetailsEntry(detail));
             }
-
+            
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            gbc.weighty = 1.0;
+            gbc.gridheight = GridBagConstraints.REMAINDER;
+            
+            individualDetailsListPanel.add(new JScrollPane(pareaDetailsPanel), gbc);
+            
             individualDetailsListPanel.setVisible(true);
-
+            
             this.repaint();
         }
 
@@ -256,7 +288,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
                 this.setOpaque(false);
                 this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-                this.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY));
+                this.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
 
                 String labelText = "<html>&nbsp;" + details.getPAreaRoot().getName() + "<br>&nbsp;" + details.getConceptCount() + " concepts   ";
 
@@ -292,7 +324,6 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                         });
                     }
                 });
-
 
                 this.add(new JLabel(labelText));
                 this.add(btnSummary);

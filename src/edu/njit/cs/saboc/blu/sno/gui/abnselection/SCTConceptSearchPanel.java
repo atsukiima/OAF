@@ -194,6 +194,12 @@ public class SCTConceptSearchPanel extends JPanel implements ActionListener {
 
     private void doSearch() {
         String searchText = txtSearchBox.getTextField().getText().trim();
+        
+        if(searchActions.getDataSource() == null) {
+            JOptionPane.showMessageDialog(null, "Please open a SNOMED CT release.",
+                    "No Local Release Opened", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         if(searchText.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please enter a search term.",
@@ -260,7 +266,7 @@ public class SCTConceptSearchPanel extends JPanel implements ActionListener {
         @Override
         public void run() {
             SCTDataSource dataSource = searchActions.getDataSource();
-            
+
             if(optExact.isSelected()) {
                 searchResults = dataSource.searchExact(term);
             }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.njit.cs.saboc.blu.sno.sctdatasource;
 
 import SnomedShared.Concept;
@@ -68,6 +63,8 @@ public class SCTLocalDataSource implements SCTDataSource {
     private ArrayList<DescriptionEntry> descriptions;
 
     private String version;
+    
+    private HashMap<Concept, LocalPAreaTaxonomy> hierarchyTaxonomies = new HashMap<Concept, LocalPAreaTaxonomy>();
 
     public SCTLocalDataSource(Map<Long, LocalSnomedConcept> concepts,
             SCTConceptHierarchy conceptHierarchy, boolean processDescriptions, String version) {
@@ -217,10 +214,9 @@ public class SCTLocalDataSource implements SCTDataSource {
         } else if(hierarchies.size() == 1) {
             ArrayList<PAreaDetailsForConcept> results = new ArrayList<PAreaDetailsForConcept>();
             
-            PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
-            
-            LocalPAreaTaxonomy taxonomy = generator.createPAreaTaxonomy(hierarchies.get(0), this, new InferredRelationshipsRetriever());
-            
+            Concept root = hierarchies.get(0);
+            PAreaTaxonomy taxonomy = this.getCompleteTaxonomy(root);
+
             for(PAreaSummary parea : taxonomy.getPAreas().values()) {
                 ArrayList<Concept> pareaConcepts = this.getConceptsInPArea(taxonomy, parea);
                 
@@ -877,7 +873,6 @@ public class SCTLocalDataSource implements SCTDataSource {
         return new ArrayList<ArrayList<Concept>>();
     }
             
-            
     public boolean supportsMultipleVersions() {
         return false;
     }
@@ -896,5 +891,18 @@ public class SCTLocalDataSource implements SCTDataSource {
     
     public boolean supportsStatedRelationships() {
         return false;
+    }
+    
+    public PAreaTaxonomy getCompleteTaxonomy(Concept root) {
+        LocalPAreaTaxonomy taxonomy;
+
+        if (!hierarchyTaxonomies.containsKey(root)) {
+            PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
+            hierarchyTaxonomies.put(root, generator.createPAreaTaxonomy(root, this, new InferredRelationshipsRetriever()));
+        }
+
+        taxonomy = hierarchyTaxonomies.get(root);
+        
+        return taxonomy;
     }
 }

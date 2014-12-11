@@ -33,7 +33,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.ToolTipManager;
 import javax.swing.border.TitledBorder;
@@ -243,6 +242,7 @@ public class FocusConceptPanel extends BaseNavPanel {
                 return new Point(evt.getX(), evt.getY() + 21);
             }
         };
+        
         undoManager = new UndoManager() {
             @Override
             public void undoableEditHappened(UndoableEditEvent e) {
@@ -264,6 +264,7 @@ public class FocusConceptPanel extends BaseNavPanel {
                 jtf.grabFocus();
             }
         };
+        
         JScrollPane pane = new JScrollPane(jtf);
         ToolTipManager.sharedInstance().registerComponent(jtf);
         pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -443,26 +444,13 @@ public class FocusConceptPanel extends BaseNavPanel {
                     results.get(0).getConceptId()));
         }
         else {
-            ArrayList<String> searchOptions = new ArrayList<String>();
-
-            for(SearchResult sr : results) {
-                searchOptions.add(sr.getFullySpecifiedName());
-            }
-
             Object sel = JOptionPane.showInputDialog(this,
                     "'" + str + "' is a synonym of more than one Concept.\n" +
-                    "Which one did you mean?", "Ambiguity",
-                    JOptionPane.QUESTION_MESSAGE, null, searchOptions.toArray(), null);
+                    "Which concept did you mean?", "Search Ambiguity",
+                    JOptionPane.QUESTION_MESSAGE, null, results.toArray(), null);
 
             if(sel != null) {
-                String value = (String)sel;
-
-                for(SearchResult sr : results) {
-                    if(sr.getFullySpecifiedName().equalsIgnoreCase(value)) {
-                        focusConcept.navigate(dataSource.getConceptFromId(sr.getConceptId()));
-                        return;
-                    }
-                }
+                focusConcept.navigate(dataSource.getConceptFromId(((SearchResult)sel).getConceptId()));
             }
         }
     }
