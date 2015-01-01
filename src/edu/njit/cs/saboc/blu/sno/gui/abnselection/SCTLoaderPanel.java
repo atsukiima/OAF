@@ -11,7 +11,7 @@ import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.ImportLocalData;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LoadLocalRelease;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LocalLoadStateMonitor;
-import edu.njit.cs.saboc.blu.sno.localdatasource.load.PAreaTaxonomyGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.generator.PAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.RelationshipsRetrieverFactory;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;

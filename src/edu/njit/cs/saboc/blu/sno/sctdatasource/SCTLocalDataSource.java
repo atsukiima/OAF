@@ -20,7 +20,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSnomedConcept;
 import edu.njit.cs.saboc.blu.sno.localdatasource.conceptdata.HierarchyMetrics;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
-import edu.njit.cs.saboc.blu.sno.localdatasource.load.PAreaTaxonomyGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.generator.PAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.SearchResultComparator;
 import java.util.ArrayDeque;

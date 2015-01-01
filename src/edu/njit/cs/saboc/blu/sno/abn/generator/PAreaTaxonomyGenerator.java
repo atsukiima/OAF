@@ -1,4 +1,4 @@
-package edu.njit.cs.saboc.blu.sno.localdatasource.load;
+package edu.njit.cs.saboc.blu.sno.abn.generator;
 
 import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.Area;
@@ -11,6 +11,7 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.LocalPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalLateralRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSnomedConcept;
+import edu.njit.cs.saboc.blu.sno.localdatasource.load.ConceptRelationshipsRetriever;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,7 +77,10 @@ public class PAreaTaxonomyGenerator {
             
             for (LocalLateralRelationship lr : localConcept.getAttributeRelationships()) {
                 if (lr.getCharacteristicType() == 0) {
-                    relHashMap.put(lr.getRelationship().getId(), lr.getRelationship().getName());
+                    String name = lr.getRelationship().getName();
+                    name = name.substring(0, name.lastIndexOf("(") - 1);
+                    
+                    relHashMap.put(lr.getRelationship().getId(), name);
                 }
             }
             
@@ -91,10 +95,16 @@ public class PAreaTaxonomyGenerator {
         
         int nextPAreaId = 0;
         
+        ArrayList<InheritedRelationship> rootRelationships = new ArrayList<InheritedRelationship>();
+        
+        for(long relId : definingAttributeRels.get(hierarchy.getRoot())) {
+            rootRelationships.add(new InheritedRelationship(InheritedRelationship.InheritanceType.INTRODUCED, relId));
+        }
+        
         //create a localparea constructor with root and ID, use set functions for the rest
         //pass in empty collections/structures for the other fields
         LocalPArea rootPArea = new LocalPArea(nextPAreaId++, hierarchyRoot);
-        rootPArea.setRelationships(new ArrayList<InheritedRelationship>());
+        rootPArea.setRelationships(rootRelationships);
         partialAreas.put(rootPArea.getId(), rootPArea);
 
         pareas.add(rootPArea);

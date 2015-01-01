@@ -10,7 +10,7 @@ import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.ConceptGroupDetailsDialog;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
-import edu.njit.cs.saboc.blu.sno.localdatasource.load.PAreaTaxonomyGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.generator.PAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.middlewareproxy.MiddlewareAccessorProxy;

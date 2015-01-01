@@ -24,6 +24,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -270,53 +271,59 @@ public abstract class GenericPAreaLayout extends BluGraphLayout<Area, BluArea, B
             relAbbrevs = MiddlewareAccessorProxy.getProxy().getRelationshipAbbreviations(pareaTaxonomy.getVersion());
         }
         
-        String [] entries;
-        
-        if(relationships.isEmpty()) {
-            entries = new String [] {"\u2205", countString};
-        } else {
-            entries = new String[relationships.size() + 1];
-            entries[entries.length - 1] = countString;
-        }
+        String[] entries;
 
-        int c = 0;
-        
-        int longestRelNameWidth = -1;
-        
-        for(InheritedRelationship rel : relationships) {
-            String relName = relAbbrevs.get(rel.getRelationshipTypeId());
-            
-            if(!treatAsArea) {
-                if(rel.getInheritanceType() == InheritanceType.INHERITED) {
-                    relName += "*";
-                } else {
-                    relName += "+";
+        if (relationships.isEmpty()) {
+            entries = new String[]{"\u2205", countString};
+        } else {
+            entries = new String[relationships.size()];
+
+            int c = 0;
+
+            int longestRelNameWidth = -1;
+
+            for (InheritedRelationship rel : relationships) {
+                String relName = relAbbrevs.get(rel.getRelationshipTypeId());
+
+                if (!treatAsArea) {
+                    if (rel.getInheritanceType() == InheritanceType.INHERITED) {
+                        relName += "*";
+                    } else {
+                        relName += "+";
+                    }
                 }
+
+                int relNameWidth = fontMetrics.stringWidth(relName);
+
+                if (relNameWidth > longestRelNameWidth) {
+                    longestRelNameWidth = relNameWidth;
+                }
+
+                entries[c++] = relName;
             }
+
+            Arrays.sort(entries);
             
-            int relNameWidth = fontMetrics.stringWidth(relName);
-            
-            if(relNameWidth > longestRelNameWidth) {
-                longestRelNameWidth = relNameWidth;
+            entries = Arrays.copyOf(entries, entries.length + 1);
+
+            entries[entries.length - 1] = countString;
+
+            if (fontMetrics.stringWidth(countString) > longestRelNameWidth) {
+                longestRelNameWidth = fontMetrics.stringWidth(countString);
             }
-            
-            entries[c++] = relName;
-        }
-        
-        if(fontMetrics.stringWidth(countString) > longestRelNameWidth) {
-            longestRelNameWidth = fontMetrics.stringWidth(countString);
-        }
-        
-        if(relationships.size() > 1) {
-            longestRelNameWidth += fontMetrics.charWidth(',');
-        }
-        
-        if(!treatAsArea) {
-            longestRelNameWidth += fontMetrics.charWidth('+');
-        }
-        
-        if(longestRelNameWidth > width) {
-            width = longestRelNameWidth + 4;
+
+            if (relationships.size() > 1) {
+                longestRelNameWidth += fontMetrics.charWidth(',');
+            }
+
+            if (!treatAsArea) {
+                longestRelNameWidth += fontMetrics.charWidth('+');
+            }
+
+            if (longestRelNameWidth > width) {
+                width = longestRelNameWidth + 4;
+            }
+
         }
         
         return this.createFittedPartitionLabel(entries, width, fontMetrics);

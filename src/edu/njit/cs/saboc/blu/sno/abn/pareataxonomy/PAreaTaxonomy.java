@@ -8,7 +8,7 @@ import SnomedShared.pareataxonomy.PAreaSummary;
 import SnomedShared.pareataxonomy.Region;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
-import edu.njit.cs.saboc.blu.sno.localdatasource.load.PAreaTaxonomyGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.generator.PAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.middlewareproxy.MiddlewareAccessorProxy;
