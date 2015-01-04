@@ -4,12 +4,13 @@ import SnomedShared.pareataxonomy.InheritedRelationship;
 import SnomedShared.pareataxonomy.Region;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.ShowHideGroupEntryListener;
+import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.ContainerResize;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTRegion;
 import edu.njit.cs.saboc.blu.sno.graph.layout.NoRegionsLayout;
 import edu.njit.cs.saboc.blu.sno.graph.layout.RegionsLayout;
 import edu.njit.cs.saboc.blu.sno.graph.layout.SCTGraphLayoutFactory;
-import edu.njit.cs.saboc.blu.sno.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.PartitionConceptDialog;
 import java.awt.event.ActionEvent;
@@ -27,7 +28,7 @@ public class PAreaBluGraph extends BluGraph {
     
     private SCTDisplayFrameListener displayListener;
 
-    public PAreaBluGraph(final JFrame parentFrame, final PAreaTaxonomy hierarchyData, boolean areaGraph, 
+    public PAreaBluGraph(final JFrame parentFrame, final SCTPAreaTaxonomy hierarchyData, boolean areaGraph, 
             boolean conceptLabels, GraphOptions options, final SCTDisplayFrameListener displayListener) {
         
         super(hierarchyData, areaGraph, conceptLabels);
@@ -51,16 +52,16 @@ public class PAreaBluGraph extends BluGraph {
         menuItem1.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent ae) {
-                Region region = (Region)getCurrentPartitionEntry().getPartition();
+                SCTRegion region = (SCTRegion)getCurrentPartitionEntry().getPartition();
 
                 ArrayList<Long> relTypes = new ArrayList<Long>();
-                ArrayList<InheritedRelationship> regionRels = region.getRelationships();
+                ArrayList<InheritedRelationship> regionRels = new ArrayList<InheritedRelationship>(region.getRelationships());
 
                 for (InheritedRelationship ir : regionRels) {
                     relTypes.add(ir.getRelationshipTypeId());
                 }
 
-                PAreaTaxonomy data = ((PAreaTaxonomy)hierarchyData).getRelationshipSubtaxonomy(relTypes);
+                SCTPAreaTaxonomy data = ((SCTPAreaTaxonomy)hierarchyData).getRelationshipSubtaxonomy(relTypes);
 
                 displayListener.addNewPAreaGraphFrame(data, true, false);
 
@@ -102,8 +103,8 @@ public class PAreaBluGraph extends BluGraph {
         partitionMenu.add(menuItem5);
     }
 
-    public PAreaTaxonomy getPAreaTaxonomy() {
-        return (PAreaTaxonomy)getAbstractionNetwork();
+    public SCTPAreaTaxonomy getPAreaTaxonomy() {
+        return (SCTPAreaTaxonomy)getAbstractionNetwork();
     }
     
     public SCTDisplayFrameListener getDisplayFrameListener() {

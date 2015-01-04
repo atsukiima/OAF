@@ -1,20 +1,20 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
 import SnomedShared.Concept;
-import SnomedShared.pareataxonomy.Area;
-import SnomedShared.pareataxonomy.PAreaSummary;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
-import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
+import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.abn.export.ExportAbN;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
-import edu.njit.cs.saboc.blu.sno.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.AreaReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.LevelReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.PAreaOptionsConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.PAreaTaxonomyGEPListener;
+import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.GraphOptionsButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.RelationshipSelectionButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.PAreaInternalSearchButton;
@@ -38,16 +38,16 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
     
     private SCTDisplayFrameListener displayListener;
 
-    public PAreaInternalGraphFrame(final JFrame parentFrame, final PAreaTaxonomy data, 
+    public PAreaInternalGraphFrame(final JFrame parentFrame, final SCTPAreaTaxonomy data, 
             boolean areaGraph, boolean conceptCounts, SCTDisplayFrameListener displayListener) {
         
         super(parentFrame, "SNOMED-CT Partial-area Taxonomy");
         
         this.displayListener = displayListener;
 
-        String frameTitle = UtilityMethods.getPrintableVersionName(data.getVersion()) + " | Hierarchy: " + data.getSNOMEDHierarchyRoot().getName();
+        String frameTitle = UtilityMethods.getPrintableVersionName(data.getSCTVersion()) + " | Hierarchy: " + data.getSCTRootConcept().getName();
 
-        if (!data.getSNOMEDHierarchyRoot().equals(data.getRootPArea().getRoot())) {
+        if (!data.getSCTRootConcept().equals(data.getRootPArea().getRoot())) {
             frameTitle += " | Subhierarchy Rooted At: " + data.getRootPArea().getRoot().getName();
         }
 
@@ -102,16 +102,16 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
     }
     
     private void exportPAreaCSV() {
-        PAreaTaxonomy taxonomy = (PAreaTaxonomy)graph.getAbstractionNetwork();
+        SCTPAreaTaxonomy taxonomy = (SCTPAreaTaxonomy)graph.getAbstractionNetwork();
         
-        SCTDataSource dataSource = taxonomy.getSCTDataSource();
+        SCTDataSource dataSource = taxonomy.getDataSource();
         
-        ArrayList<Area> areas = taxonomy.getHierarchyAreas();
+        ArrayList<SCTArea> areas = taxonomy.getHierarchyAreas();
         
         HashMap<Long, ArrayList<Concept>> pareaConcepts = new HashMap<Long, ArrayList<Concept>>();
         
-        for(Area a : areas) {
-            ArrayList<PAreaSummary> areaPAreas = a.getAllPAreas();
+        for(SCTArea a : areas) {
+            ArrayList<SCTPArea> areaPAreas = a.getAllPAreas();
             pareaConcepts.putAll(dataSource.getConceptsInPAreaSet(taxonomy, areaPAreas));
         }
         
@@ -122,15 +122,15 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         return (PAreaBluGraph)super.getGraph();
     }
 
-    private void updateHierarchyInfoLabel(PAreaTaxonomy data) {
-        ArrayList<PAreaSummary> pareas = new ArrayList<PAreaSummary>();
+    private void updateHierarchyInfoLabel(SCTPAreaTaxonomy data) {
+        ArrayList<SCTPArea> pareas = new ArrayList<SCTPArea>();
 
         int pareaCount = 0;
         int areaCount = 0;
 
-        for (Area a : data.getHierarchyAreas()) {
-            if (!a.isImplicitArea()) {
-                for (PAreaSummary parea : a.getAllPAreas()) {
+        for (SCTArea a : data.getHierarchyAreas()) {
+            if (!a.isImplicit()) {
+                for (SCTPArea parea : a.getAllPAreas()) {
                     pareas.add(parea);
                     pareaCount++;
                 }
@@ -141,24 +141,24 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
         int conceptCount;
         
-        conceptCount = data.getSCTDataSource().getConceptCountInPAreaHierarchy(data, pareas);
+        conceptCount = data.getDataSource().getConceptCountInPAreaHierarchy(data, pareas);
                 
         setHierarchyInfoText(String.format("Areas: %d | Partial-areas: %d | Concepts: %d",
                 areaCount, pareaCount, conceptCount));
     }
 
-    public void replaceInternalFrameDataWith(PAreaTaxonomy data,
+    public void replaceInternalFrameDataWith(SCTPAreaTaxonomy data,
             boolean areaGraph, boolean conceptCountLabels, GraphOptions options) {
         
         BluGraph graph = new PAreaBluGraph(parentFrame, data, areaGraph, conceptCountLabels, options, displayListener);
 
-        initializeGraphTabs(graph, new AbNPainter(), 
+        initializeGraphTabs(graph, new SCTTaxonomyPainter(), 
                 new PAreaTaxonomyGEPListener(parentFrame, displayListener), 
                 new PAreaOptionsConfiguration(parentFrame, this, data, displayListener));
         
         tbp = null;
 
-        updateHierarchyInfoLabel((PAreaTaxonomy) data);
+        updateHierarchyInfoLabel((SCTPAreaTaxonomy) data);
 
         searchButton.setGraph(graph);
         optionsButton.setGraph(graph);
@@ -173,7 +173,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
     }
     
 
-    public void viewInTextBrowser(PAreaSummary parea) {
+    public void viewInTextBrowser(SCTPArea parea) {
         tbp.navigateTo(parea);
         tabbedPane.setSelectedIndex(2);
     }

@@ -34,6 +34,12 @@ public class ExportAbN {
     public static void exportAbNGroups(HashMap<Long, ArrayList<Concept>> groupMembers, String type) {
         File file = displayFileSelectDialog();
         
+        if(file == null ) {
+            // TODO: Report error to user
+            
+            return;
+        }
+        
         if(!file.getName().endsWith(".csv")) {
             file = new File(file.getAbsolutePath() + ".csv");
         }

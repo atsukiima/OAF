@@ -7,8 +7,8 @@ import SnomedShared.SearchResult;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.pareataxonomy.ConceptPAreaInfo;
 import SnomedShared.pareataxonomy.GroupParentInfo;
-import SnomedShared.pareataxonomy.PAreaSummary;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.ConceptClusterInfo;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
@@ -83,7 +83,7 @@ public interface SCTDataSource {
      * @param parea
      * @return 
      */
-    public ArrayList<Concept> getConceptsInPArea(PAreaTaxonomy taxonomy, PAreaSummary parea);
+    public ArrayList<Concept> getConceptsInPArea(SCTPAreaTaxonomy taxonomy, SCTPArea parea);
 
     /**
      * For a set of partial-areas, returns the list of concepts within each partial-area. For each partial-area
@@ -92,7 +92,7 @@ public interface SCTDataSource {
      * @param pareas
      * @return Map from PArea root Concept Id to the list of concepts in the partial-area
      */
-    public HashMap<Long, ArrayList<Concept>> getConceptsInPAreaSet(PAreaTaxonomy taxonomy, ArrayList<PAreaSummary> pareas);
+    public HashMap<Long, ArrayList<Concept>> getConceptsInPAreaSet(SCTPAreaTaxonomy taxonomy, ArrayList<SCTPArea> pareas);
 
     /**
      * Returns the list of concepts summarized by the given cluster. Should be sorted alphabetically.
@@ -139,7 +139,7 @@ public interface SCTDataSource {
      * @param hierarchyRoot
      * @return 
      */
-    public HashMap<Long, String> getUniqueLateralRelationshipsInHierarchy(PAreaTaxonomy taxonomy, Concept hierarchyRoot);
+    public HashMap<Long, String> getUniqueLateralRelationshipsInHierarchy(SCTPAreaTaxonomy taxonomy, Concept hierarchyRoot);
 
     /**
      * Returns the number of unique concepts in a given list of partial-areas
@@ -147,7 +147,7 @@ public interface SCTDataSource {
      * @param pareas
      * @return 
      */
-    public int getConceptCountInPAreaHierarchy(PAreaTaxonomy taxonomy, ArrayList<PAreaSummary> pareas);
+    public int getConceptCountInPAreaHierarchy(SCTPAreaTaxonomy taxonomy, ArrayList<SCTPArea> pareas);
 
     /**
      * Returns the number of unique concepts in a given list of clusters
@@ -163,7 +163,7 @@ public interface SCTDataSource {
      * @param c
      * @return 
      */
-    public ArrayList<ConceptPAreaInfo> getConceptPAreaInfo(PAreaTaxonomy taxonomy, Concept c);
+    public ArrayList<ConceptPAreaInfo> getConceptPAreaInfo(SCTPAreaTaxonomy taxonomy, Concept c);
     
     
     /**
@@ -180,12 +180,12 @@ public interface SCTDataSource {
      * @param parea
      * @return 
      */
-    public ArrayList<GroupParentInfo> getPAreaParentInfo(PAreaTaxonomy taxonomy, PAreaSummary parea);
+    public ArrayList<GroupParentInfo> getPAreaParentInfo(SCTPAreaTaxonomy taxonomy, SCTPArea parea);
     
     /**
      * Returns information about the parent concepts of the given cluster's root, e.g., what clusters they belong to
-     * @param taxonomy
-     * @param parea
+     * @param tan
+     * @param cluster
      * @return 
      */
     public ArrayList<GroupParentInfo> getClusterParentInfo(TribalAbstractionNetwork tan, ClusterSummary cluster);
@@ -196,7 +196,7 @@ public interface SCTDataSource {
      * @param parea
      * @return 
      */
-    public SCTConceptHierarchy getPAreaConceptHierarchy(PAreaTaxonomy taxonomy, PAreaSummary parea);
+    public SCTConceptHierarchy getPAreaConceptHierarchy(SCTPAreaTaxonomy taxonomy, SCTPArea parea);
 
     /**
      * Returns the hierarchy of concepts summarized by the given cluster in the given TAN
@@ -213,8 +213,8 @@ public interface SCTDataSource {
      * @param pareas
      * @return 
      */
-    public SCTMultiRootedConceptHierarchy getRegionConceptHierarchy(PAreaTaxonomy taxonomy, 
-            ArrayList<PAreaSummary> pareas);
+    public SCTMultiRootedConceptHierarchy getRegionConceptHierarchy(SCTPAreaTaxonomy taxonomy, 
+            ArrayList<SCTPArea> pareas);
     
     /**
      * Searches for a concept (term anywhere in the description) in a given partial-area taxonomy
@@ -223,8 +223,8 @@ public interface SCTDataSource {
      * @param term
      * @return 
      */
-    public ArrayList<SearchResult> searchForConceptsWithinTaxonomy(PAreaTaxonomy taxonomy,
-            ArrayList<PAreaSummary> pareas, String term);
+    public ArrayList<SearchResult> searchForConceptsWithinTaxonomy(SCTPAreaTaxonomy taxonomy,
+            ArrayList<SCTPArea> pareas, String term);
     
     /**
      * Searches for a concept (term anywhere in the) in a given tribal abstraction network

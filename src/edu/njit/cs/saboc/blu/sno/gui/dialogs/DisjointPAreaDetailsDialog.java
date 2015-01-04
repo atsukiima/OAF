@@ -6,6 +6,7 @@ import edu.njit.cs.saboc.blu.core.gui.dialogs.panels.GroupDetailsPanel;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.SCTConceptGroupDetailsPanel;
 import java.util.ArrayList;
@@ -38,9 +39,9 @@ public class DisjointPAreaDetailsDialog extends JDialog {
         builder.append("<html>");
         builder.append("<font size=4 face=\"Arial\">");
 
-        ArrayList<PAreaSummary> overlaps = new ArrayList<PAreaSummary>(parea.getOverlaps());
-        Collections.sort(overlaps, new Comparator<PAreaSummary>() {
-           public int compare(PAreaSummary a, PAreaSummary b) {
+        ArrayList<SCTPArea> overlaps = new ArrayList<SCTPArea>(parea.getOverlaps());
+        Collections.sort(overlaps, new Comparator<SCTPArea>() {
+           public int compare(SCTPArea a, SCTPArea b) {
                return a.getRoot().getName().compareTo(b.getRoot().getName());
            }
         });
@@ -62,14 +63,14 @@ public class DisjointPAreaDetailsDialog extends JDialog {
             builder.append("<b>Parent Disjoint Partial-area Overlaps: </b>");
             builder.append("<br>");
 
-            HashSet<PAreaSummary> parentOverlaps = parentDisjointPArea.getOverlaps();
+            HashSet<SCTPArea> parentOverlaps = parentDisjointPArea.getOverlaps();
 
             if(parentOverlaps.size() == 1) {
                 builder.append("&nbsp&nbsp&nbsp ");
                 builder.append("(None, basis)");
                 builder.append("<br>");
             } else {
-                for (PAreaSummary parentOverlap : parentOverlaps) {   // Otherwise derive the title from its relationships.
+                for (SCTPArea parentOverlap : parentOverlaps) {   // Otherwise derive the title from its relationships.
                     builder.append("&nbsp&nbsp&nbsp ");
                     builder.append(parentOverlap.getRoot().getName());
                     builder.append("<br>");
@@ -113,9 +114,9 @@ public class DisjointPAreaDetailsDialog extends JDialog {
             builder.append(String.format("%s (%d concepts) (<a href=\"%d\">%d</a>)<br>", child.getRoot().getName(),
                     child.getConceptCount(), child.getRoot().getId(), child.getRoot().getId()));
 
-            HashSet<PAreaSummary> childOverlaps = child.getOverlaps();
+            HashSet<SCTPArea> childOverlaps = child.getOverlaps();
 
-            for(PAreaSummary childOverlap : childOverlaps) {
+            for(SCTPArea childOverlap : childOverlaps) {
                 builder.append("&nbsp&nbsp&nbsp ");
                 builder.append(childOverlap.getRoot().getName());
                 builder.append("<br>");
@@ -151,9 +152,9 @@ public class DisjointPAreaDetailsDialog extends JDialog {
 
         builder.append("<b>Disjoint Partial-area Overlaps Between: </b><br>");
 
-        HashSet<PAreaSummary> overlappingPAreas = parea.getOverlaps();
+        HashSet<SCTPArea> overlappingPAreas = parea.getOverlaps();
 
-        for (PAreaSummary overlappingPArea : overlappingPAreas) {   // Otherwise derive the title from its relationships.
+        for (SCTPArea overlappingPArea : overlappingPAreas) {   // Otherwise derive the title from its relationships.
             builder.append("&nbsp&nbsp&nbsp ");
             builder.append(overlappingPArea.getRoot().getName());
             builder.append("<br>");

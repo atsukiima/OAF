@@ -46,7 +46,7 @@ public class ClusterLevelTableModel extends AbstractTableModel {
             if(lastBand.getSetEntryPoints().size() != a.getSetEntryPoints().size()) {
                 level.tribeCount = lastBand.getSetEntryPoints().size();
                 
-                level.conceptCount = tribalAbN.getSCTDataSource().getConceptCountInClusterHierarchy(
+                level.conceptCount = tribalAbN.getDataSource().getConceptCountInClusterHierarchy(
                                         tribalAbN, levelClusters);
 
                 levelData.add(level);
@@ -63,7 +63,7 @@ public class ClusterLevelTableModel extends AbstractTableModel {
         }
 
         level.tribeCount = lastBand.getSetEntryPoints().size();
-        level.conceptCount = tribalAbN.getSCTDataSource().getConceptCountInClusterHierarchy(
+        level.conceptCount = tribalAbN.getDataSource().getConceptCountInClusterHierarchy(
                                         tribalAbN, levelClusters);
 
         levelData.add(level);

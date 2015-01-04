@@ -1,8 +1,9 @@
 package edu.njit.cs.saboc.blu.sno.gui.utils.models;
 
-import SnomedShared.pareataxonomy.Area;
-import SnomedShared.pareataxonomy.PAreaSummary;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
+import SnomedShared.pareataxonomy.InheritedRelationship;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 
@@ -11,8 +12,8 @@ public class AreaTableModel extends AbstractTableModel {
     String[] columnNames = new String[]{"Relationships Defining Area", "Rels", "Regions", "PAreas", "Singletons"};
     private Object[][] data;
 
-    public AreaTableModel(PAreaTaxonomy pareaTaxonomy) {
-        ArrayList<Area> areas = pareaTaxonomy.getExplicitHierarchyAreas();
+    public AreaTableModel(SCTPAreaTaxonomy pareaTaxonomy) {
+        ArrayList<SCTArea> areas = pareaTaxonomy.getExplicitHierarchyAreas();
 
         data = new Object[areas.size()][5];
 
@@ -20,8 +21,8 @@ public class AreaTableModel extends AbstractTableModel {
 
             String areaRels = "";
 
-            for (long relId : areas.get(r).getRelationships()) {   // Otherwise derive the title from its relationships.
-                String relStr = pareaTaxonomy.getLateralRelsInHierarchy().get(relId);
+            for (InheritedRelationship rel : areas.get(r).getRelationships()) {   // Otherwise derive the title from its relationships.
+                String relStr = pareaTaxonomy.getLateralRelsInHierarchy().get(rel.getRelationshipTypeId());
                 areaRels += (relStr + "\n");
             }
 
@@ -32,7 +33,7 @@ public class AreaTableModel extends AbstractTableModel {
 
             int singletonCount = 0;
 
-            for(PAreaSummary p : areas.get(r).getAllPAreas()) {
+            for(SCTPArea p : areas.get(r).getAllPAreas()) {
                 if(p.getConceptCount() == 1) {
                     singletonCount++;
                 }

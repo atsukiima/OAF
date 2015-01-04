@@ -3,11 +3,11 @@ package edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy;
 import SnomedShared.Concept;
 import SnomedShared.generic.GenericConceptGroup;
 import SnomedShared.overlapping.ClusterSummary;
-import SnomedShared.pareataxonomy.PAreaSummary;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.ConceptGroupHierarchicalViewPanel;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.HierarchyPanelClickListener;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 
 /**
@@ -21,12 +21,12 @@ public class SCTConceptHierarchyViewPanel extends ConceptGroupHierarchicalViewPa
             final String groupType, 
             final HierarchyPanelClickListener<Concept> conceptSelectListener) {
         
-        super(group, abn, groupType, "Concept", new SCTConceptPainter(), conceptSelectListener);
+        super(group, abn.getAbstractionNetwork(), groupType, "Concept", new SCTConceptPainter(), conceptSelectListener);
     }
     
     public SCTConceptGroupHierarchyLoader getHierarchyLoader() {
-        if(abstractionNetwork instanceof PAreaTaxonomy) {
-            return new SCTPAreaHierarchyLoader((PAreaTaxonomy)abstractionNetwork, (PAreaSummary)group, this);
+        if(abstractionNetwork instanceof SCTPAreaTaxonomy) {
+            return new SCTPAreaHierarchyLoader((SCTPAreaTaxonomy)abstractionNetwork, (SCTPArea)group, this);
         } else if(abstractionNetwork instanceof TribalAbstractionNetwork) {
             return new SCTTANHierarchyLoader((TribalAbstractionNetwork)abstractionNetwork, (ClusterSummary)group, this);
         } else {

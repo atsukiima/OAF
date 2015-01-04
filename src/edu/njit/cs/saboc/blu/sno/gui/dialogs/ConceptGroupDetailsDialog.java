@@ -8,18 +8,19 @@ import SnomedShared.overlapping.EntryPoint;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import SnomedShared.pareataxonomy.InheritedRelationship.InheritanceType;
 import SnomedShared.pareataxonomy.GroupParentInfo;
-import SnomedShared.pareataxonomy.PAreaSummary;
+import edu.njit.cs.saboc.blu.core.abn.AbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.panels.GroupDetailsPanel;
 import edu.njit.cs.saboc.blu.core.gui.iconmanager.IconManager;
 import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
 import edu.njit.cs.saboc.blu.core.utils.filterable.list.FilterableListModel;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.ddirules.DDIDataLoader;
 import edu.njit.cs.saboc.blu.sno.ddirules.RuleObject;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.HierarchyPanelClickListener;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.RuleViewPanel;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.SCTConceptGroupDetailsPanel;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptHierarchyViewPanel;
@@ -65,7 +66,7 @@ import javax.swing.tree.TreeSelectionModel;
  *
  * @author Chris
  */
-public class ConceptGroupDetailsDialog extends JDialog {
+public class ConceptGroupDetailsDialog<T extends AbstractionNetwork> extends JDialog {
 
     public static enum DialogType {
         PartialArea,
@@ -81,7 +82,7 @@ public class ConceptGroupDetailsDialog extends JDialog {
 
     public ConceptGroupDetailsDialog(
             final GenericConceptGroup group, 
-            final SCTAbstractionNetwork abstractionNetwork, 
+            final SCTAbstractionNetwork<T> sctAbN, 
             final DialogType dialogType,
             final SCTDisplayFrameListener displayFrameListener) {
         
@@ -93,10 +94,10 @@ public class ConceptGroupDetailsDialog extends JDialog {
 
         if(dialogType == DialogType.PartialArea) {
             dialogTypeStr = "Partial-area";
-            detailsPanel = new SCTConceptGroupDetailsPanel(abstractionNetwork, GroupDetailsPanel.GroupType.PartialArea, displayFrameListener);
+            detailsPanel = new SCTConceptGroupDetailsPanel(sctAbN, GroupDetailsPanel.GroupType.PartialArea, displayFrameListener);
         } else {
             dialogTypeStr = "Cluster";
-            detailsPanel = new SCTConceptGroupDetailsPanel(abstractionNetwork, GroupDetailsPanel.GroupType.Cluster, displayFrameListener);
+            detailsPanel = new SCTConceptGroupDetailsPanel(sctAbN, GroupDetailsPanel.GroupType.Cluster, displayFrameListener);
         }
         
         Concept selectedGroupRoot = group.getRoot();
@@ -104,11 +105,11 @@ public class ConceptGroupDetailsDialog extends JDialog {
         ArrayList<Concept> conceptsInGroup;
 
         if (dialogType == DialogType.PartialArea) {
-            conceptsInGroup = abstractionNetwork.getSCTDataSource().getConceptsInPArea(
-                    (PAreaTaxonomy)abstractionNetwork, (PAreaSummary)group);
+            conceptsInGroup = sctAbN.getDataSource().getConceptsInPArea(
+                    (SCTPAreaTaxonomy)sctAbN.getAbstractionNetwork(), (SCTPArea)group);
         } else {
-            conceptsInGroup = abstractionNetwork.getSCTDataSource().getConceptsInCluster(
-                    (TribalAbstractionNetwork)abstractionNetwork, (ClusterSummary)group);
+            conceptsInGroup = sctAbN.getDataSource().getConceptsInCluster(
+                    (TribalAbstractionNetwork)sctAbN.getAbstractionNetwork(), (ClusterSummary)group);
         }
         
         int primitiveConceptCount = 0;
@@ -119,7 +120,7 @@ public class ConceptGroupDetailsDialog extends JDialog {
             }
         }
         
-        HashSet<Integer> childrenGroupIds = abstractionNetwork.getGroupChildren(group.getId());
+        HashSet<Integer> childrenGroupIds = sctAbN.getAbstractionNetwork().getGroupChildren(group.getId());
 
         StringBuilder builder = new StringBuilder();
 
@@ -129,19 +130,19 @@ public class ConceptGroupDetailsDialog extends JDialog {
         HashMap<Integer, ? extends GenericConceptGroup> groups;
 
         if(dialogType == DialogType.PartialArea) {
-            groups = ((PAreaTaxonomy)abstractionNetwork).getPAreas();
+            groups = ((SCTPAreaTaxonomy)sctAbN.getAbstractionNetwork()).getPAreas();
         } else {
-            groups = ((TribalAbstractionNetwork)abstractionNetwork).getClusters();
+            groups = ((TribalAbstractionNetwork)sctAbN.getAbstractionNetwork()).getClusters();
         }
 
         ArrayList<GroupParentInfo> groupParentInfo;
 
         if (dialogType == DialogType.PartialArea) {
-            groupParentInfo = abstractionNetwork.getSCTDataSource().getPAreaParentInfo(
-                    (PAreaTaxonomy)abstractionNetwork, (PAreaSummary)group);
+            groupParentInfo = sctAbN.getDataSource().getPAreaParentInfo(
+                    (SCTPAreaTaxonomy)sctAbN.getAbstractionNetwork(), (SCTPArea)group);
         } else {
-            groupParentInfo = abstractionNetwork.getSCTDataSource().getClusterParentInfo(
-                    (TribalAbstractionNetwork)abstractionNetwork, (ClusterSummary)group);
+            groupParentInfo = sctAbN.getDataSource().getClusterParentInfo(
+                    (TribalAbstractionNetwork)sctAbN.getAbstractionNetwork(), (ClusterSummary)group);
         }
         
         /**
@@ -184,10 +185,10 @@ public class ConceptGroupDetailsDialog extends JDialog {
                 builder.append("<b>Parent Partial-area Relationships: </b>");
                 builder.append("<br>");
 
-                ArrayList<InheritedRelationship> relationships = ((PAreaSummary)parentGroup).getRelationships();
+                HashSet<InheritedRelationship> relationships = ((SCTPArea)parentGroup).getRelationships();
 
                 for (InheritedRelationship rel : relationships) {   // Otherwise derive the title from its relationships.
-                    String relStr = ((PAreaTaxonomy)abstractionNetwork).getLateralRelsInHierarchy().get(rel.getRelationshipTypeId());
+                    String relStr = ((SCTPAreaTaxonomy)sctAbN.getAbstractionNetwork()).getLateralRelsInHierarchy().get(rel.getRelationshipTypeId());
                     relStr += rel.getInheritanceType() == InheritanceType.INHERITED ? "*" : "+";
 
                     builder.append("&nbsp&nbsp&nbsp ");
@@ -199,7 +200,7 @@ public class ConceptGroupDetailsDialog extends JDialog {
                 builder.append("<br>");
 
                 HashMap<Long, String> entryPointNames = 
-                        ((TribalAbstractionNetwork)abstractionNetwork).getPatriarchNames();
+                        ((TribalAbstractionNetwork)sctAbN.getAbstractionNetwork()).getPatriarchNames();
                 
                 ArrayList<EntryPoint> entryPoints = 
                         ((ClusterSummary) parentGroup).getEntryPointSet().getSortedEntryPointSet(entryPointNames);
@@ -252,15 +253,16 @@ public class ConceptGroupDetailsDialog extends JDialog {
                         childGroup.getConceptCount(), childGroup.getRoot().getId(), childGroup.getRoot().getId()));
 
                 if(dialogType == DialogType.PartialArea) {
-                    ArrayList<InheritedRelationship> relationships = ((PAreaSummary)childGroup).getRelationships(); // child
-                    ArrayList<InheritedRelationship> parent_relationships = ((PAreaSummary)group).getRelationships(); // parent
+                    HashSet<InheritedRelationship> relationships = ((SCTPArea)childGroup).getRelationships(); // child
+                    HashSet<InheritedRelationship> parent_relationships = ((SCTPArea)group).getRelationships(); // parent
                     
                     HashMap<Long, String> relNameMap = 
-                            ((PAreaTaxonomy)abstractionNetwork).getLateralRelsInHierarchy();
+                            ((SCTPAreaTaxonomy)sctAbN.getAbstractionNetwork()).getLateralRelsInHierarchy();
 
                     for (InheritedRelationship rel : relationships) {   // Otherwise derive the title from its relationships.
                         
                         int count_identical = 0;
+                        
                         for (InheritedRelationship parent_rel : parent_relationships)
                         {
                             if (rel.getRelationshipTypeId() == parent_rel.getRelationshipTypeId())
@@ -286,7 +288,7 @@ public class ConceptGroupDetailsDialog extends JDialog {
                     }
                 } else {
                     HashMap<Long, String> entryPointNames = 
-                            ((TribalAbstractionNetwork)abstractionNetwork).getPatriarchNames();
+                            ((TribalAbstractionNetwork)sctAbN).getPatriarchNames();
                     
                     ArrayList<EntryPoint> entryPoints = 
                             ((ClusterSummary)childGroup).getEntryPointSet().getSortedEntryPointSet(entryPointNames);
@@ -339,10 +341,10 @@ public class ConceptGroupDetailsDialog extends JDialog {
         }
 
         if(dialogType == DialogType.PartialArea) {
-            ArrayList<InheritedRelationship> relationships = ((PAreaSummary)group).getRelationships();
+            HashSet<InheritedRelationship> relationships = ((SCTPArea)group).getRelationships();
 
             for (InheritedRelationship rel : relationships) {   // Otherwise derive the title from its relationships.
-                String relStr = ((PAreaTaxonomy)abstractionNetwork).getLateralRelsInHierarchy().get(rel.getRelationshipTypeId());
+                String relStr = ((SCTPAreaTaxonomy)sctAbN).getLateralRelsInHierarchy().get(rel.getRelationshipTypeId());
                 relStr += rel.getInheritanceType() == InheritanceType.INHERITED ? "*" : "+";
 
                 builder.append("&nbsp&nbsp&nbsp ");
@@ -351,7 +353,7 @@ public class ConceptGroupDetailsDialog extends JDialog {
             }
         } else {
             HashMap<Long, String> entryPointNames = 
-                    ((TribalAbstractionNetwork)abstractionNetwork).getPatriarchNames();
+                    ((TribalAbstractionNetwork)sctAbN).getPatriarchNames();
             
             ArrayList<EntryPoint> entryPoints = 
                     ((ClusterSummary)group).getEntryPointSet().getSortedEntryPointSet(entryPointNames);
@@ -381,17 +383,17 @@ public class ConceptGroupDetailsDialog extends JDialog {
         }
         
         tabbedPane.addTab("Hierarchical View (Graphical)", new JScrollPane(new SCTConceptHierarchyViewPanel(group,
-                abstractionNetwork,
+                sctAbN,
                 groupType,
                 new HierarchyPanelClickListener<Concept>() {
                     public void conceptDoubleClicked(Concept c) {
-                        displayFrameListener.addNewBrowserFrame(c, abstractionNetwork.getSCTDataSource());
+                        displayFrameListener.addNewBrowserFrame(c, sctAbN.getDataSource());
                     }
                 })
             )
         );
         
-        tabbedPane.addTab("Rule Information", createRulePanel(group, abstractionNetwork));
+        tabbedPane.addTab("Rule Information", createRulePanel(group, sctAbN));
         add(tabbedPane);
 
         setResizable(true);

@@ -1,8 +1,9 @@
 package edu.njit.cs.saboc.blu.sno.gui.utils.models;
 
 import SnomedShared.pareataxonomy.Area;
-import SnomedShared.pareataxonomy.PAreaSummary;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,11 +25,12 @@ public class PAreaLevelTableModel extends AbstractTableModel {
         public int conceptCount = 0;
     }
 
-    public PAreaLevelTableModel(PAreaTaxonomy pareaTaxonomy) {
-        ArrayList<Area> areas = (ArrayList<Area>)pareaTaxonomy.getExplicitHierarchyAreas().clone();
+    public PAreaLevelTableModel(SCTPAreaTaxonomy pareaTaxonomy) {
         
-        Collections.sort(areas, new Comparator<Area>() {
-            public int compare(Area a, Area b) {
+        ArrayList<SCTArea> areas = (ArrayList<SCTArea>)pareaTaxonomy.getExplicitHierarchyAreas().clone();
+        
+        Collections.sort(areas, new Comparator<SCTArea>() {
+            public int compare(SCTArea a, SCTArea b) {
                 Integer aCount = a.getRelationships().size();
                 Integer bCount = b.getRelationships().size();
                 
@@ -38,15 +40,15 @@ public class PAreaLevelTableModel extends AbstractTableModel {
 
         ArrayList<LevelData> levelData = new ArrayList<LevelData>();
 
-        Area lastArea = areas.get(0);
+        SCTArea lastArea = areas.get(0);
         LevelData level = new LevelData();
-        ArrayList<PAreaSummary> levelPAreas = new ArrayList<PAreaSummary>();
+        ArrayList<SCTPArea> levelPAreas = new ArrayList<SCTPArea>();
 
-        for(Area a : areas) {
+        for(SCTArea a : areas) {
             if(lastArea.getRelationships().size() != a.getRelationships().size()) {
                 level.relCount = lastArea.getRelationships().size();
                 
-                level.conceptCount = pareaTaxonomy.getSCTDataSource().getConceptCountInPAreaHierarchy(
+                level.conceptCount = pareaTaxonomy.getDataSource().getConceptCountInPAreaHierarchy(
                         pareaTaxonomy, levelPAreas);
 
                 levelData.add(level);
@@ -63,7 +65,7 @@ public class PAreaLevelTableModel extends AbstractTableModel {
         }
 
         level.relCount = lastArea.getRelationships().size();
-        level.conceptCount = pareaTaxonomy.getSCTDataSource().getConceptCountInPAreaHierarchy(
+        level.conceptCount = pareaTaxonomy.getDataSource().getConceptCountInPAreaHierarchy(
                         pareaTaxonomy, levelPAreas);
 
         levelData.add(level);

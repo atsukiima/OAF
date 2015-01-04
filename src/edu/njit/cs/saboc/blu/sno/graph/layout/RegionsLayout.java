@@ -1,17 +1,17 @@
 package edu.njit.cs.saboc.blu.sno.graph.layout;
 
-import SnomedShared.pareataxonomy.Area;
 import SnomedShared.pareataxonomy.InheritedRelationship;
-import SnomedShared.pareataxonomy.PAreaSummary;
-import SnomedShared.pareataxonomy.Region;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphGroupLevel;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphLane;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphLevel;
 import edu.njit.cs.saboc.blu.core.graph.layout.GraphLayoutConstants;
 import edu.njit.cs.saboc.blu.core.graph.nodes.GenericGroupEntry;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.graph.options.GraphOptions;
+import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTRegion;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluArea;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluPArea;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluRegion;
@@ -27,17 +27,16 @@ import javax.swing.JLabel;
  * @author Chris
  */
 public class RegionsLayout extends GenericPAreaLayout {
-    public RegionsLayout(BluGraph graph, PAreaTaxonomy hierarchyData) {
+    public RegionsLayout(BluGraph graph, SCTPAreaTaxonomy hierarchyData) {
         super(graph, hierarchyData, true);
     }
 
     public void doLayout(GraphOptions options, boolean showConceptCounts) {
         super.doLayout();
 
-        HashMap<Long, String> areaLateralRels =
-                MiddlewareAccessorProxy.getProxy().getRelationshipAbbreviations(pareaTaxonomy.getVersion());
+        HashMap<Long, String> areaLateralRels = this.pareaTaxonomy.getLateralRelsInHierarchy();
 
-        Area lastArea = null;   // Used for generating the graph - this is the data version of an area
+        SCTArea lastArea = null;   // Used for generating the graph - this is the data version of an area
         BluArea currentArea = null;    // Used for generating the graph - this is the graphical representation of an area
         BluRegion currentPartition = null;
         GraphLevel currentLevel = null; // This is used as a temporary variable in this method to hold the current level.
@@ -70,10 +69,10 @@ public class RegionsLayout extends GenericPAreaLayout {
 
         addGraphLevel(new GraphLevel(0, graph, new ArrayList<GraphLane>())); // Add the first level of areas (the single pArea 0-relationship level) to the data representation of the graph.
 
-        HashMap<Region, JLabel> regionLabels = new HashMap<Region, JLabel>();
-        HashMap<Region, String> regionNames = new HashMap<Region, String>();
+        HashMap<SCTRegion, JLabel> regionLabels = new HashMap<SCTRegion, JLabel>();
+        HashMap<SCTRegion, String> regionNames = new HashMap<SCTRegion, String>();
 
-        for (Area a : layoutGroupContainers) {  // Loop through the areas and generate the diagram for each of them
+        for (SCTArea a : layoutGroupContainers) {  // Loop through the areas and generate the diagram for each of them
             int x2; 
             int y2;
             int regionX;
@@ -103,13 +102,13 @@ public class RegionsLayout extends GenericPAreaLayout {
             int areaHeight = 0;
             int maxRows = 0;
             
-            ArrayList<Region> regions = a.getRegions();
+            ArrayList<SCTRegion> regions = a.getRegions();
 
-            for (Region region : regions) { // Loop through regions to calculate the necessary size for the area.
+            for (SCTRegion region : regions) { // Loop through regions to calculate the necessary size for the area.
                 int pareaCount = 0;
 
                 if (options != null) {
-                    for (PAreaSummary parea : region.getPAreasInRegion()) {
+                    for (SCTPArea parea : region.getPAreasInRegion()) {
                         int conceptCount = parea.getConceptCount();
 
                         if (conceptCount <= options.pareaMaxThreshold && conceptCount >= options.pareaMinThreshold) {
@@ -126,16 +125,16 @@ public class RegionsLayout extends GenericPAreaLayout {
 
                 int regionWidth = pareasWide * (GenericGroupEntry.ENTRY_WIDTH + GraphLayoutConstants.GROUP_CHANNEL_WIDTH);
                 
-                ArrayList<InheritedRelationship> relationships = region.getRelationships();
+                ArrayList<InheritedRelationship> relationships = new ArrayList<InheritedRelationship>(region.getRelationships());
 
                 String regionName = UtilityMethods.getRegionName(relationships, areaLateralRels);
                 
                 String countString;
 
                 if (showConceptCounts) {
-                    ArrayList<PAreaSummary> pareas = region.getPAreasInRegion();
+                    ArrayList<SCTPArea> pareas = region.getPAreasInRegion();
                     
-                    int conceptCount = pareaTaxonomy.getSCTDataSource().getConceptCountInPAreaHierarchy(pareaTaxonomy, pareas);
+                    int conceptCount = pareaTaxonomy.getDataSource().getConceptCountInPAreaHierarchy(pareaTaxonomy, pareas);
 
                     if (conceptCount == 1) {
                         countString = "(" + conceptCount + " Concept)";
@@ -183,7 +182,7 @@ public class RegionsLayout extends GenericPAreaLayout {
 
             Color color = background[style % background.length];
 
-            if (a.isImplicitArea()) {
+            if (a.isImplicit()) {
                 color = new Color(color.getRed() / 2, color.getGreen() / 2, color.getBlue() / 2);
             }
 
@@ -203,14 +202,14 @@ public class RegionsLayout extends GenericPAreaLayout {
             areaPAreaX = new int[maxRows];
             regionBump = 0;
 
-            for (Region region : regions) { // Create the regions inside the newly created area.
+            for (SCTRegion region : regions) { // Create the regions inside the newly created area.
 
                 JLabel regionLabel = regionLabels.get(region);
 
                 int pareaCount = 0;
 
                 if (options != null) {
-                    for (PAreaSummary parea : region.getPAreasInRegion()) {
+                    for (SCTPArea parea : region.getPAreasInRegion()) {
                         int conceptCount = parea.getConceptCount();
 
                         if (conceptCount <= options.pareaMaxThreshold && conceptCount >= options.pareaMinThreshold) {
@@ -247,7 +246,7 @@ public class RegionsLayout extends GenericPAreaLayout {
 
                 int i = 0;
 
-                for (PAreaSummary p : region.getPAreasInRegion()) { // Draw the pArease inside this region
+                for (SCTPArea p : region.getPAreasInRegion()) { // Draw the pArease inside this region
 
                     currentPAreaLevel = currentPartition.getGroupLevels().get(pAreaY);
 

@@ -2,8 +2,8 @@ package edu.njit.cs.saboc.blu.sno.gui.utils.models;
 
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import SnomedShared.pareataxonomy.InheritedRelationship.InheritanceType;
-import SnomedShared.pareataxonomy.PAreaSummary;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 
@@ -11,23 +11,23 @@ public class ChildPAreaTableModel extends AbstractTableModel {
 
     String[] columnNames = new String[]{"Root Name", "Relationships", "Concepts"};
     private Object[][] data;
-    private ArrayList<PAreaSummary> pareas;
+    private ArrayList<SCTPArea> pareas;
 
-    public ChildPAreaTableModel(PAreaTaxonomy pareaTaxonomy, ArrayList<PAreaSummary> pareas) {
+    public ChildPAreaTableModel(SCTPAreaTaxonomy pareaTaxonomy, ArrayList<SCTPArea> pareas) {
         setData(pareaTaxonomy, pareas);
     }
 
-    public final void setData(PAreaTaxonomy hierarchyData, ArrayList<PAreaSummary> pareas) {
+    public final void setData(SCTPAreaTaxonomy hierarchyData, ArrayList<SCTPArea> pareas) {
         this.pareas = pareas;
 
         data = new Object[pareas.size()][columnNames.length];
 
         for (int r = 0; r < pareas.size(); r++) {
-            PAreaSummary parea = pareas.get(r);
+            SCTPArea parea = pareas.get(r);
 
             String pareaRels = "";
 
-            ArrayList<InheritedRelationship> relationships = parea.getRelationships();
+            ArrayList<InheritedRelationship> relationships = new ArrayList<InheritedRelationship>(parea.getRelationships());
 
             for (int i = 0; i < relationships.size(); i++) {
                 InheritedRelationship rel = relationships.get(i);
@@ -64,7 +64,7 @@ public class ChildPAreaTableModel extends AbstractTableModel {
         return getValueAt(0, c).getClass();
     }
 
-    public ArrayList<PAreaSummary> getPAreas() {
+    public ArrayList<SCTPArea> getPAreas() {
         return pareas;
     }
 }

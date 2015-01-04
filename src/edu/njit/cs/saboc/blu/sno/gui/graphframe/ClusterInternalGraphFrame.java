@@ -4,12 +4,12 @@ import SnomedShared.Concept;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
+import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.abn.export.ExportAbN;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.graph.ClusterBluGraph;
-import edu.njit.cs.saboc.blu.sno.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.LevelReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.ClusterOptionsConfiguration;
@@ -37,7 +37,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         
         this.displayListener = displayListener;
 
-        String frameTitle = UtilityMethods.getPrintableVersionName(data.getVersion()) + " | Hierarchy: " + data.getSNOMEDHierarchyRoot().getName();
+        String frameTitle = UtilityMethods.getPrintableVersionName(data.getSCTVersion()) + " | Hierarchy: " + data.getSCTRootConcept().getName();
         this.setTitle(frameTitle);
 
         JButton tribalBandReportBtn = new JButton("Common Overlap Set Report");
@@ -98,7 +98,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
             setCount++;
         }
 
-        int conceptCount = data.getSCTDataSource().getConceptCountInClusterHierarchy(
+        int conceptCount = data.getDataSource().getConceptCountInClusterHierarchy(
                 (TribalAbstractionNetwork)data, clusters);     
         
         setHierarchyInfoText(String.format("Common Overlap Sets: %d | Clusters: %d | Concepts: %d",
@@ -108,7 +108,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
     private void exportTANCSV() {
         TribalAbstractionNetwork tan = (TribalAbstractionNetwork) graph.getAbstractionNetwork();
 
-        SCTDataSource dataSource = tan.getSCTDataSource();
+        SCTDataSource dataSource = tan.getDataSource();
 
         ArrayList<CommonOverlapSet> bands = tan.getBands();
 

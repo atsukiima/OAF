@@ -1,17 +1,15 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.gui.dialogs.AbNLoadStatusDialog;
-import edu.njit.cs.saboc.blu.core.gui.dialogs.AbNLoadingStatusMonitor;
 import edu.njit.cs.saboc.blu.core.gui.iconmanager.IconManager;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.ImportLocalData;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LoadLocalRelease;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LocalLoadStateMonitor;
-import edu.njit.cs.saboc.blu.sno.abn.generator.PAreaTaxonomyGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.RelationshipsRetrieverFactory;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
@@ -299,31 +297,24 @@ public class SCTLoaderPanel extends JPanel {
     private void loadPAreaTaxonomy(final Concept root) {
         Thread loadThread = new Thread(new Runnable() {
             public void run() {
-                final PAreaTaxonomy taxonomy;
-
-                final AbNLoadingStatusMonitor monitor;
+                final SCTPAreaTaxonomy taxonomy;
 
                 if (remoteSourceBtn.isSelected()) {
                     taxonomy = MiddlewareAccessorProxy.getProxy().getPAreaHierarchyData(
                             remoteReleasePanel.getSelectedVersion(), root);
-                    monitor = null;
                 } else {
                     try {
                         SCTLocalDataSource dataSource = localReleasePanel.getLoadedDataSource();
 
-                        final PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
-                        monitor = generator.getLoadStatusMonitor();
+                        Concept localConcept = dataSource.getConceptFromId(root.getId());
 
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                AbNLoadStatusDialog.display(parentFrame, monitor, AbNLoadStatusDialog.TYPE_PAREA);
-                            }
-                        });
-                                                
-                        taxonomy = generator.createPAreaTaxonomy(dataSource.getConceptFromId(root.getId()), dataSource, 
-                                RelationshipsRetrieverFactory.getRelationshipsRetriever(chkUseStatedRelationships.isSelected()));
+                        final SCTPAreaTaxonomyGenerator generator
+                                = new SCTPAreaTaxonomyGenerator(localConcept, dataSource,
+                                        (SCTConceptHierarchy) dataSource.getConceptHierarchy().getSubhierarchyRootedAt(localConcept),
+                                        RelationshipsRetrieverFactory.getRelationshipsRetriever(chkUseStatedRelationships.isSelected()));
 
-                        monitor.updateState(AbNLoadingStatusMonitor.STATE_BUILD_GRAPH, 80);
+                        taxonomy = generator.derivePAreaTaxonomy();
+
                     } catch (NoSCTDataSourceLoadedException e) {
                         // TODO: Show error...
 
@@ -334,13 +325,8 @@ public class SCTLoaderPanel extends JPanel {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         displayFrameListener.addNewPAreaGraphFrame(taxonomy, true, false);
-
-                        if (monitor != null) {
-                            monitor.updateState(AbNLoadingStatusMonitor.STATE_COMPLETE, 100);
-                        }
                     }
                 });
-
             }
         });
 

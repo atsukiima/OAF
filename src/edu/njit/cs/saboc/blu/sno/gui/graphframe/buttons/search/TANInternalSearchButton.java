@@ -40,7 +40,7 @@ public class TANInternalSearchButton extends GenericInternalSearchButton {
                         pareas.addAll(band.getAllClusters());
                     }
                     
-                    ArrayList<SearchResult> conceptResults = tan.getSCTDataSource().searchForConceptsWithinTAN(tan, pareas, query.toLowerCase());
+                    ArrayList<SearchResult> conceptResults = tan.getDataSource().searchForConceptsWithinTAN(tan, pareas, query.toLowerCase());
                     
                     for(SearchResult sr : conceptResults) {
                         results.add(new SearchButtonResult(sr.toString(), sr));
@@ -55,8 +55,8 @@ public class TANInternalSearchButton extends GenericInternalSearchButton {
 
                 TribalAbstractionNetwork tan = (TribalAbstractionNetwork) graphFrame.getGraph().getAbstractionNetwork();
 
-                ArrayList<ConceptClusterInfo> clusterInfo = tan.getSCTDataSource().getConceptClusterInfo(tan,
-                        tan.getSCTDataSource().getConceptFromId(result.getConceptId()));
+                ArrayList<ConceptClusterInfo> clusterInfo = tan.getDataSource().getConceptClusterInfo(tan,
+                        tan.getDataSource().getConceptFromId(result.getConceptId()));
 
                 ArrayList<GenericConceptGroup> conceptGroups = new ArrayList<GenericConceptGroup>();
                 

@@ -5,6 +5,7 @@ import SnomedShared.pareataxonomy.PAreaSummary;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
 import edu.njit.cs.saboc.blu.sno.abn.export.ExportAbN;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.PAreaOverlapMetricsPanel;
 import java.awt.BorderLayout;
@@ -74,11 +75,11 @@ public class DisjointPAreaTaxonomyGraphPanel extends JPanel {
             pareaConcepts.put(parea.getRoot().getId(), concepts);
         }
         
-        HashSet<PAreaSummary> nonOverlapPAreas = taxonomy.getPAreasWithNoOverlap();
+        HashSet<SCTPArea> nonOverlapPAreas = taxonomy.getPAreasWithNoOverlap();
         
-        for(PAreaSummary parea : nonOverlapPAreas) {
+        for(SCTPArea parea : nonOverlapPAreas) {
             pareaConcepts.put(parea.getRoot().getId(), 
-                    taxonomy.getSourcePAreaTaxonomy().getSCTDataSource().getConceptsInPArea(
+                    taxonomy.getSourcePAreaTaxonomy().getDataSource().getConceptsInPArea(
                         taxonomy.getSourcePAreaTaxonomy(), 
                         parea));
         }

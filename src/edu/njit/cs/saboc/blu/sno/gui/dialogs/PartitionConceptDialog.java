@@ -4,16 +4,16 @@ import SnomedShared.Concept;
 import SnomedShared.generic.GenericConceptGroup;
 import SnomedShared.generic.GenericContainerPartition;
 import SnomedShared.overlapping.OverlapInheritancePartition;
-import SnomedShared.pareataxonomy.Area;
 import SnomedShared.pareataxonomy.InheritedRelationship;
-import SnomedShared.pareataxonomy.PAreaSummary;
-import SnomedShared.pareataxonomy.Region;
 import edu.njit.cs.saboc.blu.core.abn.AbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaRootSubtaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.RootSubtaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTRegion;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
@@ -43,11 +43,11 @@ import javax.swing.event.ChangeListener;
 public class PartitionConceptDialog extends JDialog {
 
     public PartitionConceptDialog(final JFrame parentFrame, final GenericContainerPartition partition, 
-            final SCTAbstractionNetwork abstractionNetwork, boolean treatAsContainer, final SCTDisplayFrameListener displayFrameListener) {
+            final SCTAbstractionNetwork sctAbN, boolean treatAsContainer, final SCTDisplayFrameListener displayFrameListener) {
         
         super(parentFrame);
 
-        final boolean isPartialAreaDialog = (abstractionNetwork instanceof PAreaTaxonomy);
+        final boolean isPartialAreaDialog = (sctAbN instanceof SCTPAreaTaxonomy);
         
         ArrayList<GenericConceptGroup> groups = partition.getGroups();
         
@@ -62,41 +62,45 @@ public class PartitionConceptDialog extends JDialog {
         }
         
         if (isPartialAreaDialog) {
-            concepts = abstractionNetwork.getSCTDataSource().getConceptsInPAreaSet(
-                    (PAreaTaxonomy)abstractionNetwork, ((Region)partition).getPAreasInRegion());
+            concepts = sctAbN.getDataSource().getConceptsInPAreaSet(
+                    (SCTPAreaTaxonomy)sctAbN.getAbstractionNetwork(), ((SCTRegion)partition).getPAreasInRegion());
         } else {
-            concepts = abstractionNetwork.getSCTDataSource().getConceptsInClusterSet(
-                    (TribalAbstractionNetwork)abstractionNetwork, ((OverlapInheritancePartition)partition).getClusters());
+            concepts = sctAbN.getDataSource().getConceptsInClusterSet(
+                    (TribalAbstractionNetwork)sctAbN.getAbstractionNetwork(), ((OverlapInheritancePartition)partition).getClusters());
         }
 
         StringBuilder builder = new StringBuilder();
 
         String partitionName = "";
         ArrayList<String> partitionNameArray = new ArrayList<String>();
-        ArrayList<Region> regionsArray = new ArrayList<Region>();
+        ArrayList<SCTRegion> regionsArray = new ArrayList<SCTRegion>();
 
         if(isPartialAreaDialog) {
-            Region region = (Region)partition;
-            PAreaTaxonomy pareaHD = (PAreaTaxonomy)abstractionNetwork;
-
+            SCTRegion region = (SCTRegion)partition;
+            SCTPAreaTaxonomy taxonomy = (SCTPAreaTaxonomy)sctAbN.getAbstractionNetwork();
+            
             if(treatAsContainer) {
-                partitionName = UtilityMethods.getRegionName(region.getPAreasInRegion().get(0).getRelationships(),
-                    pareaHD.getLateralRelsInHierarchy()).replaceAll("\\*", "").replaceAll("\\+", "");
+                ArrayList<InheritedRelationship> regionRels = new ArrayList<InheritedRelationship>(region.getPAreasInRegion().get(0).getRelationships());
+                
+                partitionName = UtilityMethods.getRegionName(regionRels,
+                    taxonomy.getLateralRelsInHierarchy()).replaceAll("\\*", "").replaceAll("\\+", "");
             } else {
-                partitionName = UtilityMethods.getRegionName(region.getRelationships(),
-                    pareaHD.getLateralRelsInHierarchy());
+                ArrayList<InheritedRelationship> regionRels = new ArrayList<InheritedRelationship>(region.getRelationships());
+                
+                partitionName = UtilityMethods.getRegionName(regionRels,
+                    taxonomy.getLateralRelsInHierarchy());
                 
                 partitionNameArray.add(partitionName);      // Name of the region that was clicked on
                 
                 /* find the area that this region belongs to */
-                for(int i=0; i < ((PAreaTaxonomy)abstractionNetwork).getExplicitHierarchyAreas().size(); i++) {     // for each Area
-                    Area currentArea = ((PAreaTaxonomy)abstractionNetwork).getExplicitHierarchyAreas().get(i);
+                for(int i=0; i < ((SCTPAreaTaxonomy)sctAbN.getAbstractionNetwork()).getExplicitHierarchyAreas().size(); i++) {     // for each Area
+                    SCTArea currentArea = taxonomy.getExplicitHierarchyAreas().get(i);
                     
                     for(int j=0; j < currentArea.getRegions().size(); j++) {                                        // for each Region within that Area
-                        Region currentRegion = currentArea.getRegions().get(j);
+                        SCTRegion currentRegion = currentArea.getRegions().get(j);
                         
-                        if(((GenericConceptGroup) currentRegion.getPAreasInRegion().get(0)).getId() ==
-                                ((GenericConceptGroup)((Region)partition).getPAreasInRegion().get(0)).getId()) {
+                        if((currentRegion.getPAreasInRegion().get(0)).getId() ==
+                                (((SCTRegion)partition).getPAreasInRegion().get(0)).getId()) {
 
                             regionsArray = currentArea.getRegions();
 
@@ -106,9 +110,13 @@ public class PartitionConceptDialog extends JDialog {
                 }
                 
                 String otherPartitionName;
+                
                 for(int i=0; i < regionsArray.size(); i++) {
-                    otherPartitionName = UtilityMethods.getRegionName(regionsArray.get(i).getRelationships(),
-                                            pareaHD.getLateralRelsInHierarchy());
+                    SCTRegion r = (SCTRegion)regionsArray.get(i);
+                    
+                    ArrayList<InheritedRelationship> rRels = new ArrayList<InheritedRelationship>(r.getRelationships());
+
+                    otherPartitionName = UtilityMethods.getRegionName(rRels, taxonomy.getLateralRelsInHierarchy());
                     
                     if(!otherPartitionName.equals(partitionNameArray.get(0))) {    // avoid repeating the first region name (one that was clicked on)
                         partitionNameArray.add(otherPartitionName);
@@ -117,14 +125,14 @@ public class PartitionConceptDialog extends JDialog {
             }
         } else {
             OverlapInheritancePartition inheritancePartition = (OverlapInheritancePartition)partition;
-            TribalAbstractionNetwork clusterHD = (TribalAbstractionNetwork)abstractionNetwork;
+            TribalAbstractionNetwork tan = (TribalAbstractionNetwork)sctAbN.getAbstractionNetwork();
 
             if(treatAsContainer) {
                 partitionName = UtilityMethods.getOverlapPartitionName(inheritancePartition.getEntryPointSet(),
-                        clusterHD.getPatriarchNames());
+                        tan.getPatriarchNames());
             } else {
                 partitionName = UtilityMethods.getOverlapPartitionName(inheritancePartition.getEntryPointSet(),
-                        clusterHD.getPatriarchNames());
+                        tan.getPatriarchNames());
             }
         }
         
@@ -334,11 +342,11 @@ public class PartitionConceptDialog extends JDialog {
                 groupRootIds = new ArrayList<Long>();
 
                 if (isPartialAreaDialog) {
-                    concepts = abstractionNetwork.getSCTDataSource().getConceptsInPAreaSet(
-                            (PAreaTaxonomy) abstractionNetwork, ((Region) partition).getPAreasInRegion());
+                    concepts = sctAbN.getDataSource().getConceptsInPAreaSet(
+                            (SCTPAreaTaxonomy) sctAbN.getAbstractionNetwork(), ((SCTRegion) partition).getPAreasInRegion());
                 } else {
-                    concepts = abstractionNetwork.getSCTDataSource().getConceptsInClusterSet(
-                            (TribalAbstractionNetwork) abstractionNetwork, ((OverlapInheritancePartition) partition).getClusters());
+                    concepts = sctAbN.getDataSource().getConceptsInClusterSet(
+                            (TribalAbstractionNetwork) sctAbN.getAbstractionNetwork(), ((OverlapInheritancePartition) partition).getClusters());
                 }
 
                 final HashMap<Concept, ArrayList<Long>> genericOverlappingConcepts = new HashMap<Concept, ArrayList<Long>>();
@@ -458,7 +466,7 @@ public class PartitionConceptDialog extends JDialog {
         conceptsPane.setContentType("text/html");
         conceptsPane.setText(builder.toString());
         conceptsPane.setEditable(false);
-        conceptsPane.addHyperlinkListener(new BrowserLauncher(displayFrameListener, abstractionNetwork));
+        conceptsPane.addHyperlinkListener(new BrowserLauncher(displayFrameListener, sctAbN));
 
         conceptsPane.setSelectionStart(0);
         conceptsPane.setSelectionEnd(0);
@@ -480,10 +488,10 @@ public class PartitionConceptDialog extends JDialog {
                 if (index == 1 && tabbedPane.getTabComponentAt(index) == null) { 
                     DisjointPAreaTaxonomy taxonomy;
                     
-                    if(abstractionNetwork instanceof RootSubtaxonomy) {
-                        taxonomy = createDisjointPAreaRootSubtaxonomy(abstractionNetwork, partition);
+                    if(sctAbN instanceof RootSubtaxonomy) {
+                        taxonomy = createDisjointPAreaRootSubtaxonomy(sctAbN, partition);
                     } else {
-                        taxonomy = createDisjointPAreaTaxonomy(abstractionNetwork, partition);
+                        taxonomy = createDisjointPAreaTaxonomy(sctAbN, partition);
                     }
                     
                     DisjointPAreaTaxonomyGraphPanel djpaPanel = new DisjointPAreaTaxonomyGraphPanel(parentFrame, taxonomy, displayFrameListener);
@@ -509,7 +517,7 @@ public class PartitionConceptDialog extends JDialog {
         }
        
         final GenericContainerPartition tempPartition = partition;          // Declared 'final' to..
-        final AbstractionNetwork tempHierarchyData = abstractionNetwork;       // .. use ..
+        final AbstractionNetwork tempHierarchyData = sctAbN.getAbstractionNetwork();       // .. use ..
         final HashMap<Long, ArrayList<Concept>> tempConcepts = concepts;    // .. inside the ..
         final boolean tempHasOverlappingConcepts = hasOverlappingConcepts;  // .. MouseListner
         
@@ -527,7 +535,7 @@ public class PartitionConceptDialog extends JDialog {
                         repeat = true;
 
                         tabbedPane.addTab("Audit Recommendations", 
-                                new JScrollPane(new AuditRecommendationsPanel(tempPartition, (PAreaTaxonomy)tempHierarchyData, 
+                                new JScrollPane(new AuditRecommendationsPanel(tempPartition, (SCTPAreaTaxonomy)tempHierarchyData, 
                                         rootIdMap, tempConcepts, overlappingConcepts, displayFrameListener)) 
                                 );
                         
@@ -541,7 +549,7 @@ public class PartitionConceptDialog extends JDialog {
                         repeat = true;
 
                         tabbedPane.addTab("Audit Recommendations", 
-                                new JScrollPane(new AuditRecommendationsPanel(tempPartition, (PAreaTaxonomy)tempHierarchyData, 
+                                new JScrollPane(new AuditRecommendationsPanel(tempPartition, (SCTPAreaTaxonomy)tempHierarchyData, 
                                         rootIdMap, tempConcepts, overlappingConcepts, displayFrameListener)) 
                                 );
                         
@@ -570,37 +578,38 @@ public class PartitionConceptDialog extends JDialog {
     }
 
     private DisjointPAreaTaxonomy createDisjointPAreaTaxonomy(SCTAbstractionNetwork abn, GenericContainerPartition partition) {
-        ArrayList<PAreaSummary> pareas = ((Region)partition).getPAreasInRegion();
+        ArrayList<SCTPArea> pareas = ((SCTRegion)partition).getPAreasInRegion();
         
         ArrayList<Long> pareaRootIds = new ArrayList<Long>();
 
         HashSet<Concept> roots = new HashSet<Concept>();
 
         // Get the roots of the partial-areas in the area
-        for (PAreaSummary parea : pareas) {
+        for (SCTPArea parea : pareas) {
             pareaRootIds.add(parea.getRoot().getId());
             roots.add(parea.getRoot());
         }
 
-        SCTMultiRootedConceptHierarchy hierarchy = abn.getSCTDataSource().getRegionConceptHierarchy((PAreaTaxonomy) abn, pareas);
+        SCTMultiRootedConceptHierarchy hierarchy = abn.getDataSource().getRegionConceptHierarchy((SCTPAreaTaxonomy) abn.getAbstractionNetwork(), pareas);
 
         DisjointPAreaTaxonomy djpaTaxonomy = new DisjointPAreaTaxonomy(
-                    new HashSet<PAreaSummary>(pareas),
+                    new HashSet<SCTPArea>(pareas),
                     hierarchy,
-                    (PAreaTaxonomy) abn);
+                    (SCTPAreaTaxonomy) abn.getAbstractionNetwork());
         
         return djpaTaxonomy;
     }
     
     
     private DisjointPAreaRootSubtaxonomy createDisjointPAreaRootSubtaxonomy(SCTAbstractionNetwork abn, GenericContainerPartition partition) {
-        ArrayList<PAreaSummary> topLevelPAreas = null;
+        ArrayList<SCTPArea> topLevelPAreas = null;
         
-        PAreaTaxonomy topLevelTaxonomy = ((RootSubtaxonomy)abn).getTopLevelTaxonomy();
+        SCTPAreaTaxonomy topLevelTaxonomy = ((RootSubtaxonomy)abn.getAbstractionNetwork()).getTopLevelTaxonomy();
         
-        ArrayList<Area> topLevelAreas = topLevelTaxonomy.getHierarchyAreas();
+        ArrayList<SCTArea> topLevelAreas = topLevelTaxonomy.getHierarchyAreas();
         
-        ArrayList<InheritedRelationship> areaRelationships = ((Region)partition).getPAreasInRegion().get(0).getRelationships();
+        ArrayList<InheritedRelationship> areaRelationships = 
+                new ArrayList<InheritedRelationship>(((SCTRegion)partition).getPAreasInRegion().get(0).getRelationships());
         
         ArrayList<Long> rels = new ArrayList<Long>();
         
@@ -608,19 +617,21 @@ public class PartitionConceptDialog extends JDialog {
             rels.add(rel.getRelationshipTypeId());
         }
         
-        for(Area area : topLevelAreas) {
-            if(area.getRelationships().equals(rels)) {
+        for(SCTArea area : topLevelAreas) {
+            if(area.getRelationshipIds().equals(rels)) {
                 topLevelPAreas = area.getAllPAreas();
+                
+                break;
             }
         }
         
-        SCTMultiRootedConceptHierarchy hierarchy = abn.getSCTDataSource().getRegionConceptHierarchy((PAreaTaxonomy) abn, topLevelPAreas);
+        SCTMultiRootedConceptHierarchy hierarchy = abn.getDataSource().getRegionConceptHierarchy((SCTPAreaTaxonomy) abn, topLevelPAreas);
 
         DisjointPAreaRootSubtaxonomy djpaTaxonomy = new DisjointPAreaRootSubtaxonomy(
-                    new HashSet<PAreaSummary>(topLevelPAreas),
-                    new HashSet<PAreaSummary>(partition.getGroups()),
+                    new HashSet<SCTPArea>(topLevelPAreas),
+                    new HashSet<SCTPArea>(partition.getGroups()),
                     hierarchy,
-                    (PAreaTaxonomy) abn);
+                    (SCTPAreaTaxonomy) abn);
         
         return djpaTaxonomy;
     }

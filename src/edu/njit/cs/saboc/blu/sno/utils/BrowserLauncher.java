@@ -34,7 +34,7 @@ public class BrowserLauncher implements HyperlinkListener {
             public void run() {
                 long conceptId = Long.parseLong(conceptIdStr);
                 
-                displayListener.addNewBrowserFrame(conceptId, abstractionNetwork.getSCTDataSource());
+                displayListener.addNewBrowserFrame(conceptId, abstractionNetwork.getDataSource());
             }
         });
     }

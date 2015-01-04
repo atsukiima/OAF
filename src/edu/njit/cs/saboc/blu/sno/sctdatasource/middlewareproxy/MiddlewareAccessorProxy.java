@@ -12,7 +12,11 @@ import SnomedShared.pareataxonomy.Area;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import SnomedShared.pareataxonomy.InheritedRelationship.InheritanceType;
 import SnomedShared.pareataxonomy.Region;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.generator.InheritedRelWithHash;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.remote.RemoteSCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.properties.AreaToolProperties;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRemoteDataSource;
@@ -82,8 +86,8 @@ public class MiddlewareAccessorProxy {
     /**
      * A mapping of releases to sets of SNOMED CT taxonomies.
      */
-    private HashMap<String, HashMap<Concept, PAreaTaxonomy>> pareaTaxonomies =
-            new HashMap<String, HashMap<Concept, PAreaTaxonomy>>();
+    private HashMap<String, HashMap<Concept, SCTPAreaTaxonomy>> pareaTaxonomies =
+            new HashMap<String, HashMap<Concept, SCTPAreaTaxonomy>>();
 
     /**
      * A mapping of releases to a set of unique lateral relationships in each SNOMED CT hierarchy.
@@ -296,9 +300,9 @@ public class MiddlewareAccessorProxy {
      * @param hierarchyRoot The root of the hierarchy
      * @return The set of areas that exist in the hierarchy
      */
-    public PAreaTaxonomy getPAreaHierarchyData(String version, Concept hierarchyRoot) {
+    public SCTPAreaTaxonomy getPAreaHierarchyData(String version, Concept hierarchyRoot) {
         if(!pareaTaxonomies.containsKey(version)) {
-            pareaTaxonomies.put(version, new HashMap<Concept, PAreaTaxonomy>());
+            pareaTaxonomies.put(version, new HashMap<Concept, SCTPAreaTaxonomy>());
         }
 
         if(!pareaTaxonomies.get(version).containsKey(hierarchyRoot)) {
@@ -485,7 +489,7 @@ public class MiddlewareAccessorProxy {
      * @param hierarchyRoot The root concept of a SNOMED CT hierarchy.
      * @return Returns the taxonomy data for the given version of the given hierarchy.
      */
-    private PAreaTaxonomy loadPAreaHierarchyData(String version, Concept hierarchyRoot) {
+    private SCTPAreaTaxonomy loadPAreaHierarchyData(String version, Concept hierarchyRoot) {
         try {
             String taxonomyFile = loadRemotePAreaTaxonomyDataFile(version, hierarchyRoot);
             
@@ -644,11 +648,37 @@ public class MiddlewareAccessorProxy {
                     });
                 }
             }
+            
+            ArrayList<SCTArea> convertedAreas = new ArrayList<SCTArea>();
+            
+            HashMap<Integer, SCTPArea> convertedPAreas = new HashMap<Integer, SCTPArea>();
+            
+            for(Area a : areas) {
+                HashSet<InheritedRelationship> areaRels = new HashSet<InheritedRelationship>();
+                
+                for(long relId : a.getRelationships()) {
+                    areaRels.add(new InheritedRelWithHash(InheritanceType.INHERITED, relId));
+                }
+                
+                SCTArea convertedArea = new SCTArea(a.getId(), areaRels);
+                
+                ArrayList<PAreaSummary> areaPAreas = a.getAllPAreas();
+                
+                for(PAreaSummary parea : areaPAreas) {
+                    RemoteSCTPArea remotePArea = new RemoteSCTPArea(new SCTRemoteDataSource(version), parea);
+                    
+                    convertedArea.addPArea(remotePArea);
+                    
+                    convertedPAreas.put(parea.getId(), remotePArea);
+                }
+                
+                convertedAreas.add(convertedArea);
+            }
 
-            PAreaTaxonomy hd = new PAreaTaxonomy(hierarchyRoot, pareas.get(0), areas, pareas, pareaHierarchy,
-                    hierarchyRels, version, new SCTRemoteDataSource(version));
+            SCTPAreaTaxonomy taxonomy = new SCTPAreaTaxonomy(hierarchyRoot, version, new SCTRemoteDataSource(version), 
+                    null, convertedPAreas.get(0), convertedAreas, convertedPAreas, pareaHierarchy, hierarchyRels);
 
-            return hd;
+            return taxonomy;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -662,7 +692,7 @@ public class MiddlewareAccessorProxy {
         return pareas;
     }
 
-    public ArrayList<GroupParentInfo> getPAreaParentInfo(String version, Concept hierarchyRoot, PAreaSummary parea) {
+    public ArrayList<GroupParentInfo> getPAreaParentInfo(String version, Concept hierarchyRoot, SCTPArea parea) {
         Serializable objs[] = {version, "getPAreaParentInfo", hierarchyRoot, parea.getRoot().getId()};
         ArrayList<GroupParentInfo> results = (ArrayList<GroupParentInfo>) sendCommand(objs, false);
 

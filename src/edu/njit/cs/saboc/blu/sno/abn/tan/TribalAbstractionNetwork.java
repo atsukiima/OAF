@@ -4,6 +4,7 @@ import SnomedShared.Concept;
 import SnomedShared.generic.GenericConceptGroup;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.CommonOverlapSet;
+import edu.njit.cs.saboc.blu.core.abn.AbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import java.util.ArrayList;
@@ -14,7 +15,13 @@ import java.util.HashSet;
  *
  * @author Chris
  */
-public class TribalAbstractionNetwork extends SCTAbstractionNetwork {
+public class TribalAbstractionNetwork extends AbstractionNetwork implements SCTAbstractionNetwork<TribalAbstractionNetwork> {
+    
+    protected String sctVersion;
+    
+    protected SCTDataSource dataSource;
+    
+    protected Concept sctRootConcept;
 
     private ArrayList<ClusterSummary> disjointClusters;
 
@@ -31,7 +38,13 @@ public class TribalAbstractionNetwork extends SCTAbstractionNetwork {
             ArrayList<ClusterSummary> nonContributingEntryPoints,
             SCTDataSource dataSource) {
 
-        super(SNOMEDHierarchyRoot, overlapSets, clusters, clusterHierarchy, SNOMEDVersion, dataSource);
+        super(overlapSets, clusters, clusterHierarchy);
+        
+        this.sctRootConcept = SNOMEDHierarchyRoot;
+        
+        this.dataSource = dataSource;
+        
+        this.sctVersion = SNOMEDVersion;
 
         this.disjointClusters = entryPoints;
         this.nonOverlappingDisjointClusters = nonContributingEntryPoints;
@@ -43,6 +56,22 @@ public class TribalAbstractionNetwork extends SCTAbstractionNetwork {
             patriarchNames.put(entryPoint.getHeaderConcept().getId(),
                     entryPointName);
         }
+    }
+    
+    public TribalAbstractionNetwork getAbstractionNetwork() {
+        return this;
+    }
+    
+    public String getSCTVersion() {
+        return sctVersion;
+    }
+    
+    public Concept getSCTRootConcept() {
+        return sctRootConcept;
+    }
+    
+    public SCTDataSource getDataSource() {
+        return dataSource;
     }
 
     public ArrayList<ClusterSummary> getHierarchyEntryPoints() {

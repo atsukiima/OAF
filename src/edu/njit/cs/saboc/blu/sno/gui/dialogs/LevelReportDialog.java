@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.dialogs;
 
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.utils.models.ClusterLevelTableModel;
 import edu.njit.cs.saboc.blu.sno.gui.utils.models.PAreaLevelTableModel;
@@ -26,8 +26,8 @@ public class LevelReportDialog extends JDialog {
         
         JTable levelTable = null;
 
-        if(hierarchyData instanceof PAreaTaxonomy) {
-            levelTable = new JTable(new PAreaLevelTableModel((PAreaTaxonomy)hierarchyData));
+        if(hierarchyData instanceof SCTPAreaTaxonomy) {
+            levelTable = new JTable(new PAreaLevelTableModel((SCTPAreaTaxonomy)hierarchyData));
         } else {
             levelTable = new JTable(new ClusterLevelTableModel((TribalAbstractionNetwork)hierarchyData));
         }
@@ -41,9 +41,9 @@ public class LevelReportDialog extends JDialog {
         setResizable(true);
         setModal(true);
 
-        if(hierarchyData instanceof PAreaTaxonomy) {
-            setTitle("Hierarchy Level Report For: " + hierarchyData.getSNOMEDHierarchyRoot() + " | Rooted At: "
-                    + ((PAreaTaxonomy)hierarchyData).getRootPArea().getRoot().getName());
+        if(hierarchyData instanceof SCTPAreaTaxonomy) {
+            setTitle("Hierarchy Level Report For: " + hierarchyData.getSCTRootConcept() + " | Rooted At: "
+                    + ((SCTPAreaTaxonomy)hierarchyData).getRootPArea().getRoot().getName());
         }
 
         setSize(600, 300);

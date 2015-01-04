@@ -49,11 +49,8 @@ public class RuleViewPanel extends JPanel {
 
     private HashMap<Concept, ArrayList<Concept>> inverseHierarchy;
     private HashMap<Concept, ArrayList<Concept>> hierarchy;
-    //String dirTitle = "";
-    //DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(dirTitle);
-    // DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
 
-    private JTree ruletree;//=new JTree(treeModel);
+    private JTree ruletree;
     private boolean initialized = false;
     private boolean loading = false;
 
@@ -356,7 +353,7 @@ public class RuleViewPanel extends JPanel {
         }
 
         public Object call() throws Exception {
-            ArrayList<SearchResult> locallist = ruleData.getSCTDataSource().searchAnywhere((String) entry.getKey());
+            ArrayList<SearchResult> locallist = ruleData.getDataSource().searchAnywhere((String) entry.getKey());
 
             for (int l = 0; l < locallist.size(); l++) {
                 SearchResult srcres = locallist.get(l);
@@ -371,7 +368,7 @@ public class RuleViewPanel extends JPanel {
                 }
             }
 
-            localconcept = ruleData.getSCTDataSource().getConceptFromId(id);
+            localconcept = ruleData.getDataSource().getConceptFromId(id);
             return localconcept;
         }
 
@@ -410,7 +407,7 @@ public class RuleViewPanel extends JPanel {
                  }
                  }
                  Concept localconcept=MiddlewareAccessorProxy.getProxy().getConceptFromId(ruleData.getVersion(), id);*/
-                Callable callable = new ConceptProxyQuery(ruleData.getVersion(), entry);
+                Callable callable = new ConceptProxyQuery(ruleData.getSCTVersion(), entry);
                 conceptlist.add(executor.submit(callable));
             }
 

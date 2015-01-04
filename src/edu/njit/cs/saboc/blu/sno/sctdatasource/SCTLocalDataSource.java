@@ -7,10 +7,9 @@ import SnomedShared.SearchResult;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.pareataxonomy.ConceptPAreaInfo;
 import SnomedShared.pareataxonomy.GroupParentInfo;
-import SnomedShared.pareataxonomy.PAreaSummary;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.LocalPArea;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.LocalPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.GenericParentPAreaInfo;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.ConceptClusterInfo;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.LocalCluster;
@@ -20,7 +19,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSnomedConcept;
 import edu.njit.cs.saboc.blu.sno.localdatasource.conceptdata.HierarchyMetrics;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
-import edu.njit.cs.saboc.blu.sno.abn.generator.PAreaTaxonomyGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.SearchResultComparator;
 import java.util.ArrayDeque;
@@ -64,7 +63,7 @@ public class SCTLocalDataSource implements SCTDataSource {
 
     private String version;
     
-    private HashMap<Concept, LocalPAreaTaxonomy> hierarchyTaxonomies = new HashMap<Concept, LocalPAreaTaxonomy>();
+    private HashMap<Concept, SCTPAreaTaxonomy> hierarchyTaxonomies = new HashMap<Concept, SCTPAreaTaxonomy>();
 
     public SCTLocalDataSource(Map<Long, LocalSnomedConcept> concepts,
             SCTConceptHierarchy conceptHierarchy, boolean processDescriptions, String version) {
@@ -215,9 +214,9 @@ public class SCTLocalDataSource implements SCTDataSource {
             ArrayList<PAreaDetailsForConcept> results = new ArrayList<PAreaDetailsForConcept>();
             
             Concept root = hierarchies.get(0);
-            PAreaTaxonomy taxonomy = this.getCompleteTaxonomy(root);
+            SCTPAreaTaxonomy taxonomy = this.getCompleteTaxonomy(root);
 
-            for(PAreaSummary parea : taxonomy.getPAreas().values()) {
+            for(SCTPArea parea : taxonomy.getPAreas().values()) {
                 ArrayList<Concept> pareaConcepts = this.getConceptsInPArea(taxonomy, parea);
                 
                 if(pareaConcepts.contains(c)) {
@@ -235,24 +234,24 @@ public class SCTLocalDataSource implements SCTDataSource {
         }
     }
 
-    public ArrayList<Concept> getConceptsInPArea(PAreaTaxonomy taxonomy, PAreaSummary parea) {
-        if (parea instanceof LocalPArea) {
-            LocalPArea localPArea = (LocalPArea) parea;
+    public ArrayList<Concept> getConceptsInPArea(SCTPAreaTaxonomy taxonomy, SCTPArea parea) {
+        if (parea instanceof SCTPArea) {
+            HashSet<Concept> pareaConcepts = parea.getHierarchy().getNodesInHierarchy();
+            
+            ArrayList<Concept> sortedPAreaConcepts = new ArrayList<Concept>(pareaConcepts);
 
-            ArrayList<Concept> pareaConcepts = localPArea.getConceptsInPArea();
+            Collections.sort(sortedPAreaConcepts, new ConceptNameComparator());
 
-            Collections.sort(pareaConcepts, new ConceptNameComparator());
-
-            return pareaConcepts;
+            return sortedPAreaConcepts;
         } else {
             throw new RuntimeException("Unsupported PArea Type: " + parea.getClass());
         }
     }
 
-    public HashMap<Long, ArrayList<Concept>> getConceptsInPAreaSet(PAreaTaxonomy taxonomy, ArrayList<PAreaSummary> pareas) {
+    public HashMap<Long, ArrayList<Concept>> getConceptsInPAreaSet(SCTPAreaTaxonomy taxonomy, ArrayList<SCTPArea> pareas) {
         HashMap<Long, ArrayList<Concept>> pareaSetConcepts = new HashMap<Long, ArrayList<Concept>>();
 
-        for (PAreaSummary parea : pareas) {
+        for (SCTPArea parea : pareas) {
             pareaSetConcepts.put(parea.getRoot().getId(), getConceptsInPArea(taxonomy, parea));
         }
 
@@ -401,16 +400,15 @@ public class SCTLocalDataSource implements SCTDataSource {
         return results;
     }
 
-    public HashMap<Long, String> getUniqueLateralRelationshipsInHierarchy(PAreaTaxonomy taxonomy, Concept hierarchyRoot) {
+    public HashMap<Long, String> getUniqueLateralRelationshipsInHierarchy(SCTPAreaTaxonomy taxonomy, Concept hierarchyRoot) {
         throw new RuntimeException("Method not yet supported...");
     }
 
-    public int getConceptCountInPAreaHierarchy(PAreaTaxonomy taxonomy, ArrayList<PAreaSummary> pareas) {
+    public int getConceptCountInPAreaHierarchy(SCTPAreaTaxonomy taxonomy, ArrayList<SCTPArea> pareas) {
         HashSet<Concept> concepts = new HashSet<Concept>();
 
-        for (PAreaSummary parea : pareas) {
-            LocalPArea localPArea = (LocalPArea) parea;
-            concepts.addAll(localPArea.getConceptsInPArea());
+        for (SCTPArea parea : pareas) {
+            concepts.addAll(parea.getHierarchy().getNodesInHierarchy());
         }
 
         return concepts.size();
@@ -427,16 +425,14 @@ public class SCTLocalDataSource implements SCTDataSource {
         return concepts.size();
     }
 
-    public ArrayList<ConceptPAreaInfo> getConceptPAreaInfo(PAreaTaxonomy taxonomy, Concept c) {
-        Collection<PAreaSummary> pareas = taxonomy.getPAreas().values();
+    public ArrayList<ConceptPAreaInfo> getConceptPAreaInfo(SCTPAreaTaxonomy taxonomy, Concept c) {
+        Collection<SCTPArea> pareas = taxonomy.getPAreas().values();
         
         ArrayList<ConceptPAreaInfo> pareasWithConcept = new ArrayList<ConceptPAreaInfo>();
         
-        for(PAreaSummary parea : pareas) {
-            LocalPArea localPArea = (LocalPArea)parea;
-            
-            if(localPArea.getConceptsInPArea().contains(c)) {
-                pareasWithConcept.add(new ConceptPAreaInfo(taxonomy.getSNOMEDHierarchyRoot().getId(), 
+        for(SCTPArea parea : pareas) {            
+            if(parea.getHierarchy().getNodesInHierarchy().contains(c)) {
+                pareasWithConcept.add(new ConceptPAreaInfo(taxonomy.getSCTRootConcept().getId(), 
                         parea.getRoot().getId()));
             }
         }
@@ -453,38 +449,39 @@ public class SCTLocalDataSource implements SCTDataSource {
             LocalCluster localCluster = (LocalCluster)cluster;
             
             if(localCluster.getConcepts().contains(c)) {
-                clustersWithConcept.add(new ConceptClusterInfo(tan.getSNOMEDHierarchyRoot().getId(), localCluster.getRoot().getId()));
+                clustersWithConcept.add(new ConceptClusterInfo(tan.getSCTRootConcept().getId(), localCluster.getRoot().getId()));
             }
         }
         
         return clustersWithConcept;
     }
 
-    public ArrayList<GroupParentInfo> getPAreaParentInfo(PAreaTaxonomy taxonomy, PAreaSummary parea) {
-        if (parea instanceof LocalPArea) {
-            LocalPArea localPArea = (LocalPArea) parea;
+    public ArrayList<GroupParentInfo> getPAreaParentInfo(SCTPAreaTaxonomy taxonomy, SCTPArea parea) {
 
-            ArrayList<GroupParentInfo> parentInfo = localPArea.getParentGroupInformation();
-
-            Collections.sort(parentInfo, new Comparator<GroupParentInfo>() {
-                public int compare(GroupParentInfo a, GroupParentInfo b) {
-                    if (a.getParentPAreaRootId() == b.getParentPAreaRootId()) {
-                        return a.getParentConcept().getName().compareToIgnoreCase(b.getParentConcept().getName());
-                    } else {
-                        Long aId = a.getParentPAreaRootId();
-                        Long bId = b.getParentPAreaRootId();
-
-                        return aId.compareTo(bId);
-                    }
-                }
-            });
-
-            return parentInfo;
-        } else {
-            throw new RuntimeException("Unsupported PArea Type: " + parea.getClass());
+        HashSet<GenericParentPAreaInfo<Concept, SCTPArea>> parentInfo = parea.getParentPAreaInfo();
+                
+        ArrayList<GroupParentInfo> result = new ArrayList<GroupParentInfo>();
+        
+        for(GenericParentPAreaInfo<Concept, SCTPArea> parent : parentInfo) {
+            result.add(new GroupParentInfo(parent.getParentConcept(), parent.getParentPArea().getRoot().getId()));
         }
+
+        Collections.sort(result, new Comparator<GroupParentInfo>() {
+            public int compare(GroupParentInfo a, GroupParentInfo b) {
+                if (a.getParentPAreaRootId() == b.getParentPAreaRootId()) {
+                    return a.getParentConcept().getName().compareToIgnoreCase(b.getParentConcept().getName());
+                } else {
+                    Long aId = a.getParentPAreaRootId();
+                    Long bId = b.getParentPAreaRootId();
+
+                    return aId.compareTo(bId);
+                }
+            }
+        });
+
+        return result;
     }
-    
+
 
     public ArrayList<GroupParentInfo> getClusterParentInfo(TribalAbstractionNetwork tan, ClusterSummary cluster) {
         if (cluster instanceof LocalCluster) {
@@ -511,14 +508,8 @@ public class SCTLocalDataSource implements SCTDataSource {
         }
     }
 
-    public SCTConceptHierarchy getPAreaConceptHierarchy(PAreaTaxonomy taxonomy, PAreaSummary parea) {
-        if (parea instanceof LocalPArea) {
-            LocalPArea localPArea = (LocalPArea) parea;
-
-            return localPArea.getConceptHierarchy();
-        } else {
-            throw new RuntimeException("Unsupported PArea Type: " + parea.getClass());
-        }
+    public SCTConceptHierarchy getPAreaConceptHierarchy(SCTPAreaTaxonomy taxonomy, SCTPArea parea) {
+        return (SCTConceptHierarchy)parea.getHierarchy();
     }
 
     public SCTConceptHierarchy getClusterConceptHierarchy(TribalAbstractionNetwork tan, ClusterSummary cluster) {
@@ -531,23 +522,19 @@ public class SCTLocalDataSource implements SCTDataSource {
         }
     }
 
-    public SCTMultiRootedConceptHierarchy getRegionConceptHierarchy(PAreaTaxonomy taxonomy, 
-            ArrayList<PAreaSummary> pareas) {
+    public SCTMultiRootedConceptHierarchy getRegionConceptHierarchy(SCTPAreaTaxonomy taxonomy, 
+            ArrayList<SCTPArea> pareas) {
 
         HashSet<Concept> roots = new HashSet<Concept>();
 
-        for (PAreaSummary parea : pareas) {
+        for (SCTPArea parea : pareas) {
             roots.add(parea.getRoot());
         }
 
         SCTMultiRootedConceptHierarchy hierarchy = new SCTMultiRootedConceptHierarchy(roots);
 
-        for (PAreaSummary parea : pareas) {
-            LocalPArea localPArea = (LocalPArea) parea;
-
-            SCTConceptHierarchy pareaHierarchy = localPArea.getConceptHierarchy();
-            
-            hierarchy.addHierarchy(pareaHierarchy);
+        for (SCTPArea parea : pareas) {
+            hierarchy.addHierarchy((SCTConceptHierarchy)parea.getHierarchy());
         }
 
         return hierarchy;
@@ -569,8 +556,8 @@ public class SCTLocalDataSource implements SCTDataSource {
         return results;
     }
     
-    public ArrayList<SearchResult> searchForConceptsWithinTaxonomy(PAreaTaxonomy taxonomy,
-            ArrayList<PAreaSummary> pareas, String term) {
+    public ArrayList<SearchResult> searchForConceptsWithinTaxonomy(SCTPAreaTaxonomy taxonomy,
+            ArrayList<SCTPArea> pareas, String term) {
         
         term = term.toLowerCase();
 
@@ -580,9 +567,8 @@ public class SCTLocalDataSource implements SCTDataSource {
         
         HashSet<Concept> uniqueConcepts = new HashSet<Concept>();
         
-        for(PAreaSummary parea : pareas) {
-            LocalPArea localPArea = (LocalPArea)parea;
-            uniqueConcepts.addAll(localPArea.getConceptsInPArea());
+        for(SCTPArea parea : pareas) {
+            uniqueConcepts.addAll(parea.getConceptsInPArea());
         }
         
         ArrayList<SearchResult> results = searchWithinUniqueConceptList(uniqueConcepts, term);
@@ -893,12 +879,14 @@ public class SCTLocalDataSource implements SCTDataSource {
         return false;
     }
     
-    public PAreaTaxonomy getCompleteTaxonomy(Concept root) {
-        LocalPAreaTaxonomy taxonomy;
+    public SCTPAreaTaxonomy getCompleteTaxonomy(Concept root) {
+        SCTPAreaTaxonomy taxonomy;
 
         if (!hierarchyTaxonomies.containsKey(root)) {
-            PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
-            hierarchyTaxonomies.put(root, generator.createPAreaTaxonomy(root, this, new InferredRelationshipsRetriever()));
+            SCTConceptHierarchy hierarchy = (SCTConceptHierarchy)this.conceptHierarchy.getSubhierarchyRootedAt(root);
+            
+            SCTPAreaTaxonomyGenerator generator = new SCTPAreaTaxonomyGenerator(root, this, hierarchy, new InferredRelationshipsRetriever());
+            hierarchyTaxonomies.put(root, generator.derivePAreaTaxonomy());
         }
 
         taxonomy = hierarchyTaxonomies.get(root);

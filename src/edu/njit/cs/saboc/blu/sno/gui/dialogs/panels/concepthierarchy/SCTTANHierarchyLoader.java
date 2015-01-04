@@ -20,6 +20,6 @@ public class SCTTANHierarchyLoader extends SCTConceptGroupHierarchyLoader<Cluste
     }
     
     public SingleRootedHierarchy<Concept> getGroupHierarchy(ClusterSummary cluster) {
-        return tan.getSCTDataSource().getClusterConceptHierarchy(tan, cluster);
+        return tan.getDataSource().getClusterConceptHierarchy(tan, cluster);
     }
 }

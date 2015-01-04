@@ -1,10 +1,10 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons;
 
-import SnomedShared.pareataxonomy.PAreaSummary;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphEdge;
+import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.PopupToggleButton;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.graph.options.GraphOptions;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.properties.AuditReportProperties;
 import java.awt.Dimension;
@@ -36,7 +36,7 @@ import javax.swing.event.ChangeListener;
  */
 public class GraphOptionsButton extends PopupToggleButton {
 
-    public GraphOptionsButton(JFrame parent, final PAreaInternalGraphFrame igf, final PAreaTaxonomy data) {
+    public GraphOptionsButton(JFrame parent, final PAreaInternalGraphFrame igf, final SCTPAreaTaxonomy data) {
         super(parent, "Options");
         
         JPanel popupPanel  = new JPanel();
@@ -131,11 +131,11 @@ public class GraphOptionsButton extends PopupToggleButton {
         pareaThresholdPanel.setBorder(BorderFactory.createTitledBorder("Display PAreas With # of Concepts Between"));
         pareaThresholdPanel.add(new JLabel("Max: "));
 
-        HashMap<Integer, PAreaSummary> pareas = data.getPAreas();
+        HashMap<Integer, SCTPArea> pareas = data.getPAreas();
 
         int max = 0;
 
-        for(PAreaSummary summary : pareas.values()) {
+        for(SCTPArea summary : pareas.values()) {
             if(summary.getConceptCount() > max) {
                 max = summary.getConceptCount();
             }

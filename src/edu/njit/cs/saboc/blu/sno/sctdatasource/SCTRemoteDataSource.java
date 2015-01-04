@@ -7,8 +7,8 @@ import SnomedShared.SearchResult;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.pareataxonomy.ConceptPAreaInfo;
 import SnomedShared.pareataxonomy.GroupParentInfo;
-import SnomedShared.pareataxonomy.PAreaSummary;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.ConceptClusterInfo;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
@@ -69,22 +69,22 @@ public class SCTRemoteDataSource implements SCTDataSource {
         return proxy.getSummaryOfPAreasContainingConcept(sctVersion, c.getId());
     }
 
-    public ArrayList<Concept> getConceptsInPArea(PAreaTaxonomy taxonomy, PAreaSummary parea) {
-        return proxy.getConceptsInPArea(sctVersion, taxonomy.getSNOMEDHierarchyRoot(), parea.getRoot());
+    public ArrayList<Concept> getConceptsInPArea(SCTPAreaTaxonomy taxonomy, SCTPArea parea) {
+        return proxy.getConceptsInPArea(sctVersion, taxonomy.getSCTRootConcept(), parea.getRoot());
     }
 
-    public HashMap<Long, ArrayList<Concept>> getConceptsInPAreaSet(PAreaTaxonomy taxonomy, ArrayList<PAreaSummary> pareas) {
+    public HashMap<Long, ArrayList<Concept>> getConceptsInPAreaSet(SCTPAreaTaxonomy taxonomy, ArrayList<SCTPArea> pareas) {
         ArrayList<Long> rootIds = new ArrayList<Long>();
         
-        for(PAreaSummary summary : pareas) {
-            rootIds.add(summary.getRoot().getId());
+        for(SCTPArea parea : pareas) {
+            rootIds.add(parea.getRoot().getId());
         }
         
-        return proxy.getConceptsInPAreaSet(sctVersion, taxonomy.getSNOMEDHierarchyRoot(), rootIds);
+        return proxy.getConceptsInPAreaSet(sctVersion, taxonomy.getSCTRootConcept(), rootIds);
     }
 
     public ArrayList<Concept> getConceptsInCluster(TribalAbstractionNetwork tan, ClusterSummary cluster) {
-        return proxy.getConceptsInCluster(sctVersion, tan.getSNOMEDHierarchyRoot(), cluster.getRoot());
+        return proxy.getConceptsInCluster(sctVersion, tan.getSCTRootConcept(), cluster.getRoot());
     }
 
     public HashMap<Long, ArrayList<Concept>> getConceptsInClusterSet(TribalAbstractionNetwork tan, ArrayList<ClusterSummary> clusters) {
@@ -94,7 +94,7 @@ public class SCTRemoteDataSource implements SCTDataSource {
             clusterRootIds.add(cluster.getRoot().getId());
         }
         
-        return proxy.getConceptsInClusterSet(sctVersion, tan.getSNOMEDHierarchyRoot(), clusterRootIds);
+        return proxy.getConceptsInClusterSet(sctVersion, tan.getSCTRootConcept(), clusterRootIds);
     }
 
     public ArrayList<SearchResult> searchExact(String term) {
@@ -109,18 +109,18 @@ public class SCTRemoteDataSource implements SCTDataSource {
         return proxy.searchAnywhere(sctVersion, term);
     }
 
-    public HashMap<Long, String> getUniqueLateralRelationshipsInHierarchy(PAreaTaxonomy taxonomy, Concept hierarchyRoot) {
+    public HashMap<Long, String> getUniqueLateralRelationshipsInHierarchy(SCTPAreaTaxonomy taxonomy, Concept hierarchyRoot) {
         return proxy.getUniqueLateralRelationshipsInHierarchy(sctVersion, hierarchyRoot);
     }
 
-    public int getConceptCountInPAreaHierarchy(PAreaTaxonomy taxonomy, ArrayList<PAreaSummary> pareas) {
+    public int getConceptCountInPAreaHierarchy(SCTPAreaTaxonomy taxonomy, ArrayList<SCTPArea> pareas) {
         ArrayList<Integer> pareaIds = new ArrayList<Integer>();
         
-        for(PAreaSummary summary : pareas) {
-            pareaIds.add(summary.getId());
+        for(SCTPArea parea : pareas) {
+            pareaIds.add(parea.getId());
         }
         
-        return proxy.getConceptCountInPAreaHierarchy(sctVersion, taxonomy.getSNOMEDHierarchyRoot(), pareaIds);
+        return proxy.getConceptCountInPAreaHierarchy(sctVersion, taxonomy.getSCTRootConcept(), pareaIds);
     }
 
     public int getConceptCountInClusterHierarchy(TribalAbstractionNetwork tan, ArrayList<ClusterSummary> clusters) {
@@ -130,10 +130,10 @@ public class SCTRemoteDataSource implements SCTDataSource {
             clusterIds.add(cluster.getId());
         }
         
-        return proxy.getConceptCountInClusterHierarchy(sctVersion, tan.getSNOMEDHierarchyRoot(), clusterIds);
+        return proxy.getConceptCountInClusterHierarchy(sctVersion, tan.getSCTRootConcept(), clusterIds);
     }
 
-    public ArrayList<ConceptPAreaInfo> getConceptPAreaInfo(PAreaTaxonomy taxonomy, Concept c) {
+    public ArrayList<ConceptPAreaInfo> getConceptPAreaInfo(SCTPAreaTaxonomy taxonomy, Concept c) {
         return proxy.getConceptPAreaInfo(sctVersion, c.getId());
     }
     
@@ -141,55 +141,55 @@ public class SCTRemoteDataSource implements SCTDataSource {
         throw new RuntimeException("Method not yet support...");
     }
 
-    public ArrayList<GroupParentInfo> getPAreaParentInfo(PAreaTaxonomy taxonomy, PAreaSummary parea) {
-        return proxy.getPAreaParentInfo(sctVersion, taxonomy.getSNOMEDHierarchyRoot(), parea);
+    public ArrayList<GroupParentInfo> getPAreaParentInfo(SCTPAreaTaxonomy taxonomy, SCTPArea parea) {
+        return proxy.getPAreaParentInfo(sctVersion, taxonomy.getSCTRootConcept(), parea);
     }
     
     public ArrayList<GroupParentInfo> getClusterParentInfo(TribalAbstractionNetwork tan, ClusterSummary cluster) {
-        return proxy.getClusterParentInfo(sctVersion, tan.getSNOMEDHierarchyRoot(), cluster);
+        return proxy.getClusterParentInfo(sctVersion, tan.getSCTRootConcept(), cluster);
     }
     
-    public SCTConceptHierarchy getPAreaConceptHierarchy(PAreaTaxonomy taxonomy, PAreaSummary parea) {
+    public SCTConceptHierarchy getPAreaConceptHierarchy(SCTPAreaTaxonomy taxonomy, SCTPArea parea) {
         HashMap<Concept, ArrayList<Concept>> conceptHierarchy = 
-                proxy.getPAreaConceptHierarchy(sctVersion, taxonomy.getSNOMEDHierarchyRoot().getId(), parea.getRoot().getId());
+                proxy.getPAreaConceptHierarchy(sctVersion, taxonomy.getSCTRootConcept().getId(), parea.getRoot().getId());
         
         return new SCTConceptHierarchy(parea.getRoot(), UtilityMethods.convertALMapToHSMap(conceptHierarchy));
     }
 
     public SCTConceptHierarchy getClusterConceptHierarchy(TribalAbstractionNetwork tan, ClusterSummary cluster) {
         HashMap<Concept, ArrayList<Concept>> conceptHierarchy =
-                proxy.getClusterConceptHierarchy(sctVersion, tan.getSNOMEDHierarchyRoot().getId(), cluster.getRoot().getId());
+                proxy.getClusterConceptHierarchy(sctVersion, tan.getSCTRootConcept().getId(), cluster.getRoot().getId());
         
         return new SCTConceptHierarchy(cluster.getRoot(), UtilityMethods.convertALMapToHSMap(conceptHierarchy));
     }
 
-    public SCTMultiRootedConceptHierarchy getRegionConceptHierarchy(PAreaTaxonomy taxonomy, 
-            ArrayList<PAreaSummary> pareas) {
+    public SCTMultiRootedConceptHierarchy getRegionConceptHierarchy(SCTPAreaTaxonomy taxonomy, 
+            ArrayList<SCTPArea> pareas) {
         
         HashSet<Concept> roots = new HashSet<Concept>();
         ArrayList<Long> pareaRootIds = new ArrayList<Long>();
         
-        for(PAreaSummary parea : pareas) {
+        for(SCTPArea parea : pareas) {
             pareaRootIds.add(parea.getRoot().getId());
             roots.add(parea.getRoot());
         }
         
         HashMap<Concept, ArrayList<Concept>> conceptHierarchy = 
-                proxy.getRegionConceptHierarchy(sctVersion, taxonomy.getSNOMEDHierarchyRoot().getId(), pareaRootIds);
+                proxy.getRegionConceptHierarchy(sctVersion, taxonomy.getSCTRootConcept().getId(), pareaRootIds);
     
         return new SCTMultiRootedConceptHierarchy(roots, UtilityMethods.convertALMapToHSMap(conceptHierarchy));
     }
     
-    public ArrayList<SearchResult> searchForConceptsWithinTaxonomy(PAreaTaxonomy taxonomy,
-            ArrayList<PAreaSummary> pareas, String term) {
+    public ArrayList<SearchResult> searchForConceptsWithinTaxonomy(SCTPAreaTaxonomy taxonomy,
+            ArrayList<SCTPArea> pareas, String term) {
         
         ArrayList<Integer> pareaIds = new ArrayList<Integer>();
         
-        for(PAreaSummary parea : pareas) {
+        for(SCTPArea parea : pareas) {
             pareaIds.add(parea.getId());
         }
         
-        return proxy.searchAnywhereWithinHierarchy(sctVersion, taxonomy.getSNOMEDHierarchyRoot().getId(), pareaIds, term);
+        return proxy.searchAnywhereWithinHierarchy(sctVersion, taxonomy.getSCTRootConcept().getId(), pareaIds, term);
     }
     
     public ArrayList<SearchResult> searchForConceptsWithinTAN(TribalAbstractionNetwork tan, 

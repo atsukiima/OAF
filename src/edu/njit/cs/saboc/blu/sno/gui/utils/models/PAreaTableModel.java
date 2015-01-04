@@ -1,7 +1,8 @@
 package edu.njit.cs.saboc.blu.sno.gui.utils.models;
 
 import SnomedShared.pareataxonomy.PAreaSummary;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import java.util.ArrayList;
 import java.util.HashSet;
 import javax.swing.table.AbstractTableModel;
@@ -11,15 +12,15 @@ public class PAreaTableModel extends AbstractTableModel {
     String[] columnNames = new String[]{"Root Name", "Concepts", "Parents", "Children"};
     private Object[][] data;
 
-    public PAreaTableModel(PAreaTaxonomy pareaTaxonomy, ArrayList<PAreaSummary> pareas) {
+    public PAreaTableModel(SCTPAreaTaxonomy pareaTaxonomy, ArrayList<SCTPArea> pareas) {
         setData(pareaTaxonomy, pareas);
     }
 
-    public final void setData(PAreaTaxonomy pareaTaxonomy, ArrayList<PAreaSummary> pareas) {
+    public final void setData(SCTPAreaTaxonomy pareaTaxonomy, ArrayList<SCTPArea> pareas) {
         data = new Object[pareas.size()][5];
 
         for (int r = 0; r < pareas.size(); r++) {
-            PAreaSummary parea = pareas.get(r);
+            SCTPArea parea = pareas.get(r);
 
             data[r][0] = parea.getRoot().getName();
             data[r][1] = new Integer(parea.getConceptCount());

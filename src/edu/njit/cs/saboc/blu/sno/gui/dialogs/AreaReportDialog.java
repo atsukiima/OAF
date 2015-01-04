@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.dialogs;
 
-import SnomedShared.pareataxonomy.Area;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluArea;
 import edu.njit.cs.saboc.blu.sno.gui.utils.models.AreaTableModel;
@@ -25,7 +25,7 @@ public class AreaReportDialog extends JDialog {
     public AreaReportDialog(final PAreaBluGraph graph) {
         JPanel dialogPanel = new JPanel(new BorderLayout());
 
-        final PAreaTaxonomy pareaTaxonomy = graph.getPAreaTaxonomy();
+        final SCTPAreaTaxonomy pareaTaxonomy = graph.getPAreaTaxonomy();
 
         final RelationshipRenderer relRenderer = new RelationshipRenderer();
 
@@ -54,7 +54,7 @@ public class AreaReportDialog extends JDialog {
                 if (areaTable.getRowSelectionAllowed()) {
                     int selectedIndex = e.getFirstIndex();
 
-                    Area a = pareaTaxonomy.getHierarchyAreas().get(selectedIndex);
+                    SCTArea a = pareaTaxonomy.getHierarchyAreas().get(selectedIndex);
                     final BluArea bluArea = (BluArea)graph.getContainerEntries().get(a.getId());
 
                     SwingUtilities.invokeLater(new Runnable() {
@@ -81,7 +81,7 @@ public class AreaReportDialog extends JDialog {
 
         setResizable(true);
         setModal(true);
-        setTitle("Area Report For: " + pareaTaxonomy.getSNOMEDHierarchyRoot() + " | Rooted At: " +
+        setTitle("Area Report For: " + pareaTaxonomy.getSCTRootConcept() + " | Rooted At: " +
                 pareaTaxonomy.getRootPArea().getRoot().getName());
 
         setSize(600, 600);

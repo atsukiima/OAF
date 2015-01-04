@@ -16,9 +16,9 @@ import edu.njit.cs.saboc.blu.core.graph.edges.GraphLane;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphLevel;
 import edu.njit.cs.saboc.blu.core.graph.layout.GraphLayoutConstants;
 import edu.njit.cs.saboc.blu.core.graph.nodes.GenericGroupEntry;
+import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.LocalCluster;
-import edu.njit.cs.saboc.blu.sno.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.sno.graph.tan.BluCluster;
 import edu.njit.cs.saboc.blu.sno.graph.tan.BluCommonOverlapSet;
 import edu.njit.cs.saboc.blu.sno.graph.tan.BluOverlapPartition;
@@ -171,7 +171,7 @@ public class ClusterNoPartitionLayout extends GenericClusterLayout {
             String countString;
 
             if (showConceptCounts) {
-                int conceptCount = hierarchyData.getSCTDataSource().getConceptCountInClusterHierarchy(
+                int conceptCount = hierarchyData.getDataSource().getConceptCountInClusterHierarchy(
                                     hierarchyData, clusters);
 
                 if (conceptCount == 1) {

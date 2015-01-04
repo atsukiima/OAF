@@ -10,8 +10,8 @@ import edu.njit.cs.saboc.blu.core.graph.edges.GraphLane;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphLevel;
 import edu.njit.cs.saboc.blu.core.graph.layout.GraphLayoutConstants;
 import edu.njit.cs.saboc.blu.core.graph.nodes.GenericGroupEntry;
+import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
-import edu.njit.cs.saboc.blu.sno.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.sno.graph.tan.BluCluster;
 import edu.njit.cs.saboc.blu.sno.graph.tan.BluCommonOverlapSet;
 import edu.njit.cs.saboc.blu.sno.graph.tan.BluOverlapPartition;
@@ -44,7 +44,7 @@ public class ClusterPartitionLayout extends GenericClusterLayout {
             }
         }
 
-        ClusterSummary hierarchyRootSummary = new ClusterSummary(-1, hierarchyData.getSNOMEDHierarchyRoot(),
+        ClusterSummary hierarchyRootSummary = new ClusterSummary(-1, hierarchyData.getSCTRootConcept(),
                 1, new HashSet<Integer>(), new EntryPointSet());
 
         CommonOverlapSet hierarchyRootSet = new CommonOverlapSet(-2, new HashSet<Long>());

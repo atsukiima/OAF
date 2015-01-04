@@ -23,7 +23,7 @@ public class SCTConceptGroupDetailsPanel extends GroupDetailsPanel {
     private JEditorPane groupChildrenPane;
     
     public SCTConceptGroupDetailsPanel(SCTAbstractionNetwork abn, GroupType type, SCTDisplayFrameListener displayFrameListener) {
-        super(abn, type);
+        super(abn.getAbstractionNetwork(), type);
         
         this.initialize();
 

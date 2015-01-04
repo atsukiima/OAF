@@ -239,7 +239,7 @@ public abstract class GenericClusterLayout extends BluGraphLayout<CommonOverlapS
         String countStr;
         
         if (graph.showingConceptCountLabels()) {
-                int conceptCount = hierarchyData.getSCTDataSource().getConceptCountInClusterHierarchy(hierarchyData, bandPartition.getClusters());
+                int conceptCount = hierarchyData.getDataSource().getConceptCountInClusterHierarchy(hierarchyData, bandPartition.getClusters());
 
                 if (conceptCount == 1) {
                     countStr = " (1 Concept)";

@@ -1,19 +1,18 @@
 package edu.njit.cs.saboc.blu.sno.graph.layout;
 
 import SnomedShared.generic.GenericContainerPartition;
-import SnomedShared.pareataxonomy.Area;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import SnomedShared.pareataxonomy.InheritedRelationship.InheritanceType;
-import SnomedShared.pareataxonomy.PAreaSummary;
-import SnomedShared.pareataxonomy.Region;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphEdge;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphGroupLevel;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphLevel;
 import edu.njit.cs.saboc.blu.core.graph.layout.BluGraphLayout;
 import edu.njit.cs.saboc.blu.core.graph.nodes.GenericGroupEntry;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.LocalPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTRegion;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluArea;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluPArea;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluRegion;
@@ -34,13 +33,13 @@ import javax.swing.JLabel;
  *
  * @author Chris
  */
-public abstract class GenericPAreaLayout extends BluGraphLayout<Area, BluArea, BluPArea> {
+public abstract class GenericPAreaLayout extends BluGraphLayout<SCTArea, BluArea, BluPArea> {
 
-    protected PAreaTaxonomy pareaTaxonomy;
+    protected SCTPAreaTaxonomy pareaTaxonomy;
     
     protected boolean isRegionLayout;
    
-    protected GenericPAreaLayout(BluGraph graph, PAreaTaxonomy pareaTaxonomy, boolean isRegionLayout) {
+    protected GenericPAreaLayout(BluGraph graph, SCTPAreaTaxonomy pareaTaxonomy, boolean isRegionLayout) {
         super(graph);
         
         this.isRegionLayout = isRegionLayout;
@@ -48,16 +47,16 @@ public abstract class GenericPAreaLayout extends BluGraphLayout<Area, BluArea, B
     }
 
     public void doLayout() {
-        ArrayList<Area> sortedAreas = new ArrayList<Area>();    // Used for generating the graph
-        ArrayList<Area> levelAreas = new ArrayList<Area>();     // Used for generating the graph
+        ArrayList<SCTArea> sortedAreas = new ArrayList<SCTArea>();    // Used for generating the graph
+        ArrayList<SCTArea> levelAreas = new ArrayList<SCTArea>();     // Used for generating the graph
 
-        ArrayList<Area> tempAreas = pareaTaxonomy.getHierarchyAreas();
+        ArrayList<SCTArea> tempAreas = pareaTaxonomy.getHierarchyAreas();
 
-        Area lastArea = null;
+        SCTArea lastArea = null;
 
-        Collections.sort(tempAreas, new Comparator<Area>() {    // Sort the areas based on the number of their relationships.
+        Collections.sort(tempAreas, new Comparator<SCTArea>() {    // Sort the areas based on the number of their relationships.
 
-            public int compare(Area a, Area b) {
+            public int compare(SCTArea a, SCTArea b) {
                 if (a.getRelationships() == null || b.getRelationships() == null) {
                     return 0;
                 }
@@ -72,11 +71,11 @@ public abstract class GenericPAreaLayout extends BluGraphLayout<Area, BluArea, B
             }
         });
 
-        for (Area a : tempAreas) {
+        for (SCTArea a : tempAreas) {
             if (lastArea != null && lastArea.getRelationships().size() != a.getRelationships().size()) {
-                Collections.sort(levelAreas, new Comparator<Area>() {    // Sort the areas based on the number of their relationships.
+                Collections.sort(levelAreas, new Comparator<SCTArea>() {    // Sort the areas based on the number of their relationships.
 
-                    public int compare(Area a, Area b) {
+                    public int compare(SCTArea a, SCTArea b) {
                         if (a.getAllPAreas().size() > b.getAllPAreas().size()) {
                             return 1;
                         } else if (a.getAllPAreas().size() < b.getAllPAreas().size()) {
@@ -111,9 +110,9 @@ public abstract class GenericPAreaLayout extends BluGraphLayout<Area, BluArea, B
             lastArea = a;
         }
 
-        Collections.sort(levelAreas, new Comparator<Area>() {    // Sort the areas based on the number of their relationships.
+        Collections.sort(levelAreas, new Comparator<SCTArea>() {    // Sort the areas based on the number of their relationships.
 
-            public int compare(Area a, Area b) {
+            public int compare(SCTArea a, SCTArea b) {
                 if (a.getAllPAreas().size() > b.getAllPAreas().size()) {
                     return 1;
                 } else if (a.getAllPAreas().size() < b.getAllPAreas().size()) {
@@ -144,7 +143,7 @@ public abstract class GenericPAreaLayout extends BluGraphLayout<Area, BluArea, B
         layoutGroupContainers = sortedAreas;
     }
     
-    public ArrayList<Area> getLayoutAreas() {
+    public ArrayList<SCTArea> getLayoutAreas() {
         return layoutGroupContainers;
     }
 
@@ -158,18 +157,8 @@ public abstract class GenericPAreaLayout extends BluGraphLayout<Area, BluArea, B
      * @param pAreaLevel The object representing the pArea level this pArea will be added to.
      * @return A BluPArea object representing the newly created JPanel for this pArea
      */
-    protected BluPArea createPAreaPanel(PAreaSummary p, BluRegion parent, int x, int y, int pAreaX, GraphGroupLevel pAreaLevel) {
-        BluPArea pAreaPanel = new BluPArea(p, graph, parent, pAreaX, pAreaLevel, new ArrayList<GraphEdge>());
-        
-        //Make sure this panel dimensions will fit on the graph, stretch the graph if necessary
-        graph.stretchGraphToFitPanel(x, y, GenericGroupEntry.ENTRY_WIDTH, GenericGroupEntry.ENTRY_HEIGHT);
-
-        //Setup the panel's dimensions, etc.
-        pAreaPanel.setBounds(x, y, GenericGroupEntry.ENTRY_WIDTH, GenericGroupEntry.ENTRY_HEIGHT);
-
-        parent.add(pAreaPanel, 0);
-
-        return pAreaPanel;
+    protected BluPArea createPAreaPanel(SCTPArea p, BluRegion parent, int x, int y, int pAreaX, GraphGroupLevel pAreaLevel) {
+        return PAreaTaxonomyLayoutUtils.createPAreaPanel(graph, p, parent, x, y, pAreaX, pAreaLevel);
     }
 
     /**
@@ -184,17 +173,8 @@ public abstract class GenericPAreaLayout extends BluGraphLayout<Area, BluArea, B
      * @param parentLevel The object representing the level this area will be added to.
      * @return A BluArea object representing the newly created JPanel for this area.
      */
-    protected BluArea createAreaPanel(Area a, int x, int y, int width, int height, Color c, int areaX, GraphLevel parentLevel) {
-        BluArea areaPanel = new BluArea(a, graph, areaX, parentLevel, new Rectangle(x, y, width, height));
-
-        graph.stretchGraphToFitPanel(x, y, width, height);
-
-        areaPanel.setBounds(x, y, width, height);
-        areaPanel.setBackground(c);
-
-        graph.add(areaPanel, 0);
-
-        return areaPanel;
+    protected BluArea createAreaPanel(SCTArea a, int x, int y, int width, int height, Color c, int areaX, GraphLevel parentLevel) {
+        return PAreaTaxonomyLayoutUtils.createAreaPanel(graph, a, x, y, width, height, c, areaX, parentLevel);
     }
 
     /**
@@ -209,19 +189,10 @@ public abstract class GenericPAreaLayout extends BluGraphLayout<Area, BluArea, B
      * @param c The background color of this region.
      * @return A BluRegion object representing the newly created JPanel for this region.
      */
-    protected BluRegion createRegionPanel(Region region, String regionName, 
+    protected BluRegion createRegionPanel(SCTRegion region, String regionName, 
             BluArea ap, int x, int y, int width, int height, Color c, boolean treatRegionAsArea, JLabel regionLabel) {
 
-        BluRegion regionPanel = new BluRegion(region, regionName,
-                width, height, graph, ap, c, treatRegionAsArea, regionLabel);
-
-        graph.stretchGraphToFitPanel(x, y, width, height);
-
-        regionPanel.setBounds(x, y, width, height);
-
-        ap.add(regionPanel, 0);
-
-        return regionPanel;
+        return PAreaTaxonomyLayoutUtils.createRegionPanel(graph, region, regionName, ap, x, y, width, height, c, treatRegionAsArea, regionLabel);
     }
 
      /**
@@ -258,17 +229,17 @@ public abstract class GenericPAreaLayout extends BluGraphLayout<Area, BluArea, B
         return (BluPArea)getGroupEntry(level, areaX, regionX, pAreaY, pAreaX);
     }
     
-    protected JLabel createRegionLabel(PAreaTaxonomy taxonomy, ArrayList<InheritedRelationship> relationships, String countString, int width, boolean treatAsArea) {
+    protected JLabel createRegionLabel(SCTPAreaTaxonomy taxonomy, ArrayList<InheritedRelationship> relationships, String countString, int width, boolean treatAsArea) {
        
         Canvas canvas = new Canvas();
         FontMetrics fontMetrics = canvas.getFontMetrics(new Font("SansSerif", Font.BOLD, 14));
         
         HashMap<Long, String> relAbbrevs;
         
-        if(pareaTaxonomy instanceof LocalPAreaTaxonomy) {
+        if(pareaTaxonomy instanceof SCTPAreaTaxonomy) {
             relAbbrevs = pareaTaxonomy.getLateralRelsInHierarchy();
         } else {
-            relAbbrevs = MiddlewareAccessorProxy.getProxy().getRelationshipAbbreviations(pareaTaxonomy.getVersion());
+            relAbbrevs = MiddlewareAccessorProxy.getProxy().getRelationshipAbbreviations(pareaTaxonomy.getSCTVersion());
         }
         
         String[] entries;
@@ -330,12 +301,12 @@ public abstract class GenericPAreaLayout extends BluGraphLayout<Area, BluArea, B
     }
     
     public JLabel createPartitionLabel(GenericContainerPartition partition, int width) {
-        Region region = (Region)partition;
+        SCTRegion region = (SCTRegion)partition;
         
         String countStr;
         
         if (graph.showingConceptCountLabels()) {
-            int conceptCount = pareaTaxonomy.getSCTDataSource().getConceptCountInPAreaHierarchy(pareaTaxonomy, region.getPAreasInRegion());
+            int conceptCount = pareaTaxonomy.getDataSource().getConceptCountInPAreaHierarchy(pareaTaxonomy, region.getPAreasInRegion());
 
             if (conceptCount == 1) {
                 countStr = "(1 Concept)";
@@ -350,6 +321,8 @@ public abstract class GenericPAreaLayout extends BluGraphLayout<Area, BluArea, B
             }
         }
         
-        return this.createRegionLabel(pareaTaxonomy, region.getPAreasInRegion().get(0).getRelationships(), countStr, width, !this.isRegionLayout);
+        ArrayList<InheritedRelationship> regionRels = new ArrayList<InheritedRelationship>(region.getPAreasInRegion().get(0).getRelationships());
+        
+        return this.createRegionLabel(pareaTaxonomy, regionRels, countStr, width, !this.isRegionLayout);
     }
 }

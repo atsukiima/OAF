@@ -2,7 +2,8 @@ package edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy;
 
 import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.PAreaSummary;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import java.util.ArrayDeque;
 import java.util.HashSet;
@@ -14,15 +15,15 @@ import java.util.Queue;
  */
 public class DisjointPAreaRootSubtaxonomy extends DisjointPAreaTaxonomy {
     
-    private HashSet<PAreaSummary> subtaxonomyPAreas;
+    private HashSet<SCTPArea> subtaxonomyPAreas;
     
     private HashSet<DisjointPartialArea> implicitDisjointPAreas;
     
     public DisjointPAreaRootSubtaxonomy(
-            HashSet<PAreaSummary> topLevelTaxonomyPAreas, 
-            HashSet<PAreaSummary> subtaxonomyPAreas, 
+            HashSet<SCTPArea> topLevelTaxonomyPAreas, 
+            HashSet<SCTPArea> subtaxonomyPAreas, 
             SCTMultiRootedConceptHierarchy topLevelConceptHierarchy,
-            PAreaTaxonomy subtaxonomy) {
+            SCTPAreaTaxonomy subtaxonomy) {
         
         super(topLevelTaxonomyPAreas, topLevelConceptHierarchy, subtaxonomy);
         
@@ -33,7 +34,7 @@ public class DisjointPAreaRootSubtaxonomy extends DisjointPAreaTaxonomy {
         
         HashSet<Concept> subtaxonomyPAreaRoots = new HashSet<Concept>();
         
-        for(PAreaSummary parea : subtaxonomyPAreas) {
+        for(SCTPArea parea : subtaxonomyPAreas) {
             subtaxonomyPAreaRoots.add(parea.getRoot());
         }
         
@@ -43,9 +44,9 @@ public class DisjointPAreaRootSubtaxonomy extends DisjointPAreaTaxonomy {
         
         // Identify the disjoint pareas that are direct descdents of the area roots in the root subtaxonomy
         for(DisjointPartialArea parea : pareas) {
-            HashSet<PAreaSummary> overlaps = parea.getOverlaps();
+            HashSet<SCTPArea> overlaps = parea.getOverlaps();
             
-            for(PAreaSummary overlap : overlaps) {
+            for(SCTPArea overlap : overlaps) {
 
                 if(subtaxonomyPAreaRoots.contains(overlap.getRoot())){
                     
@@ -107,7 +108,7 @@ public class DisjointPAreaRootSubtaxonomy extends DisjointPAreaTaxonomy {
         this.implicitDisjointPAreas = implicitDisjointPAreas;
     }
     
-    public HashSet<PAreaSummary> getSubtaxonomyPAreas() {
+    public HashSet<SCTPArea> getSubtaxonomyPAreas() {
         return subtaxonomyPAreas;
     }
     

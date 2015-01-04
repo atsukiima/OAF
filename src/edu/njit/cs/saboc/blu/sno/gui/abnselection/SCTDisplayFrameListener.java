@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.FrameCreationListener;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.InternalConceptBrowserFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.ClusterInternalGraphFrame;
@@ -36,7 +36,7 @@ public abstract class SCTDisplayFrameListener implements FrameCreationListener {
      * displayed.
      * @return The newly created internal graph frame.
      */
-    public PAreaInternalGraphFrame addNewPAreaGraphFrame(PAreaTaxonomy data, boolean areaGraph, boolean conceptCountLabels) {
+    public PAreaInternalGraphFrame addNewPAreaGraphFrame(SCTPAreaTaxonomy data, boolean areaGraph, boolean conceptCountLabels) {
         PAreaInternalGraphFrame igf = new PAreaInternalGraphFrame(mainFrame, data, areaGraph, conceptCountLabels, this);
 
         this.displayFrame(igf);

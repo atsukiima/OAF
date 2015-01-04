@@ -3,8 +3,8 @@ package edu.njit.cs.saboc.blu.sno.gui.utils.models;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import SnomedShared.pareataxonomy.InheritedRelationship.InheritanceType;
 import SnomedShared.pareataxonomy.GroupParentInfo;
-import SnomedShared.pareataxonomy.PAreaSummary;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 
@@ -14,21 +14,21 @@ public class ParentPAreaTableModel extends AbstractTableModel {
     private Object[][] data;
     private ArrayList<GroupParentInfo> parents;
 
-    public ParentPAreaTableModel(PAreaTaxonomy pareaTaxonomy, ArrayList<GroupParentInfo> parents) {
+    public ParentPAreaTableModel(SCTPAreaTaxonomy pareaTaxonomy, ArrayList<GroupParentInfo> parents) {
         setData(pareaTaxonomy, parents);
     }
 
-    public final void setData(PAreaTaxonomy pareaTaxonomy, ArrayList<GroupParentInfo> parents) {
+    public final void setData(SCTPAreaTaxonomy pareaTaxonomy, ArrayList<GroupParentInfo> parents) {
         this.parents = parents;
         
         data = new Object[parents.size()][columnNames.length];
 
         for (int r = 0; r < parents.size(); r++) {
-            PAreaSummary parea = pareaTaxonomy.getPAreaFromRootConceptId(parents.get(r).getParentPAreaRootId());
+            SCTPArea parea = pareaTaxonomy.getPAreaFromRootConceptId(parents.get(r).getParentPAreaRootId());
 
             String pareaRels = "";
 
-            ArrayList<InheritedRelationship> relationships = parea.getRelationships();
+            ArrayList<InheritedRelationship> relationships = new ArrayList<InheritedRelationship>(parea.getRelationships());
 
             for (int i = 0; i < relationships.size(); i++) {
                 InheritedRelationship rel = relationships.get(i);

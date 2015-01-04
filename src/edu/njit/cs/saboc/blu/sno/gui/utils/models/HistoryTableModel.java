@@ -1,7 +1,8 @@
 package edu.njit.cs.saboc.blu.sno.gui.utils.models;
 
 import SnomedShared.pareataxonomy.PAreaSummary;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import java.util.ArrayList;
 import java.util.HashSet;
 import javax.swing.table.AbstractTableModel;
@@ -12,16 +13,17 @@ import javax.swing.table.AbstractTableModel;
  */
 public class HistoryTableModel extends AbstractTableModel {
 
-    String[] columnNames = new String[]{"Root Name", "Concepts", "Parents", "Children"};
-    private ArrayList<PAreaSummary> data = new ArrayList<PAreaSummary>();
+    private String[] columnNames = new String[]{"Root Name", "Concepts", "Parents", "Children"};
+    
+    private ArrayList<SCTPArea> data = new ArrayList<SCTPArea>();
 
-    private PAreaTaxonomy pareaTaxonomy;
+    private SCTPAreaTaxonomy pareaTaxonomy;
 
-    public HistoryTableModel(PAreaTaxonomy pareaTaxonomy) {
+    public HistoryTableModel(SCTPAreaTaxonomy pareaTaxonomy) {
         this.pareaTaxonomy = pareaTaxonomy;
     }
 
-    public final void addEntry(PAreaSummary parea) {
+    public final void addEntry(SCTPArea parea) {
         data.add(0, parea);
         this.fireTableDataChanged();
     }
@@ -39,7 +41,7 @@ public class HistoryTableModel extends AbstractTableModel {
     }
 
     public Object getValueAt(int row, int col) {
-        PAreaSummary parea = data.get(row);
+        SCTPArea parea = data.get(row);
 
         switch(col) {
             case 0:
@@ -63,7 +65,7 @@ public class HistoryTableModel extends AbstractTableModel {
         return getValueAt(0, c).getClass();
     }
 
-    public ArrayList<PAreaSummary> getHistoryEntries() {
+    public ArrayList<SCTPArea> getHistoryEntries() {
         return this.data;
     }
 }

@@ -33,17 +33,17 @@ public class ClusterOptionsConfiguration extends GroupOptionsPanelConfiguration 
         
         super.enableButtonWithAction(1, new GroupOptionsPanelActionListener<ClusterSummary>() {
             public void actionPerformedOn(ClusterSummary cluster) {
-                displayListener.addNewBrowserFrame(cluster.getRoot(), tan.getSCTDataSource());
+                displayListener.addNewBrowserFrame(cluster.getRoot(), tan.getDataSource());
             }
         });
                 
         super.enableButtonWithAction(4, new GroupOptionsPanelActionListener<ClusterSummary>() {
             public void actionPerformedOn(ClusterSummary cluster) {
-                SCTConceptHierarchy hierarchy = tan.getSCTDataSource().getClusterConceptHierarchy(tan, cluster);
+                SCTConceptHierarchy hierarchy = tan.getDataSource().getClusterConceptHierarchy(tan, cluster);
 
                 TribalAbstractionNetwork chd = TANGenerator.createTANFromConceptHierarchy(
                         cluster.getRoot(),
-                        tan.getVersion(),
+                        tan.getSCTVersion(),
                         hierarchy);
 
                 displayListener.addNewClusterGraphFrame(chd, true, false);

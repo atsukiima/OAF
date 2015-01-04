@@ -1,13 +1,10 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons;
 
 import SnomedShared.pareataxonomy.InheritedRelationship;
-import SnomedShared.pareataxonomy.PAreaSummary;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.PopupToggleButton;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.PAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.LocalPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
-import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
-import edu.njit.cs.saboc.blu.sno.abn.generator.PAreaTaxonomyGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.middlewareproxy.MiddlewareAccessorProxy;
 import java.awt.BorderLayout;
@@ -35,7 +32,7 @@ import javax.swing.JScrollPane;
  */
 public class RelationshipSelectionButton extends PopupToggleButton {
 
-    public RelationshipSelectionButton(JFrame parent, final PAreaInternalGraphFrame igf, final PAreaTaxonomy data) {
+    public RelationshipSelectionButton(JFrame parent, final PAreaInternalGraphFrame igf, final SCTPAreaTaxonomy data) {
 
         super(parent, "Create Subtaxonomy");
 
@@ -71,7 +68,7 @@ public class RelationshipSelectionButton extends PopupToggleButton {
             cbPanel.add(cb);
         }
 
-        PAreaSummary rootPArea = data.getRootPArea();
+        SCTPArea rootPArea = data.getRootPArea();
 
         for(Long selectedRelId : data.getLateralRelsInHierarchy().keySet()) {
             for(Entry<JCheckBox, Long> entry : selectedRelationships.entrySet()) {
@@ -142,26 +139,22 @@ public class RelationshipSelectionButton extends PopupToggleButton {
                     }
                 }
                 
-                PAreaTaxonomy hierarchyTaxonomy;
+                SCTPAreaTaxonomy hierarchyTaxonomy = null;
                 
-                if(data instanceof LocalPAreaTaxonomy) {
-                    SCTLocalDataSource dataSource = (SCTLocalDataSource)((LocalPAreaTaxonomy)data).getSCTDataSource();
+                if(data instanceof SCTPAreaTaxonomy) {
+                    SCTLocalDataSource dataSource = (SCTLocalDataSource)((SCTPAreaTaxonomy)data).getDataSource();
                     
-                    PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
-
-                    hierarchyTaxonomy = generator.createPAreaTaxonomy(data.getSNOMEDHierarchyRoot(), dataSource, new InferredRelationshipsRetriever());
+                    hierarchyTaxonomy = dataSource.getCompleteTaxonomy(data.getSCTRootConcept());
                 } else {
                     hierarchyTaxonomy = MiddlewareAccessorProxy.getProxy().getPAreaHierarchyData(
-                        data.getVersion(), data.getSNOMEDHierarchyRoot());
+                        data.getSCTVersion(), data.getSCTRootConcept());
                 }
 
                 if(rels.size() != selectedRelationships.keySet().size()) {
                     hierarchyTaxonomy = hierarchyTaxonomy.getRelationshipSubtaxonomy(rels);
                 }
-                
-                System.out.println(hierarchyTaxonomy.getRootPArea().getRoot().getName() + " | " + hierarchyTaxonomy.getSNOMEDHierarchyRoot().getName());
 
-                if(hierarchyTaxonomy.getRootPArea().getRoot().getId() != hierarchyTaxonomy.getSNOMEDHierarchyRoot().getId()) {
+                if(hierarchyTaxonomy.getRootPArea().getRoot().getId() != hierarchyTaxonomy.getSCTRootConcept().getId()) {
                     hierarchyTaxonomy = hierarchyTaxonomy.getRootSubtaxonomy(data.getRootPArea());
                 }
 
