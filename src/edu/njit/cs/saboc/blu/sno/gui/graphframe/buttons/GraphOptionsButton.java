@@ -182,7 +182,7 @@ public class GraphOptionsButton extends PopupToggleButton {
                 options.pareaMaxThreshold = maxThresh;
                 options.pareaMinThreshold = minThresh;
 
-                igf.replaceInternalFrameDataWith(data, graph.getIsAreaGraph(), graph.showingConceptCountLabels(), options);
+                igf.replaceInternalFrameDataWith(data.getReduced(minThresh, maxThresh), graph.getIsAreaGraph(), graph.showingConceptCountLabels(), options);
             }
         });
 

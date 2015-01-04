@@ -5,9 +5,11 @@ import SnomedShared.pareataxonomy.InheritedRelationship;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.GenericPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.generator.InheritedRelWithHash;
+import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.RootSubtaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTPAreaRootSubtaxonomy;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
+import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.middlewareproxy.MiddlewareAccessorProxy;
@@ -549,7 +551,10 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
         return hd;
     }
     
-    public SCTPAreaTaxonomy getReduced(int min, int max) {
-        return null;
+    public SCTPAreaTaxonomy getReduced(int minPAreaSize, int maxPAreaSize) {
+        SCTPAreaTaxonomyGenerator taxonomyGenerator = new SCTPAreaTaxonomyGenerator(
+            this.getSCTRootConcept(), this.getDataSource(), (SCTConceptHierarchy)this.getConceptHierarchy(), new InferredRelationshipsRetriever());
+
+        return super.createReducedTaxonomy(taxonomyGenerator, new ReducedSCTPAreaTaxonomyGenerator(), minPAreaSize, maxPAreaSize);
     }
 }

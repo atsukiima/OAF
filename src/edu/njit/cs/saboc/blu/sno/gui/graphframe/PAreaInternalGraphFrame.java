@@ -1,6 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
 import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.core.abn.reduced.ReducingGroup;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
@@ -155,12 +156,26 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         
         if (data.isReduced()) {
             labelCreator = new GroupEntryLabelCreator<SCTPArea>() {
+                public String getRootNameStr(SCTPArea parea) {
+                    return parea.getRoot().getName().substring(0, parea.getRoot().getName().lastIndexOf("(")).trim();
+                }
+                
                 public String getCountStr(SCTPArea parea) {
-                    return String.format("(%d) [%d]", parea.getConceptCount(), 0);
+                    ReducingGroup reduced = (ReducingGroup)parea;
+                    
+                    if(reduced.getReducedGroups().isEmpty()) {
+                        return super.getCountStr(parea);
+                    }
+                    
+                    return String.format("(%d) [%d]", parea.getConceptCount(), reduced.getReducedGroups().size());
                 }
             };
         } else {
-            labelCreator = new GroupEntryLabelCreator<SCTPArea>();
+            labelCreator = new GroupEntryLabelCreator<SCTPArea>() {
+                public String getRootNameStr(SCTPArea parea) {
+                    return parea.getRoot().getName().substring(0, parea.getRoot().getName().lastIndexOf("(")).trim();
+                }
+            };
         }
         
         BluGraph graph = new PAreaBluGraph(parentFrame, data, areaGraph, conceptCountLabels, options, displayListener, labelCreator);
