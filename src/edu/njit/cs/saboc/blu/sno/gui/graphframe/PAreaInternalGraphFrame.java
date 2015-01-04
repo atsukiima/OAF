@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.abn.export.ExportAbN;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
@@ -150,7 +151,19 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
     public void replaceInternalFrameDataWith(SCTPAreaTaxonomy data,
             boolean areaGraph, boolean conceptCountLabels, GraphOptions options) {
         
-        BluGraph graph = new PAreaBluGraph(parentFrame, data, areaGraph, conceptCountLabels, options, displayListener);
+        GroupEntryLabelCreator labelCreator;
+        
+        if (data.isReduced()) {
+            labelCreator = new GroupEntryLabelCreator<SCTPArea>() {
+                public String getCountStr(SCTPArea parea) {
+                    return String.format("(%d) [%d]", parea.getConceptCount(), 0);
+                }
+            };
+        } else {
+            labelCreator = new GroupEntryLabelCreator<SCTPArea>();
+        }
+        
+        BluGraph graph = new PAreaBluGraph(parentFrame, data, areaGraph, conceptCountLabels, options, displayListener, labelCreator);
 
         initializeGraphTabs(graph, new SCTTaxonomyPainter(), 
                 new PAreaTaxonomyGEPListener(parentFrame, displayListener), 

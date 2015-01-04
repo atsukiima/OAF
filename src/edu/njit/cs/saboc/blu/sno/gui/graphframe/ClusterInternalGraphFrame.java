@@ -6,6 +6,7 @@ import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.abn.export.ExportAbN;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
@@ -126,8 +127,14 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
 
     public void replaceInternalFrameDataWith(TribalAbstractionNetwork data,
             boolean areaGraph, boolean conceptCountLabels, GraphOptions options) {
+        
+        GroupEntryLabelCreator labelCreator = new GroupEntryLabelCreator<ClusterSummary>() {
+            public String getRootNameStr(ClusterSummary cluster) {
+                return cluster.getRoot().getName().substring(0, cluster.getRoot().getName().lastIndexOf("(") - 1);
+            }
+        };
 
-        BluGraph graph = new ClusterBluGraph(parentFrame, data, areaGraph, conceptCountLabels, options, displayListener);
+        BluGraph graph = new ClusterBluGraph(parentFrame, data, areaGraph, conceptCountLabels, options, displayListener, labelCreator);
         
         searchButton.setGraph(graph);
     

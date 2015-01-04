@@ -1,10 +1,12 @@
 package edu.njit.cs.saboc.blu.sno.graph;
 
+import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.pareataxonomy.Region;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.ShowHideGroupEntryListener;
 import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.ContainerResize;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.graph.layout.ClusterNoPartitionLayout;
 import edu.njit.cs.saboc.blu.sno.graph.layout.ClusterPartitionLayout;
@@ -29,9 +31,10 @@ public class ClusterBluGraph extends BluGraph {
     private SCTDisplayFrameListener displayListener;
     
     public ClusterBluGraph(final JFrame parentFrame, final TribalAbstractionNetwork hierarchyData, 
-            boolean setGraph, boolean conceptLabels, GraphOptions options, final SCTDisplayFrameListener displayListener) {
+            boolean setGraph, boolean conceptLabels, GraphOptions options, final SCTDisplayFrameListener displayListener,
+            GroupEntryLabelCreator<ClusterSummary> labelCreator) {
         
-        super(hierarchyData, setGraph, conceptLabels);
+        super(hierarchyData, setGraph, conceptLabels, labelCreator);
         
         this.displayListener = displayListener;
 

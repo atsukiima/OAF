@@ -24,7 +24,7 @@ import java.util.Queue;
  *
  * @author Chris O
  */
-public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPArea, SCTArea, SCTRegion, Concept, InheritedRelationship> 
+public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCTPArea, SCTArea, SCTRegion, Concept, InheritedRelationship> 
     implements SCTAbstractionNetwork<SCTPAreaTaxonomy> {
 
     protected SCTDataSource dataSource;
@@ -547,5 +547,9 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPArea, SCTArea, SC
                 pareaSubhierarchy, this.getLateralRelsInHierarchy());
 
         return hd;
+    }
+    
+    public SCTPAreaTaxonomy getReduced(int min, int max) {
+        return null;
     }
 }

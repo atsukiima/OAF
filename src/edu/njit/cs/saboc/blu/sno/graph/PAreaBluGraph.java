@@ -6,6 +6,8 @@ import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.ShowHideGroupEntryListener;
 import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.ContainerResize;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTRegion;
 import edu.njit.cs.saboc.blu.sno.graph.layout.NoRegionsLayout;
@@ -29,9 +31,10 @@ public class PAreaBluGraph extends BluGraph {
     private SCTDisplayFrameListener displayListener;
 
     public PAreaBluGraph(final JFrame parentFrame, final SCTPAreaTaxonomy hierarchyData, boolean areaGraph, 
-            boolean conceptLabels, GraphOptions options, final SCTDisplayFrameListener displayListener) {
+            boolean conceptLabels, GraphOptions options, final SCTDisplayFrameListener displayListener, 
+            GroupEntryLabelCreator<SCTPArea> labelCreator) {
         
-        super(hierarchyData, areaGraph, conceptLabels);
+        super(hierarchyData, areaGraph, conceptLabels, labelCreator);
         
         this.displayListener = displayListener;
 
