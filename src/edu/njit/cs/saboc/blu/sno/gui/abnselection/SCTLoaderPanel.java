@@ -1,6 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
 import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.core.gui.dialogs.AbNLoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.iconmanager.IconManager;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
@@ -295,8 +296,19 @@ public class SCTLoaderPanel extends JPanel {
      * @param root
      */
     private void loadPAreaTaxonomy(final Concept root) {
+        
+               
         Thread loadThread = new Thread(new Runnable() {
+            private AbNLoadStatusDialog loadStatusDialog = null;
+
             public void run() {
+                
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        loadStatusDialog = AbNLoadStatusDialog.display(parentFrame);
+                    }
+                });
+                
                 final SCTPAreaTaxonomy taxonomy;
 
                 if (remoteSourceBtn.isSelected()) {
@@ -325,6 +337,11 @@ public class SCTLoaderPanel extends JPanel {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         displayFrameListener.addNewPAreaGraphFrame(taxonomy, true, false);
+                        
+                        if (loadStatusDialog != null) {
+                            loadStatusDialog.setVisible(false);
+                            loadStatusDialog.dispose();
+                        }
                     }
                 });
             }
@@ -338,24 +355,52 @@ public class SCTLoaderPanel extends JPanel {
      *
      * @param root
      */
-    private void loadTAN(Concept root) {
+    private void loadTAN(final Concept root) {
+        
+        Thread loadThread = new Thread(new Runnable() {
+            private AbNLoadStatusDialog loadStatusDialog = null;
 
-        if (localSourceBtn.isSelected()) {
-            try {
-                SCTLocalDataSource dataSource = localReleasePanel.getLoadedDataSource();
+            public void run() {
+                
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        loadStatusDialog = AbNLoadStatusDialog.display(parentFrame);
+                    }
+                });
+                
+                
+                if (localSourceBtn.isSelected()) {
+                    final TribalAbstractionNetwork tan;
 
-                TribalAbstractionNetwork tan = TANGenerator.createTANFromConceptHierarchy(
-                        root,
-                        dataSource.getSelectedVersion(),
-                        (SCTConceptHierarchy) dataSource.getConceptHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getId())));
+                    try {
+                        SCTLocalDataSource dataSource = localReleasePanel.getLoadedDataSource();
 
-                displayFrameListener.addNewClusterGraphFrame(tan, false, false);
-            } catch (NoSCTDataSourceLoadedException e) {
-                // TODO: Show error...
+                        tan = TANGenerator.createTANFromConceptHierarchy(
+                                root,
+                                dataSource.getSelectedVersion(),
+                                (SCTConceptHierarchy) dataSource.getConceptHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getId())));
 
-                return;
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                displayFrameListener.addNewClusterGraphFrame(tan, true, false);
+
+                                if (loadStatusDialog != null) {
+                                    loadStatusDialog.setVisible(false);
+                                    loadStatusDialog.dispose();
+                                }
+                            }
+                        });
+                    } catch (NoSCTDataSourceLoadedException e) {
+                        // TODO: Show error...
+
+                    }
+                }
             }
-        }
+        });
+
+        loadThread.start();
+
+        
     }
 
     private SCTDataSource getSelectedDataSource() {

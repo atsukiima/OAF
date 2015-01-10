@@ -1,5 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.listeners;
 
+import edu.njit.cs.saboc.blu.core.gui.dialogs.AbNLoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.GroupOptionsPanelActionListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.GroupOptionsPanelConfiguration;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
@@ -11,6 +12,7 @@ import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.ConceptGroupDetailsDialog;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 /**
@@ -41,16 +43,36 @@ public class PAreaOptionsConfiguration extends GroupOptionsPanelConfiguration {
         
         super.enableButtonWithAction(2, new GroupOptionsPanelActionListener<SCTPArea>() {
             public void actionPerformedOn(final SCTPArea parea) {
+                
+                
                 final SwingWorker t = new SwingWorker() {
+                    
+                    private AbNLoadStatusDialog loadStatusDialog = null;
 
                     public Object doInBackground() {
-                       
-                        SCTPAreaTaxonomy subtaxonomy = taxonomy.getRootSubtaxonomy(parea);
                         
-                        displayListener.addNewPAreaGraphFrame(
-                                subtaxonomy,
-                                true,
-                                false);
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                loadStatusDialog = AbNLoadStatusDialog.display(null);
+                            }
+                        });
+                       
+                        final SCTPAreaTaxonomy subtaxonomy = taxonomy.getRootSubtaxonomy(parea);
+                        
+                        
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                displayListener.addNewPAreaGraphFrame(
+                                        subtaxonomy,
+                                        true,
+                                        false);
+
+                                if (loadStatusDialog != null) {
+                                    loadStatusDialog.setVisible(false);
+                                    loadStatusDialog.dispose();
+                                }
+                            }
+                        });
 
                         return new Object();
                     }
@@ -67,15 +89,48 @@ public class PAreaOptionsConfiguration extends GroupOptionsPanelConfiguration {
         });
         
         super.enableButtonWithAction(4, new GroupOptionsPanelActionListener<SCTPArea>() {
+
             public void actionPerformedOn(SCTPArea parea) {
-                SCTConceptHierarchy hierarchy = taxonomy.getDataSource().getPAreaConceptHierarchy(taxonomy, parea);
 
-                TribalAbstractionNetwork chd = TANGenerator.createTANFromConceptHierarchy(
-                        parea.getRoot(),
-                        taxonomy.getSCTVersion(),
-                        hierarchy);
+                final SCTPArea finalPArea = parea;
 
-                displayListener.addNewClusterGraphFrame(chd, true, false);
+                Thread loaderThread = new Thread(new Runnable() {
+                    private AbNLoadStatusDialog loadStatusDialog = null;
+
+                    public void run() {
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                loadStatusDialog = AbNLoadStatusDialog.display(null);
+                            }
+                        });
+
+                        SCTConceptHierarchy hierarchy = taxonomy.getDataSource().getPAreaConceptHierarchy(taxonomy, finalPArea);
+
+                        final TribalAbstractionNetwork chd = TANGenerator.createTANFromConceptHierarchy(
+                                finalPArea.getRoot(),
+                                taxonomy.getSCTVersion(),
+                                hierarchy);
+
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                displayListener.addNewClusterGraphFrame(
+                                        chd,
+                                        true,
+                                        false);
+
+                                if (loadStatusDialog != null) {
+                                    loadStatusDialog.setVisible(false);
+                                    loadStatusDialog.dispose();
+                                }
+                            }
+                        });
+
+                    }
+
+                });
+                
+                loaderThread.start();
+                
             }
         });
     }

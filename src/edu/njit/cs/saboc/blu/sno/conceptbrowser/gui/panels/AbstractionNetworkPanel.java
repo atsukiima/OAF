@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.conceptbrowser.gui.panels;
 import SnomedShared.Concept;
 import SnomedShared.OutgoingLateralRelationship;
 import SnomedShared.PAreaDetailsForConcept;
+import edu.njit.cs.saboc.blu.core.gui.dialogs.AbNLoadStatusDialog;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.FocusConcept;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.SnomedConceptBrowser;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
@@ -116,15 +117,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                 public void actionPerformed(ActionEvent ae) {
                     Concept c = focusConcept.getConcept();
                     
-                    ArrayList<Concept> hierarchy = localDS.getHierarchiesConceptBelongTo(c);
-                    
-                    SCTConceptHierarchy subhierarchy = (SCTConceptHierarchy)localDS.getConceptHierarchy().getSubhierarchyRootedAt(c);
-
-                    SCTPAreaTaxonomyGenerator generator = new SCTPAreaTaxonomyGenerator(hierarchy.get(0), localDS, subhierarchy, new InferredRelationshipsRetriever());
-
-                    SCTPAreaTaxonomy taxonomy = generator.derivePAreaTaxonomy();
-
-                    mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
+                    createAndDisplaySubjectSubtaxonomy(localDS, c);
                 }
             });
             
@@ -147,24 +140,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                 public void actionPerformed(ActionEvent ae) {
                     Concept c = focusConcept.getConcept();
 
-                    ArrayList<Concept> hierarchy = localDS.getHierarchiesConceptBelongTo(c);
-
-                    SCTConceptHierarchy conceptHierarchy = new SCTConceptHierarchy(hierarchy.get(0)); // Multi rooted partial-area taxonomy needs research...
-
-                    SCTConceptHierarchy descdendants = (SCTConceptHierarchy) localDS.getConceptHierarchy().getSubhierarchyRootedAt(c);
-
-                    conceptHierarchy.addAllHierarchicalRelationships(descdendants);
-
-                    for (Concept hierarchyRoot : hierarchy) {
-                        SCTConceptHierarchy ancestors = localDS.getAncestorHierarchy(localDS.getConceptHierarchy(), hierarchyRoot, c);
-                        conceptHierarchy.addAllHierarchicalRelationships(ancestors);
-                    }
-
-                    SCTPAreaTaxonomyGenerator generator = new SCTPAreaTaxonomyGenerator(hierarchy.get(0), localDS, conceptHierarchy, new InferredRelationshipsRetriever());
-
-                    SCTPAreaTaxonomy taxonomy = generator.derivePAreaTaxonomy();
-
-                    mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
+                    createAndDisplayFocusSubtaxonomy(localDS, c);
                 }
             });
             
@@ -190,6 +166,93 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
         focusConcept.addDisplayPanel(FocusConcept.Fields.PARTIALAREA, partialAreaPanel);
 
         add(tabbedPane, BorderLayout.CENTER);
+    }
+    
+    private void createAndDisplaySubjectSubtaxonomy(final SCTLocalDataSource dataSource, final Concept root) {
+        Thread loadThread = new Thread(new Runnable() {
+            private AbNLoadStatusDialog loadStatusDialog = null;
+
+            public void run() {
+                
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        loadStatusDialog = AbNLoadStatusDialog.display(null);
+                    }
+                });
+
+                ArrayList<Concept> hierarchy = dataSource.getHierarchiesConceptBelongTo(root);
+
+                SCTConceptHierarchy subhierarchy = (SCTConceptHierarchy) dataSource.getConceptHierarchy().getSubhierarchyRootedAt(root);
+
+                SCTPAreaTaxonomyGenerator generator = new SCTPAreaTaxonomyGenerator(hierarchy.get(0), dataSource, subhierarchy, new InferredRelationshipsRetriever());
+
+                   
+                final SCTPAreaTaxonomy taxonomy = generator.derivePAreaTaxonomy();
+                               
+
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
+
+                        if (loadStatusDialog != null) {
+                            loadStatusDialog.setVisible(false);
+                            loadStatusDialog.dispose();
+                        }
+                    }
+                });
+
+            }
+        });
+
+        loadThread.start();        
+    }
+    
+    
+    private void createAndDisplayFocusSubtaxonomy(final SCTLocalDataSource dataSource, final Concept focusConcept) {
+        
+        Thread loadThread = new Thread(new Runnable() {
+            private AbNLoadStatusDialog loadStatusDialog = null;
+
+            public void run() {
+                
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        loadStatusDialog = AbNLoadStatusDialog.display(null);
+                    }
+                });
+
+                ArrayList<Concept> hierarchy = dataSource.getHierarchiesConceptBelongTo(focusConcept);
+
+                SCTConceptHierarchy conceptHierarchy = new SCTConceptHierarchy(hierarchy.get(0)); // Multi rooted partial-area taxonomy needs research...
+
+                SCTConceptHierarchy descdendants = (SCTConceptHierarchy) dataSource.getConceptHierarchy().getSubhierarchyRootedAt(focusConcept);
+
+                conceptHierarchy.addAllHierarchicalRelationships(descdendants);
+
+                for (Concept hierarchyRoot : hierarchy) {
+                    SCTConceptHierarchy ancestors = dataSource.getAncestorHierarchy(dataSource.getConceptHierarchy(), hierarchyRoot, focusConcept);
+                    conceptHierarchy.addAllHierarchicalRelationships(ancestors);
+                }
+
+                SCTPAreaTaxonomyGenerator generator = new SCTPAreaTaxonomyGenerator(hierarchy.get(0), dataSource, conceptHierarchy, new InferredRelationshipsRetriever());
+
+                final SCTPAreaTaxonomy taxonomy = generator.derivePAreaTaxonomy();
+
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
+
+                        if (loadStatusDialog != null) {
+                            loadStatusDialog.setVisible(false);
+                            loadStatusDialog.dispose();
+                        }
+                    }
+                });
+
+            }
+        });
+
+        loadThread.start();        
     }
 
     private class PAreaTaxonomyDetailsPanel extends JPanel {
