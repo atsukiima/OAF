@@ -130,7 +130,6 @@ public class PAreaOptionsConfiguration extends GroupOptionsPanelConfiguration {
                 });
                 
                 loaderThread.start();
-                
             }
         });
     }

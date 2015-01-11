@@ -161,6 +161,8 @@ public class FocusConcept {
         update(Fields.TRIBALAN);
         
         if (dataSource instanceof SCTLocalDataSource) {
+            update(Fields.TRIBALAN);
+            
             update(Fields.HIERARCHYMETRICS);
 
             update(Fields.ALLANCESTORS);
@@ -267,7 +269,7 @@ public class FocusConcept {
                     result = dataSource.getSummaryOfPAreasContainingConcept(concept);
                     break;
                 case TRIBALAN:
-                    // TODO: Get summary for Tribal AN
+                    result = ((SCTLocalDataSource)dataSource).getSummaryOfClustersContainingConcept(concept);
                     break;
                     
                 case HIERARCHYMETRICS:
@@ -279,8 +281,7 @@ public class FocusConcept {
                     break;
                     
                 case ALLDESCENDANTS:
-                    //result = ((SCTLocalDataSource)dataSource).getAllDescendantsAsList(concept);
-                    result = new ArrayList<Concept>();
+                    result = ((SCTLocalDataSource)dataSource).getAllDescendantsAsList(concept);
                     break;
                     
                 case ALLPATHS:

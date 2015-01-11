@@ -54,12 +54,11 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
             this.data[0][0] = "Hierarchy";
             this.data[0][1] = hierarchies;
             
-            
             this.data[1][0] = "Inferred Ancestors";
             this.data[1][1] = metrics.getAncestorCount();
             
             this.data[2][0] = "Inferred Descendants";
-            this.data[2][1] = "[Disabled]";
+            this.data[2][1] = metrics.getDescendantCount();
             
             this.data[3][0] = "Inferred Parents";
             this.data[3][1] = metrics.getParentCount();
@@ -126,8 +125,8 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
             tabbedPane.addTab("Add Stated Ancestors", createStatedAncestorsPanel());
         }
         
-        //tabbedPane.addTab("All Descendants", createDescendantsPanel());
-        //tabbedPane.addTab("All Paths", createAllPathsPanel());
+        tabbedPane.addTab("All Inferred Descendants", createDescendantsPanel());
+        tabbedPane.addTab("All Paths (Inferred IS-As)", createAllPathsPanel());
 
         this.add(tabbedPane, BorderLayout.CENTER);
     }
@@ -253,17 +252,31 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
             }
 
             public void dataReady() {
-                ArrayList<Concept> allDescendants = (ArrayList<Concept>)focusConcept.getConceptList(FocusConcept.Fields.ALLDESCENDANTS);
-
+                ArrayList<Concept> allDescendants = (ArrayList<Concept>) focusConcept.getConceptList(FocusConcept.Fields.ALLDESCENDANTS);
+                
                 ArrayList<Filterable> conceptEntries = new ArrayList<Filterable>();
+                
+                if(allDescendants.size() > 2000) {
+                                        
+                    for(Concept descendant : allDescendants) {
+                        if(dataSource.getConceptChildren(descendant).size() >= 10) {
+                            conceptEntries.add(new FilterableConceptEntry(descendant));
+                        }
+                    }
+                    
+                    tabbedPane.setTitleAt(DESCENDANT_IDX, String.format("All Descendants (%d, Showing %d)", allDescendants.size(), conceptEntries.size()));
+                    descendantList.showDataEmpty();
+                    
+                } else {
+     
+                    for (Concept c : allDescendants) {
+                        conceptEntries.add(new FilterableConceptEntry(c));
+                    }
 
-                for(Concept c : allDescendants) {
-                    conceptEntries.add(new FilterableConceptEntry(c));
+                    tabbedPane.setTitleAt(DESCENDANT_IDX, String.format("All Descendants (%d)", allDescendants.size()));
                 }
                 
                 descendantList.setContents(conceptEntries);
-                
-                tabbedPane.setTitleAt(DESCENDANT_IDX, String.format("All Descendants (%d)", allDescendants.size()));
             }
         };
 
@@ -278,7 +291,6 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
     private BaseNavPanel createAllPathsPanel() {
         final SCTFilterableList pathList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
         
-
         allPathsPanel = new BaseNavPanel(mainPanel, dataSource) {
             public void dataPending() {
                 tabbedPane.setTitleAt(PATH_IDX, "All Paths");

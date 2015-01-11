@@ -20,6 +20,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSnomedConcept;
 import edu.njit.cs.saboc.blu.sno.localdatasource.conceptdata.HierarchyMetrics;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.SearchResultComparator;
 import java.util.ArrayDeque;
@@ -64,6 +65,8 @@ public class SCTLocalDataSource implements SCTDataSource {
     private String version;
     
     private HashMap<Concept, SCTPAreaTaxonomy> hierarchyTaxonomies = new HashMap<Concept, SCTPAreaTaxonomy>();
+    
+    private HashMap<Concept, TribalAbstractionNetwork> hierarchyTANs = new HashMap<Concept, TribalAbstractionNetwork>();
 
     public SCTLocalDataSource(Map<Long, LocalSnomedConcept> concepts,
             SCTConceptHierarchy conceptHierarchy, boolean processDescriptions, String version) {
@@ -229,6 +232,23 @@ public class SCTLocalDataSource implements SCTDataSource {
             
             return results;
             
+        } else {
+            throw new RuntimeException("Concepts in multiple hierarchies not yet supported...");
+        }
+    }
+    
+    public ArrayList<ConceptClusterInfo> getSummaryOfClustersContainingConcept(Concept c) {
+        ArrayList<Concept> hierarchies = this.getHierarchiesConceptBelongTo(c);
+
+        if (hierarchies.isEmpty()) {
+            return new ArrayList<ConceptClusterInfo>();
+        } else if (hierarchies.size() == 1) {
+            Concept root = hierarchies.get(0);
+            
+            TribalAbstractionNetwork tan = this.getCompleteTAN(root);
+
+            return this.getConceptClusterInfo(tan, c);
+
         } else {
             throw new RuntimeException("Concepts in multiple hierarchies not yet supported...");
         }
@@ -739,7 +759,13 @@ public class SCTLocalDataSource implements SCTDataSource {
      * @return 
      */
     public ArrayList<Concept> getAllDescendantsAsList(Concept c) {
-        SCTConceptHierarchy hierarchy = (SCTConceptHierarchy)conceptHierarchy.getSubhierarchyRootedAt(c);
+        SCTConceptHierarchy hierarchy;
+        
+        if(c.equals(conceptHierarchy.getRoot())) {
+            hierarchy = conceptHierarchy;
+        } else {
+            hierarchy = (SCTConceptHierarchy)conceptHierarchy.getSubhierarchyRootedAt(c);
+        }
         
         HashSet<Concept> descendantSet = hierarchy.getConceptsInHierarchy();
         descendantSet.remove(c);
@@ -771,7 +797,9 @@ public class SCTLocalDataSource implements SCTDataSource {
             ancestorCount += this.getAncestorHierarchy(conceptHierarchy, hierarchy, c).getConceptsInHierarchy().size() - 1;
         }
         
-        return new HierarchyMetrics(c, hierarchies, ancestorCount, -1, parentCount, childCount, siblingCount);
+        ArrayList<Concept> descendants = this.getAllDescendantsAsList(c);
+        
+        return new HierarchyMetrics(c, hierarchies, ancestorCount, descendants.size(), parentCount, childCount, siblingCount);
     }
     
     
@@ -892,5 +920,19 @@ public class SCTLocalDataSource implements SCTDataSource {
         taxonomy = hierarchyTaxonomies.get(root);
         
         return taxonomy;
+    }
+    
+    public TribalAbstractionNetwork getCompleteTAN(Concept root) {
+        TribalAbstractionNetwork tan;
+
+        if (!hierarchyTANs.containsKey(root)) {
+            SCTConceptHierarchy hierarchy = (SCTConceptHierarchy)this.conceptHierarchy.getSubhierarchyRootedAt(root);
+
+            hierarchyTANs.put(root, TANGenerator.createTANFromConceptHierarchy(root, version, hierarchy));
+        }
+
+        tan = hierarchyTANs.get(root);
+        
+        return tan;
     }
 }
