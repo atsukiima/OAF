@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.conceptbrowser;
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
+import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 
 /**
@@ -13,18 +14,18 @@ public class InternalConceptBrowserFrame extends JInternalFrame {
 
     private SnomedConceptBrowser browser;
     
-    public InternalConceptBrowserFrame(SCTDataSource dataSource, SCTDisplayFrameListener displayFrameListener) {
+    public InternalConceptBrowserFrame(JFrame parentFrame, SCTDataSource dataSource, SCTDisplayFrameListener displayFrameListener) {
         super("BLUSNO Concept-centric Browser",
                 true, //resizable
                 true, //closable
                 true, //maximizable
                 true);//iconifiable
         
-        browser = new SnomedConceptBrowser(dataSource, displayFrameListener);
+        browser = new SnomedConceptBrowser(parentFrame, dataSource, displayFrameListener);
 
         setSize(1200, 550);
 
-        this.add(browser.getMainBrowserPanel());
+        this.add(browser);
         this.setVisible(true);
     }
 

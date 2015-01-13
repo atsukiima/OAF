@@ -307,7 +307,7 @@ public class SearchPanel extends BaseNavPanel implements ActionListener {
         String searchText = txtSearchBox.getTextField().getText().trim();
 
         if(searchText.isEmpty()) {
-            JOptionPane.showMessageDialog(mainPanel.getMainBrowserPanel(), "Cannot search for a blank string.",
+            JOptionPane.showMessageDialog(mainPanel, "Cannot search for a blank string.",
                     "Invalid Input", JOptionPane.ERROR_MESSAGE);
             return;
         }

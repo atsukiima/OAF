@@ -30,7 +30,7 @@ public class NATPrinter implements Printable {
 
         // Stop double buffering so we capture the entirety of the current
         // draw.
-        RepaintManager repaintManager = RepaintManager.currentManager(mainPanel.getMainBrowserPanel());
+        RepaintManager repaintManager = RepaintManager.currentManager(mainPanel);
         
         repaintManager.setDoubleBufferingEnabled(false);
 
@@ -39,8 +39,8 @@ public class NATPrinter implements Printable {
         Graphics2D g2d = (Graphics2D)g;
         g2d.translate(pf.getImageableX(), pf.getImageableY());
 
-        int width = mainPanel.getMainBrowserPanel().getWidth();
-        int height = mainPanel.getMainBrowserPanel().getHeight();
+        int width = mainPanel.getWidth();
+        int height = mainPanel.getHeight();
 
         // Create a new BufferedImage the size of the NATtab frame.
         BufferedImage bi = new BufferedImage(
@@ -51,7 +51,7 @@ public class NATPrinter implements Printable {
         Graphics graphics = bi.getGraphics();
 
         // Paint the NATtab to BI's graphics object
-        mainPanel.getMainBrowserPanel().printAll(graphics);
+        mainPanel.printAll(graphics);
 
         double scale = pf.getImageableHeight() / bi.getWidth();
 

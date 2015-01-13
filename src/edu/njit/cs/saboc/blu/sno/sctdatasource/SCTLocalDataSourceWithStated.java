@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.sctdatasource;
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSnomedConcept;
+import edu.njit.cs.saboc.blu.sno.localdatasource.conceptdata.HierarchyMetrics;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,8 +65,43 @@ public class SCTLocalDataSourceWithStated extends SCTLocalDataSource {
         return createAncestorList(statedHierarchy, c);
     }
     
+    public ArrayList<Concept> getStatedDescendants(Concept c) {
+        SCTConceptHierarchy hierarchy;
+        
+        if(c.equals(statedHierarchy.getRoot())) {
+            hierarchy = statedHierarchy;
+        } else {
+            hierarchy = (SCTConceptHierarchy)statedHierarchy.getSubhierarchyRootedAt(c);
+        }
+        
+        HashSet<Concept> descendantSet = hierarchy.getConceptsInHierarchy();
+        descendantSet.remove(c);
+        
+        ArrayList<Concept> descendantList = new ArrayList<Concept>(descendantSet);
+        
+        Collections.sort(descendantList, new ConceptNameComparator());
+        
+        return descendantList;
+    }
+    
     public SCTConceptHierarchy getStatedHierarchy() {
         return statedHierarchy;
+    }
+    
+    public HierarchyMetrics getStatedHierarchyMetrics(Concept c) {
+        
+        HierarchyMetrics statedMetrics = new HierarchyMetrics(
+                c, 
+                this.getHierarchiesConceptBelongTo(c), 
+                this.getStatedAncestors(c).size(), 
+                this.getStatedDescendants(c).size(), 
+                this.getStatedParents(c).size(), 
+                this.getStatedChildren(c).size(), 
+                this.getStatedSiblings(c).size()
+        );
+        
+        
+        return statedMetrics;
     }
     
     public boolean supportsStatedRelationships() {

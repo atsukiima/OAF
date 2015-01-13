@@ -1,20 +1,33 @@
 package edu.njit.cs.saboc.blu.sno.conceptbrowser.gui.panels;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.utils.filterable.entry.FilterableStringEntry;
 import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
+import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.FocusConcept;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.SnomedConceptBrowser;
+import edu.njit.cs.saboc.blu.sno.conceptbrowser.gui.dialogs.PathListDialog;
+import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSCTConceptStated;
 import edu.njit.cs.saboc.blu.sno.localdatasource.conceptdata.HierarchyMetrics;
+import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSourceWithStated;
 import edu.njit.cs.saboc.blu.sno.utils.filterable.entry.FilterableConceptEntry;
+import edu.njit.cs.saboc.blu.sno.utils.filterable.entry.FilterablePathEntry;
 import edu.njit.cs.saboc.blu.sno.utils.filterable.entry.FilterableStatedAncestorEntry;
 import edu.njit.cs.saboc.blu.sno.utils.filterable.list.SCTFilterableList;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
 
@@ -23,9 +36,14 @@ import javax.swing.table.AbstractTableModel;
  * @author Chris
  */
 public class HierarchyMetricsPanel extends BaseNavPanel {
+    
+    public static enum HierarchyType {
+        Inferred,
+        Stated
+    }
 
     private class HierarchyMetricsTableModel extends AbstractTableModel {
-
+                
         private String[] columnNames = new String[]{"Metric", "#"};
         private Object[][] data;
 
@@ -54,19 +72,19 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
             this.data[0][0] = "Hierarchy";
             this.data[0][1] = hierarchies;
             
-            this.data[1][0] = "Inferred Ancestors";
+            this.data[1][0] = "Ancestors";
             this.data[1][1] = metrics.getAncestorCount();
             
-            this.data[2][0] = "Inferred Descendants";
+            this.data[2][0] = "Descendants";
             this.data[2][1] = metrics.getDescendantCount();
             
-            this.data[3][0] = "Inferred Parents";
+            this.data[3][0] = "Parents";
             this.data[3][1] = metrics.getParentCount();
             
-            this.data[4][0] = "Inferred Children";
+            this.data[4][0] = "Children";
             this.data[4][1] = metrics.getChildCount();
             
-            this.data[5][0] = "Inferred Siblings";
+            this.data[5][0] = "Siblings";
             this.data[5][1] = metrics.getSiblingCount();
             
             this.fireTableDataChanged();
@@ -95,46 +113,60 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
 
     private final int METRICS_IDX = 0;
     private final int ANCESTOR_IDX = 1;
-    private final int STATED_ANCESTOR_IDX = 2;
-    private final int DESCENDANT_IDX = 3;
-    private final int PATH_IDX = 4;
+    private final int DESCENDANT_IDX = 2;
+    private final int PATH_IDX = 3;
 
-    private HierarchyMetricsTableModel metricsModel;
-
-    private JTabbedPane tabbedPane;
-
-    private BaseNavPanel metricsPanel;
-    private BaseNavPanel ancestorsPanel;
-    private BaseNavPanel statedAncestorsPanel;
-    private BaseNavPanel descendantsPanel;
-    private BaseNavPanel allPathsPanel;
+    private final JTabbedPane tabbedPane;
     
-
+    private final JTabbedPane inferredTabbedPane;
+    
+    private final JTabbedPane statedTabbedPane;
+    
     public HierarchyMetricsPanel(final SnomedConceptBrowser mainPanel, SCTDataSource dataSource) {
         super(mainPanel, dataSource);
 
         this.setLayout(new BorderLayout());
+        
         this.setBackground(mainPanel.getNeighborhoodBGColor());
 
         tabbedPane = new JTabbedPane();
-
-        tabbedPane.addTab("Hierarchy Metrics", createMetricsPanel());
-        tabbedPane.addTab("All Inferred Ancestors", createAncestorsPanel());
+        
+        inferredTabbedPane = new JTabbedPane();
+        
+        statedTabbedPane = new JTabbedPane();
+        
+        inferredTabbedPane.addTab("Metrics", createMetricsPanel(HierarchyType.Inferred));
+        
+        inferredTabbedPane.addTab("Ancestors", createAncestorsPanel(HierarchyType.Inferred, inferredTabbedPane));
+        
+        inferredTabbedPane.addTab("Descendants", createDescendantsPanel(HierarchyType.Inferred, inferredTabbedPane));
+        
+        inferredTabbedPane.addTab("Paths", createAllPathsPanel(HierarchyType.Inferred, inferredTabbedPane));
         
         if(dataSource.supportsStatedRelationships()) {
-            tabbedPane.addTab("Add Stated Ancestors", createStatedAncestorsPanel());
+            statedTabbedPane.addTab("Metrics", createMetricsPanel(HierarchyType.Stated));
+            
+            statedTabbedPane.addTab("Ancestors", createAncestorsPanel(HierarchyType.Stated, statedTabbedPane));
+            
+            statedTabbedPane.addTab("Descendants", createDescendantsPanel(HierarchyType.Stated, statedTabbedPane));
         }
         
-        tabbedPane.addTab("All Inferred Descendants", createDescendantsPanel());
-        tabbedPane.addTab("All Paths (Inferred IS-As)", createAllPathsPanel());
+        tabbedPane.add("Inferred Hierarchy", inferredTabbedPane);
+        tabbedPane.add("Stated Hierarchy", statedTabbedPane);
 
         this.add(tabbedPane, BorderLayout.CENTER);
     }
 
-    private BaseNavPanel createMetricsPanel() {
-        JTable table = new JTable(metricsModel = new HierarchyMetricsTableModel());
-
-        metricsPanel = new BaseNavPanel(mainPanel, dataSource) {
+    private BaseNavPanel createMetricsPanel(final HierarchyType type) {
+        
+        final HierarchyMetricsTableModel metricsModel = new HierarchyMetricsTableModel();
+        
+        final FocusConcept.Fields field = (type == HierarchyType.Inferred) ? 
+                FocusConcept.Fields.HIERARCHYMETRICS : FocusConcept.Fields.STATEDHIERARCHYMETRICS;
+        
+        JTable table = new JTable(metricsModel);
+        
+        BaseNavPanel metricsPanel = new BaseNavPanel(mainPanel, dataSource) {
 
             public void dataPending() {
                 metricsModel.clearData();
@@ -145,7 +177,7 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
             }
 
             public void dataReady() {
-                HierarchyMetrics metrics = (HierarchyMetrics)focusConcept.getConceptList(FocusConcept.Fields.HIERARCHYMETRICS);
+                HierarchyMetrics metrics = (HierarchyMetrics)focusConcept.getConceptList(field);
                 metricsModel.setData(metrics);
             }
         };
@@ -153,127 +185,116 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
         metricsPanel.setLayout(new BorderLayout());
         metricsPanel.add(table, BorderLayout.CENTER);
 
-        focusConcept.addDisplayPanel(FocusConcept.Fields.HIERARCHYMETRICS, metricsPanel);
+        focusConcept.addDisplayPanel(field, metricsPanel);
 
         return metricsPanel;
     }
 
-    private BaseNavPanel createAncestorsPanel() {
+    private BaseNavPanel createAncestorsPanel(final HierarchyType type, final JTabbedPane parentPane) {
 
         final SCTFilterableList ancestorsList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
+        
+        final FocusConcept.Fields field = (type == HierarchyType.Inferred) ? 
+                FocusConcept.Fields.ALLANCESTORS : FocusConcept.Fields.STATEDANCESTORS;
 
-        ancestorsPanel = new BaseNavPanel(mainPanel, dataSource) {
+        BaseNavPanel ancestorsPanel = new BaseNavPanel(mainPanel, dataSource) {
             public void dataPending() {
-                tabbedPane.setTitleAt(ANCESTOR_IDX, "All Inferred Ancestors");
+                parentPane.setTitleAt(ANCESTOR_IDX, "Ancestors");
                 ancestorsList.showPleaseWait();
             }
 
             public void dataEmpty() {
-                tabbedPane.setTitleAt(ANCESTOR_IDX, "All Inferred Ancestors");
+                parentPane.setTitleAt(ANCESTOR_IDX, "Ancestors");
                 ancestorsList.showDataEmpty();
             }
 
             public void dataReady() {
-                ArrayList<Concept> allAncestors = (ArrayList<Concept>)focusConcept.getConceptList(FocusConcept.Fields.ALLANCESTORS);
+                ArrayList<Concept> allAncestors = (ArrayList<Concept>)focusConcept.getConceptList(field);
 
                 ArrayList<Filterable> conceptEntries = new ArrayList<Filterable>();
 
                 for(Concept c : allAncestors) {
-                    conceptEntries.add(new FilterableConceptEntry(c));
+                    
+                    if(type == HierarchyType.Inferred) {
+                        conceptEntries.add(new FilterableConceptEntry(c));
+                    } else {
+                        conceptEntries.add(new FilterableStatedAncestorEntry((LocalSCTConceptStated)c));
+                    }
                 }
                 
                 ancestorsList.setContents(conceptEntries);
                 
-                tabbedPane.setTitleAt(ANCESTOR_IDX, String.format("All Inferred Ancestors (%d)", allAncestors.size()));
+                parentPane.setTitleAt(ANCESTOR_IDX, String.format("Ancestors (%d)", allAncestors.size()));
             }
         };
 
         ancestorsPanel.setLayout(new BorderLayout());
         ancestorsPanel.add(ancestorsList);
 
-        focusConcept.addDisplayPanel(FocusConcept.Fields.ALLANCESTORS, ancestorsPanel);
+        focusConcept.addDisplayPanel(field, ancestorsPanel);
 
         return ancestorsPanel;
     }
     
-    private BaseNavPanel createStatedAncestorsPanel() {
-        final SCTFilterableList statedAncestorsList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
-
-        statedAncestorsPanel = new BaseNavPanel(mainPanel, dataSource) {
-            
-            public void dataPending() {
-                tabbedPane.setTitleAt(STATED_ANCESTOR_IDX, "All Stated Ancestors");
-                statedAncestorsList.showPleaseWait();
-            }
-
-            public void dataEmpty() {
-                tabbedPane.setTitleAt(STATED_ANCESTOR_IDX, "All Stated Ancestors");
-                statedAncestorsList.showDataEmpty();
-            }
-
-            public void dataReady() {
-                ArrayList<Concept> allStatedAncestors = (ArrayList<Concept>) focusConcept.getConceptList(FocusConcept.Fields.STATEDANCESTORS);
-
-                ArrayList<Filterable> conceptEntries = new ArrayList<Filterable>();
-
-                for (Concept c : allStatedAncestors) {
-                    LocalSCTConceptStated statedConcept = (LocalSCTConceptStated)c;
-                    
-                    conceptEntries.add(new FilterableStatedAncestorEntry(statedConcept));
-                }
-
-                statedAncestorsList.setContents(conceptEntries);
-
-                tabbedPane.setTitleAt(STATED_ANCESTOR_IDX, String.format("All Stated Ancestors (%d)", allStatedAncestors.size()));
-            }
-        };
-
-        statedAncestorsPanel.setLayout(new BorderLayout());
-        statedAncestorsPanel.add(statedAncestorsList);
-
-        focusConcept.addDisplayPanel(FocusConcept.Fields.STATEDANCESTORS, statedAncestorsPanel);
-
-        return statedAncestorsPanel;
-    }
     
-    private BaseNavPanel createDescendantsPanel() {
+    private BaseNavPanel createDescendantsPanel(final HierarchyType type, final JTabbedPane parentPane) {
 
         final SCTFilterableList descendantList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
+        
+        final FocusConcept.Fields field = (type == HierarchyType.Inferred) ? 
+                FocusConcept.Fields.ALLDESCENDANTS : FocusConcept.Fields.STATEDDESCENDANTS;
 
-        descendantsPanel = new BaseNavPanel(mainPanel, dataSource) {
+        BaseNavPanel descendantsPanel = new BaseNavPanel(mainPanel, dataSource) {
             public void dataPending() {
-                tabbedPane.setTitleAt(DESCENDANT_IDX, "All Descendants");
+                parentPane.setTitleAt(DESCENDANT_IDX, "Descendants");
                 descendantList.showPleaseWait();
             }
 
             public void dataEmpty() {
-                tabbedPane.setTitleAt(DESCENDANT_IDX, "All Descendants");
+                parentPane.setTitleAt(DESCENDANT_IDX, "Descendants");
                 descendantList.showDataEmpty();
             }
 
             public void dataReady() {
-                ArrayList<Concept> allDescendants = (ArrayList<Concept>) focusConcept.getConceptList(FocusConcept.Fields.ALLDESCENDANTS);
+                ArrayList<Concept> allDescendants = (ArrayList<Concept>) focusConcept.getConceptList(field);
                 
                 ArrayList<Filterable> conceptEntries = new ArrayList<Filterable>();
                 
                 if(allDescendants.size() > 2000) {
-                                        
-                    for(Concept descendant : allDescendants) {
-                        if(dataSource.getConceptChildren(descendant).size() >= 10) {
-                            conceptEntries.add(new FilterableConceptEntry(descendant));
+                    
+                    if (type == HierarchyType.Inferred) {
+                        for (Concept descendant : allDescendants) {
+
+                            if (dataSource.getConceptChildren(descendant).size() >= 10) {
+                                conceptEntries.add(new FilterableConceptEntry(descendant));
+                            }
+                        }
+                    } else {
+                        SCTLocalDataSourceWithStated statedDS = (SCTLocalDataSourceWithStated)dataSource;
+                        
+                        for (Concept descendant : allDescendants) {
+
+                            if (statedDS.getStatedChildren(descendant).size() >= 10) {
+                                conceptEntries.add(new FilterableStatedAncestorEntry((LocalSCTConceptStated)descendant));
+                            }
                         }
                     }
-                    
-                    tabbedPane.setTitleAt(DESCENDANT_IDX, String.format("All Descendants (%d, Showing %d)", allDescendants.size(), conceptEntries.size()));
+                         
+                    parentPane.setTitleAt(DESCENDANT_IDX, String.format("Descendants (%d, Showing %d)", allDescendants.size(), conceptEntries.size()));
                     descendantList.showDataEmpty();
                     
                 } else {
      
                     for (Concept c : allDescendants) {
-                        conceptEntries.add(new FilterableConceptEntry(c));
+                        
+                        if(type == HierarchyType.Inferred) {
+                            conceptEntries.add(new FilterableConceptEntry(c));
+                        } else {
+                            conceptEntries.add(new FilterableStatedAncestorEntry((LocalSCTConceptStated)c));
+                        }
                     }
 
-                    tabbedPane.setTitleAt(DESCENDANT_IDX, String.format("All Descendants (%d)", allDescendants.size()));
+                    parentPane.setTitleAt(DESCENDANT_IDX, String.format("Descendants (%d)", allDescendants.size()));
                 }
                 
                 descendantList.setContents(conceptEntries);
@@ -283,58 +304,99 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
         descendantsPanel.setLayout(new BorderLayout());
         descendantsPanel.add(descendantList);
 
-        focusConcept.addDisplayPanel(FocusConcept.Fields.ALLDESCENDANTS, descendantsPanel);
+        focusConcept.addDisplayPanel(field, descendantsPanel);
 
         return descendantsPanel;
     }
 
-    private BaseNavPanel createAllPathsPanel() {
-        final SCTFilterableList pathList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
+    private BaseNavPanel createAllPathsPanel(final HierarchyType type, final JTabbedPane parentPane) {
+        final SCTFilterableList pathList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), false, true);
         
-        allPathsPanel = new BaseNavPanel(mainPanel, dataSource) {
+         final FocusConcept.Fields field = (type == HierarchyType.Inferred) ? 
+                FocusConcept.Fields.ALLPATHS : null;
+        
+        BaseNavPanel inferredPathsPanel = new BaseNavPanel(mainPanel, dataSource) {
             public void dataPending() {
-                tabbedPane.setTitleAt(PATH_IDX, "All Paths");
+                parentPane.setTitleAt(PATH_IDX, "Paths");
                 pathList.showPleaseWait();
             }
 
             public void dataEmpty() {
-                tabbedPane.setTitleAt(PATH_IDX, "All Paths");
+                parentPane.setTitleAt(PATH_IDX, "Paths");
                 pathList.showDataEmpty();
             }
 
             public void dataReady() {
-                ArrayList<ArrayList<Concept>> allPaths = (ArrayList<ArrayList<Concept>>)focusConcept.getConceptList(FocusConcept.Fields.ALLPATHS);
+                ArrayList<ArrayList<Concept>> allPaths = (ArrayList<ArrayList<Concept>>)focusConcept.getConceptList(field);
                 
                 ArrayList<Filterable> pathEntries = new ArrayList<Filterable>();
                 
                 for(ArrayList<Concept> path : allPaths) {
-  
-                    String pathStr = path.get(0).getName();
-                    
-                    if(path.size() > 1) {
-                        pathStr += " ... ";
-                    }
-                    
-                    if(path.size() > 2) {
-                        pathStr += path.get(path.size() - 2).getName() + ", ";
-                    }
-                    
-                    pathStr += path.get(path.size() - 1).getName();
-                    
-                    pathEntries.add(new FilterableStringEntry(pathStr));
+                    pathEntries.add(new FilterablePathEntry(path));
                 }
                 
                 pathList.setContents(pathEntries);
                 
-                tabbedPane.setTitleAt(PATH_IDX, String.format("All Paths (%d)", allPaths.size()));
+                parentPane.setTitleAt(PATH_IDX, String.format("Paths (%d)", allPaths.size()));
             }
         };
+        
+        
+        JButton deriveBtn = new JButton("Derive Path Subtaxonomy");
+        deriveBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                List<Filterable> selectedPaths = pathList.getSelectedValues();
+                
+                if(!selectedPaths.isEmpty()) {
+                    ArrayList<ArrayList<Concept>> paths = new ArrayList<ArrayList<Concept>>();
+                    
+                    for(Filterable selectedPath : selectedPaths) {
+                        paths.add(((FilterablePathEntry)selectedPath).getPath());
+                    }
+                    
+                    deriveAndDisplayPathSubtaxonomy(paths);
+                }
+            }
+        });
+        
+        pathList.addListMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount() == 2) {
+                    PathListDialog.show(mainPanel, ((FilterablePathEntry)pathList.getSelectedValues().get(0)).getPath());
+                }
+            }
+        });
+        
 
-        allPathsPanel.setLayout(new BorderLayout());
-        allPathsPanel.add(pathList);
+        inferredPathsPanel.setLayout(new BorderLayout());
+        
+        inferredPathsPanel.add(deriveBtn, BorderLayout.NORTH);
+        
+        inferredPathsPanel.add(pathList, BorderLayout.CENTER);
 
-        focusConcept.addDisplayPanel(FocusConcept.Fields.ALLPATHS, allPathsPanel);
+        focusConcept.addDisplayPanel(field, inferredPathsPanel);
 
-        return allPathsPanel;
+        return inferredPathsPanel;
+    }
+    
+    
+    private void deriveAndDisplayPathSubtaxonomy(ArrayList<ArrayList<Concept>> paths) {
+        SCTConceptHierarchy pathHierarchy = new SCTConceptHierarchy(paths.get(0).get(0));
+        
+        for(ArrayList<Concept> path : paths) {
+            for(int c = 0; c < path.size() - 1; c++) {
+                pathHierarchy.addIsA(path.get(c+1), path.get(c));
+            }
+        }
+        
+        SCTPAreaTaxonomyGenerator generator = new SCTPAreaTaxonomyGenerator(pathHierarchy.getRoot(), dataSource, pathHierarchy, new InferredRelationshipsRetriever());
+
+        final SCTPAreaTaxonomy taxonomy = generator.derivePAreaTaxonomy();
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
+            }
+        });
     }
 }

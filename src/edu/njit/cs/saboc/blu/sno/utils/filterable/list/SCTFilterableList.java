@@ -13,9 +13,13 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -37,8 +41,10 @@ public class SCTFilterableList extends JPanel {
     
     private JTextField filterField = new JTextField();
     private JButton closeButton = new JButton();
+    
     private DefaultListModel pleaseWaitModel = new DefaultListModel();
     private DefaultListModel dataEmptyModel = new DefaultListModel();
+    
     protected FilterableListModel conceptModel;
     protected JList list;
     private JPanel filterPanel = new JPanel();
@@ -50,8 +56,7 @@ public class SCTFilterableList extends JPanel {
 
         setLayout(new BorderLayout());
 
-        conceptModel = new FilterableListModel(
-                CUIsValid && options.areCUIsVisible());
+        conceptModel = new FilterableListModel(CUIsValid && options.areCUIsVisible());
 
         options.addOptionListener(new Options.Listener() {
             @Override
@@ -156,6 +161,8 @@ public class SCTFilterableList extends JPanel {
         // For more info read Yakup's journal on 08 august 07.
         list.setFixedCellHeight(17);
         list.setFixedCellWidth(1536); // Larger arbitary number to fix wrapping issue - Chris 8/18/09
+        
+        
         JScrollPane scrollpane = new JScrollPane(list);
         add(scrollpane, BorderLayout.CENTER);
 
@@ -257,5 +264,30 @@ public class SCTFilterableList extends JPanel {
             filterPanel.setVisible(false);
             list.grabFocus();
         }
+    }
+    
+    public void addListMouseListener(MouseListener listener) {
+        list.addMouseListener(listener);
+    }
+    
+    public void removeListMouseListener(MouseListener listener) {
+        list.removeMouseListener(listener);
+    }
+    
+    public List<Filterable> getSelectedValues() {
+        
+        if(list.getSelectedIndices().length == 0) {
+            return (List<Filterable>)Collections.EMPTY_LIST;
+        }
+        
+        ArrayList<Filterable> selectedItems = new ArrayList<Filterable>();
+        
+        int [] selectedIndices = list.getSelectedIndices();
+        
+        for(int index : selectedIndices) {
+            selectedItems.add(conceptModel.getFilterableAtModelIndex(index));
+        }
+
+        return selectedItems;
     }
 }

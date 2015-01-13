@@ -20,7 +20,7 @@ import javax.swing.SwingWorker;
  * @author Chris
  */
 public class PAreaOptionsConfiguration extends GroupOptionsPanelConfiguration {
-
+    
     public PAreaOptionsConfiguration(
             final JFrame parentFrame, 
             final PAreaInternalGraphFrame graphFrame,

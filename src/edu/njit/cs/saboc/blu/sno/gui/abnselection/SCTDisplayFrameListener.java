@@ -81,7 +81,7 @@ public abstract class SCTDisplayFrameListener implements FrameCreationListener {
             browserDataSource = new SCTRemoteDataSource(dataSource.getSelectedVersion());
         }
 
-        InternalConceptBrowserFrame ibf = new InternalConceptBrowserFrame(browserDataSource, this);
+        InternalConceptBrowserFrame ibf = new InternalConceptBrowserFrame(mainFrame, browserDataSource, this);
 
         this.displayFrame(ibf);
 

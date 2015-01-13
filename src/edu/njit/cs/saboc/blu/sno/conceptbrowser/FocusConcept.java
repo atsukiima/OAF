@@ -25,10 +25,28 @@ public class FocusConcept {
     private Concept concept = null;
 
     public enum Fields {
-        CONCEPT, PARENTS, CHILDREN, SYNONYMS, SIBLINGS, CONCEPTREL, 
-        PARTIALAREA, TRIBALAN, HIERARCHYMETRICS, 
-        ALLANCESTORS, ALLDESCENDANTS, ALLPATHS, STATEDPARENTS, STATEDCHILDREN,
-        STATEDCONCEPTRELS, STATEDSIBLINGS, STATEDANCESTORS
+        CONCEPT, 
+        PARENTS, 
+        CHILDREN, 
+        SYNONYMS, 
+        SIBLINGS, 
+        CONCEPTREL, 
+        
+        PARTIALAREA, 
+        TRIBALAN, 
+        
+        HIERARCHYMETRICS, 
+        ALLANCESTORS,
+        ALLDESCENDANTS, 
+        ALLPATHS, 
+        
+        STATEDPARENTS, 
+        STATEDCHILDREN,
+        STATEDCONCEPTRELS, 
+        STATEDSIBLINGS, 
+        STATEDANCESTORS, 
+        STATEDDESCENDANTS, 
+        STATEDHIERARCHYMETRICS
     };
 
     // Concept data
@@ -181,6 +199,10 @@ public class FocusConcept {
                 update(Fields.STATEDSIBLINGS);
                 
                 update(Fields.STATEDANCESTORS);
+                
+                update(Fields.STATEDDESCENDANTS);
+                
+                update(Fields.STATEDHIERARCHYMETRICS);
             }
         }       
     }
@@ -306,6 +328,14 @@ public class FocusConcept {
                     
                 case STATEDANCESTORS:
                     result = ((SCTLocalDataSourceWithStated)dataSource).getStatedAncestors(concept);
+                    break;
+                    
+                case STATEDDESCENDANTS:
+                    result = ((SCTLocalDataSourceWithStated)dataSource).getStatedDescendants(concept);
+                    break;
+                    
+                case STATEDHIERARCHYMETRICS:
+                    result = ((SCTLocalDataSourceWithStated)dataSource).getStatedHierarchyMetrics(concept);
                     break;
             }
 

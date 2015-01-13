@@ -69,10 +69,7 @@ public class NoRegionsLayout extends GenericNoRegionsPAreaGraphLayout<
         HashMap<Long, String> relNames = taxonomy.getLateralRelsInHierarchy();
         
         for(long relId : relIds) {
-            String name = relNames.get(relId);
-            name = name.substring(0, name.lastIndexOf("(")).trim();
-            
-            names.add(name);
+            names.add(relNames.get(relId));
         }
         
         Collections.sort(names);

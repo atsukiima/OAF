@@ -45,6 +45,8 @@ public class SCTPAreaTaxonomyGenerator extends PAreaTaxonomyGenerator<SCTPAreaTa
         
         HashMap<Concept, HashSet<Long>> definingRels = conceptRelsRetriever.getDefiningRelationships(hierarchy);
         
+        HashSet<Long> relsInHierarchy = new HashSet<Long>();
+        
         for(Entry<Concept, HashSet<Long>> entry : definingRels.entrySet()) {
             Concept concept = entry.getKey();
             
@@ -67,10 +69,17 @@ public class SCTPAreaTaxonomyGenerator extends PAreaTaxonomyGenerator<SCTPAreaTa
                     conceptRelInheritance.add(new InheritedRelWithHash(InheritanceType.INTRODUCED, conceptRel));
                 }
                 
-                relNames.put(conceptRel, dataSource.getConceptFromId(conceptRel).getName());
+                relsInHierarchy.add(conceptRel);
             }
             
             definingConceptRels.put(concept, conceptRelInheritance);
+        }
+        
+        for(long relId : relsInHierarchy) {
+            String relName = dataSource.getConceptFromId(relId).getName();
+            relName = relName.substring(0, relName.lastIndexOf("(")).trim();
+            
+            relNames.put(relId, relName);
         }
     }
         

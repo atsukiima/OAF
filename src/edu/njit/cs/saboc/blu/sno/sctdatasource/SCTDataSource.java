@@ -267,4 +267,6 @@ public interface SCTDataSource {
      * @return 
      */
     public boolean supportsStatedRelationships();
+    
+    public boolean isLocalDataSource();
 }

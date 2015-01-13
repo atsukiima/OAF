@@ -6,6 +6,7 @@ import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
+import edu.njit.cs.saboc.blu.core.gui.hierarchypainter.HierarchyPainterPanel;
 import edu.njit.cs.saboc.blu.sno.abn.export.ExportAbN;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
@@ -16,6 +17,7 @@ import edu.njit.cs.saboc.blu.sno.gui.dialogs.AreaReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.LevelReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.PAreaOptionsConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.PAreaTaxonomyGEPListener;
+import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.ReducedPAreaOptionsConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.GraphOptionsButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.RelationshipSelectionButton;
@@ -33,6 +35,8 @@ import javax.swing.JFrame;
 public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
     private TextBrowserPanel tbp;
+    
+    private HierarchyPainterPanel<Concept> hierarchyPanel;
     
     private PAreaInternalSearchButton searchButton;
     
@@ -149,8 +153,8 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
                 areaCount, pareaCount, conceptCount));
     }
 
-    public void replaceInternalFrameDataWith(SCTPAreaTaxonomy data,
-            boolean areaGraph, boolean conceptCountLabels, GraphOptions options) {
+    public void replaceInternalFrameDataWith(final SCTPAreaTaxonomy data,
+            final boolean areaGraph, final boolean conceptCountLabels, final GraphOptions options) {
         
         GroupEntryLabelCreator labelCreator;
         
@@ -167,7 +171,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
                         return super.getCountStr(parea);
                     }
                     
-                    return String.format("(%d) [%d]", parea.getConceptCount(), reduced.getReducedGroups().size());
+                    return String.format("(%d) [%d]", reduced.getAllGroupsConcepts().size(), reduced.getReducedGroups().size());
                 }
             };
         } else {
@@ -179,10 +183,18 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         }
         
         BluGraph graph = new PAreaBluGraph(parentFrame, data, areaGraph, conceptCountLabels, options, displayListener, labelCreator);
+        
+        PAreaOptionsConfiguration optionsConfig;
+        
+        if(data.isReduced()) {
+            optionsConfig = new ReducedPAreaOptionsConfiguration(parentFrame, this, data, displayListener);
+        } else {
+            optionsConfig = new PAreaOptionsConfiguration(parentFrame, this, data, displayListener);
+        }
 
         initializeGraphTabs(graph, new SCTTaxonomyPainter(), 
                 new PAreaTaxonomyGEPListener(parentFrame, displayListener), 
-                new PAreaOptionsConfiguration(parentFrame, this, data, displayListener));
+                optionsConfig);
         
         tbp = null;
 
@@ -195,11 +207,25 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
         tabbedPane.setToolTipTextAt(2, "<html><b>Hybrid Graph View</b> allows you to quickly obtain informatin <br>"
                 + "about Areas and PAreas in a text/diagram hybrid view.");
-
+        
         tabbedPane.validate();
         tabbedPane.repaint();
+        
+        if (data.getAbstractionNetwork().getDataSource().isLocalDataSource() && data.getAbstractionNetwork().getConceptHierarchy().getNodesInHierarchy().size() < 3000) {
+            hierarchyPanel = new HierarchyPainterPanel<Concept>();
+
+            tabbedPane.add("Complete Concept Hierarchy", hierarchyPanel);
+
+            Thread painterThread = new Thread(new Runnable() {
+                public void run() {
+                    hierarchyPanel.paintHierarchy(data.getConceptHierarchy());
+                }
+            });
+
+            painterThread.run();
+        }
+
     }
-    
 
     public void viewInTextBrowser(SCTPArea parea) {
         tbp.navigateTo(parea);

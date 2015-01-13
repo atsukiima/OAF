@@ -217,4 +217,8 @@ public class SCTRemoteDataSource implements SCTDataSource {
     public boolean supportsStatedRelationships() {
         return false;
     }
+    
+    public boolean isLocalDataSource() {
+        return false;
+    }
 }

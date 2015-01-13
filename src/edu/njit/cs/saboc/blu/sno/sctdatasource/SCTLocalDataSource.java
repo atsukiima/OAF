@@ -907,6 +907,10 @@ public class SCTLocalDataSource implements SCTDataSource {
         return false;
     }
     
+    public boolean isLocalDataSource() {
+        return true;
+    }
+    
     public SCTPAreaTaxonomy getCompleteTaxonomy(Concept root) {
         SCTPAreaTaxonomy taxonomy;
 

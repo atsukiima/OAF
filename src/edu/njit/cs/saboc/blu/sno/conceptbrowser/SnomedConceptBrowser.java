@@ -19,12 +19,13 @@ import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
  * The main class of the NAT.
  */
-public class SnomedConceptBrowser {
+public class SnomedConceptBrowser extends JPanel {
     public static final long ROOT_CONCEPT_ID = 138875005;
 	
     public String fullSourceNames = null;
@@ -47,20 +48,22 @@ public class SnomedConceptBrowser {
         
     private FocusConceptPanel focusConceptPanel;
     private RelationshipPanel relationshipPanel;
-    private JPanel mainBrowserPanel;
     
+    private JFrame parentFrame;
+     
     private SCTDisplayFrameListener displayFrameListener;
 
-    public SnomedConceptBrowser(SCTDataSource dataSource, SCTDisplayFrameListener displayFrameListener) {
+    public SnomedConceptBrowser(JFrame parentFrame, SCTDataSource dataSource, SCTDisplayFrameListener displayFrameListener) {
         this.options = new Options();
         this.dataSource = dataSource;
+        
+        this.parentFrame = parentFrame;
         
         this.displayFrameListener = displayFrameListener;
         
         focusConcept = new FocusConcept(this, options, dataSource);
         
-        mainBrowserPanel = new JPanel();
-        initConceptBrowser(mainBrowserPanel);
+        initConceptBrowser(this);
         
         logoPanel.setSelectedVersionByName(dataSource.getSelectedVersion());
         
@@ -160,10 +163,6 @@ public class SnomedConceptBrowser {
     public FocusConcept getFocusConcept() {
         return focusConcept;
     }
-
-    public JPanel getMainBrowserPanel() {
-        return mainBrowserPanel;
-    }
     
     public LogoPanel getLogoPanel() {
         return logoPanel;
@@ -179,5 +178,9 @@ public class SnomedConceptBrowser {
 
     public RelationshipPanel getRelationshipPanel() {
         return relationshipPanel;
+    }
+    
+    public JFrame getParentFrame() {
+        return parentFrame;
     }
 }

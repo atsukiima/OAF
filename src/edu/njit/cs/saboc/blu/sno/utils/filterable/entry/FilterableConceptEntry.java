@@ -30,7 +30,7 @@ public class FilterableConceptEntry extends Filterable {
         return null;
     }
     
-    private String createEntryStr(String conceptName, String conceptId) {
+    protected String createEntryStr(String conceptName, String conceptId) {
         if (showConceptIds) {
             return String.format(
                     "<html>%s <font color='blue'>(%s)</font>",
@@ -42,7 +42,7 @@ public class FilterableConceptEntry extends Filterable {
         }
     }
     
-    private String createEntryStrWithPrimitive(String conceptName, String conceptId) {
+    protected String createEntryStrWithPrimitive(String conceptName, String conceptId) {
         if (showConceptIds) {
             return String.format(
                     "<html>%s <font color ='purple'>[primitive]</font> <font color='blue'>(%s)</font>",

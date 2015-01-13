@@ -35,7 +35,7 @@ public class PrintSelectDialog extends JDialog implements ActionListener {
         this.setSize(256, 300);
         this.setModal(true);
         this.setTitle("Print Type Select");
-        this.setLocationRelativeTo(mainPanel.getMainBrowserPanel());
+        this.setLocationRelativeTo(mainPanel);
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         initControls();
@@ -91,7 +91,7 @@ public class PrintSelectDialog extends JDialog implements ActionListener {
                             printerJob.print();
                         }
                         catch(PrinterException e) {
-                            JOptionPane.showMessageDialog(mainPanel.getMainBrowserPanel(),
+                            JOptionPane.showMessageDialog(mainPanel,
                                     "Printing unsucessful. Error while attempting to print.");
                         }
                     }
@@ -107,7 +107,7 @@ public class PrintSelectDialog extends JDialog implements ActionListener {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileFilter(new FileNameExtensionFilter("PNG Image Files", "png"));
             
-            if( fileChooser.showDialog(mainPanel.getMainBrowserPanel(),
+            if( fileChooser.showDialog(mainPanel,
                     "Save Image") == JFileChooser.APPROVE_OPTION)
             {
                 File file = fileChooser.getSelectedFile();
@@ -119,7 +119,7 @@ public class PrintSelectDialog extends JDialog implements ActionListener {
                     int extIndex = file.getName().indexOf(".");
 
                     if( !file.getName().substring(extIndex + 1).equalsIgnoreCase("png") ){
-                        JOptionPane.showMessageDialog(mainPanel.getMainBrowserPanel(),
+                        JOptionPane.showMessageDialog(mainPanel,
                                 "Error: You have entered an invalid file type. " +
                                 "Screenshots must end in '.png'.");
                         return;
