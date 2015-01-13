@@ -47,7 +47,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
     public PAreaInternalGraphFrame(final JFrame parentFrame, final SCTPAreaTaxonomy data, 
             boolean areaGraph, boolean conceptCounts, SCTDisplayFrameListener displayListener) {
         
-        super(parentFrame, "SNOMED-CT Partial-area Taxonomy");
+        super(parentFrame, "SNOMED CT Partial-area Taxonomy");
         
         this.displayListener = displayListener;
 
@@ -161,7 +161,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         if (data.isReduced()) {
             labelCreator = new GroupEntryLabelCreator<SCTPArea>() {
                 public String getRootNameStr(SCTPArea parea) {
-                    return parea.getRoot().getName().substring(0, parea.getRoot().getName().lastIndexOf("(")).trim();
+                    return parea.getRoot().getName();//.substring(0, parea.getRoot().getName().lastIndexOf("(")).trim();
                 }
                 
                 public String getCountStr(SCTPArea parea) {
@@ -177,7 +177,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         } else {
             labelCreator = new GroupEntryLabelCreator<SCTPArea>() {
                 public String getRootNameStr(SCTPArea parea) {
-                    return parea.getRoot().getName().substring(0, parea.getRoot().getName().lastIndexOf("(")).trim();
+                    return parea.getRoot().getName();//.substring(0, parea.getRoot().getName().lastIndexOf("(")).trim();
                 }
             };
         }

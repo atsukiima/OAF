@@ -73,7 +73,19 @@ public class ReducedPAreaOptionsConfiguration extends PAreaOptionsConfiguration 
             }
             
             SCTPArea expandedPArea = new SCTPArea(parea.getId(), (SCTConceptHierarchy)parea.getHierarchy(), parentIds, parea.getRelationships());
-            expandedPArea.setParentPAreaInfo(new HashSet<GenericParentPAreaInfo<Concept, SCTPArea>>());
+            
+            HashSet<GenericParentPAreaInfo<Concept, SCTPArea>> pareaParentDetails = parea.getParentPAreaInfo();
+            
+            HashSet<GenericParentPAreaInfo<Concept, SCTPArea>> expandedParentDetails = 
+                    new HashSet<GenericParentPAreaInfo<Concept, SCTPArea>>();
+            
+            for(GenericParentPAreaInfo<Concept, SCTPArea> parentDetails : pareaParentDetails) {
+                if(parents.contains(parentDetails.getParentPArea())) {
+                    expandedParentDetails.add(parentDetails);
+                }
+            }
+            
+            expandedPArea.setParentPAreaInfo(expandedParentDetails);
             
             pareas.put(parea.getId(), expandedPArea);
             

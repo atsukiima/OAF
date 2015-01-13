@@ -42,6 +42,12 @@ public class PAreaOptionsConfiguration extends GroupOptionsPanelConfiguration {
         });
         
         super.enableButtonWithAction(2, new GroupOptionsPanelActionListener<SCTPArea>() {
+            public void actionPerformedOn(SCTPArea parea) {
+                graphFrame.viewInTextBrowser(parea);
+            }
+        });
+        
+        super.enableButtonWithAction(3, new GroupOptionsPanelActionListener<SCTPArea>() {
             public void actionPerformedOn(final SCTPArea parea) {
                 
                 
@@ -79,12 +85,6 @@ public class PAreaOptionsConfiguration extends GroupOptionsPanelConfiguration {
                 };
                 
                 t.execute();
-            }
-        });
-        
-        super.enableButtonWithAction(3, new GroupOptionsPanelActionListener<SCTPArea>() {
-            public void actionPerformedOn(SCTPArea parea) {
-                graphFrame.viewInTextBrowser(parea);
             }
         });
         
