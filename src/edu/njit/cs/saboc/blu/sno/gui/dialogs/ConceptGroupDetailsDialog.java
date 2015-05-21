@@ -87,7 +87,7 @@ public class ConceptGroupDetailsDialog<T extends AbstractionNetwork> extends JDi
             final SCTDisplayFrameListener displayFrameListener) {
         
         this.resultsList = new JList();
-        this.conceptModel = new FilterableListModel(true);
+        this.conceptModel = new FilterableListModel();
 
         SCTConceptGroupDetailsPanel detailsPanel;
         String dialogTypeStr;

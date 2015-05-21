@@ -8,7 +8,7 @@ import java.util.ArrayList;
  *
  * @author Chris O
  */
-public class FilterablePathEntry extends Filterable {
+public class FilterablePathEntry extends Filterable<ArrayList<Concept>> {
     
     private ArrayList<Concept> path;
     
@@ -31,6 +31,10 @@ public class FilterablePathEntry extends Filterable {
         pathStr += " (Path Length: " + path.size() +")";
         
         this.pathStr = pathStr;
+    }
+    
+    public ArrayList<Concept> getObject() {
+        return path;
     }
 
     public Concept getNavigableConcept() {

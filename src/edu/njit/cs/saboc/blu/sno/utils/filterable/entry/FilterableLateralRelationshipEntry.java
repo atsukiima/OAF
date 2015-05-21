@@ -8,11 +8,15 @@ import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
  *
  * @author Chris
  */
-public class FilterableLateralRelationshipEntry extends Filterable {
+public class FilterableLateralRelationshipEntry extends Filterable<OutgoingLateralRelationship> {
     private OutgoingLateralRelationship relationship;
 
     public FilterableLateralRelationshipEntry(OutgoingLateralRelationship olr) {
         this.relationship = olr;
+    }
+    
+    public OutgoingLateralRelationship getObject() {
+        return relationship;
     }
 
     public Concept getNavigableConcept() {

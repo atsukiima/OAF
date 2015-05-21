@@ -10,13 +10,17 @@ import edu.njit.cs.saboc.blu.sno.conceptbrowser.Options;
  *
  * @author Chris
  */
-public class FilterableSearchEntry extends Filterable {
+public class FilterableSearchEntry extends Filterable<SearchResult> {
     private SearchResult entry;
     private Options options;
 
     public FilterableSearchEntry(Options options, SearchResult entry) {
         this.entry = entry;
         this.options = options;
+    }
+    
+    public SearchResult getObject() {
+        return entry;
     }
 
     public Concept getNavigableConcept() {

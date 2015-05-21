@@ -1,28 +1,15 @@
 package edu.njit.cs.saboc.blu.sno.utils.filterable.entry;
 
-import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
+import edu.njit.cs.saboc.blu.core.utils.filterable.entry.FilterableStringEntry;
 
 /**
  *
  * @author Chris
  */
-public class FilterableSynonymEntry extends Filterable {
+public class FilterableSynonymEntry extends FilterableStringEntry {
     private String synonym;
 
     public FilterableSynonymEntry(String synonym) {
-        this.synonym = synonym;
-    }
-
-    public Concept getNavigableConcept() {
-        return null;
-    }
-
-    public String getInitialText() {
-        return synonym;
-    }
-
-    public String getFilterText(String filter) {
-        return getInitialText();
+        super(synonym);
     }
 }
