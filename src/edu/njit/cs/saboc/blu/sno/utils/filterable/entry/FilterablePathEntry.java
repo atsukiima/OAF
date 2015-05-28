@@ -33,6 +33,10 @@ public class FilterablePathEntry extends Filterable<ArrayList<Concept>> {
         this.pathStr = pathStr;
     }
     
+    public boolean containsFilter(String filter) {
+        return true;
+    }
+    
     public ArrayList<Concept> getObject() {
         return path;
     }

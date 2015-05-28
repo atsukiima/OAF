@@ -36,5 +36,11 @@ public class FilterableLateralRelationshipEntry extends Filterable<OutgoingLater
                 filter(relationship.getRelationship().getName(), filter),
                 filter(relationship.getTarget().getName(), filter));
     }
+    
+    public boolean containsFilter(String filter) {
+        return Integer.toString(relationship.getRelationshipGroup()).contains(filter) ||
+                relationship.getRelationship().getName().contains(filter) ||
+                relationship.getTarget().getName().toLowerCase().contains(filter);
+    }
 
 }

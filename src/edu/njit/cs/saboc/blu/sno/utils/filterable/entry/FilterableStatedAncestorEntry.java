@@ -122,4 +122,10 @@ public class FilterableStatedAncestorEntry extends Filterable<LocalSCTConceptSta
             return getInitialText();
         }
     }
+    
+    public boolean containsFilter(String filter) {
+        return concept.getName().toLowerCase().contains(filter) ||
+                Long.toString(concept.getId()).contains(filter) ||
+                statedRelsStr.toLowerCase().contains(filter);
+    }
 }

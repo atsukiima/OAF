@@ -25,6 +25,11 @@ public class FilterableConceptEntry extends Filterable<Concept> {
     public Concept getObject() {
         return concept;
     }
+    
+    public boolean containsFilter(String filter) {
+        return concept.getName().toLowerCase().contains(filter) ||
+                Long.toString(concept.getId()).contains(filter);
+    }
 
     public Concept getNavigableConcept() {
         if(concept.getId() != -1) {

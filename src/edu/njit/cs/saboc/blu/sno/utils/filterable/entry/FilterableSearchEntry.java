@@ -39,4 +39,10 @@ public class FilterableSearchEntry extends Filterable<SearchResult> {
                 filter(entry.getFullySpecifiedName(), filter),
                 filter(Long.toString(entry.getConceptId()), filter));
     }
+    
+    public boolean containsFilter(String filter) {
+        return entry.getTerm().toLowerCase().contains(filter) ||
+                entry.getFullySpecifiedName().toLowerCase().contains(filter) ||
+                Long.toString(entry.getConceptId()).contains(filter);
+    }
 }
