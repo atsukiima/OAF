@@ -1,6 +1,9 @@
 package edu.njit.cs.saboc.blu.sno.abn.export;
 
 import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.ReducedSCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -44,10 +47,7 @@ public class ExportAbN {
             file = new File(file.getAbsolutePath() + ".csv");
         }
         
-        if(file == null) {
-            return;
-        }
-        
+
         try { 
             PrintWriter writer = new PrintWriter(file);
             
@@ -64,5 +64,45 @@ public class ExportAbN {
         } catch(FileNotFoundException fnfe) {
             fnfe.printStackTrace();
         }
+    }
+    
+    public static void exportAggregateTaxonomy(SCTPAreaTaxonomy taxonomy) {
+        
+        if(!taxonomy.isReduced()) {
+            return;
+        }
+        
+        File file = displayFileSelectDialog();
+
+        if (file == null) {
+            // TODO: Report error to user
+
+            return;
+        }
+
+        try {
+            PrintWriter writer = new PrintWriter(file);
+
+            writer.println(String.format("ROOTID\tROOTNAME\tSIZE\tAGGREGATES"));
+
+            ArrayList<SCTPArea> pareas = new ArrayList<SCTPArea>(taxonomy.getPAreas().values());
+
+            for (SCTPArea parea : pareas) {
+                ReducedSCTPArea reducedPArea = (ReducedSCTPArea) parea;
+
+                writer.println(String.format("%d\t%s\t%d\t%d", 
+                        parea.getRoot().getId(), 
+                        parea.getRoot().getName(),
+                        reducedPArea.getAllGroupsConcepts().size(),
+                        reducedPArea.getReducedGroups().size() - 1));
+            }
+
+            writer.close();
+
+        } catch (FileNotFoundException fnfe) {
+            fnfe.printStackTrace();
+        }
+
+
     }
 }

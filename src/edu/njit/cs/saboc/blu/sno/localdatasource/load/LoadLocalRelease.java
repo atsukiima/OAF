@@ -50,13 +50,23 @@ public class LoadLocalRelease {
             String releaseName;
             
             if (dirName.contains("RF1")) {
-                releaseName = dirName.substring(dirName.lastIndexOf("SnomedCT_"), dirName.lastIndexOf("\\RF1"));
+                
+                if (dirName.contains("_RF1Release")) {
+                    releaseName = dirName.substring(dirName.lastIndexOf("RF1Release"), dirName.lastIndexOf("\\Terminology\\Content"));
+                } else {
+                    releaseName = dirName.substring(dirName.lastIndexOf("SnomedCT_"), dirName.lastIndexOf("\\RF1"));
+                }
+                
             } else {
                 releaseName = dirName.substring(dirName.lastIndexOf("SnomedCT_"), dirName.lastIndexOf("\\Terminology\\Content"));
             }
 
             if(releaseName.contains("Release")) {
-                releaseName = releaseName.substring("SnomedCT_Release_".length());
+                if(releaseName.contains("RF1Release")) {
+                    releaseName = releaseName.substring("_RF1Release".length());
+                } else {
+                    releaseName = releaseName.substring("SnomedCT_Release_".length());
+                }
             } else {
                 releaseName = releaseName.substring("SnomedCT_".length());
             }

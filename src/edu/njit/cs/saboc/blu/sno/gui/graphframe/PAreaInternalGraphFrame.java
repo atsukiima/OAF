@@ -108,20 +108,26 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
     }
     
     private void exportPAreaCSV() {
-        SCTPAreaTaxonomy taxonomy = (SCTPAreaTaxonomy)graph.getAbstractionNetwork();
-        
-        SCTDataSource dataSource = taxonomy.getDataSource();
-        
-        ArrayList<SCTArea> areas = taxonomy.getHierarchyAreas();
-        
-        HashMap<Long, ArrayList<Concept>> pareaConcepts = new HashMap<Long, ArrayList<Concept>>();
-        
-        for(SCTArea a : areas) {
-            ArrayList<SCTPArea> areaPAreas = a.getAllPAreas();
-            pareaConcepts.putAll(dataSource.getConceptsInPAreaSet(taxonomy, areaPAreas));
+        SCTPAreaTaxonomy taxonomy = (SCTPAreaTaxonomy) graph.getAbstractionNetwork();
+
+        if (taxonomy.isReduced()) {
+            ExportAbN.exportAggregateTaxonomy(taxonomy);
+        } else {
+
+            SCTDataSource dataSource = taxonomy.getDataSource();
+
+            ArrayList<SCTArea> areas = taxonomy.getHierarchyAreas();
+
+            HashMap<Long, ArrayList<Concept>> pareaConcepts = new HashMap<Long, ArrayList<Concept>>();
+
+            for (SCTArea a : areas) {
+                ArrayList<SCTPArea> areaPAreas = a.getAllPAreas();
+                pareaConcepts.putAll(dataSource.getConceptsInPAreaSet(taxonomy, areaPAreas));
+            }
+
+            ExportAbN.exportAbNGroups(pareaConcepts, "PARTIALAREA");
         }
-        
-        ExportAbN.exportAbNGroups(pareaConcepts, "PARTIALAREA");
+
     }
 
     public PAreaBluGraph getGraph() {
