@@ -8,7 +8,7 @@ import edu.njit.cs.saboc.blu.sno.conceptbrowser.Options;
  *
  * @author harsh
  */
-public class GenericFilterableSearchEntry extends Filterable {
+public class GenericFilterableSearchEntry extends Filterable<SearchResult> {
     private SearchResult entry;
     private Options options;
 
@@ -18,6 +18,10 @@ public class GenericFilterableSearchEntry extends Filterable {
     
     public Concept getNavigableConcept() {
         return options.getDataSource().getConceptFromId(entry.getConceptId());
+    }
+    
+    public SearchResult getObject() {
+        return entry;
     }
 
     public String getInitialText() {
@@ -31,5 +35,11 @@ public class GenericFilterableSearchEntry extends Filterable {
                 "<font color='purple'>--%s</font>", filter(entry.getTerm(), filter),
                 filter(entry.getFullySpecifiedName(), filter),
                 filter(Long.toString(entry.getConceptId()), filter));
+    }
+    
+    public boolean containsFilter(String filter) {
+        return entry.getTerm().toLowerCase().contains(filter) ||
+                entry.getFullySpecifiedName().toLowerCase().contains(filter) ||
+                Long.toString(entry.getConceptId()).contains(filter);
     }
 }

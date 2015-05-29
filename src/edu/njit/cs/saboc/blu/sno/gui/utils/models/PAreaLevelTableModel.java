@@ -1,6 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.utils.models;
 
-import SnomedShared.pareataxonomy.Area;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.ReducedSCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
@@ -15,7 +15,7 @@ import javax.swing.table.AbstractTableModel;
  */
 public class PAreaLevelTableModel extends AbstractTableModel {
 
-    String[] columnNames = new String[]{"Level", "Areas", "PAreas", "Concepts", "Rels"};
+    private String[] columnNames = new String[]{"Level", "Areas", "Partial-areas", "Concepts", "Rels"};
     private Object[][] data;
 
     private class LevelData {
@@ -23,9 +23,17 @@ public class PAreaLevelTableModel extends AbstractTableModel {
         public int relCount = 0;
         public int pareaCount = 0;
         public int conceptCount = 0;
+        
+        public int aggregatePAreas = 0;
     }
 
     public PAreaLevelTableModel(SCTPAreaTaxonomy pareaTaxonomy) {
+        
+        if(pareaTaxonomy.isReduced()) {
+            columnNames = new String[]{"Level", "Areas", "Partial-areas", "Concepts", "Abstraction Ratio", "Aggregate Partial-areas", "Rels"};
+        } else {
+            columnNames = new String[]{"Level", "Areas", "Partial-areas", "Concepts", "Abstraction Ratio", "Rels"};
+        }
         
         ArrayList<SCTArea> areas = (ArrayList<SCTArea>)pareaTaxonomy.getExplicitHierarchyAreas().clone();
         
@@ -56,8 +64,20 @@ public class PAreaLevelTableModel extends AbstractTableModel {
                 levelPAreas.clear();
             }
 
-            level.areaCount += 1;
-            level.pareaCount += a.getAllPAreas().size();
+            ArrayList<SCTPArea> areaPAreas = a.getAllPAreas();
+            
+            level.areaCount++;
+            level.pareaCount += areaPAreas.size();
+            
+            if(pareaTaxonomy.isReduced()) {
+                for(SCTPArea parea : areaPAreas) {
+                    ReducedSCTPArea reducedPArea = (ReducedSCTPArea)parea;
+                    
+                    if(reducedPArea.getReducedGroups().size() - 1 > 0) {
+                         level.aggregatePAreas++;
+                    }
+                }
+            }
 
             levelPAreas.addAll(a.getAllPAreas());
 
@@ -70,31 +90,45 @@ public class PAreaLevelTableModel extends AbstractTableModel {
 
         levelData.add(level);
 
-        data = new Object[levelData.size() + 1][5];
+        data = new Object[levelData.size() + 1][columnNames.length];
 
         for (int r = 0; r < levelData.size(); r++) {
-
-            data[r][0] = new Integer(r);
-            data[r][1] = new Integer(levelData.get(r).areaCount);
-            data[r][2] = new Integer(levelData.get(r).pareaCount);
-            data[r][3] = new Integer(levelData.get(r).conceptCount);
-            data[r][4] = new Integer(levelData.get(r).relCount);
+            data[r][0] = r;
+            data[r][1] = levelData.get(r).areaCount;
+            data[r][2] = levelData.get(r).pareaCount;
+            data[r][3] = levelData.get(r).conceptCount;
+            data[r][4] = (double)levelData.get(r).conceptCount / (double)levelData.get(r).pareaCount;
+            
+            if(pareaTaxonomy.isReduced()) {
+                data[r][5] = levelData.get(r).aggregatePAreas;
+                data[r][6] = levelData.get(r).relCount;
+            } else {
+                data[r][5] = levelData.get(r).relCount;
+            }
+            
         }
 
         int totalAreaCount = 0;
         int totalPAreaCount = 0;
         int totalConceptCount = 0;
+        int totalAggregatePAreas = 0;
 
         for(LevelData lvlData : levelData) {
             totalAreaCount += lvlData.areaCount;
             totalPAreaCount += lvlData.pareaCount;
             totalConceptCount += lvlData.conceptCount;
+            totalAggregatePAreas += lvlData.aggregatePAreas;
         }
 
         data[data.length - 1][0] = "Totals";
-        data[data.length - 1][1] = new Integer(totalAreaCount);
-        data[data.length - 1][2] = new Integer(totalPAreaCount);
-        data[data.length - 1][3] = new Integer(totalConceptCount);
+        data[data.length - 1][1] = totalAreaCount;
+        data[data.length - 1][2] = totalPAreaCount;
+        data[data.length - 1][3] = totalConceptCount;
+        data[data.length - 1][4] = (double)totalConceptCount / (double)totalPAreaCount;
+        
+        if(pareaTaxonomy.isReduced()) {
+            data[data.length - 1][5] = totalAggregatePAreas;
+        }
     }
 
     public int getColumnCount() {

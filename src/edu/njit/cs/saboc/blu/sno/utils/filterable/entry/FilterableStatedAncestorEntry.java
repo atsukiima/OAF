@@ -12,7 +12,7 @@ import java.util.Collections;
  *
  * @author Chris
  */
-public class FilterableStatedAncestorEntry extends Filterable {
+public class FilterableStatedAncestorEntry extends Filterable<LocalSCTConceptStated> {
     private LocalSCTConceptStated concept;
 
     private boolean showConceptIds = true;
@@ -58,6 +58,10 @@ public class FilterableStatedAncestorEntry extends Filterable {
     
     public void setShowConceptIds(boolean showConceptIds) {
     	this.showConceptIds = showConceptIds;
+    }
+    
+    public LocalSCTConceptStated getObject() {
+        return concept;
     }
 
     public Concept getNavigableConcept() {
@@ -117,5 +121,11 @@ public class FilterableStatedAncestorEntry extends Filterable {
         } else {
             return getInitialText();
         }
+    }
+    
+    public boolean containsFilter(String filter) {
+        return concept.getName().toLowerCase().contains(filter) ||
+                Long.toString(concept.getId()).contains(filter) ||
+                statedRelsStr.toLowerCase().contains(filter);
     }
 }

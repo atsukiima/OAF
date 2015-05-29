@@ -10,13 +10,17 @@ import edu.njit.cs.saboc.blu.sno.conceptbrowser.Options;
  *
  * @author Chris
  */
-public class FilterableSearchEntry extends Filterable {
+public class FilterableSearchEntry extends Filterable<SearchResult> {
     private SearchResult entry;
     private Options options;
 
     public FilterableSearchEntry(Options options, SearchResult entry) {
         this.entry = entry;
         this.options = options;
+    }
+    
+    public SearchResult getObject() {
+        return entry;
     }
 
     public Concept getNavigableConcept() {
@@ -34,5 +38,11 @@ public class FilterableSearchEntry extends Filterable {
                 "<font color='purple'>--%s</font>", filter(entry.getTerm(), filter),
                 filter(entry.getFullySpecifiedName(), filter),
                 filter(Long.toString(entry.getConceptId()), filter));
+    }
+    
+    public boolean containsFilter(String filter) {
+        return entry.getTerm().toLowerCase().contains(filter) ||
+                entry.getFullySpecifiedName().toLowerCase().contains(filter) ||
+                Long.toString(entry.getConceptId()).contains(filter);
     }
 }
