@@ -5,6 +5,7 @@ import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.MultiRootedHierarchy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import java.util.HashSet;
 
@@ -12,7 +13,7 @@ import java.util.HashSet;
  *
  * @author Chris
  */
-public class DisjointPAreaTaxonomy extends DisjointAbstractionNetwork<SCTPAreaTaxonomy, SCTPArea, Concept, DisjointPartialArea> {
+public class DisjointPAreaTaxonomy extends DisjointAbstractionNetwork<SCTPAreaTaxonomy, SCTPArea, Concept, SCTConceptHierarchy, DisjointPartialArea> {
     
     public DisjointPAreaTaxonomy(HashSet<SCTPArea> pareas, SCTMultiRootedConceptHierarchy areaConceptHierarchy, 
                SCTPAreaTaxonomy taxonomy) {

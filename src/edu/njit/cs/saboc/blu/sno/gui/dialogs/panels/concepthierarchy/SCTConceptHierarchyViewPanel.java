@@ -9,12 +9,13 @@ import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 
 /**
  *
  * @author Chris
  */
-public class SCTConceptHierarchyViewPanel extends ConceptGroupHierarchicalViewPanel<Concept> {
+public class SCTConceptHierarchyViewPanel extends ConceptGroupHierarchicalViewPanel<Concept, SCTConceptHierarchy> {
         
     public SCTConceptHierarchyViewPanel(GenericConceptGroup group, 
             final SCTAbstractionNetwork abn, 

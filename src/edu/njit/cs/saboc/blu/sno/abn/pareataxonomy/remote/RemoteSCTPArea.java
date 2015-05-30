@@ -57,7 +57,7 @@ public class RemoteSCTPArea extends SCTPArea {
         return parentInfo;
     }
 
-    public SingleRootedHierarchy<Concept> getHierarchy() {
+    public SCTConceptHierarchy getHierarchy() {
         return super.getHierarchy(); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -26,7 +26,8 @@ import java.util.Queue;
  *
  * @author Chris O
  */
-public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCTPArea, SCTArea, SCTRegion, Concept, InheritedRelationship> 
+public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCTPArea, 
+        SCTArea, SCTRegion, Concept, InheritedRelationship, SCTConceptHierarchy> 
     implements SCTAbstractionNetwork<SCTPAreaTaxonomy> {
 
     protected SCTDataSource dataSource;

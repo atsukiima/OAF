@@ -14,7 +14,7 @@ public class DisjointPAreaHierarchy extends MultiRootedHierarchy<DisjointPartial
         super(basisDPAreas);
     }
     
-    public SingleRootedHierarchy<DisjointPartialArea> getSubhierarchyRootedAt(DisjointPartialArea dparea) {
+    public SingleRootedHierarchy<DisjointPartialArea, ? extends SingleRootedHierarchy> getSubhierarchyRootedAt(DisjointPartialArea dparea) {
         return null;
     }
 }

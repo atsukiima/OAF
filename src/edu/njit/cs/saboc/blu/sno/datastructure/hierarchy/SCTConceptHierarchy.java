@@ -9,7 +9,7 @@ import java.util.HashSet;
  *
  * @author Chris
  */
-public class SCTConceptHierarchy extends SingleRootedHierarchy<Concept> {
+public class SCTConceptHierarchy extends SingleRootedHierarchy<Concept, SCTConceptHierarchy> {
        
     public SCTConceptHierarchy(Concept root) {
         super(root);
@@ -23,11 +23,15 @@ public class SCTConceptHierarchy extends SingleRootedHierarchy<Concept> {
         super(root, hierarchy.children);
     }
     
-    public SingleRootedHierarchy<Concept> getSubhierarchyRootedAt(Concept root) {
+    public SCTConceptHierarchy getSubhierarchyRootedAt(Concept root) {
         return new SCTConceptHierarchy(root, this.children);
     }
     
     public HashSet<Concept> getConceptsInHierarchy() {
         return super.getNodesInHierarchy();
+    }
+    
+    public SCTConceptHierarchy createHierarchy(Concept root) {
+        return new SCTConceptHierarchy(root);
     }
 }

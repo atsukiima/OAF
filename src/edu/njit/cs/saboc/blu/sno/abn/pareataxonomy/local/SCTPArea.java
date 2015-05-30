@@ -14,7 +14,7 @@ import java.util.HashSet;
  * information about its parents.
  * @author 
  */
-public class SCTPArea extends GenericPArea<Concept, InheritedRelationship, SCTPArea>  {
+public class SCTPArea extends GenericPArea<Concept, InheritedRelationship, SCTConceptHierarchy, SCTPArea>  {
         
     public SCTPArea(int id, 
             SCTConceptHierarchy conceptHierarchy, 

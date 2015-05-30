@@ -22,7 +22,8 @@ import java.util.Map.Entry;
  *
  * @author Chris
  */
-public class SCTPAreaTaxonomyGenerator extends PAreaTaxonomyGenerator<SCTPAreaTaxonomy, SCTPArea, SCTArea, SCTRegion, Concept, InheritedRelationship> {
+public class SCTPAreaTaxonomyGenerator extends PAreaTaxonomyGenerator<SCTPAreaTaxonomy, SCTPArea, 
+        SCTArea, SCTRegion, Concept, InheritedRelationship, SCTConceptHierarchy> {
 
     private SCTConceptHierarchy hierarchy;
     
@@ -83,7 +84,7 @@ public class SCTPAreaTaxonomyGenerator extends PAreaTaxonomyGenerator<SCTPAreaTa
         }
     }
         
-    protected SingleRootedHierarchy<Concept> getConceptHierarchy() {
+    protected SCTConceptHierarchy getConceptHierarchy() {
         return hierarchy;
     }
     
@@ -119,12 +120,12 @@ public class SCTPAreaTaxonomyGenerator extends PAreaTaxonomyGenerator<SCTPAreaTa
     }
 
     @Override
-    protected SingleRootedHierarchy<Concept> initPAreaConceptHierarchy(Concept root) {
+    protected SCTConceptHierarchy initPAreaConceptHierarchy(Concept root) {
         return new SCTConceptHierarchy(root);
     }
 
     @Override
-    protected SCTPArea createPArea(int id, SingleRootedHierarchy<Concept> pareaHierarchy, HashSet<Integer> parentIds, HashSet<InheritedRelationship> relationships) {
+    protected SCTPArea createPArea(int id, SCTConceptHierarchy pareaHierarchy, HashSet<Integer> parentIds, HashSet<InheritedRelationship> relationships) {
         return new SCTPArea(id, (SCTConceptHierarchy)pareaHierarchy, parentIds, relationships);
     }
 
@@ -134,7 +135,7 @@ public class SCTPAreaTaxonomyGenerator extends PAreaTaxonomyGenerator<SCTPAreaTa
     }
 
     @Override
-    protected SCTPAreaTaxonomy createPAreaTaxonomy(SingleRootedHierarchy<Concept> conceptHierarchy, SCTPArea rootPArea, ArrayList<SCTArea> areas, HashMap<Integer, SCTPArea> pareas, HashMap<Integer, HashSet<Integer>> pareaHierarchy) {
+    protected SCTPAreaTaxonomy createPAreaTaxonomy(SCTConceptHierarchy conceptHierarchy, SCTPArea rootPArea, ArrayList<SCTArea> areas, HashMap<Integer, SCTPArea> pareas, HashMap<Integer, HashSet<Integer>> pareaHierarchy) {
         return new SCTPAreaTaxonomy(
             sctRootConcept,
             dataSource.getSelectedVersion(),

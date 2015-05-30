@@ -11,6 +11,7 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTRegion;
+import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluArea;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluPArea;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluRegion;
@@ -39,7 +40,8 @@ public class NoRegionsLayout extends GenericNoRegionsPAreaGraphLayout<
         BluPArea,
         BluRegion,
         Concept,
-        InheritedRelationship> {
+        InheritedRelationship,
+        SCTConceptHierarchy> {
     
     public NoRegionsLayout(BluGraph graph, SCTPAreaTaxonomy hierarchyData) {
         super(graph, hierarchyData);        

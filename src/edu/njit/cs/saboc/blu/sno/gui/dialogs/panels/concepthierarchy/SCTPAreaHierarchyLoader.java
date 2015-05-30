@@ -1,9 +1,8 @@
 package edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy;
 
-import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.SingleRootedHierarchy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 
 /**
  *
@@ -19,7 +18,7 @@ public class SCTPAreaHierarchyLoader extends SCTConceptGroupHierarchyLoader<SCTP
         this.taxonomy = taxonomy;
     }
     
-    public SingleRootedHierarchy<Concept> getGroupHierarchy(SCTPArea parea) {
+    public SCTConceptHierarchy getGroupHierarchy(SCTPArea parea) {
         return taxonomy.getDataSource().getPAreaConceptHierarchy(taxonomy, parea);
     }
 }
