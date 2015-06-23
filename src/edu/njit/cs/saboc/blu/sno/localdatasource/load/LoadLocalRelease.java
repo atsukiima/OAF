@@ -58,7 +58,12 @@ public class LoadLocalRelease {
                 }
                 
             } else {
-                releaseName = dirName.substring(dirName.lastIndexOf("SnomedCT_"), dirName.lastIndexOf("\\Terminology\\Content"));
+                
+                if(dirName.contains("Essential Resources")) {
+                    releaseName = dirName.substring(dirName.lastIndexOf("\\SNOMED_CT_Essential_") + 21, dirName.lastIndexOf("\\Essential Resources"));
+                } else {
+                    releaseName = dirName.substring(dirName.lastIndexOf("SnomedCT_"), dirName.lastIndexOf("\\Terminology\\Content"));
+                }
             }
 
             if(releaseName.contains("Release")) {
@@ -68,7 +73,9 @@ public class LoadLocalRelease {
                     releaseName = releaseName.substring("SnomedCT_Release_".length());
                 }
             } else {
-                releaseName = releaseName.substring("SnomedCT_".length());
+                if(releaseName.contains("SNOMEDCT_")) {
+                    releaseName = releaseName.substring("SnomedCT_".length());
+                }
             }
             
             releaseName = releaseName.replace("_", " ");
@@ -90,9 +97,10 @@ public class LoadLocalRelease {
 
             for (File child : children) {
                 if (child.isDirectory()) { //if the child file is a directory, add it to the list, and continue in 
-                    if (child.getAbsolutePath().contains("\\Terminology\\Content")) {
+                    if (child.getAbsolutePath().contains("\\Content")) {
                         File [] folderContents = child.listFiles();
                         
+                        // TODO: Check to see if concepts, relationships, descriptions available
                         if (folderContents.length == 3 && 
                                 !child.getAbsolutePath().contains("USDrugExtension")) {
                             
