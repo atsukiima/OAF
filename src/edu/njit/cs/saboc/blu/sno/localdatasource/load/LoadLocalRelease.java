@@ -97,7 +97,7 @@ public class LoadLocalRelease {
 
             for (File child : children) {
                 if (child.isDirectory()) { //if the child file is a directory, add it to the list, and continue in 
-                    if (child.getAbsolutePath().contains("\\Content")) {
+                    if (child.getAbsolutePath().contains("Terminology\\Content") || child.getAbsolutePath().contains("SNOMED CT Terminology\\Content")) {
                         File [] folderContents = child.listFiles();
                         
                         // TODO: Check to see if concepts, relationships, descriptions available
