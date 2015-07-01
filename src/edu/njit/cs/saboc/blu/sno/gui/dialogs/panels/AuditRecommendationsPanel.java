@@ -512,35 +512,35 @@ public class AuditRecommendationsPanel extends JEditorPane {
      * @param rootIdMap 
      * @return String
      */
-    public String printSuspectConcept(Concept c, String color, 
+    public String printSuspectConcept(Concept c, String color,
             HashMap<Concept, ArrayList<Long>> overlappingConcepts, HashMap<Long, GenericConceptGroup> rootIdMap) {
-        
+
         StringBuilder smallBuilder = new StringBuilder();
-        
+
         smallBuilder.append("&nbsp&nbsp&nbsp");
         smallBuilder.append(String.format("<b> <font color=\"%s\"> %s </font> </b>", color, c.getName()));
-        if(c.isPrimitive()) {
+        if (c.isPrimitive()) {
             smallBuilder.append(" <b><font color ='purple'>[primitive]</font></b> ");
         }
         smallBuilder.append(String.format("&nbsp <b>(<a href=\"%d\">%d</a>)</b>", c.getId(), c.getId()));
 
         String pareaName = "";
         int counter = overlappingConcepts.get(c).size();
-        for(long id : overlappingConcepts.get(c)) {
+        for (long id : overlappingConcepts.get(c)) {
             GenericConceptGroup currentGroup = rootIdMap.get(id);
             pareaName += currentGroup.getRoot().getName();
 
             counter--;
-            if(counter != 0) {
+            if (counter != 0) {
                 pareaName += ", ";
             }
         }
         smallBuilder.append("&nbsp");
         smallBuilder.append(String.format(" in <font color=\"#848484\"> %s </font> <br>", pareaName));
-        
+
         return smallBuilder.toString();
     }
-    
+
     /**
      * Collect all combinations of r from n
      * @param n

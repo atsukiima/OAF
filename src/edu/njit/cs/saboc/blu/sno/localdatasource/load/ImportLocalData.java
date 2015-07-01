@@ -44,11 +44,11 @@ public class ImportLocalData {
         File relFile = null;
         
         for (File child : releaseDirectory.listFiles()) {
-            if (child.getName().contains("Concepts")) {
+            if (child.getName().toLowerCase().contains("concepts")) {
                 conceptsFile = child;
-            } else if(child.getName().contains("Descriptions")) {
+            } else if(child.getName().toLowerCase().contains("descriptions")) {
                 descFile = child;
-            } else if(child.getName().contains("Relationships")) {
+            } else if(child.getName().toLowerCase().contains("relationships")) {
                 relFile = child;
             }
         }
