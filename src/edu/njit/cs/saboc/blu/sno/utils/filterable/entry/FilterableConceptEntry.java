@@ -8,7 +8,7 @@ import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
  *
  * @author Chris
  */
-public class FilterableConceptEntry extends Filterable<Concept> {
+public class FilterableConceptEntry extends Filterable<Concept> implements NavigableEntry {
 
     private Concept concept;
 
@@ -24,6 +24,10 @@ public class FilterableConceptEntry extends Filterable<Concept> {
     
     public Concept getObject() {
         return concept;
+    }
+    
+    public Concept getNavigateConcept() {
+        return getObject();
     }
     
     public boolean containsFilter(String filter) {

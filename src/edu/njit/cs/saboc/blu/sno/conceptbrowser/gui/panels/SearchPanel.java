@@ -8,6 +8,7 @@ import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.History;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.Options;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.SnomedConceptBrowser;
+import edu.njit.cs.saboc.blu.sno.conceptbrowser.utils.filterablelist.SCTNavigableFilterableList;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.utils.filterable.entry.FilterableSearchEntry;
 import edu.njit.cs.saboc.blu.sno.utils.filterable.list.SCTFilterableList;
@@ -57,7 +58,7 @@ public class SearchPanel extends BaseNavPanel implements ActionListener {
     private SpinnerTextField txtSearchBox;
     private JButton btnDoSearch;
     private JButton btnCancelSearch;
-    private SCTFilterableList searchList;
+    private SCTNavigableFilterableList searchList;
     // History Panel
     private JPanel pnlHistory;
     private JButton btnBack;
@@ -194,7 +195,7 @@ public class SearchPanel extends BaseNavPanel implements ActionListener {
         c.weightx = c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
 
-        searchList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
+        searchList = new SCTNavigableFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions());
         searchList.setFilterPanelOpen(false, null);
 
         pnlSearch.add(searchList, c);

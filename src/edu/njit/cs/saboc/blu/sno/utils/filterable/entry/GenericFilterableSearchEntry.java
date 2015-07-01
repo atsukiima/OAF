@@ -8,7 +8,7 @@ import edu.njit.cs.saboc.blu.sno.conceptbrowser.Options;
  *
  * @author harsh
  */
-public class GenericFilterableSearchEntry extends Filterable<SearchResult> {
+public class GenericFilterableSearchEntry extends Filterable<SearchResult> implements NavigableEntry {
     private SearchResult entry;
     private Options options;
 
@@ -18,6 +18,10 @@ public class GenericFilterableSearchEntry extends Filterable<SearchResult> {
     
     public Concept getNavigableConcept() {
         return options.getDataSource().getConceptFromId(entry.getConceptId());
+    }
+    
+    public Concept getNavigateConcept() {
+        return getNavigableConcept();
     }
     
     public SearchResult getObject() {

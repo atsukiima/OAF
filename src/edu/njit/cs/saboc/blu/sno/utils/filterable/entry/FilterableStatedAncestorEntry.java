@@ -12,7 +12,7 @@ import java.util.Collections;
  *
  * @author Chris
  */
-public class FilterableStatedAncestorEntry extends Filterable<LocalSCTConceptStated> {
+public class FilterableStatedAncestorEntry extends Filterable<LocalSCTConceptStated> implements NavigableEntry {
     private LocalSCTConceptStated concept;
 
     private boolean showConceptIds = true;
@@ -62,6 +62,10 @@ public class FilterableStatedAncestorEntry extends Filterable<LocalSCTConceptSta
     
     public LocalSCTConceptStated getObject() {
         return concept;
+    }
+    
+    public Concept getNavigateConcept() {
+        return getNavigableConcept();
     }
 
     public Concept getNavigableConcept() {

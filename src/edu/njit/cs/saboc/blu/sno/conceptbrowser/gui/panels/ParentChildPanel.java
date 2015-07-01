@@ -6,9 +6,9 @@ import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.FocusConcept;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.SnomedConceptBrowser;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.utils.ButtonTabbedPaneUI;
+import edu.njit.cs.saboc.blu.sno.conceptbrowser.utils.filterablelist.SCTNavigableFilterableList;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.utils.filterable.entry.FilterableConceptEntry;
-import edu.njit.cs.saboc.blu.sno.utils.filterable.list.SCTFilterableList;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -26,8 +26,8 @@ import javax.swing.JTabbedPane;
  */
 public class ParentChildPanel extends BaseNavPanel implements ActionListener {
     
-    private SCTFilterableList inferredList;
-    private SCTFilterableList statedList;
+    private SCTNavigableFilterableList inferredList;
+    private SCTNavigableFilterableList statedList;
 
     private BaseNavPanel inferredPanel;
     private BaseNavPanel statedPanel;
@@ -56,8 +56,8 @@ public class ParentChildPanel extends BaseNavPanel implements ActionListener {
         
         this.setBackground(mainPanel.getNeighborhoodBGColor());
         
-        this.inferredList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
-        this.statedList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
+        this.inferredList = new SCTNavigableFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions());
+        this.statedList = new SCTNavigableFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions());
 
         this.panelType = panelType;
         

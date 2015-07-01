@@ -8,7 +8,7 @@ import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
  *
  * @author Chris
  */
-public class FilterableLateralRelationshipEntry extends Filterable<OutgoingLateralRelationship> {
+public class FilterableLateralRelationshipEntry extends Filterable<OutgoingLateralRelationship> implements NavigableEntry {
     private OutgoingLateralRelationship relationship;
 
     public FilterableLateralRelationshipEntry(OutgoingLateralRelationship olr) {
@@ -17,6 +17,10 @@ public class FilterableLateralRelationshipEntry extends Filterable<OutgoingLater
     
     public OutgoingLateralRelationship getObject() {
         return relationship;
+    }
+    
+    public Concept getNavigateConcept() {
+        return getNavigableConcept();
     }
 
     public Concept getNavigableConcept() {

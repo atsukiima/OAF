@@ -7,6 +7,7 @@ import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.FocusConcept;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.SnomedConceptBrowser;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.utils.ButtonTabbedPaneUI;
+import edu.njit.cs.saboc.blu.sno.conceptbrowser.utils.filterablelist.SCTNavigableFilterableList;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.utils.filterable.entry.FilterableConceptEntry;
 import edu.njit.cs.saboc.blu.sno.utils.filterable.entry.FilterableLateralRelationshipEntry;
@@ -28,10 +29,10 @@ import javax.swing.JTabbedPane;
  * tab.
  */
 public class RelationshipPanel extends BaseNavPanel {
-    private SCTFilterableList conRelList;
-    private SCTFilterableList siblingList;
-    private SCTFilterableList statedConRelList;
-    private SCTFilterableList statedSiblingsList;
+    private SCTNavigableFilterableList conRelList;
+    private SCTNavigableFilterableList siblingList;
+    private SCTNavigableFilterableList statedConRelList;
+    private SCTNavigableFilterableList statedSiblingsList;
 
     private JTabbedPane tabbedPane;
     
@@ -49,10 +50,10 @@ public class RelationshipPanel extends BaseNavPanel {
         super(mainPanel, dataSource);
         
 
-        conRelList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
-        siblingList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
-        statedConRelList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true);
-        statedSiblingsList = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), true, true); 
+        conRelList = new SCTNavigableFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions());
+        siblingList = new SCTNavigableFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions());
+        statedConRelList = new SCTNavigableFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions());
+        statedSiblingsList = new SCTNavigableFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions()); 
 
         setBackground(mainPanel.getNeighborhoodBGColor());
         
