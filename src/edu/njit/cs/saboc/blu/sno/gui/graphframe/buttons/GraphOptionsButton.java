@@ -6,7 +6,6 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.PopupToggleButton;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
-import edu.njit.cs.saboc.blu.sno.properties.AuditReportProperties;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -53,8 +52,6 @@ public class GraphOptionsButton extends PopupToggleButton {
         btnRegions.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent ae) {
-                AuditReportProperties.getAuditReportProperties().setRegionsOn(true);
-                
                 ArrayList<GraphEdge> edges = graph.getEdges();
 
                 igf.replaceInternalFrameDataWith(data, false, graph.showingConceptCountLabels(), null);
@@ -71,8 +68,6 @@ public class GraphOptionsButton extends PopupToggleButton {
         btnNoRegions.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent ae) {
-                AuditReportProperties.getAuditReportProperties().setRegionsOn(false);
-                
                 ArrayList<GraphEdge> edges = graph.getEdges();
 
                 igf.replaceInternalFrameDataWith(data, true, graph.showingConceptCountLabels(), null);
@@ -236,137 +231,6 @@ public class GraphOptionsButton extends PopupToggleButton {
         regionLabelOptionsPanel.add(btnConceptCount);
 
         popupPanel.add(regionLabelOptionsPanel);
-        
-        
-        /**
-         * Sliders for Audit Recommendation Settings
-         */
-        JPanel auditSettingsPanel = new JPanel();
-        auditSettingsPanel.setLayout(new BoxLayout(auditSettingsPanel, BoxLayout.Y_AXIS));
-        auditSettingsPanel.setBorder(BorderFactory.createTitledBorder("Audit Suggestion Settings"));
-        
-        int minValue = 0;
-        int maxValue = 10;
-        int initValue = 6;
-        
-        // Slider to define a small Partial-area
-        JPanel auditMiniPanel1 = new JPanel();
-        JLabel settingLabel1 = new JLabel("Small Partial-area (<=)", JLabel.CENTER);
-        JSlider smallPAreaSlider = new JSlider(JSlider.HORIZONTAL, minValue, maxValue, initValue);
-        smallPAreaSlider.setMajorTickSpacing(5);
-        smallPAreaSlider.setMinorTickSpacing(1);
-        smallPAreaSlider.setPaintTicks(true);
-        smallPAreaSlider.setPaintLabels(true);
-        
-        smallPAreaSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                if(!source.getValueIsAdjusting()) {
-                    AuditReportProperties.getAuditReportProperties().setSmallPArea(source.getValue());
-                }
-            }
-        });
-        
-        auditMiniPanel1.setLayout(new BoxLayout(auditMiniPanel1, BoxLayout.LINE_AXIS));
-        auditMiniPanel1.add(Box.createHorizontalGlue());
-        auditMiniPanel1.add(settingLabel1);
-        auditMiniPanel1.add(Box.createRigidArea(new Dimension(33, 0)));
-        auditMiniPanel1.add(smallPAreaSlider);
-        auditSettingsPanel.add(auditMiniPanel1);
-        
-        // Slider to set the magnitude that determines what Partial-area has many relationships
-        JPanel auditMiniPanel2 = new JPanel();
-        initValue = 2;
-        JLabel settingLabel2 = new JLabel("Many Relationships (>)", JLabel.CENTER);
-        JSlider manyRelationshipsSlider = new JSlider(JSlider.HORIZONTAL, minValue, maxValue, initValue);
-        manyRelationshipsSlider.setMajorTickSpacing(5);
-        manyRelationshipsSlider.setMinorTickSpacing(1);
-        manyRelationshipsSlider.setPaintTicks(true);
-        manyRelationshipsSlider.setPaintLabels(true);
-        
-        manyRelationshipsSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                if(!source.getValueIsAdjusting()) {
-                    AuditReportProperties.getAuditReportProperties().setManyRelationships(source.getValue());
-                }
-            }
-        });
-        
-        auditMiniPanel2.setLayout(new BoxLayout(auditMiniPanel2, BoxLayout.LINE_AXIS));
-        auditMiniPanel2.add(Box.createHorizontalGlue());
-        auditMiniPanel2.add(settingLabel2);
-        auditMiniPanel2.add(Box.createRigidArea(new Dimension(33, 0)));
-        auditMiniPanel2.add(manyRelationshipsSlider);
-        auditSettingsPanel.add(auditMiniPanel2);
-        
-        // Slider to set the magnitude of Partial-areas that determines what Area has few small Partial-areas
-        JPanel auditMiniPanel3 = new JPanel();
-        initValue = 3;
-        JLabel settingLabel3 = new JLabel("Few Small Partial-areas (<=)", JLabel.CENTER);
-        JSlider fewSmallPAreaSlider = new JSlider(JSlider.HORIZONTAL, minValue, maxValue, initValue);
-        fewSmallPAreaSlider.setMajorTickSpacing(5);
-        fewSmallPAreaSlider.setMinorTickSpacing(1);
-        fewSmallPAreaSlider.setPaintTicks(true);
-        fewSmallPAreaSlider.setPaintLabels(true);
-        
-        fewSmallPAreaSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                if(!source.getValueIsAdjusting()) {
-                    AuditReportProperties.getAuditReportProperties().setFewSmallPAreas(source.getValue());
-                }
-            }
-        });
-        
-        auditMiniPanel3.setLayout(new BoxLayout(auditMiniPanel3, BoxLayout.LINE_AXIS));
-        auditMiniPanel3.add(Box.createHorizontalGlue());
-        auditMiniPanel3.add(settingLabel3);
-        auditMiniPanel3.add(fewSmallPAreaSlider);
-        auditSettingsPanel.add(auditMiniPanel3);
-        
-        // Checkbox to determine if the user wants the Audit Recommendations to be displayed as "non-primitives first"
-        JPanel auditMiniPanel4 = new JPanel();
-        JLabel settingLabel4 = new JLabel("Sort with non-Primitives first", JLabel.CENTER);
-        JCheckBox primitivesCheckbox = new JCheckBox();
-        primitivesCheckbox.addItemListener(new ItemListener() {
-            
-            public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == ItemEvent.SELECTED) {
-                    AuditReportProperties.getAuditReportProperties().setPrimitivesLast(true);
-                }
-                else {
-                    AuditReportProperties.getAuditReportProperties().setPrimitivesLast(false);
-                }
-            }
-            
-        });
-        
-        auditMiniPanel4.add(settingLabel4);
-        auditMiniPanel4.add(primitivesCheckbox);
-        auditSettingsPanel.add(auditMiniPanel4);
-        
-        // Checkbox to determine if the user wants the Audit Recommendations to be sorted by regions
-        JPanel auditMiniPanel5 = new JPanel();
-        JLabel settingLabel5 = new JLabel("Sort by Regions", JLabel.CENTER);
-        JCheckBox regionsCheckbox = new JCheckBox();
-        regionsCheckbox.addItemListener(new ItemListener() {
-            
-            public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == ItemEvent.SELECTED) {
-                    AuditReportProperties.getAuditReportProperties().setStrictRegionsProperty(true);
-                }
-                else {
-                    AuditReportProperties.getAuditReportProperties().setStrictRegionsProperty(false);
-                }
-            }
-        });
-        
-        auditMiniPanel5.add(settingLabel5);
-        auditMiniPanel5.add(regionsCheckbox);
-        auditSettingsPanel.add(auditMiniPanel5);
-        
-        popupPanel.add(auditSettingsPanel);
         
         this.setPopupContent(popupPanel);
     }

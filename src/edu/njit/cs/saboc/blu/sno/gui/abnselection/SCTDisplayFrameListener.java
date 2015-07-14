@@ -37,6 +37,7 @@ public abstract class SCTDisplayFrameListener implements FrameCreationListener {
      * @return The newly created internal graph frame.
      */
     public PAreaInternalGraphFrame addNewPAreaGraphFrame(SCTPAreaTaxonomy data, boolean areaGraph, boolean conceptCountLabels) {
+        
         PAreaInternalGraphFrame igf = new PAreaInternalGraphFrame(mainFrame, data, areaGraph, conceptCountLabels, this);
 
         this.displayFrame(igf);
@@ -56,6 +57,8 @@ public abstract class SCTDisplayFrameListener implements FrameCreationListener {
      * @return The newly created internal graph frame.
      */
     public ClusterInternalGraphFrame addNewClusterGraphFrame(TribalAbstractionNetwork data, boolean setGraph, boolean conceptCount) {
+        
+        
         ClusterInternalGraphFrame cigf = new ClusterInternalGraphFrame(mainFrame, data, true, false, this);
 
         this.displayFrame(cigf);

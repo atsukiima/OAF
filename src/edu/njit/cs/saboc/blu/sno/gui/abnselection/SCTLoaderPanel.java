@@ -1,8 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.gui.dialogs.AbNLoadStatusDialog;
-import edu.njit.cs.saboc.blu.core.gui.iconmanager.IconManager;
+import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
@@ -20,7 +19,8 @@ import edu.njit.cs.saboc.blu.sno.utils.UtilityMethods;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -30,11 +30,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
@@ -48,7 +47,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.border.BevelBorder;
 
 /**
  *
@@ -62,13 +60,16 @@ public class SCTLoaderPanel extends JPanel {
     private final JRadioButton localSourceBtn = new JRadioButton("Local SNOMED CT Release");
 
     private RemoteReleaseSelectionPanel remoteReleasePanel;
-    private LocalReleaseSelectionPanel localReleasePanel;
+    private final LocalReleaseSelectionPanel localReleasePanel;
+    
+    private final SCTHierarchySelectionPanel pareaTaxonomySelectionPanel;
+    private final SCTHierarchySelectionPanel tanSelectionPanel;
+    
+    private JButton openBrowserBtn;
 
     private SCTDisplayFrameListener displayFrameListener;
-    
-    private JCheckBox chkUseStatedRelationships;
-    
-    private JFrame parentFrame;
+   
+    private final JFrame parentFrame;
 
     public SCTLoaderPanel(final JFrame parentFrame, SCTDisplayFrameListener displayFrameListener) {
         this.parentFrame = parentFrame;
@@ -84,8 +85,7 @@ public class SCTLoaderPanel extends JPanel {
                 CardLayout cl = (CardLayout) (versionSelectPanel.getLayout());
                 cl.show(versionSelectPanel, "Remote");
                 
-                blusnoTabbedPane.setEnabledAt(1, false);
-                blusnoTabbedPane.setSelectedIndex(0);
+                enableRemoteReleaseSourceOptions();
             }
         });
 
@@ -95,8 +95,18 @@ public class SCTLoaderPanel extends JPanel {
                 CardLayout cl = (CardLayout) (versionSelectPanel.getLayout());
                 cl.show(versionSelectPanel, "Local");
                 
-                blusnoTabbedPane.setEnabledAt(1, true);
-                blusnoTabbedPane.setSelectedIndex(0);
+                SCTLocalDataSource dataSource;
+                
+                try {
+                    dataSource = localReleasePanel.getLoadedDataSource();
+                    enableLocalDataSourceOptions(dataSource);
+                    
+                    return;
+                } catch(NoSCTDataSourceLoadedException e) {
+                    
+                }
+                
+                disableLocalDataSourceOptions();
             }
         });
 
@@ -112,6 +122,15 @@ public class SCTLoaderPanel extends JPanel {
         sctDataSourcePanel.setBorder(BorderFactory.createTitledBorder("1: Select a SNOMED CT Data Source"));
         
         localReleasePanel = new LocalReleaseSelectionPanel(this);
+        localReleasePanel.addLocalDataSourceLoadedListener(new LocalReleaseSelectionPanel.LocalDataSourceListener() {
+            public void localDataSourceLoaded(SCTLocalDataSource dataSource) {
+                enableLocalDataSourceOptions(dataSource);
+            }
+            
+            public void localDataSourceUnloaded() {
+                disableLocalDataSourceOptions();
+            }
+        });
         
         versionSelectPanel.add(localReleasePanel, "Local");
         
@@ -135,76 +154,91 @@ public class SCTLoaderPanel extends JPanel {
         dataSelectionPanel.add(versionSelectPanel);
 
         this.add(dataSelectionPanel, BorderLayout.NORTH);
-
-        JPanel pareaTaxonomySelectionPanel = new JPanel(new GridLayout(4, 5, 2, 2));
-        pareaTaxonomySelectionPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-
-        JPanel tanSelectionPanel = new JPanel(new GridLayout(4, 5, 2, 2));
-        tanSelectionPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-
-        Concept [] rootConcepts = getRootConcepts();
-
+        
         ArrayList<Long> taxonomyHierarchies = new ArrayList<Long>(
                 Arrays.asList(272379006l, 71388002l, 404684003l, 123037004l,
                         123038009l, 373873005l, 243796009l));
 
-        for (Concept rootConcept : rootConcepts) {
-            final Concept root = rootConcept;
-
-            String hierarchyName = root.getName().substring(0, root.getName().lastIndexOf("("));
-
-            JButton pareaTaxonomyButton = new JButton("<html><div align=\"center\">" + hierarchyName);
-            pareaTaxonomyButton.setIcon(getImageIconFor(root));
-
-            JButton overlapTaxonomyButton = new JButton("<html><div align=\"center\">" + hierarchyName);
-            overlapTaxonomyButton.setIcon(getImageIconFor(root));
-
-            if (!taxonomyHierarchies.contains(root.getId())) {
-                pareaTaxonomyButton.setEnabled(false);
-            } else {
-                pareaTaxonomyButton.setToolTipText("Click me to view the " + hierarchyName + " Partial-area taxonomy.");
-                pareaTaxonomyButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
-                pareaTaxonomyButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent ae) {
-                        loadPAreaTaxonomy(root);
-                    }
-                });
+        ArrayList<Concept> rootConcepts = getRootConcepts();
+        ArrayList<Concept> pareaEabledHierarchies = new ArrayList<>();
+        
+        rootConcepts.forEach((Concept root) -> {
+            if(taxonomyHierarchies.contains(root.getId())) {
+                pareaEabledHierarchies.add(root);
             }
-
-            overlapTaxonomyButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    loadTAN(root);
+        });
+        
+        pareaTaxonomySelectionPanel = new SCTHierarchySelectionPanel(rootConcepts, pareaEabledHierarchies, "Partial-area Taxonomy",
+            new SCTHierarchySelectionPanel.HierarchySelectionAction() {
+                public void performHierarchySelectionAction(Concept root, boolean useStated) {
+                    loadPAreaTaxonomy(root, useStated);
                 }
             });
+        
+        pareaTaxonomySelectionPanel.setEnabled(false);
 
-            overlapTaxonomyButton.setToolTipText("Click me to view the " + hierarchyName + " Overlap taxonomy.");
-            overlapTaxonomyButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
-            pareaTaxonomySelectionPanel.add(pareaTaxonomyButton);
-            tanSelectionPanel.add(overlapTaxonomyButton);
-        }
+        tanSelectionPanel = new SCTHierarchySelectionPanel(rootConcepts, rootConcepts, "Tribal Abstraction Network (TAN)",
+            new SCTHierarchySelectionPanel.HierarchySelectionAction() {
+                public void performHierarchySelectionAction(Concept root, boolean useStated) {
+                    loadTAN(root); // TODO: What about stated IS_As?
+                }
+            });
+        tanSelectionPanel.setEnabled(false);
 
         blusnoTabbedPane.addTab("Partial-area Taxonomy", pareaTaxonomySelectionPanel);
         blusnoTabbedPane.addTab("Tribal Abstraction Network", tanSelectionPanel);
-        blusnoTabbedPane.addTab("Concept Browser", createConceptBrowserPanel());
+        blusnoTabbedPane.setEnabled(false);
 
-        chkUseStatedRelationships = new JCheckBox("Use Stated Relationships");
-        
         JPanel blusnoTabPanel = new JPanel(new BorderLayout());
-        blusnoTabPanel.add(chkUseStatedRelationships, BorderLayout.NORTH);
         
         blusnoTabPanel.add(blusnoTabbedPane, BorderLayout.CENTER);
         blusnoTabPanel.setBorder(BorderFactory.createTitledBorder("3: Select Abstraction Network and Hierarchy"));
-
+        
         this.add(blusnoTabPanel, BorderLayout.CENTER);
         
-        this.setStatedRelationshipsEnabled(false);
+        this.add(createConceptBrowserPanel(), BorderLayout.SOUTH);
     }
     
-    private Concept[] getRootConcepts() {
+    private void enableLocalDataSourceOptions(SCTLocalDataSource dataSource) {
+        blusnoTabbedPane.setEnabled(true);
+        blusnoTabbedPane.setEnabledAt(1, true);
+       
+        if (dataSource.supportsStatedRelationships()) {
+            pareaTaxonomySelectionPanel.setStatedReleaseAvailable(true);
+            tanSelectionPanel.setStatedReleaseAvailable(false); // TODO: When Stated works for TANs, update this
+        } else {
+            pareaTaxonomySelectionPanel.setStatedReleaseAvailable(false);
+            tanSelectionPanel.setStatedReleaseAvailable(false);
+        }
+
+        pareaTaxonomySelectionPanel.setEnabled(true);
+        tanSelectionPanel.setEnabled(true);
+        openBrowserBtn.setEnabled(true);
+    }
+    
+    private void disableLocalDataSourceOptions() {
+        blusnoTabbedPane.setEnabled(false);
+        pareaTaxonomySelectionPanel.setEnabled(false);
+        tanSelectionPanel.setEnabled(false);
+        openBrowserBtn.setEnabled(false);
+    }
+    
+    private void enableRemoteReleaseSourceOptions() {
+        blusnoTabbedPane.setEnabled(true);
+        blusnoTabbedPane.setEnabledAt(1, false);
+
+        pareaTaxonomySelectionPanel.setEnabled(true);
+        pareaTaxonomySelectionPanel.setStatedReleaseAvailable(false);
+
+        tanSelectionPanel.setEnabled(true);
+        tanSelectionPanel.setStatedReleaseAvailable(false);
         
-        return new Concept[] {
+        openBrowserBtn.setEnabled(true);
+    }
+    
+    private ArrayList<Concept> getRootConcepts() {
+        
+        return new ArrayList<>(Arrays.asList(new Concept [] {
             new Concept(123037004, "Body structure (body structure)"),
             new Concept(404684003, "Clinical finding (finding)"),
             new Concept(308916002, "Environment or geographical location (environment / location)"),
@@ -224,7 +258,7 @@ public class SCTLoaderPanel extends JPanel {
             new Concept(123038009, "Specimen (specimen)"),
             new Concept(254291000, "Staging and scales (staging scale)"),
             new Concept(105590001, "Substance (substance)")
-        };
+        }));
     }
 
     /**
@@ -233,36 +267,26 @@ public class SCTLoaderPanel extends JPanel {
      * @return
      */
     private JPanel createConceptBrowserPanel() {
-        JPanel browserPanel = new JPanel(new GridLayout(1, 2, 2, 2));
+        JPanel browserPanel = new JPanel();
+        browserPanel.setLayout(new BoxLayout(browserPanel, BoxLayout.X_AXIS));
+        browserPanel.setBorder(BorderFactory.createTitledBorder("BLUSNO Neighborhood Auditing Tool (NAT) Concept Browser"));
 
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-        JButton openBrowserBtn = new JButton("Open Concept Browser");
+        openBrowserBtn = new JButton("<html><div align='center'>Open NAT Concept Browser");
+        openBrowserBtn.setFont(openBrowserBtn.getFont().deriveFont(Font.BOLD, 14));
 
         openBrowserBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 openConceptBrowser();
             }
         });
+        
+        openBrowserBtn.setEnabled(false);
+        
+        leftPanel.add(openBrowserBtn, BorderLayout.CENTER);
 
-        SCTConceptSearchPanel searchPanel = new SCTConceptSearchPanel(new SCTConceptSearchActions() {
-            public void doAction(Concept c) {
-                openConceptBrowser(c);
-            }
-
-            public SCTDataSource getDataSource() {
-                return getSelectedDataSource();
-            }
-        });
-
-        searchPanel.setBorder(BorderFactory.createTitledBorder("Search for SNOMED CT Concepts"));
-
-        JPanel browserBtnPanel = new JPanel();
-        browserBtnPanel.add(openBrowserBtn);
-
-        leftPanel.add(browserBtnPanel, BorderLayout.NORTH);
-        leftPanel.add(searchPanel, BorderLayout.CENTER);
 
         JPanel rightPanel = new JPanel(new BorderLayout());
         rightPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -270,21 +294,18 @@ public class SCTLoaderPanel extends JPanel {
         JEditorPane detailsPane = new JEditorPane();
         detailsPane.setContentType("text/html");
         
-        String detailsString = "<html>The BLUSNO concept browser allows you to review individual concepts. "
+        String detailsString = "<html>The BLUSNO Neighborhood Auditing Tool (NAT) concept browser allows you to browse individual concepts. "
                 + "BLUSNO's concept browser is unique in that it displays information derived "
-                + "from various abstraction networks. Additionally, when a local release is loaded, BLUSNO's concept browser displays information from "
-                + "both the inferred and stated versions of SNOMED CT. <p>"
-                + ""
+                + "from various SNOMED CT abstraction networks alongside information about a chosen concept's neighborhood. "
                 + "<b>Subject subtaxonomies</b>, <b>Focus subtaxonomies</b>, and <b>Tribal Abstraction Networks</b> can be derived "
-                + "for individual concepts from within the concept browser when using a local SNOMED CT release."
-                + "<p>"
-                + "Click \"Open Concept Browser\" or search for a concept and then double click on a search result to begin.";
+                + "for individual concepts from within the concept browser when using a local SNOMED CT release.";
         
         detailsPane.setText(detailsString);
         
         rightPanel.add(detailsPane, BorderLayout.CENTER);
 
         browserPanel.add(leftPanel);
+        browserPanel.add(Box.createHorizontalStrut(8));
         browserPanel.add(rightPanel);
 
         return browserPanel;
@@ -295,20 +316,17 @@ public class SCTLoaderPanel extends JPanel {
      *
      * @param root
      */
-    private void loadPAreaTaxonomy(final Concept root) {
-        
-               
+    private void loadPAreaTaxonomy(final Concept root, boolean useStatedRelationships) {
+
         Thread loadThread = new Thread(new Runnable() {
-            private AbNLoadStatusDialog loadStatusDialog = null;
+            private LoadStatusDialog loadStatusDialog = null;
 
             public void run() {
                 
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        loadStatusDialog = AbNLoadStatusDialog.display(parentFrame);
-                    }
-                });
+
                 
+                loadStatusDialog = LoadStatusDialog.display(parentFrame, String.format("Creating the %s partial-area taxonomy.", root.getName()));
+
                 final SCTPAreaTaxonomy taxonomy;
 
                 if (remoteSourceBtn.isSelected()) {
@@ -323,7 +341,7 @@ public class SCTLoaderPanel extends JPanel {
                         final SCTPAreaTaxonomyGenerator generator
                                 = new SCTPAreaTaxonomyGenerator(localConcept, dataSource,
                                         (SCTConceptHierarchy) dataSource.getConceptHierarchy().getSubhierarchyRootedAt(localConcept),
-                                        RelationshipsRetrieverFactory.getRelationshipsRetriever(chkUseStatedRelationships.isSelected()));
+                                        RelationshipsRetrieverFactory.getRelationshipsRetriever(useStatedRelationships));
 
                         taxonomy = generator.derivePAreaTaxonomy();
 
@@ -337,11 +355,9 @@ public class SCTLoaderPanel extends JPanel {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         displayFrameListener.addNewPAreaGraphFrame(taxonomy, true, false);
-                        
-                        if (loadStatusDialog != null) {
-                            loadStatusDialog.setVisible(false);
-                            loadStatusDialog.dispose();
-                        }
+
+                        loadStatusDialog.setVisible(false);
+                        loadStatusDialog.dispose();
                     }
                 });
             }
@@ -358,17 +374,12 @@ public class SCTLoaderPanel extends JPanel {
     private void loadTAN(final Concept root) {
         
         Thread loadThread = new Thread(new Runnable() {
-            private AbNLoadStatusDialog loadStatusDialog = null;
+            private LoadStatusDialog loadStatusDialog = null;
 
             public void run() {
-                
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        loadStatusDialog = AbNLoadStatusDialog.display(parentFrame);
-                    }
-                });
-                
-                
+
+                loadStatusDialog = LoadStatusDialog.display(parentFrame, String.format("Creating the %s Tribal Abstraction Network (TAN).", root.getName()));
+
                 if (localSourceBtn.isSelected()) {
                     final TribalAbstractionNetwork tan;
 
@@ -384,10 +395,8 @@ public class SCTLoaderPanel extends JPanel {
                             public void run() {
                                 displayFrameListener.addNewClusterGraphFrame(tan, true, false);
 
-                                if (loadStatusDialog != null) {
-                                    loadStatusDialog.setVisible(false);
-                                    loadStatusDialog.dispose();
-                                }
+                                loadStatusDialog.setVisible(false);
+                                loadStatusDialog.dispose();
                             }
                         });
                     } catch (NoSCTDataSourceLoadedException e) {
@@ -424,79 +433,19 @@ public class SCTLoaderPanel extends JPanel {
         if (getSelectedDataSource() == null) {
             JOptionPane.showMessageDialog(null, "Please open a SNOMED CT release.",
                     "No Local Release Opened", JOptionPane.ERROR_MESSAGE);
+            
             return;
         }
         
-        displayFrameListener.addNewBrowserFrame(getSelectedDataSource());
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                displayFrameListener.addNewBrowserFrame(getSelectedDataSource());
+            }
+        });
     }
 
-    private void openConceptBrowser(Concept c) {
-        displayFrameListener.addNewBrowserFrame(c, getSelectedDataSource());
-    }
-
-    /**
-     * Returns the image icon for the specified hierarchy root concept.
-     *
-     * @param root The root concept of the hierarchy.
-     * @return Icon, if one exists, for the given root's hierarchy.
-     */
-    private ImageIcon getImageIconFor(Concept root) {
-
-        String rootName = root.getName();
-        String iconName = "";
-
-        if (rootName.startsWith("Body structure")) {
-            iconName = "bodystructure-icon.png";
-        } else if (rootName.startsWith("Procedure")) {
-            iconName = "procedure-icon.png";
-        } else if (rootName.startsWith("Pharmaceutical")) {
-            iconName = "pharmaceuticalproduct-icon.png";
-        } else if (rootName.startsWith("Specimen")) {
-            iconName = "specimen-icon.png";
-        } else if (rootName.startsWith("Record artifact")) {
-            iconName = "recordartifact-icon.png";
-        } else if (rootName.startsWith("Clinical finding")) {
-            iconName = "clinicalfinding-icon.png";
-        } else if (rootName.startsWith("Environment or")) {
-            iconName = "environmentgeoloc-icon.png";
-        } else if (rootName.startsWith("Organism")) {
-            iconName = "organism-icon.png";
-        } else if (rootName.startsWith("Physical force")) {
-            iconName = "physicalforce-icon.png";
-        } else if (rootName.startsWith("Event")) {
-            iconName = "event-icon.png";
-        } else if (rootName.startsWith("Observable entity")) {
-            iconName = "observableentity-icon.png";
-        } else if (rootName.startsWith("Substance")) {
-            iconName = "substance-icon.png";
-        } else if (rootName.startsWith("Physical object")) {
-            iconName = "physicalobject-icon.png";
-        } else if (rootName.startsWith("Linkage concept")) {
-            iconName = "linkage-icon.png";
-        } else if (rootName.startsWith("Social context")) {
-            iconName = "social-icon.png";
-        } else if (rootName.startsWith("Staging")) {
-            iconName = "scales-icon.png";
-        } else if (rootName.startsWith("Situation ")) {
-            iconName = "situation-icon.png";
-        } else {
-            return null;
-        }
-
-        return IconManager.getIconManager().getIcon(iconName);
-    }
-    
     public void setTabsEnabled(boolean value) {
         blusnoTabbedPane.setEnabled(value);
-    }
-    
-    public void setStatedRelationshipsEnabled(boolean value) {
-        chkUseStatedRelationships.setEnabled(value);
-        chkUseStatedRelationships.setVisible(value);
-        
-        if(value == false){
-            chkUseStatedRelationships.setSelected(false);
-        }
     }
 }
 
@@ -552,6 +501,12 @@ class NoSCTDataSourceLoadedException extends Exception {
  * locally
  */
 class LocalReleaseSelectionPanel extends JPanel {
+    
+    public interface LocalDataSourceListener {
+        public void localDataSourceLoaded(SCTLocalDataSource dataSource);
+        
+        public void localDataSourceUnloaded();
+    }
 
     private class LoadMonitorTask extends SwingWorker {
 
@@ -584,12 +539,16 @@ class LocalReleaseSelectionPanel extends JPanel {
     private JComboBox localVersionBox;
 
     private ArrayList<File> availableReleases = new ArrayList<File>();
+    
+    private final JButton chooserBtn;
 
     private SCTLocalDataSource loadedDataSource = null;
 
     private JToggleButton loadButton = new JToggleButton("Load");
 
     private JProgressBar loadProgressBar;
+    
+    private final ArrayList<LocalDataSourceListener> dataSourceLoadedListeners = new ArrayList<>();
 
     public LocalReleaseSelectionPanel(final SCTLoaderPanel sctLoaderPanel) {
         this.sctLoaderPanel = sctLoaderPanel;
@@ -598,9 +557,9 @@ class LocalReleaseSelectionPanel extends JPanel {
         localVersionBox.setBackground(Color.WHITE);
         localVersionBox.addItem("Choose a directory");
 
-        final JButton chooserButton = new JButton("Open Folder");
+        chooserBtn = new JButton("Open Folder");
 
-        chooserButton.addActionListener(new ActionListener() {
+        chooserBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 localVersionBox.removeAllItems();
 
@@ -611,7 +570,6 @@ class LocalReleaseSelectionPanel extends JPanel {
         loadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 if (loadButton.isSelected()) {
-
                     if (availableReleases.isEmpty()) {
                         loadButton.setSelected(false);
                         return;
@@ -626,13 +584,11 @@ class LocalReleaseSelectionPanel extends JPanel {
 
                     loadButton.setEnabled(false);
                     localVersionBox.setEnabled(false);
-                    chooserButton.setEnabled(false);
+                    chooserBtn.setEnabled(false);
 
                     startLocalReleaseThread();
                 } else {
-                    loadButton.setText("Load");
-                    localVersionBox.setEnabled(true);
-                    chooserButton.setEnabled(true);
+                    dataSourceUnloaded();
                 }
             }
         });
@@ -641,7 +597,8 @@ class LocalReleaseSelectionPanel extends JPanel {
         loadProgressBar.setVisible(false);
 
         JPanel localReleasePanel = new JPanel();
-        localReleasePanel.add(chooserButton);
+        
+        localReleasePanel.add(chooserBtn);
         localReleasePanel.add(localVersionBox);
         localReleasePanel.add(loadButton);
         localReleasePanel.add(loadProgressBar);
@@ -650,6 +607,10 @@ class LocalReleaseSelectionPanel extends JPanel {
         this.setLayout(new BorderLayout());
         this.add(localReleasePanel);
     }
+    
+    public void addLocalDataSourceLoadedListener(LocalDataSourceListener listener) {
+        dataSourceLoadedListeners.add(listener);
+    }
 
     private void loadComplete() {
         loadButton.setText("Unload");
@@ -657,13 +618,23 @@ class LocalReleaseSelectionPanel extends JPanel {
 
         loadProgressBar.setVisible(false);
         
-        if(loadedDataSource.supportsStatedRelationships()) {
-            sctLoaderPanel.setStatedRelationshipsEnabled(true);
-        } else {
-            sctLoaderPanel.setStatedRelationshipsEnabled(false);
-        }
+        dataSourceLoadedListeners.forEach((LocalDataSourceListener listener) -> {
+            listener.localDataSourceLoaded(loadedDataSource);
+        });
 
-        sctLoaderPanel.setTabsEnabled(true);
+        sctLoaderPanel.setEnabled(true);
+    }
+    
+    private void dataSourceUnloaded() {
+        loadButton.setText("Load");
+        localVersionBox.setEnabled(true);
+        chooserBtn.setEnabled(true);
+
+        this.loadedDataSource = null;
+        
+        dataSourceLoadedListeners.forEach((LocalDataSourceListener listener) -> {
+            listener.localDataSourceUnloaded();
+        });
     }
 
     private void startLocalReleaseThread() {

@@ -15,13 +15,10 @@ import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
 import edu.njit.cs.saboc.blu.core.utils.filterable.list.FilterableListModel;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
-import edu.njit.cs.saboc.blu.sno.ddirules.DDIDataLoader;
-import edu.njit.cs.saboc.blu.sno.ddirules.RuleObject;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.HierarchyPanelClickListener;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.RuleViewPanel;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.SCTConceptGroupDetailsPanel;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptHierarchyViewPanel;
 import edu.njit.cs.saboc.blu.sno.utils.filterable.entry.FilterableConceptEntry;
@@ -32,9 +29,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,24 +37,16 @@ import java.util.HashSet;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import java.util.Map;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeSelectionModel;
 
 /**
  *
@@ -393,7 +379,6 @@ public class ConceptGroupDetailsDialog<T extends AbstractionNetwork> extends JDi
             )
         );
         
-        tabbedPane.addTab("Rule Information", createRulePanel(group, sctAbN));
         add(tabbedPane);
 
         setResizable(true);
@@ -544,57 +529,5 @@ public class ConceptGroupDetailsDialog<T extends AbstractionNetwork> extends JDi
         conceptPanel.add(new JScrollPane(resultsList));
         
         return conceptPanel;
-    }
-    
-    private JComponent createRulePanel(GenericConceptGroup group, SCTAbstractionNetwork abstractionNetwork) {
-        //Pass a link of the rule view panel to the second custom component
-        //Over there populate it with the list of rules from trees
-        
-        final JTree ruletree=new JTree(new DefaultTreeModel(new DefaultMutableTreeNode(group.getRoot().getName())));
-        
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.getViewport().add( ruletree );
-        
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(group.getRoot().getName(),true);
-        DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
-        
-        RuleObject localrule=DDIDataLoader.getRuleObject(group.getRoot().getName());        
-        HashMap<String,String> localmap=localrule.getConceptlist();
-
-        for(Map.Entry<String,String> localentry : localmap.entrySet())
-        {
-            DefaultMutableTreeNode localnode=new DefaultMutableTreeNode(localentry.getKey(),true);
-            localnode.add(new DefaultMutableTreeNode(localentry.getValue()));
-            rootNode.add(localnode);
-        }                        
-        ruletree.setModel(treeModel);
-        ruletree.getSelectionModel().setSelectionMode
-            (TreeSelectionModel.SINGLE_TREE_SELECTION);
-        
-        MouseListener treelistener=new MouseAdapter()
-                {
-                    public void mousePressed(MouseEvent e)
-                    {
-                        
-                        DefaultMutableTreeNode localnode=(DefaultMutableTreeNode)ruletree.getClosestPathForLocation(e.getX(), e.getY()).getLastPathComponent();
-                        if(localnode!=null)
-                        {
-                            if(e.getClickCount()==2)
-                            {
-                                JOptionPane.showMessageDialog(null,localnode.toString());
-                            }
-                        }
-                    }
-                };
-        ruletree.addMouseListener(treelistener);
-
-        JSplitPane splitPane = new JSplitPane(
-                JSplitPane.HORIZONTAL_SPLIT, true, 
-                new JScrollPane(new RuleViewPanel(group, abstractionNetwork, ruletree)),
-                scrollPane);
-        
-        splitPane.setDividerLocation(568);
-        
-        return splitPane;
     }
 }

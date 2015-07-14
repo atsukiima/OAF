@@ -1,6 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.listeners;
 
-import edu.njit.cs.saboc.blu.core.gui.dialogs.AbNLoadStatusDialog;
+import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.GroupOptionsPanelActionListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.GroupOptionsPanelConfiguration;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
@@ -53,13 +53,13 @@ public class PAreaOptionsConfiguration extends GroupOptionsPanelConfiguration {
                 
                 final SwingWorker t = new SwingWorker() {
                     
-                    private AbNLoadStatusDialog loadStatusDialog = null;
+                    private LoadStatusDialog loadStatusDialog = null;
 
                     public Object doInBackground() {
                         
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
-                                loadStatusDialog = AbNLoadStatusDialog.display(null);
+                                loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating %s root subtaxonomy.", parea.getRoot().getName()));
                             }
                         });
                        
@@ -95,12 +95,13 @@ public class PAreaOptionsConfiguration extends GroupOptionsPanelConfiguration {
                 final SCTPArea finalPArea = parea;
 
                 Thread loaderThread = new Thread(new Runnable() {
-                    private AbNLoadStatusDialog loadStatusDialog = null;
+                    private LoadStatusDialog loadStatusDialog = null;
 
                     public void run() {
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
-                                loadStatusDialog = AbNLoadStatusDialog.display(null);
+                                loadStatusDialog = LoadStatusDialog.display(null, 
+                                        String.format("Creating the %s Tribal Abstraction Network (TAN).", parea.getRoot().getName()));
                             }
                         });
 

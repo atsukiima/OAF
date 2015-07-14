@@ -18,8 +18,6 @@ import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.disjointpareataxonomy.DisjointPAreaTaxonomyGraphPanel;
-import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.AuditRecommendationsPanel;
-import edu.njit.cs.saboc.blu.sno.properties.AuditReportProperties;
 import edu.njit.cs.saboc.blu.sno.utils.BrowserLauncher;
 import edu.njit.cs.saboc.blu.sno.utils.UtilityMethods;
 import java.awt.event.MouseEvent;
@@ -507,10 +505,6 @@ public class PartitionConceptDialog extends JDialog {
             if(hasOverlappingConcepts == true) {    // Display disjoint Partial-areas only if there are overlapping concepts in the hierarchy
                 tabbedPane.addTab("Disjoint Partial-areas", null);
             }
-            
-            if(AuditReportProperties.getAuditReportProperties().isRegionsOn() == false) {   // show the recommendations only if Regions are not turned on
-                tabbedPane.addTab("Audit Recommendations", new JScrollPane());
-            }
 
         } else {
             tabbedPane.addTab((treatAsContainer ? "Common Overlap Set Concept List" : "Overlap Inheritance Partition Concept List"), new JScrollPane(conceptsPane));
@@ -529,35 +523,7 @@ public class PartitionConceptDialog extends JDialog {
             }
 
             public void mouseClicked(MouseEvent e) {
-                int currentTab = tabbedPane.getSelectedIndex();
-                if(tempHasOverlappingConcepts == true) {        // Disjoint Area tab is displayed
-                    if(currentTab == 2 && repeat == false) {
-                        repeat = true;
 
-                        tabbedPane.addTab("Audit Recommendations", 
-                                new JScrollPane(new AuditRecommendationsPanel(tempPartition, (SCTPAreaTaxonomy)tempHierarchyData, 
-                                        rootIdMap, tempConcepts, overlappingConcepts, displayFrameListener)) 
-                                );
-                        
-                        tabbedPane.setEnabledAt(currentTab, false);
-                        tabbedPane.setSelectedIndex(currentTab + 1);
-                        tabbedPane.removeTabAt(currentTab);
-                    }
-                }
-                else {                                          // Disjoint Area tab is missing
-                    if(currentTab == 1 && repeat == false) {
-                        repeat = true;
-
-                        tabbedPane.addTab("Audit Recommendations", 
-                                new JScrollPane(new AuditRecommendationsPanel(tempPartition, (SCTPAreaTaxonomy)tempHierarchyData, 
-                                        rootIdMap, tempConcepts, overlappingConcepts, displayFrameListener)) 
-                                );
-                        
-                        tabbedPane.setEnabledAt(currentTab, false);
-                        tabbedPane.setSelectedIndex(currentTab + 1);
-                        tabbedPane.removeTabAt(currentTab);
-                    }
-                }
             }
 
             public void mousePressed(MouseEvent e) {

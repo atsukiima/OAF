@@ -5,7 +5,7 @@ import SnomedShared.OutgoingLateralRelationship;
 import SnomedShared.PAreaDetailsForConcept;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.EntryPoint;
-import edu.njit.cs.saboc.blu.core.gui.dialogs.AbNLoadStatusDialog;
+import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.FocusConcept;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.SnomedConceptBrowser;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
@@ -202,13 +202,13 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
     
     private void createAndDisplaySubjectSubtaxonomy(final SCTLocalDataSource dataSource, final Concept root) {
         Thread loadThread = new Thread(new Runnable() {
-            private AbNLoadStatusDialog loadStatusDialog = null;
+            private LoadStatusDialog loadStatusDialog = null;
 
             public void run() {
                 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        loadStatusDialog = AbNLoadStatusDialog.display(null);
+                        loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating %s subject subtaxonomy.", root.getName()));
                     }
                 });
 
@@ -241,13 +241,13 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
     private void createAndDisplayFocusSubtaxonomy(final SCTLocalDataSource dataSource, final Concept focusConcept) {
         
         Thread loadThread = new Thread(new Runnable() {
-            private AbNLoadStatusDialog loadStatusDialog = null;
+            private LoadStatusDialog loadStatusDialog = null;
 
             public void run() {
                 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        loadStatusDialog = AbNLoadStatusDialog.display(null);
+                        loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating %s subject subtaxonomy.", focusConcept.getName()));
                     }
                 });
 
