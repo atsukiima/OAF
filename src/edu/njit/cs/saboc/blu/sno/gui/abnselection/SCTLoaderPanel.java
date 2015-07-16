@@ -13,13 +13,13 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.RelationshipsRetrieverFactory;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSourceWithStated;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRemoteDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.middlewareproxy.MiddlewareAccessorProxy;
 import edu.njit.cs.saboc.blu.sno.utils.UtilityMethods;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -323,8 +323,6 @@ public class SCTLoaderPanel extends JPanel {
 
             public void run() {
                 
-
-                
                 loadStatusDialog = LoadStatusDialog.display(parentFrame, String.format("Creating the %s partial-area taxonomy.", root.getName()));
 
                 final SCTPAreaTaxonomy taxonomy;
@@ -337,10 +335,20 @@ public class SCTLoaderPanel extends JPanel {
                         SCTLocalDataSource dataSource = localReleasePanel.getLoadedDataSource();
 
                         Concept localConcept = dataSource.getConceptFromId(root.getId());
-
+                        
+                        SCTConceptHierarchy hierarchy;
+                        
+                        if(useStatedRelationships) {
+                            SCTLocalDataSourceWithStated statedDataSource = (SCTLocalDataSourceWithStated)dataSource;
+                            
+                            hierarchy = statedDataSource.getStatedHierarchy().getSubhierarchyRootedAt(localConcept);
+                        } else {
+                            hierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(localConcept);
+                        }
+                        
                         final SCTPAreaTaxonomyGenerator generator
                                 = new SCTPAreaTaxonomyGenerator(localConcept, dataSource,
-                                        (SCTConceptHierarchy) dataSource.getConceptHierarchy().getSubhierarchyRootedAt(localConcept),
+                                        hierarchy,
                                         RelationshipsRetrieverFactory.getRelationshipsRetriever(useStatedRelationships));
 
                         taxonomy = generator.derivePAreaTaxonomy();

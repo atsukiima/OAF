@@ -217,6 +217,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         tabbedPane.validate();
         tabbedPane.repaint();
         
+        /*
         if (data.getAbstractionNetwork().getDataSource().isLocalDataSource() && data.getAbstractionNetwork().getConceptHierarchy().getNodesInHierarchy().size() < 3000) {
             hierarchyPanel = new HierarchyPainterPanel<Concept>();
 
@@ -230,6 +231,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
             painterThread.run();
         }
+        */
 
     }
 

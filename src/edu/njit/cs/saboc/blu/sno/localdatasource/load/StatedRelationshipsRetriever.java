@@ -4,8 +4,6 @@ import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalLateralRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSCTConceptStated;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSourceWithStated;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,9 +65,5 @@ public class StatedRelationshipsRetriever implements ConceptRelationshipsRetriev
         }
 
         return definingAttributeRels;
-    }
-    
-    public SCTConceptHierarchy getConceptHierarchy(SCTLocalDataSource dataSource, Concept root) {
-        return (SCTConceptHierarchy)((SCTLocalDataSourceWithStated)dataSource).getStatedHierarchy().getSubhierarchyRootedAt(root);
     }
 }

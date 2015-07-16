@@ -18,7 +18,7 @@ import javax.swing.JFrame;
  */
 public abstract class SCTDisplayFrameListener implements FrameCreationListener {
     
-    private JFrame mainFrame;
+    private final JFrame mainFrame;
     
     public SCTDisplayFrameListener(JFrame mainFrame) {
         this.mainFrame = mainFrame;

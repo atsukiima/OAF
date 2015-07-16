@@ -19,8 +19,8 @@ public class SCTNavigableFilterableList extends SCTFilterableList {
         
         this.addListMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2 && list.getModel() == conceptModel) {
-                    Filterable f = conceptModel.getFilterableAtModelIndex(getSelectedIndex());
+                if (e.getClickCount() == 2 && list.getModel() == entryModel) {
+                    Filterable f = entryModel.getFilterableAtModelIndex(getSelectedIndex());
 
                     if (f != null && f instanceof NavigableEntry) {
                         NavigableEntry nav = (NavigableEntry) f;

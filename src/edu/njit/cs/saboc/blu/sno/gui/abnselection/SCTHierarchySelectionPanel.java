@@ -64,7 +64,7 @@ public class SCTHierarchySelectionPanel extends JPanel {
             if(enabledRoots.contains(root)) {
                 btn.setToolTipText(String.format("<html>Click me to view the <b>%s</b> hierarchy's %s.", hierarchyName, type));
             } else {
-                btn.setToolTipText(String.format("<html>It is not possible to derive a %s for the <b>%s</b> hierarchy.", hierarchyName, type));
+                btn.setToolTipText(String.format("<html>It is not possible to derive a %s for the <b>%s</b> hierarchy.", type, hierarchyName));
                 btn.setEnabled(false);
             }
             

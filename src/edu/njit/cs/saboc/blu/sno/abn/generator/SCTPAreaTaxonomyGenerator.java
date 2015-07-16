@@ -5,7 +5,6 @@ import SnomedShared.pareataxonomy.InheritedRelationship;
 import SnomedShared.pareataxonomy.InheritedRelationship.InheritanceType;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.RelationshipEquality;
-import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.SingleRootedHierarchy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
