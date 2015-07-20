@@ -19,8 +19,10 @@ import edu.njit.cs.saboc.blu.sno.abn.tan.local.ConceptClusterInfo;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.graph.ClusterBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.ClusterInternalGraphFrame;
+import edu.njit.cs.saboc.blu.sno.localdatasource.load.RelationshipsRetrieverFactory;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSourceWithStated;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.middlewareproxy.MiddlewareAccessorProxy;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -36,6 +38,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -51,10 +54,8 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
     private JTabbedPane tabbedPane;
     
-    
     private BaseNavPanel partialAreaPanel;
     private BaseNavPanel tribalANPanel;
-    
     
     private PAreaTaxonomyDetailsPanel pareaDetailsPanel = new PAreaTaxonomyDetailsPanel();
     
@@ -141,7 +142,16 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             tribalANPanel.add(new JScrollPane(clusterDetailsPanel), BorderLayout.CENTER);
             tabbedPane.addTab("Cluster Details", tribalANPanel);
             
-            JPanel subtaxonomyOptionsPanel = new JPanel(new GridLayout(1, 2, 2, 2));
+            final JCheckBox chkUseStatedRels = new JCheckBox("Derive Use Stated Relationships");
+            chkUseStatedRels.setSelected(false);
+            
+            if(dataSource.supportsStatedRelationships()) {
+                chkUseStatedRels.setVisible(true);
+            } else {
+                chkUseStatedRels.setVisible(false);
+            }
+            
+            JPanel subtaxonomySelectionPanel = new JPanel(new GridLayout(1, 2, 2, 2));
 
             JButton descTaxonomyBtn = new JButton("Create Subject Subtaxonomy");
             
@@ -149,7 +159,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                 public void actionPerformed(ActionEvent ae) {
                     Concept c = focusConcept.getConcept();
                     
-                    createAndDisplaySubjectSubtaxonomy(localDS, c);
+                    createAndDisplaySubjectSubtaxonomy(localDS, c, chkUseStatedRels.isSelected());
                 }
             });
             
@@ -164,7 +174,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             descBtnPanel.add(descTaxonomyBtn, BorderLayout.NORTH);
             descBtnPanel.add(subjectSubtaxonomyDesc, BorderLayout.CENTER);
             
-            subtaxonomyOptionsPanel.add(descBtnPanel);
+            subtaxonomySelectionPanel.add(descBtnPanel);
             
             JButton focusTaxonomyBtn = new JButton("Create Focus Subtaxonomy");
             
@@ -172,7 +182,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                 public void actionPerformed(ActionEvent ae) {
                     Concept c = focusConcept.getConcept();
 
-                    createAndDisplayFocusSubtaxonomy(localDS, c);
+                    createAndDisplayFocusSubtaxonomy(localDS, c, chkUseStatedRels.isSelected());
                 }
             });
             
@@ -187,36 +197,45 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             focusBtnPanel.add(focusTaxonomyBtn, BorderLayout.NORTH);
             focusBtnPanel.add(focusSubtaxonomyDesc, BorderLayout.CENTER);
             
-            subtaxonomyOptionsPanel.add(focusBtnPanel);
+            subtaxonomySelectionPanel.add(focusBtnPanel);
+
+            JPanel subtaxonomyOptionsPanel = new JPanel(new BorderLayout());
+            
+            subtaxonomyOptionsPanel.add(chkUseStatedRels, BorderLayout.NORTH);
+            subtaxonomyOptionsPanel.add(subtaxonomySelectionPanel, BorderLayout.CENTER);
             
             tabbedPane.addTab("Create Focus Concept Subtaxonomy", subtaxonomyOptionsPanel);
         }
         
-        
-
         focusConcept.addDisplayPanel(FocusConcept.Fields.TRIBALAN, tribalANPanel);
         focusConcept.addDisplayPanel(FocusConcept.Fields.PARTIALAREA, partialAreaPanel);
 
         add(tabbedPane, BorderLayout.CENTER);
     }
     
-    private void createAndDisplaySubjectSubtaxonomy(final SCTLocalDataSource dataSource, final Concept root) {
+    private void createAndDisplaySubjectSubtaxonomy(final SCTLocalDataSource dataSource, final Concept root, boolean useStatedRelationships) {
         Thread loadThread = new Thread(new Runnable() {
             private LoadStatusDialog loadStatusDialog = null;
 
             public void run() {
                 
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating %s subject subtaxonomy.", root.getName()));
-                    }
-                });
+                loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating the %s Subject Subtaxonomy.", root.getName()));
 
                 ArrayList<Concept> hierarchy = dataSource.getHierarchiesConceptBelongTo(root);
 
-                SCTConceptHierarchy subhierarchy = (SCTConceptHierarchy) dataSource.getConceptHierarchy().getSubhierarchyRootedAt(root);
-
-                SCTPAreaTaxonomyGenerator generator = new SCTPAreaTaxonomyGenerator(hierarchy.get(0), dataSource, subhierarchy, new InferredRelationshipsRetriever());
+                SCTConceptHierarchy subhierarchy;
+                
+                if(useStatedRelationships) {
+                    subhierarchy = ((SCTLocalDataSourceWithStated)dataSource).getStatedHierarchy().getSubhierarchyRootedAt(root);
+                } else {
+                    subhierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(root);
+                }
+                
+                SCTPAreaTaxonomyGenerator generator = new SCTPAreaTaxonomyGenerator(
+                        hierarchy.get(0), 
+                        dataSource, 
+                        subhierarchy, 
+                        RelationshipsRetrieverFactory.getRelationshipsRetriever(useStatedRelationships));
 
                 final SCTPAreaTaxonomy taxonomy = generator.derivePAreaTaxonomy();    
 
@@ -224,13 +243,10 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                     public void run() {
                         mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
 
-                        if (loadStatusDialog != null) {
-                            loadStatusDialog.setVisible(false);
-                            loadStatusDialog.dispose();
-                        }
+                        loadStatusDialog.setVisible(false);
+                        loadStatusDialog.dispose();
                     }
                 });
-
             }
         });
 
@@ -238,33 +254,39 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
     }
     
     
-    private void createAndDisplayFocusSubtaxonomy(final SCTLocalDataSource dataSource, final Concept focusConcept) {
+    private void createAndDisplayFocusSubtaxonomy(final SCTLocalDataSource dataSource, final Concept focusConcept, boolean useStatedRelationships) {
         
         Thread loadThread = new Thread(new Runnable() {
             private LoadStatusDialog loadStatusDialog = null;
 
             public void run() {
+                loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating the %s Focus Subtaxonomy.", focusConcept.getName()));
                 
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating %s subject subtaxonomy.", focusConcept.getName()));
-                    }
-                });
-
                 ArrayList<Concept> hierarchy = dataSource.getHierarchiesConceptBelongTo(focusConcept);
 
                 SCTConceptHierarchy conceptHierarchy = new SCTConceptHierarchy(hierarchy.get(0)); // Multi rooted partial-area taxonomy needs research...
-
-                SCTConceptHierarchy descdendants = (SCTConceptHierarchy) dataSource.getConceptHierarchy().getSubhierarchyRootedAt(focusConcept);
+                
+                SCTConceptHierarchy completeConceptHierarchy;
+                
+                if(useStatedRelationships) {
+                    SCTLocalDataSourceWithStated withStated = (SCTLocalDataSourceWithStated)dataSource;
+                    completeConceptHierarchy = withStated.getStatedHierarchy();                   
+                } else {
+                    completeConceptHierarchy = dataSource.getConceptHierarchy();
+                }
+                
+                SCTConceptHierarchy descdendants = completeConceptHierarchy.getSubhierarchyRootedAt(focusConcept);
 
                 conceptHierarchy.addAllHierarchicalRelationships(descdendants);
 
-                for (Concept hierarchyRoot : hierarchy) {
-                    SCTConceptHierarchy ancestors = dataSource.getAncestorHierarchy(dataSource.getConceptHierarchy(), hierarchyRoot, focusConcept);
-                    conceptHierarchy.addAllHierarchicalRelationships(ancestors);
-                }
+                SCTConceptHierarchy ancestors = completeConceptHierarchy.getAncestorHierarchy(focusConcept);
+                conceptHierarchy.addAllHierarchicalRelationships(ancestors);
 
-                SCTPAreaTaxonomyGenerator generator = new SCTPAreaTaxonomyGenerator(hierarchy.get(0), dataSource, conceptHierarchy, new InferredRelationshipsRetriever());
+                SCTPAreaTaxonomyGenerator generator = new SCTPAreaTaxonomyGenerator(
+                        hierarchy.get(0), 
+                        dataSource, 
+                        conceptHierarchy, 
+                        RelationshipsRetrieverFactory.getRelationshipsRetriever(useStatedRelationships));
 
                 final SCTPAreaTaxonomy taxonomy = generator.derivePAreaTaxonomy();
 
@@ -272,13 +294,10 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                     public void run() {
                         mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
 
-                        if (loadStatusDialog != null) {
-                            loadStatusDialog.setVisible(false);
-                            loadStatusDialog.dispose();
-                        }
+                        loadStatusDialog.setVisible(false);
+                        loadStatusDialog.dispose();
                     }
                 });
-
             }
         });
 

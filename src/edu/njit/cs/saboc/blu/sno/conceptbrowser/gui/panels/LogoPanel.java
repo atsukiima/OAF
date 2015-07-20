@@ -17,7 +17,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -94,10 +93,6 @@ public class LogoPanel extends BaseNavPanel implements ActionListener {
 
         version.addActionListener(this);
         
-        if(!dataSource.supportsMultipleVersions()) {
-            version.setEnabled(false);
-        }
-
         versionPanel = new JPanel(new BorderLayout(3, 0));
         
         JLabel sctVersionLabel = new JLabel("Using SNOMED version: ", JLabel.CENTER);
@@ -106,6 +101,11 @@ public class LogoPanel extends BaseNavPanel implements ActionListener {
         
         versionPanel.add(sctVersionLabel, BorderLayout.WEST);
         versionPanel.add(version, BorderLayout.CENTER);
+        
+        if(dataSource.isLocalDataSource()) {
+            versionPanel.setVisible(false);
+        }
+        
         centerPanel.add(versionPanel, BorderLayout.SOUTH);
         
         add(centerPanel, BorderLayout.CENTER);
