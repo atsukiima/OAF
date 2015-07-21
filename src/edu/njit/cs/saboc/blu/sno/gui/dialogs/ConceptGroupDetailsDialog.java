@@ -368,16 +368,18 @@ public class ConceptGroupDetailsDialog<T extends AbstractionNetwork> extends JDi
             groupType = "Cluster";
         }
         
-        tabbedPane.addTab("Hierarchical View (Graphical)", new JScrollPane(new SCTConceptHierarchyViewPanel(group,
+        SCTConceptHierarchyViewPanel viewPanel = new SCTConceptHierarchyViewPanel(group,
                 sctAbN,
                 groupType,
                 new HierarchyPanelClickListener<Concept>() {
                     public void conceptDoubleClicked(Concept c) {
                         displayFrameListener.addNewBrowserFrame(c, sctAbN.getDataSource());
                     }
-                })
-            )
-        );
+                });
+        
+        viewPanel.setGroup(group);
+            
+        tabbedPane.addTab("Hierarchical View (Graphical)", new JScrollPane(viewPanel));
         
         add(tabbedPane);
 
