@@ -22,7 +22,7 @@ public class SCTConceptHierarchyViewPanel extends ConceptGroupHierarchicalViewPa
             final String groupType, 
             final HierarchyPanelClickListener<Concept> conceptSelectListener) {
         
-        super(group, abn.getAbstractionNetwork(), groupType, "Concept", new SCTConceptPainter(), conceptSelectListener);
+        super(abn.getAbstractionNetwork(), groupType, "Concept", new SCTConceptPainter(), conceptSelectListener);
     }
     
     public SCTConceptGroupHierarchyLoader getHierarchyLoader() {
