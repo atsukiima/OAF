@@ -11,7 +11,6 @@ import edu.njit.cs.saboc.blu.sno.conceptbrowser.SnomedConceptBrowser;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.ConceptGroupDetailsDialog;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
-import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
@@ -101,7 +100,6 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
         partialAreaPanel.setLayout(new BorderLayout());
         partialAreaPanel.add(new JScrollPane(pareaDetailsPanel), BorderLayout.CENTER);
-
        
         tabbedPane = new JTabbedPane();
         
@@ -359,6 +357,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                 ArrayList<String> sortedRelNames = new ArrayList<String>();
                 
                 for (OutgoingLateralRelationship rel : firstDetail.getPAreaRelationships()) {
+                    
                     String relName = rel.getRelationship().getName();
                     relName = relName.substring(0, relName.lastIndexOf("(") - 1);
 

@@ -180,7 +180,7 @@ public class SCTLoaderPanel extends JPanel {
         tanSelectionPanel = new SCTHierarchySelectionPanel(rootConcepts, rootConcepts, "Tribal Abstraction Network (TAN)",
             new SCTHierarchySelectionPanel.HierarchySelectionAction() {
                 public void performHierarchySelectionAction(Concept root, boolean useStated) {
-                    loadTAN(root); // TODO: What about stated IS_As?
+                    loadTAN(root, useStated);
                 }
             });
         tanSelectionPanel.setEnabled(false);
@@ -205,7 +205,7 @@ public class SCTLoaderPanel extends JPanel {
        
         if (dataSource.supportsStatedRelationships()) {
             pareaTaxonomySelectionPanel.setStatedReleaseAvailable(true);
-            tanSelectionPanel.setStatedReleaseAvailable(false); // TODO: When Stated works for TANs, update this
+            tanSelectionPanel.setStatedReleaseAvailable(true); // TODO: When Stated works for TANs, update this
         } else {
             pareaTaxonomySelectionPanel.setStatedReleaseAvailable(false);
             tanSelectionPanel.setStatedReleaseAvailable(false);
@@ -379,7 +379,7 @@ public class SCTLoaderPanel extends JPanel {
      *
      * @param root
      */
-    private void loadTAN(final Concept root) {
+    private void loadTAN(final Concept root, boolean useStated) {
         
         Thread loadThread = new Thread(new Runnable() {
             private LoadStatusDialog loadStatusDialog = null;
@@ -393,11 +393,17 @@ public class SCTLoaderPanel extends JPanel {
 
                     try {
                         SCTLocalDataSource dataSource = localReleasePanel.getLoadedDataSource();
-
-                        tan = TANGenerator.createTANFromConceptHierarchy(
-                                root,
-                                dataSource.getSelectedVersion(),
-                                (SCTConceptHierarchy) dataSource.getConceptHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getId())));
+                        
+                        SCTConceptHierarchy hierarchy;
+                        
+                        if (useStated) {
+                            SCTLocalDataSourceWithStated statedDataSource = (SCTLocalDataSourceWithStated) dataSource;
+                            hierarchy = statedDataSource.getStatedHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getId()));
+                        } else {
+                            hierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getId()));
+                        }
+                        
+                        tan = TANGenerator.createTANFromConceptHierarchy(root, dataSource.getSelectedVersion(), hierarchy);
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
