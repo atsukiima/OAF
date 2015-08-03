@@ -167,7 +167,13 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         if (data.isReduced()) {
             labelCreator = new GroupEntryLabelCreator<SCTPArea>() {
                 public String getRootNameStr(SCTPArea parea) {
-                    return parea.getRoot().getName().substring(0, parea.getRoot().getName().lastIndexOf(" ("));
+                    int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
+                    
+                    if(lastIndex == -1) {
+                        return parea.getRoot().getName();
+                    } else {
+                        return parea.getRoot().getName().substring(0, lastIndex);
+                    }
                 }
                 
                 public String getCountStr(SCTPArea parea) {
@@ -183,7 +189,13 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         } else {
             labelCreator = new GroupEntryLabelCreator<SCTPArea>() {
                 public String getRootNameStr(SCTPArea parea) {
-                    return parea.getRoot().getName().substring(0, parea.getRoot().getName().lastIndexOf(" ("));
+                    int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
+                    
+                    if(lastIndex == -1) {
+                        return parea.getRoot().getName();
+                    } else {
+                        return parea.getRoot().getName().substring(0, lastIndex);
+                    }
                 }
             };
         }
