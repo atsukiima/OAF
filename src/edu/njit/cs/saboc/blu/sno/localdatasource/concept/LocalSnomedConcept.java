@@ -8,12 +8,20 @@ import java.util.ArrayList;
  */
 public class LocalSnomedConcept extends SnomedShared.Concept {
 
-    private ArrayList<Description> descList = new ArrayList<Description>();
+    private ArrayList<Description> descList = new ArrayList<>();
     
-    private ArrayList<LocalLateralRelationship> lateralRelationships = new ArrayList<LocalLateralRelationship>();
+    private ArrayList<LocalLateralRelationship> lateralRelationships = new ArrayList<>();
+    
+    private final boolean isActive;
 
-    public LocalSnomedConcept(long id, String name, boolean isPrimitive) {
-        super(id, name, isPrimitive);
+    public LocalSnomedConcept(long id, boolean isPrimitive, boolean isActive) {
+        super(id, "", isPrimitive);
+        
+        this.isActive = isActive;
+    }
+    
+    public boolean isActive() {
+        return isActive;
     }
 
     public void setLateralRelationships(ArrayList<LocalLateralRelationship> rels) {
