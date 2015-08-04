@@ -9,8 +9,8 @@ import java.util.ArrayList;
 public class LocalSCTConceptStated extends LocalSnomedConcept {
     private ArrayList<LocalLateralRelationship> statedAttributeRelationships;
     
-    public LocalSCTConceptStated(long id, String name, boolean isPrimitive) {
-        super(id, name, isPrimitive);
+    public LocalSCTConceptStated(long id, boolean isPrimitive, boolean isActive) {
+        super(id, isPrimitive, isActive);
     }
     
     public void setStatedRelationships(ArrayList<LocalLateralRelationship> statedAttributeRelationships) {

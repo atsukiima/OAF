@@ -10,6 +10,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.load.LoadLocalRelease;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LocalLoadStateMonitor;
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.localdatasource.load.ImportLocalDataRF2;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.RelationshipsRetrieverFactory;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
@@ -180,7 +181,7 @@ public class SCTLoaderPanel extends JPanel {
         tanSelectionPanel = new SCTHierarchySelectionPanel(rootConcepts, rootConcepts, "Tribal Abstraction Network (TAN)",
             new SCTHierarchySelectionPanel.HierarchySelectionAction() {
                 public void performHierarchySelectionAction(Concept root, boolean useStated) {
-                    loadTAN(root); // TODO: What about stated IS_As?
+                    loadTAN(root, useStated);
                 }
             });
         tanSelectionPanel.setEnabled(false);
@@ -205,7 +206,7 @@ public class SCTLoaderPanel extends JPanel {
        
         if (dataSource.supportsStatedRelationships()) {
             pareaTaxonomySelectionPanel.setStatedReleaseAvailable(true);
-            tanSelectionPanel.setStatedReleaseAvailable(false); // TODO: When Stated works for TANs, update this
+            tanSelectionPanel.setStatedReleaseAvailable(true); // TODO: When Stated works for TANs, update this
         } else {
             pareaTaxonomySelectionPanel.setStatedReleaseAvailable(false);
             tanSelectionPanel.setStatedReleaseAvailable(false);
@@ -379,7 +380,7 @@ public class SCTLoaderPanel extends JPanel {
      *
      * @param root
      */
-    private void loadTAN(final Concept root) {
+    private void loadTAN(final Concept root, boolean useStated) {
         
         Thread loadThread = new Thread(new Runnable() {
             private LoadStatusDialog loadStatusDialog = null;
@@ -393,11 +394,17 @@ public class SCTLoaderPanel extends JPanel {
 
                     try {
                         SCTLocalDataSource dataSource = localReleasePanel.getLoadedDataSource();
-
-                        tan = TANGenerator.createTANFromConceptHierarchy(
-                                root,
-                                dataSource.getSelectedVersion(),
-                                (SCTConceptHierarchy) dataSource.getConceptHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getId())));
+                        
+                        SCTConceptHierarchy hierarchy;
+                        
+                        if (useStated) {
+                            SCTLocalDataSourceWithStated statedDataSource = (SCTLocalDataSourceWithStated) dataSource;
+                            hierarchy = statedDataSource.getStatedHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getId()));
+                        } else {
+                            hierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getId()));
+                        }
+                        
+                        tan = TANGenerator.createTANFromConceptHierarchy(root, dataSource.getSelectedVersion(), hierarchy);
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -648,24 +655,48 @@ class LocalReleaseSelectionPanel extends JPanel {
     private void startLocalReleaseThread() {
         new Thread(new Runnable() {
             public void run() {
-
                 try {
-                    ImportLocalData importer = new ImportLocalData();
-                    final LocalLoadStateMonitor loadMonitor = importer.getLoadStateMonitor();
+                    File selectedFile = getSelectedVersion();
 
-                    LoadMonitorTask task = new LoadMonitorTask(loadMonitor);
+                    final LocalLoadStateMonitor loadMonitor;
+                    final SCTLocalDataSource dataSource;
 
-                    task.addPropertyChangeListener(new PropertyChangeListener() {
-                        public void propertyChange(PropertyChangeEvent pce) {
-                            loadProgressBar.setValue(loadMonitor.getOverallProgress());
-                            loadProgressBar.setString(loadMonitor.getProcessName());
-                        }
-                    });
+                    if (selectedFile.getAbsolutePath().contains("RF2Release")) {
+                        ImportLocalDataRF2 rf2Importer = new ImportLocalDataRF2();
 
-                    task.execute();
+                        loadMonitor = rf2Importer.getLoadStateMonitor();
 
-                    SCTLocalDataSource dataSource
-                            = importer.loadLocalSnomedRelease(getSelectedVersion(), getSelectedVersionName(), loadMonitor);
+                        LoadMonitorTask task = new LoadMonitorTask(loadMonitor);
+
+                        task.addPropertyChangeListener(new PropertyChangeListener() {
+                            public void propertyChange(PropertyChangeEvent pce) {
+                                loadProgressBar.setValue(loadMonitor.getOverallProgress());
+                                loadProgressBar.setString(loadMonitor.getProcessName());
+                            }
+                        });
+
+                        task.execute();
+                        
+                        dataSource = rf2Importer.loadLocalSnomedRelease(getSelectedVersion(), getSelectedVersionName(), loadMonitor);
+
+                    } else {
+                        ImportLocalData importer = new ImportLocalData();
+
+                        loadMonitor = importer.getLoadStateMonitor();
+
+                        LoadMonitorTask task = new LoadMonitorTask(loadMonitor);
+
+                        task.addPropertyChangeListener(new PropertyChangeListener() {
+                            public void propertyChange(PropertyChangeEvent pce) {
+                                loadProgressBar.setValue(loadMonitor.getOverallProgress());
+                                loadProgressBar.setString(loadMonitor.getProcessName());
+                            }
+                        });
+
+                        task.execute();
+                        
+                        dataSource = importer.loadLocalSnomedRelease(getSelectedVersion(), getSelectedVersionName(), loadMonitor);
+                    }
 
                     loadedDataSource = dataSource;
 

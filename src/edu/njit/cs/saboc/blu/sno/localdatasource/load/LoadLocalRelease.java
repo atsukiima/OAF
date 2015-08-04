@@ -5,6 +5,7 @@ package edu.njit.cs.saboc.blu.sno.localdatasource.load;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  *
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 public class LoadLocalRelease {
 
     public static ArrayList<File> findReleaseFolders(File parentFile) { //parentFile is the snomed directory, not checked at the moment
-        ArrayList<File> dirList = findSub(parentFile, new ArrayList<File>());//finds all subdirectories, disincludes files
+        ArrayList<File> dirList = findSub(parentFile, new ArrayList<File>(), 0);//finds all subdirectories, disincludes files
         
         return dirList;
     }
@@ -49,8 +50,10 @@ public class LoadLocalRelease {
             
             String releaseName;
             
-            if (dirName.contains("RF1")) {
+            if(dirName.contains("_RF2Release_")) {
+                releaseName = dirName.substring(dirName.lastIndexOf("_RF2Release_"), dirName.lastIndexOf("\\Snapshot\\Terminology"));
                 
+            } else if (dirName.contains("RF1")) {
                 if (dirName.contains("_RF1Release")) {
                     releaseName = dirName.substring(dirName.lastIndexOf("RF1Release"), dirName.lastIndexOf("\\Terminology\\Content"));
                 } else {
@@ -58,24 +61,25 @@ public class LoadLocalRelease {
                 }
                 
             } else {
-                
                 if(dirName.contains("Essential Resources")) {
                     releaseName = dirName.substring(dirName.lastIndexOf("\\SNOMED_CT_Essential_") + 21, dirName.lastIndexOf("\\Essential Resources"));
                 } else {
-                    releaseName = dirName.substring(dirName.lastIndexOf("SnomedCT_"), dirName.lastIndexOf("\\Terminology\\Content"));
+                    if(dirName.contains("RF2Release")) {
+                        releaseName = dirName.substring(dirName.lastIndexOf("SnomedCT_"), dirName.lastIndexOf("\\RF2Release"));
+                    } else {
+                        releaseName = dirName.substring(dirName.lastIndexOf("SnomedCT_"), dirName.lastIndexOf("\\Terminology\\Content"));
+                    }
                 }
             }
 
-            if(releaseName.contains("Release")) {
-                if(releaseName.contains("RF1Release")) {
-                    releaseName = releaseName.substring("_RF1Release".length());
-                } else {
-                    releaseName = releaseName.substring("SnomedCT_Release_".length());
-                }
-            } else {
-                if(releaseName.contains("SNOMEDCT_")) {
-                    releaseName = releaseName.substring("SnomedCT_".length());
-                }
+            if (releaseName.contains("Release_")) {
+                releaseName = releaseName.substring(releaseName.lastIndexOf("Release_") + 8);
+            } else if (releaseName.contains("SnomedCT_")) {
+                releaseName = releaseName.substring(releaseName.lastIndexOf("SnomedCT_") + 9);
+            }
+            
+            if(dirName.contains("RF2")) {
+                releaseName += (" (RF2)");
             }
             
             releaseName = releaseName.replace("_", " ");
@@ -86,9 +90,7 @@ public class LoadLocalRelease {
         return releaseNames;
     }
     
-    
-
-    private static ArrayList<File> findSub(File directory, ArrayList<File> dirList) {
+    private static ArrayList<File> findSub(File directory, ArrayList<File> dirList, int currentDepth) {
 
         if (!directory.isDirectory()) { //if the called file isn't a directory, simply return the arrayList
             return dirList;
@@ -97,22 +99,52 @@ public class LoadLocalRelease {
 
             for (File child : children) {
                 if (child.isDirectory()) { //if the child file is a directory, add it to the list, and continue in 
-                    if (child.getAbsolutePath().contains("Terminology\\Content") || child.getAbsolutePath().contains("SNOMED CT Terminology\\Content")) {
-                        File [] folderContents = child.listFiles();
-                        
-                        // TODO: Check to see if concepts, relationships, descriptions available
-                        if (folderContents.length == 3 && 
-                                !child.getAbsolutePath().contains("USDrugExtension")) {
-                            
-                            dirList.add(child);
+
+                    File[] folderContents = child.listFiles();
+
+                    HashSet<String> fileNames = new HashSet<>();
+
+                    for (File f : folderContents) {
+                        if (f.isFile()) {
+                            fileNames.add(f.getName());
                         }
                     }
                     
-                    findSub(child, dirList);
+                    if (fileNames.size() >= 3) {
+                        if (potentialFileMatch(fileNames, "concept")
+                                && potentialFileMatch(fileNames, "relationship") 
+                                && potentialFileMatch(fileNames, "description")) {
+
+                            String pathName = child.getAbsolutePath();
+                            
+                            if(pathName.toLowerCase().contains("terminology\\content")
+                                    || pathName.toLowerCase().contains("snomed ct terminology\\content")
+                                    || pathName.toLowerCase().contains("snapshot\\terminology")) {
+                                
+                                if(!pathName.toLowerCase().contains("usdrugextension")) {
+                                    dirList.add(child);
+                                }
+                            }
+                        }
+                    }
+                    
+                    if(currentDepth < 8) {
+                        findSub(child, dirList, currentDepth + 1);
+                    }
                 }
             }
         }
 
         return dirList;
+    }
+    
+    private static boolean potentialFileMatch(HashSet<String> fileNames, String match) {
+        for(String s : fileNames) {
+            if(s.toLowerCase().contains(match.toLowerCase())) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }
