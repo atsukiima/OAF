@@ -21,7 +21,7 @@ public class BluCluster extends GenericGroupEntry {
     public BluCluster(ClusterSummary cluster, BluGraph graph, BluOverlapPartition r,
             int pX, GraphGroupLevel parent, ArrayList<GraphEdge> ie) {
         
-        super(cluster, graph, r, pX, parent, ie, false);
+        super(cluster, graph, r, pX, parent, ie);
     }
 
     public ClusterSummary getSummary() {
