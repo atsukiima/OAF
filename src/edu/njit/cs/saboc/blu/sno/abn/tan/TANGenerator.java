@@ -279,7 +279,7 @@ public class TANGenerator {
                 
         return new LocalTribalAbstractionNetwork(hierarchyRoot, 
                 new ArrayList<CommonOverlapSet>(tribalBands.values()), 
-                hierarchyClusters, 
+                new HashMap<Integer, ClusterSummary>(hierarchyClusters), 
                 clusterHierarchy, 
                 snomedVersion,
                 patriarchClusters,
