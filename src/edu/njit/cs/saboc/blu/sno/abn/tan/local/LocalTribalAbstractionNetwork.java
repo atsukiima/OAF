@@ -29,7 +29,7 @@ public class LocalTribalAbstractionNetwork extends TribalAbstractionNetwork impl
     
     public LocalTribalAbstractionNetwork(Concept SNOMEDHierarchyRoot,
             ArrayList<CommonOverlapSet> overlapSets,
-            HashMap<Integer, ? extends ClusterSummary> clusters,
+            HashMap<Integer, ClusterSummary> clusters,
             HashMap<Integer, HashSet<Integer>> clusterHierarchy,
             String SNOMEDVersion,
             ArrayList<ClusterSummary> entryPoints,

@@ -15,7 +15,8 @@ import java.util.HashSet;
  *
  * @author Chris
  */
-public class TribalAbstractionNetwork extends AbstractionNetwork implements SCTAbstractionNetwork<TribalAbstractionNetwork> {
+public class TribalAbstractionNetwork extends AbstractionNetwork<CommonOverlapSet, ClusterSummary> 
+        implements SCTAbstractionNetwork<TribalAbstractionNetwork> {
     
     protected String sctVersion;
     
@@ -31,7 +32,7 @@ public class TribalAbstractionNetwork extends AbstractionNetwork implements SCTA
 
     public TribalAbstractionNetwork(Concept SNOMEDHierarchyRoot,
             ArrayList<CommonOverlapSet> overlapSets,
-            HashMap<Integer, ? extends ClusterSummary> clusters,
+            HashMap<Integer, ClusterSummary> clusters,
             HashMap<Integer, HashSet<Integer>> clusterHierarchy,
             String SNOMEDVersion,
             ArrayList<ClusterSummary> entryPoints,
