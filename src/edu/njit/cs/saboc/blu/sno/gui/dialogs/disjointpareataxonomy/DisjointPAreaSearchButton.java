@@ -1,16 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.dialogs.disjointpareataxonomy;
 
-import SnomedShared.Concept;
-import SnomedShared.SearchResult;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.GenericInternalSearchButton;
-import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.SearchAction;
-import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.SearchButtonResult;
-import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
-import edu.njit.cs.saboc.blu.sno.utils.comparators.SearchResultComparator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import javax.swing.JFrame;
 
 /**
@@ -19,10 +9,11 @@ import javax.swing.JFrame;
  */
 public class DisjointPAreaSearchButton extends GenericInternalSearchButton {
     
-    private DisjointPartialAreaTaxonomyPanel dap;
-
-    public DisjointPAreaSearchButton(JFrame parent, final DisjointPartialAreaTaxonomyPanel dap) {
+    public DisjointPAreaSearchButton(JFrame parent) {
         super(parent);
+        
+    }
+    /*
         
         this.dap = dap;
         
@@ -100,4 +91,6 @@ public class DisjointPAreaSearchButton extends GenericInternalSearchButton {
             }
         });
     }
+    
+    */
 }
