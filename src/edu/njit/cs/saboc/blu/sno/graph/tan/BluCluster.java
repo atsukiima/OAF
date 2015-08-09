@@ -16,7 +16,7 @@ import java.util.ArrayList;
  *
  * @author Chris
  */
-public class BluCluster extends GenericGroupEntry {
+public class BluCluster extends GenericGroupEntry<ClusterSummary> {
 
     public BluCluster(ClusterSummary cluster, BluGraph graph, BluOverlapPartition r,
             int pX, GraphGroupLevel parent, ArrayList<GraphEdge> ie) {

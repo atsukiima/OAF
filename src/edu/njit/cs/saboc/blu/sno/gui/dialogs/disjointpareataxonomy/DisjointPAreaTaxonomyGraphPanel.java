@@ -1,7 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.dialogs.disjointpareataxonomy;
 
 import SnomedShared.Concept;
-import SnomedShared.pareataxonomy.PAreaSummary;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
 import edu.njit.cs.saboc.blu.sno.abn.export.ExportAbN;
@@ -17,7 +16,6 @@ import java.util.HashSet;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 
@@ -26,15 +24,24 @@ import javax.swing.JTabbedPane;
  * @author Den
  */
 public class DisjointPAreaTaxonomyGraphPanel extends JPanel {
-    
-    private DisjointPartialAreaTaxonomyPanel taxonomyPanel;
+
+    private final DisjointPAreaTaxonomy taxonomy;
     
     public DisjointPAreaTaxonomyGraphPanel(JFrame parentFrame, final DisjointPAreaTaxonomy taxonomy, SCTDisplayFrameListener displayFrameListener) {
         super(new BorderLayout());
         
-        this.taxonomyPanel = new DisjointPartialAreaTaxonomyPanel(taxonomy, displayFrameListener);
-        
+        this.taxonomy = taxonomy;
+
         JPanel optionsPanel = new JPanel();
+        
+        JButton displayDisjointBtn = new JButton("Display Disjoint Partial-area Taxonomy");
+        displayDisjointBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                displayFrameListener.addNewDisjointPAreaTaxonomyGraphFrame(taxonomy);
+            }
+        });
+        
+        optionsPanel.add(displayDisjointBtn);
         
         JButton exportBtn = new JButton("Export Taxonomy");
         exportBtn.addActionListener(new ActionListener() {
@@ -44,14 +51,10 @@ public class DisjointPAreaTaxonomyGraphPanel extends JPanel {
         });
         
         optionsPanel.add(exportBtn);
-        
-        optionsPanel.add(new DisjointPAreaSearchButton(parentFrame, taxonomyPanel));
                 
         this.add(optionsPanel, BorderLayout.NORTH);
         
         JTabbedPane disjointTabs = new JTabbedPane();
-        
-        disjointTabs.addTab("Disjoint Partial-area Taxonomy", new JScrollPane(taxonomyPanel));
         disjointTabs.addTab("Overlapping Concept Metrics", new PAreaOverlapMetricsPanel(taxonomy));
         
         this.add(disjointTabs, BorderLayout.CENTER);
@@ -63,9 +66,8 @@ public class DisjointPAreaTaxonomyGraphPanel extends JPanel {
      * TODO: There are issues if the disjoint taxonomy is a root subtaxonomy.
      */
     private void exportDisjointPAreaCSV() {
-        DisjointPAreaTaxonomy taxonomy = taxonomyPanel.getDisjointPAreaTaxonomy();
-        
-        HashSet<DisjointPartialArea> disjointPAreas = taxonomy.getDisjointPAreas();
+
+        HashSet<DisjointPartialArea> disjointPAreas = taxonomy.getDisjointGroups();
         
         HashMap<Long, ArrayList<Concept>> pareaConcepts = new HashMap<Long, ArrayList<Concept>>();
         

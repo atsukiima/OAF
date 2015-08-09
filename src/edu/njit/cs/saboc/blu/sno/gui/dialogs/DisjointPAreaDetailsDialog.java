@@ -1,7 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.dialogs;
 
 import SnomedShared.Concept;
-import SnomedShared.pareataxonomy.PAreaSummary;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.panels.GroupDetailsPanel;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
@@ -108,7 +107,7 @@ public class DisjointPAreaDetailsDialog extends JDialog {
         builder.append("<html>");
         builder.append("<font size=4 face=\"Arial\">");
 
-        HashSet<DisjointPartialArea> children = djpaTaxonomy.getHierarchy().getChildren(parea);
+        HashSet<DisjointPartialArea> children = djpaTaxonomy.getChildGroups(parea);
 
         for (DisjointPartialArea child : children) {
             builder.append(String.format("%s (%d concepts) (<a href=\"%d\">%d</a>)<br>", child.getRoot().getName(),

@@ -7,9 +7,8 @@ import SnomedShared.overlapping.OverlapInheritancePartition;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import edu.njit.cs.saboc.blu.core.abn.AbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
-import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaRootSubtaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.RootSubtaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.SCTDisjointPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
@@ -486,11 +485,11 @@ public class PartitionConceptDialog extends JDialog {
                 if (index == 1 && tabbedPane.getTabComponentAt(index) == null) { 
                     DisjointPAreaTaxonomy taxonomy;
                     
-                    if(sctAbN instanceof RootSubtaxonomy) {
-                        taxonomy = createDisjointPAreaRootSubtaxonomy(sctAbN, partition);
-                    } else {
+                    //if(sctAbN instanceof RootSubtaxonomy) {
+                        //taxonomy = createDisjointPAreaRootSubtaxonomy(sctAbN, partition);
+                    //} else {
                         taxonomy = createDisjointPAreaTaxonomy(sctAbN, partition);
-                    }
+                    //}
                     
                     DisjointPAreaTaxonomyGraphPanel djpaPanel = new DisjointPAreaTaxonomyGraphPanel(parentFrame, taxonomy, displayFrameListener);
                     
@@ -558,15 +557,12 @@ public class PartitionConceptDialog extends JDialog {
 
         SCTMultiRootedConceptHierarchy hierarchy = abn.getDataSource().getRegionConceptHierarchy((SCTPAreaTaxonomy) abn.getAbstractionNetwork(), pareas);
 
-        DisjointPAreaTaxonomy djpaTaxonomy = new DisjointPAreaTaxonomy(
-                    new HashSet<SCTPArea>(pareas),
-                    hierarchy,
-                    (SCTPAreaTaxonomy) abn.getAbstractionNetwork());
+        SCTDisjointPAreaTaxonomyGenerator generator = new SCTDisjointPAreaTaxonomyGenerator();
         
-        return djpaTaxonomy;
+        return generator.generateDisjointAbstractionNetwork((SCTPAreaTaxonomy)abn, new HashSet<>(pareas), hierarchy);
     }
     
-    
+    /*
     private DisjointPAreaRootSubtaxonomy createDisjointPAreaRootSubtaxonomy(SCTAbstractionNetwork abn, GenericContainerPartition partition) {
         ArrayList<SCTPArea> topLevelPAreas = null;
         
@@ -601,6 +597,7 @@ public class PartitionConceptDialog extends JDialog {
         
         return djpaTaxonomy;
     }
+    */
     
     /**
      * Print detailed Concept info based on its probability of being erroneous.

@@ -12,6 +12,8 @@ import java.util.Queue;
  *
  * @author Den
  */
+
+/*
 public class DisjointPAreaRootSubtaxonomy extends DisjointPAreaTaxonomy {
     
     private HashSet<SCTPArea> subtaxonomyPAreas;
@@ -115,3 +117,4 @@ public class DisjointPAreaRootSubtaxonomy extends DisjointPAreaTaxonomy {
         return implicitDisjointPAreas;
     }
 }
+*/

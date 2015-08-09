@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy;
 
 import SnomedShared.Concept;
@@ -19,15 +14,16 @@ import java.util.HashSet;
  */
 public class DisjointPartialArea extends DisjointGenericConceptGroup<SCTPArea, Concept, SCTConceptHierarchy, DisjointPartialArea> {
     
-    public DisjointPartialArea(Concept root, HashSet<SCTPArea> overlapsIn) {
-        super(root, overlapsIn);
+    public DisjointPartialArea(int id, 
+            Concept root, 
+            SCTConceptHierarchy conceptHierarchy, 
+            HashSet<Integer> parentIds,
+            HashSet<SCTPArea> overlapsIn) {
+        
+        super(id, root, conceptHierarchy, parentIds, overlapsIn);
     }
     
     protected Comparator<Concept> getConceptComparator() {
         return new ConceptNameComparator();
-    }
-    
-    protected SCTConceptHierarchy createGroupHierarchy(Concept root) {
-        return new SCTConceptHierarchy(root);
     }
 }

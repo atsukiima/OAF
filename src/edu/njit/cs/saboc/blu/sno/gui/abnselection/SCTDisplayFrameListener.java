@@ -2,10 +2,12 @@ package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.FrameCreationListener;
+import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.InternalConceptBrowserFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.ClusterInternalGraphFrame;
+import edu.njit.cs.saboc.blu.sno.gui.graphframe.DisjointPAreaInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
@@ -58,12 +60,19 @@ public abstract class SCTDisplayFrameListener implements FrameCreationListener {
      */
     public ClusterInternalGraphFrame addNewClusterGraphFrame(TribalAbstractionNetwork data, boolean setGraph, boolean conceptCount) {
         
-        
         ClusterInternalGraphFrame cigf = new ClusterInternalGraphFrame(mainFrame, data, true, false, this);
 
         this.displayFrame(cigf);
 
         return cigf;
+    }
+    
+    public DisjointPAreaInternalGraphFrame addNewDisjointPAreaTaxonomyGraphFrame(DisjointPAreaTaxonomy taxonomy) {
+        DisjointPAreaInternalGraphFrame frame = new DisjointPAreaInternalGraphFrame(mainFrame, taxonomy, this);
+        
+        this.displayFrame(frame);
+        
+        return frame;
     }
 
     /**

@@ -1,10 +1,9 @@
 package edu.njit.cs.saboc.blu.sno.abn.tan;
 
 import SnomedShared.Concept;
-import SnomedShared.generic.GenericConceptGroup;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.CommonOverlapSet;
-import edu.njit.cs.saboc.blu.core.abn.AbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.PartitionedAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.HashSet;
  *
  * @author Chris
  */
-public class TribalAbstractionNetwork extends AbstractionNetwork<CommonOverlapSet, ClusterSummary> 
+public class TribalAbstractionNetwork extends PartitionedAbstractionNetwork<CommonOverlapSet, ClusterSummary> 
         implements SCTAbstractionNetwork<TribalAbstractionNetwork> {
     
     protected String sctVersion;
@@ -115,7 +114,7 @@ public class TribalAbstractionNetwork extends AbstractionNetwork<CommonOverlapSe
         return disjointClusters.get(0);
     }
     
-    public GenericConceptGroup getRootGroup() {
+    public ClusterSummary getRootGroup() {
         return getRootCluster();
     }
     
