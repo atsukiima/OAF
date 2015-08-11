@@ -354,7 +354,7 @@ public class TextBrowserPanel extends JPanel {
         builder.append(String.format("<b>Total Concepts in Partial-area:</b> <i>%s</i><br>", parea.getConceptCount()));
         builder.append(String.format("<b>Total Parent PAreas:</b> <i>%s</i><br>", parea.getParentIds().size()));
 
-        HashSet<Integer> childrenPAreaIds = graph.getPAreaTaxonomy().getPAreaChildren(parea.getId());
+        HashSet<SCTPArea> childrenPAreaIds = graph.getPAreaTaxonomy().getChildGroups(parea);
 
         builder.append(String.format("<b>Total Child PAreas:</b> <i>%s</i><br>", (childrenPAreaIds == null ? 0 : childrenPAreaIds.size())));
         builder.append("<b>Partial-area Relationships: </b><br>");
@@ -402,16 +402,7 @@ public class TextBrowserPanel extends JPanel {
     }
 
     private void setPAreaChildrenTable(SCTPArea parea) {
-        ArrayList<SCTPArea> childPAreas = new ArrayList<SCTPArea>();
-
-        HashSet<Integer> childrenPAreaIds = graph.getPAreaTaxonomy().getPAreaChildren(parea.getId());
-
-        if (childrenPAreaIds != null) {
-
-            for (int pid : childrenPAreaIds) {
-                childPAreas.add(graph.getPAreaTaxonomy().getPAreas().get(pid));
-            }
-        }
+        ArrayList<SCTPArea> childPAreas = new ArrayList<>(graph.getPAreaTaxonomy().getChildGroups(parea));
 
         Collections.sort(childPAreas, new Comparator<SCTPArea>() {
             public int compare(SCTPArea a, SCTPArea b) {

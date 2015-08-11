@@ -7,6 +7,7 @@ package edu.njit.cs.saboc.blu.sno.abn.tan.local;
 import SnomedShared.Concept;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.CommonOverlapSet;
+import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
 import edu.njit.cs.saboc.blu.sno.abn.local.LocalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
@@ -15,7 +16,6 @@ import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  *
@@ -30,7 +30,7 @@ public class LocalTribalAbstractionNetwork extends TribalAbstractionNetwork impl
     public LocalTribalAbstractionNetwork(Concept SNOMEDHierarchyRoot,
             ArrayList<CommonOverlapSet> overlapSets,
             HashMap<Integer, ClusterSummary> clusters,
-            HashMap<Integer, HashSet<Integer>> clusterHierarchy,
+            GroupHierarchy<ClusterSummary> clusterHierarchy,
             String SNOMEDVersion,
             ArrayList<ClusterSummary> entryPoints,
             ArrayList<ClusterSummary> nonContributingEntryPoints,

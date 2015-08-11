@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.abn.generator;
 import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import SnomedShared.pareataxonomy.InheritedRelationship.InheritanceType;
+import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.RelationshipEquality;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
@@ -134,7 +135,10 @@ public class SCTPAreaTaxonomyGenerator extends PAreaTaxonomyGenerator<SCTPAreaTa
     }
 
     @Override
-    protected SCTPAreaTaxonomy createPAreaTaxonomy(SCTConceptHierarchy conceptHierarchy, SCTPArea rootPArea, ArrayList<SCTArea> areas, HashMap<Integer, SCTPArea> pareas, HashMap<Integer, HashSet<Integer>> pareaHierarchy) {
+    protected SCTPAreaTaxonomy createPAreaTaxonomy(SCTConceptHierarchy conceptHierarchy, SCTPArea rootPArea, 
+            ArrayList<SCTArea> areas, HashMap<Integer, SCTPArea> pareas, 
+            GroupHierarchy<SCTPArea> pareaHierarchy) {
+        
         return new SCTPAreaTaxonomy(
             sctRootConcept,
             dataSource.getSelectedVersion(),

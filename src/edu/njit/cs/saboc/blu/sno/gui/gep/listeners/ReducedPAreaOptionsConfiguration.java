@@ -1,8 +1,8 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.listeners;
 
 import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.GenericParentPAreaInfo;
-import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.ConceptGroupHierarchy;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.GroupOptionsPanelActionListener;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.ReducedSCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
@@ -40,20 +40,16 @@ public class ReducedPAreaOptionsConfiguration extends PAreaOptionsConfiguration 
     
     private SCTPAreaTaxonomy createExpandedPAreaTaxonomy(SCTPAreaTaxonomy sourceTaxonomy, ReducedSCTPArea reducedPArea) {
         
-        ConceptGroupHierarchy<SCTPArea> reducedGroupHierarchy = reducedPArea.getReducedGroupHierarchy();
+        GroupHierarchy<SCTPArea> reducedGroupHierarchy = reducedPArea.getReducedGroupHierarchy();
         
         HashSet<SCTPArea> reducedPAreas = reducedGroupHierarchy.getNodesInHierarchy();
         
         SCTConceptHierarchy conceptHierarchy = new SCTConceptHierarchy(reducedPArea.getRoot());
                 
         HashMap<Integer, SCTPArea> pareas = new HashMap<Integer, SCTPArea>();
-        
-        HashMap<Integer, HashSet<Integer>> expandedHierarchy = new HashMap<Integer, HashSet<Integer>>();
-        
+
         for (SCTPArea parea : reducedPAreas) {
             conceptHierarchy.addAllHierarchicalRelationships(parea.getHierarchy());
-
-            expandedHierarchy.put(parea.getId(), new HashSet<Integer>());
         }
         
         ArrayList<SCTArea> hierarchyAreas = new ArrayList<SCTArea>();
@@ -68,8 +64,6 @@ public class ReducedPAreaOptionsConfiguration extends PAreaOptionsConfiguration 
                 int parentPAreaId = parentPArea.getId();
                 
                 parentIds.add(parentPAreaId);
-                
-                expandedHierarchy.get(parentPAreaId).add(parea.getId());
             }
             
             SCTPArea expandedPArea = new SCTPArea(parea.getId(), (SCTConceptHierarchy)parea.getHierarchy(), parentIds, parea.getRelationships());
@@ -105,6 +99,16 @@ public class ReducedPAreaOptionsConfiguration extends PAreaOptionsConfiguration 
                 hierarchyAreas.add(newArea);
             }
         }
+        
+        GroupHierarchy<SCTPArea> expandedHierarchy = new GroupHierarchy(reducedPArea);
+        
+        pareas.values().forEach((SCTPArea parea) -> {
+            HashSet<Integer> parentIds = parea.getParentIds();
+            
+            parentIds.forEach( (Integer parentId) -> {
+               expandedHierarchy.addIsA(parea, pareas.get(parentId));
+            });
+        });
         
         return new SCTPAreaTaxonomy(
                 sourceTaxonomy.getSCTRootConcept(), 

@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.abn.tan;
 import SnomedShared.Concept;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.CommonOverlapSet;
+import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
 import edu.njit.cs.saboc.blu.core.abn.PartitionedAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
@@ -32,7 +33,7 @@ public class TribalAbstractionNetwork extends PartitionedAbstractionNetwork<Comm
     public TribalAbstractionNetwork(Concept SNOMEDHierarchyRoot,
             ArrayList<CommonOverlapSet> overlapSets,
             HashMap<Integer, ClusterSummary> clusters,
-            HashMap<Integer, HashSet<Integer>> clusterHierarchy,
+            GroupHierarchy<ClusterSummary> clusterHierarchy,
             String SNOMEDVersion,
             ArrayList<ClusterSummary> entryPoints,
             ArrayList<ClusterSummary> nonContributingEntryPoints,
@@ -98,10 +99,6 @@ public class TribalAbstractionNetwork extends PartitionedAbstractionNetwork<Comm
         return (HashMap<Integer, ClusterSummary>)groups;
     }
 
-    public HashSet<Integer> getClusterChildren(int clusterId) {
-        return groupHierarchy.get(clusterId);
-    }
-    
     public ClusterSummary getClusterFromRootConceptId(long rootConceptId) {
         return (ClusterSummary)getGroupFromRootConceptId(rootConceptId);
     }

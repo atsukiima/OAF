@@ -1,8 +1,8 @@
 package edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local;
 
 import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
 import edu.njit.cs.saboc.blu.core.abn.reduced.ReducingGroup;
-import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.ConceptGroupHierarchy;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import java.util.HashSet;
 
@@ -13,15 +13,15 @@ import java.util.HashSet;
 public class ReducedSCTPArea extends SCTPArea implements ReducingGroup<Concept, SCTPArea> {
 
     
-    private ConceptGroupHierarchy<SCTPArea> reducedPAreaHierarchy;
+    private GroupHierarchy<SCTPArea> reducedPAreaHierarchy;
     
-    public ReducedSCTPArea(SCTPArea parea, HashSet<Integer> reducedParentIds, ConceptGroupHierarchy<SCTPArea> reducedPAreaHierarchy) {
+    public ReducedSCTPArea(SCTPArea parea, HashSet<Integer> reducedParentIds, GroupHierarchy<SCTPArea> reducedPAreaHierarchy) {
         super(parea.getId(), (SCTConceptHierarchy)parea.getHierarchy(), reducedParentIds, parea.getRelationships());
         
         this.reducedPAreaHierarchy = reducedPAreaHierarchy;
     }
     
-    public ConceptGroupHierarchy<SCTPArea> getReducedGroupHierarchy() {
+    public GroupHierarchy<SCTPArea> getReducedGroupHierarchy() {
         return reducedPAreaHierarchy;
     }
     

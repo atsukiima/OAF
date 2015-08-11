@@ -106,7 +106,7 @@ public class ConceptGroupDetailsDialog<T extends AbstractionNetwork> extends JDi
             }
         }
         
-        HashSet<Integer> childrenGroupIds = sctAbN.getAbstractionNetwork().getGroupChildren(group.getId());
+        HashSet<GenericConceptGroup> childrenGroups = sctAbN.getAbstractionNetwork().getChildGroups(group);
 
         StringBuilder builder = new StringBuilder();
 
@@ -220,15 +220,11 @@ public class ConceptGroupDetailsDialog<T extends AbstractionNetwork> extends JDi
         builder.append("<html>");
         builder.append("<font size=4 face=\"Arial\">");
 
-        if (childrenGroupIds != null) {
+        if (childrenGroups != null) {
 
-            ArrayList<GenericConceptGroup> childrenGroups = new ArrayList<GenericConceptGroup>();
+            ArrayList<GenericConceptGroup> children = new ArrayList<GenericConceptGroup>(childrenGroups);
 
-            for (int child : childrenGroupIds) {
-                childrenGroups.add(groups.get(child));
-            }
-
-            Collections.sort(childrenGroups, new Comparator<GenericConceptGroup>() {
+            Collections.sort(children, new Comparator<GenericConceptGroup>() {
                 public int compare(GenericConceptGroup a, GenericConceptGroup b) {
                     return a.getRoot().getName().compareToIgnoreCase(b.getRoot().getName());
                 }
@@ -318,7 +314,7 @@ public class ConceptGroupDetailsDialog<T extends AbstractionNetwork> extends JDi
         builder.append(String.format("<b>Total Concepts in %s:</b> <i>%s</i><br>", dialogTypeStr, conceptsInGroup.size()));
         builder.append(String.format("<b>Total Primitive Concepts in %s:</b> <i>%d</i><br>", dialogTypeStr, primitiveConceptCount));
         builder.append(String.format("<b>Total Parent %ss:</b> <i>%s</i><br>", dialogTypeStr, groupParentInfo.size()));
-        builder.append(String.format("<b>Total Child %ss:</b> <i>%s</i><br>", dialogTypeStr, (childrenGroupIds == null ? 0 : childrenGroupIds.size())));
+        builder.append(String.format("<b>Total Child %ss:</b> <i>%s</i><br>", dialogTypeStr, (childrenGroups == null ? 0 : childrenGroups.size())));
 
         if(dialogType == DialogType.PartialArea) {
             builder.append("<b>Partial-area Relationships: </b><br>");

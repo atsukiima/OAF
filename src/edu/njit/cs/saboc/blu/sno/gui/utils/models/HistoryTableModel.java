@@ -51,7 +51,7 @@ public class HistoryTableModel extends AbstractTableModel {
             case 2:
                 return new Integer(parea.getParentIds().size());
             case 3:
-                HashSet<Integer> children = pareaTaxonomy.getPAreaChildren(parea.getId());
+                HashSet<SCTPArea> children = pareaTaxonomy.getChildGroups(parea);
 
                 int value = children == null ? 0 : children.size();
 

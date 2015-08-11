@@ -12,6 +12,7 @@ import SnomedShared.pareataxonomy.Area;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import SnomedShared.pareataxonomy.InheritedRelationship.InheritanceType;
 import SnomedShared.pareataxonomy.Region;
+import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
 import edu.njit.cs.saboc.blu.sno.abn.generator.InheritedRelWithHash;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
@@ -516,6 +517,7 @@ public class MiddlewareAccessorProxy {
 
             ArrayList<Area> areas = new ArrayList<Area>();
             HashMap<Integer, PAreaSummary> pareas = new HashMap<Integer, PAreaSummary>();
+            
             HashMap<Integer, HashSet<Integer>> pareaHierarchy = new HashMap<Integer, HashSet<Integer>>();
             
             final HashMap<Long, String> hierarchyRels = this.getUniqueLateralRelationshipsInHierarchy(version, hierarchyRoot);
@@ -674,9 +676,19 @@ public class MiddlewareAccessorProxy {
                 
                 convertedAreas.add(convertedArea);
             }
-
+            
+            GroupHierarchy<SCTPArea> convertedPAreaHierarchy = new GroupHierarchy<>(convertedPAreas.get(0));
+            
+            convertedPAreas.values().forEach((SCTPArea parea) -> {
+                HashSet<Integer> parentIds = parea.getParentIds();
+                
+                parentIds.forEach((Integer parentId) -> {
+                    convertedPAreaHierarchy.addIsA(parea, convertedPAreas.get(parentId));
+                });
+            });
+            
             SCTPAreaTaxonomy taxonomy = new SCTPAreaTaxonomy(hierarchyRoot, version, new SCTRemoteDataSource(version), 
-                    null, convertedPAreas.get(0), convertedAreas, convertedPAreas, pareaHierarchy, hierarchyRels);
+                    null, convertedPAreas.get(0), convertedAreas, convertedPAreas, convertedPAreaHierarchy, hierarchyRels);
 
             return taxonomy;
         } catch (Exception e) {
