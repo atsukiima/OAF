@@ -6,6 +6,7 @@ import SnomedShared.overlapping.CommonOverlapSet;
 import SnomedShared.overlapping.EntryPoint;
 import SnomedShared.overlapping.EntryPointSet;
 import SnomedShared.pareataxonomy.GroupParentInfo;
+import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.LocalCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.LocalTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
@@ -276,11 +277,21 @@ public class TANGenerator {
                 nonOverlappingPatriarchs.add(patriarchCluster);
             }
         }
+        
+        GroupHierarchy<ClusterSummary> convertedHierarchy = new GroupHierarchy<>(new HashSet<>(patriarchClusters));
+        
+        hierarchyClusters.values().forEach((ClusterSummary summary) -> {
+            HashSet<Integer> parentIds = summary.getParentIds();
+            
+            parentIds.forEach((Integer parentId) -> {
+               convertedHierarchy.addIsA(summary, hierarchyClusters.get(parentId));
+            });
+        });
                 
         return new LocalTribalAbstractionNetwork(hierarchyRoot, 
                 new ArrayList<CommonOverlapSet>(tribalBands.values()), 
                 new HashMap<Integer, ClusterSummary>(hierarchyClusters), 
-                clusterHierarchy, 
+                convertedHierarchy, 
                 snomedVersion,
                 patriarchClusters,
                 nonOverlappingPatriarchs,

@@ -1,6 +1,5 @@
 package edu.njit.cs.saboc.blu.sno.gui.utils.models;
 
-import SnomedShared.pareataxonomy.PAreaSummary;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public class PAreaTableModel extends AbstractTableModel {
             data[r][1] = new Integer(parea.getConceptCount());
             data[r][2] = new Integer(parea.getParentIds().size());
 
-            HashSet<Integer> children = pareaTaxonomy.getPAreaChildren(parea.getId());
+            HashSet<SCTPArea> children = pareaTaxonomy.getChildGroups(parea);
 
             int childCount = 0;
 

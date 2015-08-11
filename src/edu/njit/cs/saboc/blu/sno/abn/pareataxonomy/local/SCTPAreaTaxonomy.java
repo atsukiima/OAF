@@ -2,12 +2,10 @@ package edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local;
 
 import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.InheritedRelationship;
+import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.GenericPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
-import edu.njit.cs.saboc.blu.sno.abn.generator.InheritedRelWithHash;
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.RootSubtaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTPAreaRootSubtaxonomy;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
@@ -18,9 +16,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 
 /**
  *
@@ -51,7 +47,7 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
             SCTPArea rootPArea,
             ArrayList<SCTArea> areas,
             HashMap<Integer, SCTPArea> pareas,
-            HashMap<Integer, HashSet<Integer>> pareaHierarchy, 
+            GroupHierarchy<SCTPArea> pareaHierarchy, 
             HashMap<Long, String> relNames) {
 
         super(conceptHierarchy, rootPArea, areas, pareas, pareaHierarchy);
@@ -140,14 +136,6 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
     public final HashMap<Integer, SCTPArea> getPAreas() {
         return (HashMap<Integer, SCTPArea>)groups;
     }
-    
-    public final HashMap<Integer, HashSet<Integer>> getPAreaHierarchy() {
-        return groupHierarchy;
-    }
-
-    public final HashSet<Integer> getPAreaChildren(int pid) {
-        return getGroupChildren(pid);
-    }
 
     public SCTPArea getPAreaFromRootConceptId(long rootConceptId) {
         return (SCTPArea)getGroupFromRootConceptId(rootConceptId);
@@ -204,160 +192,7 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
      * @return 
      */
     public SCTPAreaTaxonomy getRootSubtaxonomy(SCTPArea subhierarchyRootPArea) {
-         ArrayList<SCTArea> hierarchyAreas = new ArrayList<SCTArea>();
-
-        if (!groups.containsKey(subhierarchyRootPArea.getId())) {
-            return null;
-        }
-
-        ArrayList<Integer> pareaIdsInSubhierarchy = new ArrayList<Integer>();
-
-        HashMap<Integer, ArrayList<Long>> pareaRels = new HashMap<Integer, ArrayList<Long>>();
-        HashMap<Integer, HashSet<Integer>> pareaSubhierarchy = new HashMap<Integer, HashSet<Integer>>();
-
-        Queue<Integer> queue = new LinkedList<Integer>();
-
-        queue.add(subhierarchyRootPArea.getId());
-        
-        HashMap<Integer, HashSet<Integer>> hierarchy = groupHierarchy;
-
-        while (!queue.isEmpty()) {
-            int pareaId = queue.remove();
-            pareaIdsInSubhierarchy.add(pareaId);
-
-            HashSet<Integer> children = groupHierarchy.get(pareaId);
-
-            pareaSubhierarchy.put(pareaId, children);
-            
-            if (children != null) {
-                for (int i : children) {
-                    if (!queue.contains(i)) {
-                        queue.add(i);
-                    }
-                }
-            }
-        }
-        
-        ArrayList<SCTPArea> pareasInSubhierarchy = new ArrayList<SCTPArea>();
-
-        for(int pareaId : pareaIdsInSubhierarchy) {
-            SCTPArea parea = (SCTPArea)groups.get(pareaId);
-
-            pareasInSubhierarchy.add(parea);
-
-            ArrayList<Long> pareaType = new ArrayList<Long>();
-            HashSet<InheritedRelationship> rels = parea.getRelationships();
-
-            for (InheritedRelationship rel : rels) {
-                pareaType.add(rel.getRelationshipTypeId());
-            }
-
-            pareaRels.put(pareaId, pareaType);
-        }
-        
-        HashMap<Integer, SCTPArea> subhierarchyPAreas = new HashMap<Integer, SCTPArea>();
-
-        for (SCTPArea parea : pareasInSubhierarchy) {
-            ArrayList<Long> allParentRels = new ArrayList<Long>();
-                        
-            HashSet<Integer> parents = parea.getParentIds();
-            HashSet<Integer> parentsInSubhierarchy = new HashSet<Integer>();
-            
-            for(int pid : parents) {
-                if(pareaIdsInSubhierarchy.contains(pid)) {
-                    parentsInSubhierarchy.add(pid);
-                }
-            }
-            
-            for (int parent : parentsInSubhierarchy) {
-                SCTPArea parentPArea = (SCTPArea)groups.get(parent);
-                ArrayList<Long> parentRels = pareaRels.get(parentPArea.getId());
-
-                if (parentRels == null) {
-                    continue;
-                }
-
-                for (long relId : parentRels) {
-                    if (!allParentRels.contains(relId)) {
-                        allParentRels.add(relId);
-                    }
-                }
-            }
-
-            ArrayList<Long> pareaLateralRels = pareaRels.get(parea.getId());
-
-
-            HashSet<InheritedRelationship> relationships = new HashSet<InheritedRelationship>();
-
-            for (long relId : pareaLateralRels) {
-                if (allParentRels.contains(relId)) {
-                    relationships.add(new InheritedRelWithHash(InheritedRelationship.InheritanceType.INHERITED,
-                            relId));
-                } else {
-                    relationships.add(new InheritedRelWithHash(InheritedRelationship.InheritanceType.INTRODUCED,
-                            relId));
-                }
-            }
-
-            boolean areaFound = false;
-
-            subhierarchyPAreas.put(parea.getId(), new SCTPArea(parea.getId(), (SCTConceptHierarchy)parea.getHierarchy(), parentsInSubhierarchy, relationships));
-
-            // Check if an area with the same relationship set exists
-            for (SCTArea area : hierarchyAreas) {
-                // If it does add this parea to it
-                if (area.getRelationships().equals(parea.getRelsWithoutInheritanceInfo())) {
-                    area.addPArea(parea);
-                    areaFound = true;
-                    break;
-                }
-            }
-
-            // Otherwise create a new area and add this parea to it
-            if (!areaFound) {
-                SCTArea newArea = new SCTArea(hierarchyAreas.size(), parea.getRelsWithoutInheritanceInfo());
-                newArea.addPArea(parea);
-                hierarchyAreas.add(newArea);
-            }
-        }
-
-        
-
-        for (SCTArea a : hierarchyAreas) {
-            for (SCTRegion region : a.getRegions()) {
-                ArrayList<SCTPArea> summaries = region.getPAreasInRegion();
-
-                Collections.sort(summaries, new Comparator<SCTPArea>() {
-
-                    public int compare(SCTPArea a, SCTPArea b) {
-                        Integer aCount = a.getConceptCount();
-                        Integer bCount = b.getConceptCount();
-                        
-                        return aCount.compareTo(bCount);
-                    }
-                });
-
-            }
-        }
-        
-        SCTPAreaTaxonomy topLevelTaxonomy;
-
-        if(this instanceof RootSubtaxonomy) {
-            topLevelTaxonomy = ((RootSubtaxonomy)this).getTopLevelTaxonomy();
-        } else {
-            topLevelTaxonomy = this;
-        }
-        
-        return new SCTPAreaRootSubtaxonomy(sctRootConcept,
-            version,
-            dataSource,
-            null,
-            rootPArea,
-            hierarchyAreas,
-            subhierarchyPAreas,
-            pareaSubhierarchy, 
-            this.getLateralRelsInHierarchy(),
-            topLevelTaxonomy);
+        return null;
     }
     
     /**
@@ -400,12 +235,12 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
             
             pareaSubhierarchy.put(pid, subhierarchyChildren);
 
-            HashSet<Integer> allChildren = groupHierarchy.get(pid);
+            HashSet<SCTPArea> allChildren = groupHierarchy.getChildren(pareasInSubset.get(pid));
 
             if (allChildren != null) {
-                for (Integer cid : allChildren) {
-                    if (pareasInSubset.containsKey(cid)) {
-                        subhierarchyChildren.add(cid);
+                for (SCTPArea child : allChildren) {
+                    if (pareasInSubset.containsKey(child.getId())) {
+                        subhierarchyChildren.add(child.getId());
                     }
                 }
             }
@@ -427,8 +262,18 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
             }
         }
         
+        GroupHierarchy<SCTPArea> convertedHierarchy = new GroupHierarchy<>(rootPArea);
+        
+        pareasInSubset.values().forEach((SCTPArea parea) -> {
+            HashSet<Integer> parentIds = parea.getParentIds();
+            
+            parentIds.forEach((Integer parentId) -> {
+               convertedHierarchy.addIsA(parea, pareasInSubset.get(parentId));
+            });
+        });
+        
         SCTPAreaTaxonomy hd = new SCTPAreaTaxonomy(sctRootConcept, version, dataSource, null, rootPArea, subset, pareasInSubset,
-                pareaSubhierarchy, this.getLateralRelsInHierarchy());
+                convertedHierarchy, this.getLateralRelsInHierarchy());
 
         return hd;
     }
@@ -522,12 +367,12 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
             
             pareaSubhierarchy.put(pid, subhierarchyChildren);
 
-            HashSet<Integer> allChildren = groupHierarchy.get(pid);
+            HashSet<SCTPArea> allChildren = groupHierarchy.getChildren(pareasInSubset.get(pid));
 
             if (allChildren != null) {
-                for (Integer cid : allChildren) {
-                    if (pareasInSubset.containsKey(cid)) {
-                        subhierarchyChildren.add(cid);
+                for (SCTPArea child : allChildren) {
+                    if (pareasInSubset.containsKey(child.getId())) {
+                        subhierarchyChildren.add(child.getId());
                     }
                 }
             }
@@ -545,9 +390,19 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
                 });
             }
         }
+        
+        GroupHierarchy<SCTPArea> convertedHierarchy = new GroupHierarchy<>(rootPArea);
+
+        pareasInSubset.values().forEach((SCTPArea parea) -> {
+            HashSet<Integer> parentIds = parea.getParentIds();
+
+            parentIds.forEach((Integer parentId) -> {
+                convertedHierarchy.addIsA(parea, pareasInSubset.get(parentId));
+            });
+        });
 
         SCTPAreaTaxonomy hd = new SCTPAreaTaxonomy(sctRootConcept, version, dataSource, null, rootPArea, subset, pareasInSubset,
-                pareaSubhierarchy, this.getLateralRelsInHierarchy());
+                convertedHierarchy, this.getLateralRelsInHierarchy());
 
         return hd;
     }

@@ -1,6 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy;
 
 import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
 import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointAbNGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
@@ -36,7 +37,9 @@ public class SCTDisjointPAreaTaxonomyGenerator extends DisjointAbNGenerator<SCTP
     }
 
     @Override
-    protected DisjointPAreaTaxonomy createDisjointAbN(SCTPAreaTaxonomy abstractionNetwork, HashMap<Integer, DisjointPartialArea> disjointGroups, HashMap<Integer, HashSet<Integer>> groupHierarchy, int levels, HashSet<SCTPArea> allGroups, HashSet<SCTPArea> overlappingGroups) {
+    protected DisjointPAreaTaxonomy createDisjointAbN(SCTPAreaTaxonomy abstractionNetwork, HashMap<Integer, DisjointPartialArea> disjointGroups, 
+            GroupHierarchy<DisjointPartialArea> groupHierarchy, int levels, HashSet<SCTPArea> allGroups, HashSet<SCTPArea> overlappingGroups) {
+        
         return new DisjointPAreaTaxonomy(abstractionNetwork, disjointGroups, groupHierarchy, levels, allGroups, overlappingGroups);
     }
 }
