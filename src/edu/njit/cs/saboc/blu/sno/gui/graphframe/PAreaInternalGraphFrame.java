@@ -4,6 +4,7 @@ import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.reduced.ReducingGroup;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.core.gui.hierarchypainter.HierarchyPainterPanel;
@@ -18,6 +19,7 @@ import edu.njit.cs.saboc.blu.sno.gui.dialogs.LevelReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.PAreaOptionsConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.PAreaTaxonomyGEPListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.ReducedPAreaOptionsConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTAggregateTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.GraphOptionsButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.RelationshipSelectionButton;
@@ -164,7 +166,11 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         
         GroupEntryLabelCreator labelCreator;
         
+        AbNPainter abnPainter;
+        
         if (data.isReduced()) {
+            abnPainter = new SCTAggregateTaxonomyPainter();
+            
             labelCreator = new GroupEntryLabelCreator<SCTPArea>() {
                 public String getRootNameStr(SCTPArea parea) {
                     int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
@@ -187,6 +193,8 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
                 }
             };
         } else {
+            abnPainter = new SCTTaxonomyPainter();
+            
             labelCreator = new GroupEntryLabelCreator<SCTPArea>() {
                 public String getRootNameStr(SCTPArea parea) {
                     int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
@@ -210,7 +218,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
             optionsConfig = new PAreaOptionsConfiguration(parentFrame, this, data, displayListener);
         }
 
-        initializeGraphTabs(graph, new SCTTaxonomyPainter(), 
+        initializeGraphTabs(graph, abnPainter, 
                 new PAreaTaxonomyGEPListener(parentFrame, displayListener), 
                 optionsConfig);
         
