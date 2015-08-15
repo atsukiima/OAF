@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.listeners;
 
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.BLUGraphConfiguration;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractGroupPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.ClusterInternalGraphFrame;
@@ -27,7 +27,17 @@ public class ClusterOptionsConfiguration extends BLUGraphConfiguration {
     }
 
     @Override
-    public AbstractGroupPanel createGroupDetailsPanel() {
+    public AbstractNodePanel createGroupDetailsPanel() {
+        return null;
+    }
+    
+    @Override
+    public boolean hasContainerDetailsPanel() {
+        return false;
+    }
+
+    @Override
+    public AbstractNodePanel createContainerDetailsPanel() {
         return null;
     }
 }
