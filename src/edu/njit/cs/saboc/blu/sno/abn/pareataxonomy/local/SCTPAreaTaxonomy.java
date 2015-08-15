@@ -191,10 +191,13 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
      * @param subhierarchyRootPArea
      * @return 
      */
-    public SCTPAreaTaxonomy getRootSubtaxonomy(SCTPArea subhierarchyRootPArea) {
-        return null;
+    public SCTPAreaTaxonomy getRootSubtaxonomy(SCTPArea root) {
+        SCTPAreaTaxonomyGenerator taxonomyGenerator = new SCTPAreaTaxonomyGenerator(
+                this.getSCTRootConcept(), this.getDataSource(), (SCTConceptHierarchy) this.getConceptHierarchy(), new InferredRelationshipsRetriever());
+
+        return super.createRootSubtaxonomy(root, taxonomyGenerator);
     }
-    
+
     /**
      * Creates a relationship subtaxonomy using the relatationships with the given
      * relationship ids
@@ -413,4 +416,5 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
 
         return super.createReducedTaxonomy(taxonomyGenerator, new ReducedSCTPAreaTaxonomyGenerator(), minPAreaSize, maxPAreaSize);
     }
+
 }

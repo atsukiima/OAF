@@ -29,13 +29,7 @@ public class ReducedPAreaOptionsConfiguration extends PAreaOptionsConfiguration 
         
         super(parentFrame, graphFrame, taxonomy, displayListener);
         
-        super.enableButtonWithAction(5, new GroupOptionsPanelActionListener<ReducedSCTPArea>() {
-            public void actionPerformedOn(ReducedSCTPArea parea) {
-                SCTPAreaTaxonomy expandedTaxonomy = createExpandedPAreaTaxonomy(taxonomy, parea);
-                
-                displayListener.addNewPAreaGraphFrame(expandedTaxonomy, true, false);
-            }
-        });
+
     }
     
     private SCTPAreaTaxonomy createExpandedPAreaTaxonomy(SCTPAreaTaxonomy sourceTaxonomy, ReducedSCTPArea reducedPArea) {
