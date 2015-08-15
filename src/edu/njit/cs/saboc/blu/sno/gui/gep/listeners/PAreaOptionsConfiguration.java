@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.listeners;
 
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.BLUGraphConfiguration;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractGroupPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
@@ -28,7 +28,17 @@ public class PAreaOptionsConfiguration extends BLUGraphConfiguration {
     }
 
     @Override
-    public AbstractGroupPanel createGroupDetailsPanel() {
+    public AbstractNodePanel createGroupDetailsPanel() {
+        return null;
+    }
+    
+    @Override
+    public boolean hasContainerDetailsPanel() {
+        return false;
+    }
+
+    @Override
+    public AbstractNodePanel createContainerDetailsPanel() {
         return null;
     }
 }
