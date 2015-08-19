@@ -17,7 +17,7 @@ import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
  */
 public class SCTConceptHierarchyViewPanel extends ConceptGroupHierarchicalViewPanel<Concept, SCTConceptHierarchy> {
         
-    public SCTConceptHierarchyViewPanel(GenericConceptGroup group, 
+    public SCTConceptHierarchyViewPanel(
             final SCTAbstractionNetwork abn, 
             final String groupType, 
             final HierarchyPanelClickListener<Concept> conceptSelectListener) {

@@ -73,7 +73,7 @@ public class PAreaLevelTableModel extends AbstractTableModel {
                 for(SCTPArea parea : areaPAreas) {
                     ReducedSCTPArea reducedPArea = (ReducedSCTPArea)parea;
                     
-                    if(reducedPArea.getReducedGroups().size() - 1 > 0) {
+                    if(reducedPArea.getAggregatedGroups().size() - 1 > 0) {
                          level.aggregatePAreas++;
                     }
                 }

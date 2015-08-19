@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
-import edu.njit.cs.saboc.blu.core.abn.reduced.ReducingGroup;
+import edu.njit.cs.saboc.blu.core.abn.reduced.AggregateableConceptGroup;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import java.util.HashSet;
 
@@ -10,7 +10,7 @@ import java.util.HashSet;
  *
  * @author Chris O
  */
-public class ReducedSCTPArea extends SCTPArea implements ReducingGroup<Concept, SCTPArea> {
+public class ReducedSCTPArea extends SCTPArea implements AggregateableConceptGroup<Concept, SCTPArea> {
 
     
     private GroupHierarchy<SCTPArea> reducedPAreaHierarchy;
@@ -21,11 +21,11 @@ public class ReducedSCTPArea extends SCTPArea implements ReducingGroup<Concept, 
         this.reducedPAreaHierarchy = reducedPAreaHierarchy;
     }
     
-    public GroupHierarchy<SCTPArea> getReducedGroupHierarchy() {
+    public GroupHierarchy<SCTPArea> getAggregatedGroupHierarchy() {
         return reducedPAreaHierarchy;
     }
     
-    public HashSet<SCTPArea> getReducedGroups() {
+    public HashSet<SCTPArea> getAggregatedGroups() {
         HashSet<SCTPArea> reducedPAreas = new HashSet<SCTPArea>(reducedPAreaHierarchy.getNodesInHierarchy());
         reducedPAreas.removeAll(reducedPAreaHierarchy.getRoots());
         

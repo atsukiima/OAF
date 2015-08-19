@@ -3,10 +3,12 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels;
 import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.PAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
@@ -17,7 +19,17 @@ import java.util.Comparator;
  *
  * @author Chris O
  */
-public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<Concept, SCTPArea, SCTArea, DisjointPartialArea, InheritedRelationship> {
+public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
+        Concept, 
+        SCTPArea, 
+        SCTArea, 
+        SCTPAreaTaxonomy, 
+        DisjointPartialArea, 
+        InheritedRelationship,
+        SCTConceptHierarchy,
+        DisjointPAreaTaxonomy> {
+
+
 
     private final SCTPAreaTaxonomy taxonomy;
     
@@ -99,5 +111,10 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<Co
         Collections.sort(pareaConcepts, new ConceptNameComparator());
         
         return pareaConcepts;
+    }
+    
+        @Override
+    public DisjointPAreaTaxonomy createDisjointAbN(SCTArea container) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

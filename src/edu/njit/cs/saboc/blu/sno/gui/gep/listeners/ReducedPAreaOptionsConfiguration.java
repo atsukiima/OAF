@@ -33,7 +33,7 @@ public class ReducedPAreaOptionsConfiguration extends PAreaOptionsConfiguration 
     
     private SCTPAreaTaxonomy createExpandedPAreaTaxonomy(SCTPAreaTaxonomy sourceTaxonomy, ReducedSCTPArea reducedPArea) {
         
-        GroupHierarchy<SCTPArea> reducedGroupHierarchy = reducedPArea.getReducedGroupHierarchy();
+        GroupHierarchy<SCTPArea> reducedGroupHierarchy = reducedPArea.getAggregatedGroupHierarchy();
         
         HashSet<SCTPArea> reducedPAreas = reducedGroupHierarchy.getNodesInHierarchy();
         

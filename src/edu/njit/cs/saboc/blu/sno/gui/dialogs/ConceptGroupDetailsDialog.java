@@ -364,7 +364,7 @@ public class ConceptGroupDetailsDialog<T extends AbstractionNetwork> extends JDi
             groupType = "Cluster";
         }
         
-        SCTConceptHierarchyViewPanel viewPanel = new SCTConceptHierarchyViewPanel(group,
+        SCTConceptHierarchyViewPanel viewPanel = new SCTConceptHierarchyViewPanel(
                 sctAbN,
                 groupType,
                 new HierarchyPanelClickListener<Concept>() {
