@@ -185,7 +185,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
                 public String getCountStr(SCTPArea parea) {
                     ReducingGroup reduced = (ReducingGroup)parea;
                     
-                    if(reduced.getReducedGroups().size() - 1 == 0) {
+                    if(reduced.getReducedGroups().isEmpty()) {
                         return super.getCountStr(parea);
                     }
                     

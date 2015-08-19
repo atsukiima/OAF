@@ -41,4 +41,5 @@ public class PAreaOptionsConfiguration extends BLUGraphConfiguration {
     public AbstractNodePanel createContainerDetailsPanel() {
         return null;
     }
+    
 }

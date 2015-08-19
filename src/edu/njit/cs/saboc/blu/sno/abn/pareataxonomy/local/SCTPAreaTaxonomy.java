@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local;
 import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.AggregatePAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.GenericPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
@@ -410,11 +411,18 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
         return hd;
     }
     
-    public SCTPAreaTaxonomy getReduced(int minPAreaSize, int maxPAreaSize) {
+    public SCTPAreaTaxonomy getReduced(int min, int max) {
         SCTPAreaTaxonomyGenerator taxonomyGenerator = new SCTPAreaTaxonomyGenerator(
             this.getSCTRootConcept(), this.getDataSource(), (SCTConceptHierarchy)this.getConceptHierarchy(), new InferredRelationshipsRetriever());
+        
+        AggregatePAreaTaxonomyGenerator<SCTPAreaTaxonomy, SCTPArea, 
+                SCTArea, SCTRegion, Concept, 
+                InheritedRelationship, SCTConceptHierarchy, ReducedSCTPArea> aggregateGenerator = new AggregatePAreaTaxonomyGenerator();
+        
+        SCTPAreaTaxonomy aggregateTaxonomy = aggregateGenerator.createAggregatePAreaTaxonomy(this, 
+                taxonomyGenerator, new ReducedSCTPAreaTaxonomyGenerator(), min, max);
 
-        return super.createReducedTaxonomy(taxonomyGenerator, new ReducedSCTPAreaTaxonomyGenerator(), minPAreaSize, maxPAreaSize);
+        return aggregateTaxonomy;
     }
 
 }

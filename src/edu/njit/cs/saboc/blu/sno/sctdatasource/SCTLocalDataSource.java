@@ -7,7 +7,7 @@ import SnomedShared.SearchResult;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.pareataxonomy.ConceptPAreaInfo;
 import SnomedShared.pareataxonomy.GroupParentInfo;
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.GenericParentPAreaInfo;
+import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
@@ -478,12 +478,12 @@ public class SCTLocalDataSource implements SCTDataSource {
 
     public ArrayList<GroupParentInfo> getPAreaParentInfo(SCTPAreaTaxonomy taxonomy, SCTPArea parea) {
 
-        HashSet<GenericParentPAreaInfo<Concept, SCTPArea>> parentInfo = parea.getParentPAreaInfo();
+        HashSet<GenericParentGroupInfo<Concept, SCTPArea>> parentInfo = parea.getParentPAreaInfo();
                 
         ArrayList<GroupParentInfo> result = new ArrayList<GroupParentInfo>();
         
-        for(GenericParentPAreaInfo<Concept, SCTPArea> parent : parentInfo) {
-            result.add(new GroupParentInfo(parent.getParentConcept(), parent.getParentPArea().getRoot().getId()));
+        for(GenericParentGroupInfo<Concept, SCTPArea> parent : parentInfo) {
+            result.add(new GroupParentInfo(parent.getParentConcept(), parent.getParentGroup().getRoot().getId()));
         }
 
         Collections.sort(result, new Comparator<GroupParentInfo>() {

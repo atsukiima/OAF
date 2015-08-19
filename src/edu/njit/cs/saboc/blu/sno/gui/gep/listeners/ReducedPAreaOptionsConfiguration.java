@@ -1,9 +1,8 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.listeners;
 
 import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
 import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.GenericParentPAreaInfo;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.GroupOptionsPanelActionListener;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.ReducedSCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
@@ -62,13 +61,13 @@ public class ReducedPAreaOptionsConfiguration extends PAreaOptionsConfiguration 
             
             SCTPArea expandedPArea = new SCTPArea(parea.getId(), (SCTConceptHierarchy)parea.getHierarchy(), parentIds, parea.getRelationships());
             
-            HashSet<GenericParentPAreaInfo<Concept, SCTPArea>> pareaParentDetails = parea.getParentPAreaInfo();
+            HashSet<GenericParentGroupInfo<Concept, SCTPArea>> pareaParentDetails = parea.getParentPAreaInfo();
             
-            HashSet<GenericParentPAreaInfo<Concept, SCTPArea>> expandedParentDetails = 
-                    new HashSet<GenericParentPAreaInfo<Concept, SCTPArea>>();
+            HashSet<GenericParentGroupInfo<Concept, SCTPArea>> expandedParentDetails = 
+                    new HashSet<GenericParentGroupInfo<Concept, SCTPArea>>();
             
-            for(GenericParentPAreaInfo<Concept, SCTPArea> parentDetails : pareaParentDetails) {
-                if(parents.contains(parentDetails.getParentPArea())) {
+            for(GenericParentGroupInfo<Concept, SCTPArea> parentDetails : pareaParentDetails) {
+                if(parents.contains(parentDetails.getParentGroup())) {
                     expandedParentDetails.add(parentDetails);
                 }
             }

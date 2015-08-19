@@ -94,7 +94,7 @@ public class ExportAbN {
                         parea.getRoot().getId(), 
                         parea.getRoot().getName(),
                         reducedPArea.getAllGroupsConcepts().size(),
-                        reducedPArea.getReducedGroups().size() - 1));
+                        reducedPArea.getReducedGroups().size()));
             }
 
             writer.close();

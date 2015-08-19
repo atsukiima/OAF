@@ -5,8 +5,7 @@ import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.GroupParentInfo;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import SnomedShared.pareataxonomy.PAreaSummary;
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.GenericParentPAreaInfo;
-import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.SingleRootedHierarchy;
+import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
@@ -44,13 +43,13 @@ public class RemoteSCTPArea extends SCTPArea {
         this.sourceTaxonomy = taxonomy;
     }
     
-    public HashSet<GenericParentPAreaInfo<Concept, SCTPArea>> getParentPAreaInfo() {
+    public HashSet<GenericParentGroupInfo<Concept, SCTPArea>> getParentPAreaInfo() {
         ArrayList<GroupParentInfo> parentGroups = dataSource.getPAreaParentInfo(sourceTaxonomy, this);
         
-        HashSet<GenericParentPAreaInfo<Concept, SCTPArea>> parentInfo = new HashSet<GenericParentPAreaInfo<Concept, SCTPArea>>();
+        HashSet<GenericParentGroupInfo<Concept, SCTPArea>> parentInfo = new HashSet<GenericParentGroupInfo<Concept, SCTPArea>>();
         
         for(GroupParentInfo parent : parentGroups) {
-            parentInfo.add(new GenericParentPAreaInfo<Concept, SCTPArea>(parent.getParentConcept(), 
+            parentInfo.add(new GenericParentGroupInfo<Concept, SCTPArea>(parent.getParentConcept(), 
                     sourceTaxonomy.getPAreaFromRootConceptId(parent.getParentPAreaRootId())));
         }
         

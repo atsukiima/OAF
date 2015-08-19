@@ -26,7 +26,10 @@ public class ReducedSCTPArea extends SCTPArea implements ReducingGroup<Concept, 
     }
     
     public HashSet<SCTPArea> getReducedGroups() {
-        return new HashSet<SCTPArea>(reducedPAreaHierarchy.getNodesInHierarchy());
+        HashSet<SCTPArea> reducedPAreas = new HashSet<SCTPArea>(reducedPAreaHierarchy.getNodesInHierarchy());
+        reducedPAreas.removeAll(reducedPAreaHierarchy.getRoots());
+        
+        return reducedPAreas;
     }
     
     public HashSet<Concept> getAllGroupsConcepts() {
