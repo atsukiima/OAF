@@ -14,6 +14,7 @@ import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 
 /**
  *
@@ -28,7 +29,6 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
         InheritedRelationship,
         SCTConceptHierarchy,
         DisjointPAreaTaxonomy> {
-
 
 
     private final SCTPAreaTaxonomy taxonomy;
@@ -114,7 +114,33 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
     }
     
         @Override
-    public DisjointPAreaTaxonomy createDisjointAbN(SCTArea container) {
+    public DisjointPAreaTaxonomy createDisjointAbN(SCTArea area) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
+    @Override
+    public HashSet<SCTPArea> getContainerGroupSet(SCTArea area) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public HashSet<Concept> getGroupConceptSet(SCTPArea parea) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public HashSet<Concept> getContainerOverlappingConcepts(SCTArea area) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int getContainerLevel(SCTArea area) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public String getGroupsContainerName(SCTPArea group) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
