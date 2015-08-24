@@ -14,7 +14,6 @@ import edu.njit.cs.saboc.blu.sno.graph.layout.NoRegionsLayout;
 import edu.njit.cs.saboc.blu.sno.graph.layout.RegionsLayout;
 import edu.njit.cs.saboc.blu.sno.graph.layout.SCTGraphLayoutFactory;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.dialogs.PartitionConceptDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -75,19 +74,6 @@ public class PAreaBluGraph extends BluGraph {
         JMenuItem menuItem2 = new JMenuItem("Select PAreas to Show / Hide");
         menuItem2.addActionListener(new ShowHideGroupEntryListener(this));
 
-        JMenuItem menuItem3 = new JMenuItem("Show Concepts in Region");
-        menuItem3.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent ae) {
-                Region region = (Region)getCurrentPartitionEntry().getPartition();
-
-                partitionMenu.setVisible(false);
-
-                new PartitionConceptDialog(parentFrame, region, hierarchyData,
-                        getCurrentPartitionEntry().getPartitionTreatedAsContainer(), displayListener);
-            }
-        });
-
         JMenuItem menuItem5 = new JMenuItem("Resize Region");
 
         menuItem5.addActionListener(new ActionListener() {
@@ -99,8 +85,6 @@ public class PAreaBluGraph extends BluGraph {
         });
 
         partitionMenu.add(menuItem1);
-        partitionMenu.add(new JPopupMenu.Separator());
-        partitionMenu.add(menuItem3);
         partitionMenu.add(new JPopupMenu.Separator());
         partitionMenu.add(menuItem2);
         partitionMenu.add(menuItem5);

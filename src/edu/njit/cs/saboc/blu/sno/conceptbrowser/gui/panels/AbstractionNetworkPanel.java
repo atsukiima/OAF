@@ -9,7 +9,6 @@ import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.FocusConcept;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.SnomedConceptBrowser;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
-import edu.njit.cs.saboc.blu.sno.gui.dialogs.ConceptGroupDetailsDialog;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
@@ -464,11 +463,13 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             }
             
             private void displayGroupSummary() {
+                /*
                 ConceptGroupDetailsDialog dialog = new ConceptGroupDetailsDialog(
                         pareaTaxonomy.getPAreaFromRootConceptId(details.getPAreaRoot().getId()), 
                         pareaTaxonomy,
                         ConceptGroupDetailsDialog.DialogType.PartialArea,
                         mainPanel.getDisplayFrameListener());
+                        */
             }
 
             private void displayAN() {
@@ -639,11 +640,13 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             }
             
             private void displayGroupSummary() {
+                /*
                 ConceptGroupDetailsDialog dialog = new ConceptGroupDetailsDialog(
                         tan.getClusterFromRootConceptId(cluster.getRoot().getId()), 
                         tan,
                         ConceptGroupDetailsDialog.DialogType.Cluster,
                         mainPanel.getDisplayFrameListener());
+                        */
             }
 
             private void displayAN() {

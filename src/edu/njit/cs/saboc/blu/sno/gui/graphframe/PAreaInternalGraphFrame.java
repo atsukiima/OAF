@@ -14,10 +14,7 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.dialogs.AreaReportDialog;
-import edu.njit.cs.saboc.blu.sno.gui.dialogs.LevelReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.PAreaOptionsConfiguration;
-import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.PAreaTaxonomyGEPListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.ReducedPAreaOptionsConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTAggregateTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTTaxonomyPainter;
@@ -64,7 +61,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         JButton areaReportBtn = new JButton("Area Report");
         areaReportBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                AreaReportDialog dialog = new AreaReportDialog((PAreaBluGraph)graph);
+                //AreaReportDialog dialog = new AreaReportDialog((PAreaBluGraph)graph);
             }
         });
         
@@ -73,7 +70,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         JButton levelReportBtn = new JButton("Level Report");
         levelReportBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                LevelReportDialog dialog = new LevelReportDialog(graph);
+                //LevelReportDialog dialog = new LevelReportDialog(graph);
             }
         });
         
@@ -218,9 +215,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
             optionsConfig = new PAreaOptionsConfiguration(parentFrame, this, data, displayListener);
         }
 
-        initializeGraphTabs(graph, abnPainter, 
-                new PAreaTaxonomyGEPListener(parentFrame, displayListener), 
-                optionsConfig);
+        initializeGraphTabs(graph, abnPainter, optionsConfig);
         
         tbp = null;
 

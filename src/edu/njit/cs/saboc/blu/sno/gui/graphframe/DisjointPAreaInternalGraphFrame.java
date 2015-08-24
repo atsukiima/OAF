@@ -54,9 +54,7 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
         BluGraph graph = new DisjointPAreaBluGraph(parentFrame, data, displayListener, labelCreator);
         
-        initializeGraphTabs(graph, new DisjointAbNPainter(), 
-                new DisjointPAreaTaxonomyGEPListener(parentFrame, displayListener), 
-                null);
+        initializeGraphTabs(graph, new DisjointAbNPainter(), null);
         
         tabbedPane.validate();
         tabbedPane.repaint();

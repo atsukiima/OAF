@@ -12,9 +12,7 @@ import edu.njit.cs.saboc.blu.sno.abn.export.ExportAbN;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.graph.ClusterBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.dialogs.LevelReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.ClusterOptionsConfiguration;
-import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.TribalGEPListener;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.TANInternalSearchButton;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.utils.UtilityMethods;
@@ -53,7 +51,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         JButton levelReportBtn = new JButton("Level Report");
         levelReportBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                new LevelReportDialog(graph);
+                //new LevelReportDialog(graph);
             }
         });
         
@@ -138,9 +136,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         
         searchButton.setGraph(graph);
     
-        initializeGraphTabs(graph, new AbNPainter(), 
-                new TribalGEPListener(parentFrame, displayListener), 
-                new ClusterOptionsConfiguration(parentFrame, this, data, displayListener));
+        initializeGraphTabs(graph, new AbNPainter(), new ClusterOptionsConfiguration(parentFrame, this, data, displayListener));
         
         updateHierarchyInfoLabel(data);
     }
