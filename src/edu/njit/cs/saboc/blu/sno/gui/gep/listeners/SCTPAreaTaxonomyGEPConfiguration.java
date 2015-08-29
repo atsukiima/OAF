@@ -5,6 +5,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.area.SCTAreaPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea.SCTPAreaPanel;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
 import javax.swing.JFrame;
@@ -13,7 +14,7 @@ import javax.swing.JFrame;
  *
  * @author Chris
  */
-public class PAreaOptionsConfiguration extends BLUGraphConfiguration {
+public class SCTPAreaTaxonomyGEPConfiguration extends BLUGraphConfiguration {
     
     private final SCTPAreaTaxonomy taxonomy;
     
@@ -21,7 +22,7 @@ public class PAreaOptionsConfiguration extends BLUGraphConfiguration {
     
     private final SCTPAreaTaxonomyConfiguration uiConfiguration;
     
-    public PAreaOptionsConfiguration(
+    public SCTPAreaTaxonomyGEPConfiguration(
             final JFrame parentFrame, 
             final PAreaInternalGraphFrame graphFrame,
             final SCTPAreaTaxonomy taxonomy, 
@@ -30,8 +31,11 @@ public class PAreaOptionsConfiguration extends BLUGraphConfiguration {
         this.taxonomy = taxonomy;
         this.displayListener = displayListener;
         
-        this.uiConfiguration = new SCTPAreaTaxonomyConfiguration(taxonomy, displayListener);
-        
+        this.uiConfiguration = new SCTPAreaTaxonomyConfiguration(taxonomy, displayListener, this);
+    }
+    
+    public SCTPAreaTaxonomyConfiguration getConfiguration() {
+        return uiConfiguration;
     }
     
     @Override
@@ -46,12 +50,12 @@ public class PAreaOptionsConfiguration extends BLUGraphConfiguration {
     
     @Override
     public boolean hasContainerDetailsPanel() {
-        return false;
+        return true;
     }
 
     @Override
     public AbstractNodePanel createContainerDetailsPanel() {
-        return null;
+        return new SCTAreaPanel(uiConfiguration);
     }
     
 }

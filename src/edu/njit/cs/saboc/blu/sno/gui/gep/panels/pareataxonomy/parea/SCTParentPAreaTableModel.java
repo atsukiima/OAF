@@ -5,6 +5,7 @@ import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.BLUAbstractParentGroupTableModel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 
 /**
  *
@@ -12,14 +13,18 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
  */
 public class SCTParentPAreaTableModel extends BLUAbstractParentGroupTableModel<Concept, SCTPArea, GenericParentGroupInfo<Concept, SCTPArea>> {
 
-    public SCTParentPAreaTableModel () {
+    private final SCTPAreaTaxonomyConfiguration config;
+    
+    public SCTParentPAreaTableModel (SCTPAreaTaxonomyConfiguration config) {
         super(new String[] {
             "Parent Concept", 
-            "Parent ConceptID", 
+            "Parent Concept ID", 
             "Parent Partial-area", 
             "# Concepts in Parent Partial-area", 
             "Area"
         });
+        
+        this.config = config;
     }
 
     @Override
@@ -30,7 +35,7 @@ public class SCTParentPAreaTableModel extends BLUAbstractParentGroupTableModel<C
             item.getParentConcept().getId(),
             item.getParentGroup().getRoot().getName(),
             item.getParentGroup().getConceptCount(),
-            "---- RELATIONSHIPS ----"
+            config.getGroupsContainerName(item.getParentGroup())
         };
     }
 }

@@ -163,8 +163,7 @@ public class RelationshipSelectionButton extends PopupToggleButton {
                 }
 
                 igf.replaceInternalFrameDataWith(hierarchyTaxonomy,
-                        igf.getGraph().getIsAreaGraph(),
-                        igf.getGraph().showingConceptCountLabels(), null);
+                        igf.getGraph().getIsAreaGraph());
             }
         });
 

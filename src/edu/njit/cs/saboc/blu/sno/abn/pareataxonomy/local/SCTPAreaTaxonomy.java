@@ -25,6 +25,7 @@ import java.util.Map;
  */
 public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCTPArea, 
         SCTArea, SCTRegion, Concept, InheritedRelationship, SCTConceptHierarchy> 
+
     implements SCTAbstractionNetwork<SCTPAreaTaxonomy> {
 
     protected SCTDataSource dataSource;

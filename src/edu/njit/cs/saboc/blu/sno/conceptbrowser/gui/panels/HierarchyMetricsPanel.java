@@ -395,7 +395,7 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
+                mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true);
             }
         });
     }

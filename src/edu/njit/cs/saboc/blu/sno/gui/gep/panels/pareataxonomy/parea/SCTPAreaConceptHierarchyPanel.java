@@ -12,9 +12,9 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
  *
  * @author Chris O
  */
-public class SCTPAreaClassHierarchyPanel extends PAreaConceptHierarchyPanel<Concept, SCTPArea, SCTConceptHierarchy> {
+public class SCTPAreaConceptHierarchyPanel extends PAreaConceptHierarchyPanel<Concept, SCTPArea, SCTConceptHierarchy> {
 
-    public SCTPAreaClassHierarchyPanel(SCTPAreaTaxonomyConfiguration config) {
+    public SCTPAreaConceptHierarchyPanel(SCTPAreaTaxonomyConfiguration config) {
         
         super(new SCTConceptHierarchyViewPanel(
                 config.getPAreaTaxonomy(),

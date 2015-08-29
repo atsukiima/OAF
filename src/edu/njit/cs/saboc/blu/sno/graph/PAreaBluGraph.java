@@ -1,10 +1,8 @@
 package edu.njit.cs.saboc.blu.sno.graph;
 
 import SnomedShared.pareataxonomy.InheritedRelationship;
-import SnomedShared.pareataxonomy.Region;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.ShowHideGroupEntryListener;
-import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.ContainerResize;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
@@ -14,6 +12,8 @@ import edu.njit.cs.saboc.blu.sno.graph.layout.NoRegionsLayout;
 import edu.njit.cs.saboc.blu.sno.graph.layout.RegionsLayout;
 import edu.njit.cs.saboc.blu.sno.graph.layout.SCTGraphLayoutFactory;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
+import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.SCTPAreaTaxonomyGEPConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -28,22 +28,29 @@ import javax.swing.JPopupMenu;
 public class PAreaBluGraph extends BluGraph {
     
     private SCTDisplayFrameListener displayListener;
+    
+    private final SCTPAreaTaxonomyGEPConfiguration config;
 
-    public PAreaBluGraph(final JFrame parentFrame, final SCTPAreaTaxonomy hierarchyData, boolean areaGraph, 
-            boolean conceptLabels, GraphOptions options, final SCTDisplayFrameListener displayListener, 
-            GroupEntryLabelCreator<SCTPArea> labelCreator) {
+    public PAreaBluGraph(
+            JFrame parentFrame, 
+            SCTPAreaTaxonomy hierarchyData, 
+            boolean areaGraph,
+            SCTDisplayFrameListener displayListener, 
+            GroupEntryLabelCreator<SCTPArea> labelCreator,
+            SCTPAreaTaxonomyGEPConfiguration config) {
         
-        super(hierarchyData, areaGraph, conceptLabels, labelCreator);
+        super(hierarchyData, areaGraph, hierarchyData.getDataSource().isLocalDataSource(), labelCreator);
         
         this.displayListener = displayListener;
+        this.config = config;
 
         if (areaGraph) {
             layout = SCTGraphLayoutFactory.createNoRegionsPAreaLayout(this);
-            ((NoRegionsLayout) layout).doLayout(options, showConceptCountLabels);
+            ((NoRegionsLayout) layout).doLayout(showConceptCountLabels);
 
         } else {
             layout = SCTGraphLayoutFactory.createRegionsPAreaLayout(this);
-            ((RegionsLayout) layout).doLayout(options, showConceptCountLabels);
+            ((RegionsLayout) layout).doLayout(showConceptCountLabels);
         }
 
         partitionMenu = new JPopupMenu();
@@ -65,7 +72,7 @@ public class PAreaBluGraph extends BluGraph {
 
                 SCTPAreaTaxonomy data = ((SCTPAreaTaxonomy)hierarchyData).getRelationshipSubtaxonomy(relTypes);
 
-                displayListener.addNewPAreaGraphFrame(data, true, false);
+                displayListener.addNewPAreaGraphFrame(data, true);
 
                 partitionMenu.setVisible(false);
             }
@@ -88,6 +95,10 @@ public class PAreaBluGraph extends BluGraph {
         partitionMenu.add(new JPopupMenu.Separator());
         partitionMenu.add(menuItem2);
         partitionMenu.add(menuItem5);
+    }
+    
+    public SCTPAreaTaxonomyGEPConfiguration getGEPConfiguration() {
+        return config;
     }
 
     public SCTPAreaTaxonomy getPAreaTaxonomy() {

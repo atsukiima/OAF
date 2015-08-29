@@ -19,7 +19,7 @@ import javax.swing.JFrame;
  *
  * @author Chris O
  */
-public class ReducedPAreaOptionsConfiguration extends PAreaOptionsConfiguration {
+public class ReducedPAreaOptionsConfiguration extends SCTPAreaTaxonomyGEPConfiguration {
     
     public ReducedPAreaOptionsConfiguration(final JFrame parentFrame, 
             final PAreaInternalGraphFrame graphFrame,

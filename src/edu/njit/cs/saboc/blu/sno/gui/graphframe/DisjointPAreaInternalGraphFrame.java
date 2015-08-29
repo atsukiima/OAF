@@ -9,7 +9,7 @@ import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
 import edu.njit.cs.saboc.blu.sno.graph.DisjointPAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.DisjointPAreaTaxonomyGEPListener;
+import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.SCTDisjointPAreaTaxonomyGEPConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.UtilityMethods;
 import javax.swing.JFrame;
 
@@ -54,7 +54,7 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
         BluGraph graph = new DisjointPAreaBluGraph(parentFrame, data, displayListener, labelCreator);
         
-        initializeGraphTabs(graph, new DisjointAbNPainter(), null);
+        initializeGraphTabs(graph, new DisjointAbNPainter(), new SCTDisjointPAreaTaxonomyGEPConfiguration(parentFrame, data, displayListener));
         
         tabbedPane.validate();
         tabbedPane.repaint();

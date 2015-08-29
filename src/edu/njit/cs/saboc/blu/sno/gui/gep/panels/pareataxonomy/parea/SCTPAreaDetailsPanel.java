@@ -20,7 +20,7 @@ public class SCTPAreaDetailsPanel extends AbstractNodeDetailsPanel<SCTPArea, Con
     public SCTPAreaDetailsPanel(SCTPAreaTaxonomyConfiguration config) {
         
         super(new SCTPAreaSummaryPanel(config), 
-               new SCTPAreaOptionsPanel(config.getPAreaTaxonomy(), config.getDisplayListener()),
+               new SCTPAreaOptionsPanel(config),
               new SCTConceptList());
         
         this.taxonomy = config.getPAreaTaxonomy();

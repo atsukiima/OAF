@@ -13,8 +13,8 @@ public class SCTPAreaHierarchyPanel extends GenericPAreaHierarchyPanel<Concept, 
 
     public SCTPAreaHierarchyPanel(SCTPAreaTaxonomyConfiguration config) {
         super(
-                new SCTParentPAreaTableModel(),
-                new SCTChildPAreaTableModel(),
+                new SCTParentPAreaTableModel(config),
+                new SCTChildPAreaTableModel(config),
                 config.getPAreaTaxonomy(), config);
     }
 }

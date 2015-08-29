@@ -33,14 +33,11 @@ public abstract class SCTDisplayFrameListener implements FrameCreationListener {
      * @param data The taxonomy data used to create the graph.
      * @param areaGraph False if taxonomy should be partitioned into regions.
      * True if only areas are used.
-     * @param conceptCountLabels True if area labels should indicate the total
-     * number of concepts. False if total number of partial-areas should be
-     * displayed.
      * @return The newly created internal graph frame.
      */
-    public PAreaInternalGraphFrame addNewPAreaGraphFrame(SCTPAreaTaxonomy data, boolean areaGraph, boolean conceptCountLabels) {
+    public PAreaInternalGraphFrame addNewPAreaGraphFrame(SCTPAreaTaxonomy data, boolean areaGraph) {
         
-        PAreaInternalGraphFrame igf = new PAreaInternalGraphFrame(mainFrame, data, areaGraph, conceptCountLabels, this);
+        PAreaInternalGraphFrame igf = new PAreaInternalGraphFrame(mainFrame, data, areaGraph, this);
 
         this.displayFrame(igf);
 

@@ -20,9 +20,9 @@ public class SCTConceptList extends AbstractEntityList<Concept> {
     @Override
     protected String getBorderText(Optional<ArrayList<Concept>> concepts) {
         if(concepts.isPresent()) {
-            return String.format("Classes (%d)", concepts.get().size());
+            return String.format("Concepts (%d)", concepts.get().size());
         } else {
-            return "Classes";
+            return "Concepts";
         }
     }
 }

@@ -1,21 +1,15 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea;
 
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPanel;
-import edu.njit.cs.saboc.blu.core.gui.iconmanager.IconManager;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTCreateRootSubtaxonomyButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTExportPAreaButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTOpenBrowserButton;
 import java.util.Optional;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JPanel;
 
 /**
  *
@@ -25,85 +19,73 @@ public class SCTPAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTPArea> {
     
     private Optional<SCTPArea> selectedPArea = Optional.empty();
     
-    private final SCTPAreaTaxonomy taxonomy;
-    
-    private final SCTDisplayFrameListener displayListener;
-    
-    private final JButton btnNAT;
-    private final JButton btnRootSubtaxonomy;
+    private final SCTPAreaTaxonomyConfiguration config;
 
-    public SCTPAreaOptionsPanel(SCTPAreaTaxonomy taxonomy, final SCTDisplayFrameListener displayListener) {
+    private final SCTOpenBrowserButton btnNAT;
+    
+    private final PopoutNodeDetailsButton popoutBtn;
+    
+    private final SCTExportPAreaButton exportBtn;
+    
+    private final SCTCreateRootSubtaxonomyButton rootSubtaxonomyBtn;
         
-        this.setLayout(new BorderLayout());
-        
-        this.taxonomy = taxonomy;
-        this.displayListener = displayListener;
-        
-        JPanel optionsPanel = new JPanel();
+    public SCTPAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config) {
+        this.config = config;
        
-        optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.X_AXIS));
+        btnNAT = new SCTOpenBrowserButton(config.getPAreaTaxonomy().getDataSource(),
+            "partial-area", config.getDisplayListener());
         
-        this.btnNAT = this.createOptionButton("BluInvestigateRoot.png");
-        this.btnRootSubtaxonomy = this.createOptionButton("BluSubtaxonomy.png");
+        super.addOptionButton(btnNAT);
         
-        this.btnRootSubtaxonomy.addActionListener((ActionEvent ae) -> {
-            if(selectedPArea.isPresent()) {
-                SCTPAreaTaxonomy subtaxonomy = taxonomy.getRootSubtaxonomy(selectedPArea.get());
+        popoutBtn = new PopoutNodeDetailsButton("partial-area") {
+
+            @Override
+            public AbstractNodePanel getCurrentDetailsPanel() {
+                AbstractNodePanel anp = config.getGEPConfiguration().createGroupDetailsPanel();
+                anp.setContents(selectedPArea.get());
                 
-                displayListener.addNewPAreaGraphFrame(taxonomy, true, false);
+                return anp;
             }
-        });
+        };
         
-        optionsPanel.add(Box.createHorizontalStrut(4));
-        optionsPanel.add(btnNAT);
-        optionsPanel.add(Box.createHorizontalStrut(4));
-        optionsPanel.add(btnRootSubtaxonomy);
-        optionsPanel.add(Box.createHorizontalStrut(4));
-        optionsPanel.add(this.createOptionButton("BluExpandWindow.png"));
-        optionsPanel.add(Box.createHorizontalStrut(4));
-        optionsPanel.add(this.createOptionButton("BluExport.png"));
-        optionsPanel.add(Box.createHorizontalStrut(4));
-        optionsPanel.add(this.createOptionButton("BluHelp.png"));
-        optionsPanel.setBackground(Color.WHITE);
+        super.addOptionButton(popoutBtn);
         
-        this.add(optionsPanel, BorderLayout.CENTER);
+        exportBtn = new SCTExportPAreaButton();
         
-        this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), "Options"));
+        super.addOptionButton(exportBtn);
+        
+        rootSubtaxonomyBtn = new SCTCreateRootSubtaxonomyButton(config);
+        
+        super.addOptionButton(rootSubtaxonomyBtn);
     }
     
     @Override
-    public void enableOptionsForGroup(SCTPArea group) {
+    public void enableOptionsForGroup(SCTPArea parea) {
+        SCTPAreaTaxonomy taxonomy = config.getPAreaTaxonomy();
         
+        if(taxonomy.getDescendantGroups(parea).isEmpty()) {
+            rootSubtaxonomyBtn.setEnabled(false);
+        } else {
+            rootSubtaxonomyBtn.setEnabled(true);
+        }
     }
 
     @Override
-    public void setContents(SCTPArea group) {
-        selectedPArea = Optional.of(group);
+    public void setContents(SCTPArea parea) {
+        selectedPArea = Optional.of(parea);
         
-        this.enableOptionsForGroup(group);
+        btnNAT.setCurrentRootConcept(parea.getRoot());
+        exportBtn.setCurrentPArea(parea);
+        rootSubtaxonomyBtn.setCurrentPArea(parea);
+        
+        this.enableOptionsForGroup(parea);
     }
     
     public void clearContents() {
         selectedPArea = Optional.empty();
-    }
-    
-    public void initUI() {
-        
-    }
-    
-    private JButton createOptionButton(String iconName) {
-        ImageIcon icon = IconManager.getIconManager().getIcon(iconName);
-        
-        JButton btn = new JButton(icon);
-        btn.setBackground(new Color(240, 240, 255));
-        
-        Dimension sizeDimension = new Dimension(50, 50);
-        
-        btn.setMinimumSize(sizeDimension);
-        btn.setMaximumSize(sizeDimension);
-        btn.setPreferredSize(sizeDimension);
-        
-        return btn;
-    }
 
+        btnNAT.setCurrentRootConcept(null);
+        exportBtn.setCurrentPArea(null);
+        rootSubtaxonomyBtn.setCurrentPArea(null);
+    }
 }

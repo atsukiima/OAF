@@ -2,14 +2,18 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels;
 
 import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.InheritedRelationship;
+import edu.njit.cs.saboc.blu.core.abn.OverlappingConceptResult;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.PAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
+import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.SCTDisjointPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
+import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
+import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.SCTPAreaTaxonomyGEPConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,15 +33,22 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
         InheritedRelationship,
         SCTConceptHierarchy,
         DisjointPAreaTaxonomy> {
-
-
+    
     private final SCTPAreaTaxonomy taxonomy;
     
     private final SCTDisplayFrameListener displayListener;
     
-    public SCTPAreaTaxonomyConfiguration(SCTPAreaTaxonomy taxonomy, SCTDisplayFrameListener displayListener) {
+    private final SCTPAreaTaxonomyGEPConfiguration gepConfig;
+    
+    public SCTPAreaTaxonomyConfiguration(SCTPAreaTaxonomy taxonomy, 
+            SCTDisplayFrameListener displayListener, 
+            SCTPAreaTaxonomyGEPConfiguration gepConfig) {
+        
+        
         this.taxonomy = taxonomy;
         this.displayListener = displayListener;
+        
+        this.gepConfig = gepConfig;
     }
     
     public SCTPAreaTaxonomy getPAreaTaxonomy() {
@@ -48,18 +59,35 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
         return displayListener;
     }
     
-    @Override
-    public ArrayList<InheritedRelationship> getAreaRelationships(SCTArea area) {
-        ArrayList<InheritedRelationship> rels = new ArrayList<>(area.getRelationships());
+    public SCTPAreaTaxonomyGEPConfiguration getGEPConfiguration() {
+        return gepConfig;
+    }
+    
+    private ArrayList<InheritedRelationship> getSortedRelationships(ArrayList<InheritedRelationship> rels) {
+        Collections.sort(rels, new Comparator<InheritedRelationship>() {
+            public int compare(InheritedRelationship a, InheritedRelationship b) {
+                String aName = taxonomy.getLateralRelsInHierarchy().get(a.getRelationshipTypeId());
+                String bName = taxonomy.getLateralRelsInHierarchy().get(b.getRelationshipTypeId());
+
+                return aName.compareToIgnoreCase(bName);
+            }
+        });
         
         return rels;
     }
     
     @Override
+    public ArrayList<InheritedRelationship> getAreaRelationships(SCTArea area) {
+        ArrayList<InheritedRelationship> rels = new ArrayList<>(area.getRelationships());
+        
+        return getSortedRelationships(rels);
+    }
+    
+    @Override
     public ArrayList<InheritedRelationship> getPAreaRelationships(SCTPArea parea) {
         ArrayList<InheritedRelationship> rels = new ArrayList<>(parea.getRelationships());
-        
-        return rels;
+
+        return getSortedRelationships(rels);
     }
 
     @Override
@@ -75,10 +103,33 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
     public String getDisjointGroupName(DisjointPartialArea group) {
         return group.getRoot().getName();
     }
+    
+    private String getRelationshipNamesCommaSeparated(HashSet<InheritedRelationship> rels) {
+        
+        if(rels.isEmpty()) {
+            return "";
+        }
+        
+        ArrayList<String> relNames = new ArrayList<>();
+        
+        rels.forEach((InheritedRelationship rel) -> {
+            relNames.add(taxonomy.getLateralRelsInHierarchy().get(rel.getRelationshipTypeId()));
+        });
+        
+        Collections.sort(relNames);
+        
+        String areaName = relNames.get(0);
+        
+        for(int c = 1; c < relNames.size(); c++) {
+            areaName += ", " + relNames.get(c);
+        }
+        
+        return areaName;
+    }
 
     @Override
     public String getContainerName(SCTArea container) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getRelationshipNamesCommaSeparated(container.getRelationships());
     }
 
     @Override
@@ -113,34 +164,57 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
         return pareaConcepts;
     }
     
-        @Override
+    @Override
     public DisjointPAreaTaxonomy createDisjointAbN(SCTArea area) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        SCTDisjointPAreaTaxonomyGenerator generator = new SCTDisjointPAreaTaxonomyGenerator();
+        
+        HashSet<SCTPArea> pareas = this.getContainerGroupSet(area);
+        
+        HashSet<Concept> roots = new HashSet<>();
+        
+        pareas.forEach( (SCTPArea parea) -> {
+            roots.add(parea.getRoot());
+        });
+        
+        SCTMultiRootedConceptHierarchy hierarchy = new SCTMultiRootedConceptHierarchy(roots);
+        
+        pareas.forEach( (SCTPArea parea) -> {
+            hierarchy.addAllHierarchicalRelationships(parea.getHierarchy());
+        });
+        
+        return generator.generateDisjointAbstractionNetwork(taxonomy, pareas, hierarchy);
     }
-    
     
     @Override
     public HashSet<SCTPArea> getContainerGroupSet(SCTArea area) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new HashSet<>(area.getAllPAreas());
     }
 
     @Override
     public HashSet<Concept> getGroupConceptSet(SCTPArea parea) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new HashSet<>(parea.getConceptsInPArea());
     }
 
     @Override
     public HashSet<Concept> getContainerOverlappingConcepts(SCTArea area) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        HashSet<OverlappingConceptResult<Concept, SCTPArea>> overlappingConceptResults = area.getOverlappingConcepts();
+        
+        HashSet<Concept> overlappingConcepts = new HashSet<>();
+        
+        overlappingConceptResults.forEach( (OverlappingConceptResult<Concept, SCTPArea> result) -> {
+            overlappingConcepts.add(result.getConcept());
+        });
+        
+        return overlappingConcepts;
     }
 
     @Override
     public int getContainerLevel(SCTArea area) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return area.getRelationships().size();
     }
     
     @Override
-    public String getGroupsContainerName(SCTPArea group) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String getGroupsContainerName(SCTPArea parea) {
+        return this.getRelationshipNamesCommaSeparated(parea.getRelationships());
     }
 }

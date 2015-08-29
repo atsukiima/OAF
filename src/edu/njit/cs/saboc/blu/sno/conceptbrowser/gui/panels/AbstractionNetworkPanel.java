@@ -238,7 +238,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
+                        mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true);
 
                         loadStatusDialog.setVisible(false);
                         loadStatusDialog.dispose();
@@ -289,7 +289,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
+                        mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true);
 
                         loadStatusDialog.setVisible(false);
                         loadStatusDialog.dispose();
@@ -473,7 +473,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             }
 
             private void displayAN() {
-                PAreaInternalGraphFrame igf = mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(pareaTaxonomy, true, false);
+                PAreaInternalGraphFrame igf = mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(pareaTaxonomy, true);
 
                 PAreaBluGraph graph = (PAreaBluGraph) igf.getGraph();
 

@@ -13,7 +13,7 @@ public class SCTPAreaRelationshipsTableModel extends BLUAbstractConceptTableMode
     private final SCTPAreaTaxonomy taxonomy;
     
     public SCTPAreaRelationshipsTableModel(SCTPAreaTaxonomy taxonomy) {
-        super(new String[]{"Property Name", "Property Inheritance"});
+        super(new String[]{"Relationship Name", "Relationship Inheritance"});
         
         this.taxonomy = taxonomy;
     }

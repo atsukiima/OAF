@@ -15,6 +15,7 @@ import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluArea;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluPArea;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluRegion;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
@@ -43,8 +44,8 @@ public class NoRegionsLayout extends GenericNoRegionsPAreaGraphLayout<
         InheritedRelationship,
         SCTConceptHierarchy> {
     
-    public NoRegionsLayout(BluGraph graph, SCTPAreaTaxonomy hierarchyData) {
-        super(graph, hierarchyData);        
+    public NoRegionsLayout(BluGraph graph, SCTPAreaTaxonomy hierarchyData, SCTPAreaTaxonomyConfiguration config) {
+        super(graph, hierarchyData, config);        
     }
     
     @Override

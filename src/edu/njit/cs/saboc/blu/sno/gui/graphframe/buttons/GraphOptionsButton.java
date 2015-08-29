@@ -1,7 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons;
 
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphEdge;
-import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.PopupToggleButton;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
@@ -9,25 +8,18 @@ import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JSlider;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -54,7 +46,7 @@ public class GraphOptionsButton extends PopupToggleButton {
             public void actionPerformed(ActionEvent ae) {
                 ArrayList<GraphEdge> edges = graph.getEdges();
 
-                igf.replaceInternalFrameDataWith(data, false, graph.showingConceptCountLabels(), null);
+                igf.replaceInternalFrameDataWith(data, false);
 
                 for (GraphEdge edge : edges) {
                     graph.drawRoutedEdge(edge.getSourceID(), edge.getTargetID());
@@ -70,7 +62,7 @@ public class GraphOptionsButton extends PopupToggleButton {
             public void actionPerformed(ActionEvent ae) {
                 ArrayList<GraphEdge> edges = graph.getEdges();
 
-                igf.replaceInternalFrameDataWith(data, true, graph.showingConceptCountLabels(), null);
+                igf.replaceInternalFrameDataWith(data, true);
 
                 for (GraphEdge edge : edges) {
                     graph.drawRoutedEdge(edge.getSourceID(), edge.getTargetID());
@@ -172,12 +164,7 @@ public class GraphOptionsButton extends PopupToggleButton {
                     return;
                 }
 
-                GraphOptions options = new GraphOptions();
-
-                options.pareaMaxThreshold = maxThresh;
-                options.pareaMinThreshold = minThresh;
-
-                igf.replaceInternalFrameDataWith(data.getReduced(minThresh, maxThresh), graph.getIsAreaGraph(), graph.showingConceptCountLabels(), options);
+                igf.replaceInternalFrameDataWith(data.getReduced(minThresh, maxThresh), graph.getIsAreaGraph());
             }
         });
 
@@ -185,53 +172,7 @@ public class GraphOptionsButton extends PopupToggleButton {
 
         popupPanel.add(pareaThresholdPanel);
 
-        JPanel regionLabelOptionsPanel = new JPanel();
-        regionLabelOptionsPanel.setBorder(BorderFactory.createTitledBorder("Select Area/Region Label Type"));
 
-        ButtonGroup regionBg = new ButtonGroup();
-
-        JRadioButton btnPAreaCount = new JRadioButton("# PAreas");
-        btnPAreaCount.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent ae) {
-                ArrayList<GraphEdge> edges = graph.getEdges();
-
-                igf.replaceInternalFrameDataWith(data, graph.getIsAreaGraph(), false, null);
-
-                for (GraphEdge edge : edges) {
-                    graph.drawRoutedEdge(edge.getSourceID(), edge.getTargetID());
-                }
-            }
-        });
-
-        btnPAreaCount.setToolTipText("Display the number of Partial Areas in the area/region.");
-
-        JRadioButton btnConceptCount = new JRadioButton("# Unique Concepts");
-        btnConceptCount.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent ae) {
-                ArrayList<GraphEdge> edges = graph.getEdges();
-
-                igf.replaceInternalFrameDataWith(data, graph.getIsAreaGraph(), true, null);
-
-                for (GraphEdge edge : edges) {
-                    graph.drawRoutedEdge(edge.getSourceID(), edge.getTargetID());
-                }
-            }
-        });
-
-        btnConceptCount.setToolTipText("Display the number of unique concepts in the area/region.");
-
-        regionBg.add(btnPAreaCount);
-        regionBg.add(btnConceptCount);
-
-        btnPAreaCount.setSelected(true);
-
-        regionLabelOptionsPanel.add(btnPAreaCount);
-        regionLabelOptionsPanel.add(btnConceptCount);
-
-        popupPanel.add(regionLabelOptionsPanel);
-        
         this.setPopupContent(popupPanel);
     }
 }

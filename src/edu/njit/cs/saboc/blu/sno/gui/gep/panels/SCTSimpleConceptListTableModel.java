@@ -10,7 +10,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.BLUAbstractConce
 public class SCTSimpleConceptListTableModel extends BLUAbstractConceptTableModel<Concept> {
 
     public SCTSimpleConceptListTableModel() {
-        super(new String[] {"Concept FSN", "ConceptID"});
+        super(new String[] {"Concept FSN", "Concept ID"});
     }
    
     @Override

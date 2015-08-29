@@ -7,7 +7,6 @@ import edu.njit.cs.saboc.blu.core.graph.edges.GraphLane;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphLevel;
 import edu.njit.cs.saboc.blu.core.graph.layout.GraphLayoutConstants;
 import edu.njit.cs.saboc.blu.core.graph.nodes.GenericGroupEntry;
-import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
@@ -15,7 +14,6 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTRegion;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluArea;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluPArea;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluRegion;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.middlewareproxy.MiddlewareAccessorProxy;
 import edu.njit.cs.saboc.blu.sno.utils.UtilityMethods;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -31,7 +29,7 @@ public class RegionsLayout extends GenericPAreaLayout {
         super(graph, hierarchyData, true);
     }
 
-    public void doLayout(GraphOptions options, boolean showConceptCounts) {
+    public void doLayout(boolean showConceptCounts) {
         super.doLayout();
 
         HashMap<Long, String> areaLateralRels = this.pareaTaxonomy.getLateralRelsInHierarchy();
@@ -107,17 +105,7 @@ public class RegionsLayout extends GenericPAreaLayout {
             for (SCTRegion region : regions) { // Loop through regions to calculate the necessary size for the area.
                 int pareaCount = 0;
 
-                if (options != null) {
-                    for (SCTPArea parea : region.getPAreasInRegion()) {
-                        int conceptCount = parea.getConceptCount();
-
-                        if (conceptCount <= options.pareaMaxThreshold && conceptCount >= options.pareaMinThreshold) {
-                            pareaCount++;
-                        }
-                    }
-                } else {
-                    pareaCount = region.getPAreasInRegion().size();
-                }
+                pareaCount = region.getPAreasInRegion().size();
 
                 // Take the number of cells and find the square root of it (rounded up) to
                 // find the minimum width required for a square that could hold all the pAreas.
@@ -208,17 +196,7 @@ public class RegionsLayout extends GenericPAreaLayout {
 
                 int pareaCount = 0;
 
-                if (options != null) {
-                    for (SCTPArea parea : region.getPAreasInRegion()) {
-                        int conceptCount = parea.getConceptCount();
-
-                        if (conceptCount <= options.pareaMaxThreshold && conceptCount >= options.pareaMinThreshold) {
-                            pareaCount++;
-                        }
-                    }
-                } else {
-                    pareaCount = region.getPAreasInRegion().size();
-                }
+                pareaCount = region.getPAreasInRegion().size();
 
                 x2 = (int) (1.5 * GraphLayoutConstants.GROUP_CHANNEL_WIDTH);
                 y2 = regionLabel.getHeight() + 30;
@@ -251,15 +229,6 @@ public class RegionsLayout extends GenericPAreaLayout {
                     currentPAreaLevel = currentPartition.getGroupLevels().get(pAreaY);
 
                     BluPArea pAreaPanel = createPAreaPanel(p, bluRegion, x2, y2, pAreaX, currentPAreaLevel);
-
-                    if (options != null) {
-                        int conceptCount = p.getConceptCount();
-
-                        if (conceptCount > options.pareaMaxThreshold || conceptCount < options.pareaMinThreshold) {
-                            bluRegion.getHiddenGroups().add(pAreaPanel);
-                            continue;
-                        }
-                    }
 
                     bluRegion.getVisibleGroups().add(pAreaPanel);
 

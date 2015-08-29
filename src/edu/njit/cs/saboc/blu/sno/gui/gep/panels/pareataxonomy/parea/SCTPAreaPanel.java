@@ -14,7 +14,7 @@ public class SCTPAreaPanel extends GenericPAreaPanel<Concept, SCTPArea, SCTConce
     public SCTPAreaPanel(SCTPAreaTaxonomyConfiguration config) {
         super(new SCTPAreaDetailsPanel(config), 
                 new SCTPAreaHierarchyPanel(config), 
-                new SCTPAreaClassHierarchyPanel(config), 
+                new SCTPAreaConceptHierarchyPanel(config), 
                 config);
     }
 }

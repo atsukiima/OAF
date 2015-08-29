@@ -363,7 +363,7 @@ public class SCTLoaderPanel extends JPanel {
 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        displayFrameListener.addNewPAreaGraphFrame(taxonomy, true, false);
+                        displayFrameListener.addNewPAreaGraphFrame(taxonomy, true);
 
                         loadStatusDialog.setVisible(false);
                         loadStatusDialog.dispose();

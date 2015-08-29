@@ -14,10 +14,11 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.PAreaOptionsConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.SCTPAreaTaxonomyGEPConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.ReducedPAreaOptionsConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTAggregateTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTTaxonomyPainter;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.reports.SCTPAreaTaxonomyReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.GraphOptionsButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.RelationshipSelectionButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.PAreaInternalSearchButton;
@@ -37,14 +38,18 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
     
     private HierarchyPainterPanel<Concept> hierarchyPanel;
     
-    private PAreaInternalSearchButton searchButton;
+    private final JButton openReportsBtn;
     
-    private GraphOptionsButton optionsButton;
+    private final PAreaInternalSearchButton searchButton;
     
-    private SCTDisplayFrameListener displayListener;
+    private final GraphOptionsButton optionsButton;
+    
+    private final SCTDisplayFrameListener displayListener;
+    
+    private SCTPAreaTaxonomyGEPConfiguration currentConfiguration;
 
     public PAreaInternalGraphFrame(final JFrame parentFrame, final SCTPAreaTaxonomy data, 
-            boolean areaGraph, boolean conceptCounts, SCTDisplayFrameListener displayListener) {
+            boolean areaGraph, SCTDisplayFrameListener displayListener) {
         
         super(parentFrame, "SNOMED CT Partial-area Taxonomy");
         
@@ -58,23 +63,16 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
         this.setTitle(frameTitle);
 
-        JButton areaReportBtn = new JButton("Area Report");
-        areaReportBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                //AreaReportDialog dialog = new AreaReportDialog((PAreaBluGraph)graph);
-            }
+        openReportsBtn = new JButton("Partial-area Taxonomy Reports and Metrics");
+        openReportsBtn.addActionListener((ActionEvent ae) -> {
+            SCTPAreaTaxonomyReportDialog reportDialog = new SCTPAreaTaxonomyReportDialog(currentConfiguration.getConfiguration());
+            reportDialog.showReports(currentConfiguration.getConfiguration().getPAreaTaxonomy());
+            reportDialog.setModal(true);
+            
+            reportDialog.setVisible(true);
         });
         
-        areaReportBtn.setToolTipText("Display a selectable list of Areas within this hierarchy.");
-
-        JButton levelReportBtn = new JButton("Level Report");
-        levelReportBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                //LevelReportDialog dialog = new LevelReportDialog(graph);
-            }
-        });
-        
-        levelReportBtn.setToolTipText("Display a list of detailed information about each level of this hierarchy.");
+        addReportButtonToMenu(openReportsBtn);
         
         JButton exportBtn = new JButton("Export Taxonomy");
         exportBtn.addActionListener(new ActionListener() {
@@ -85,8 +83,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         
         exportBtn.setToolTipText("Exports the taxonomy as a tab-delimited CSV file.");
         
-        addReportButtonToMenu(areaReportBtn);
-        addReportButtonToMenu(levelReportBtn);
+
         addReportButtonToMenu(exportBtn);
         
         final RelationshipSelectionButton filterRelationships = new RelationshipSelectionButton(parentFrame, this, data);
@@ -95,7 +92,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
         searchButton = new PAreaInternalSearchButton(parentFrame, this);
 
-        replaceInternalFrameDataWith(data, areaGraph, conceptCounts, null);
+        replaceInternalFrameDataWith(data, areaGraph);
 
         optionsButton.setToolTipText("Click to open the options menu for this graph.");
         filterRelationships.setToolTipText("Click to open the menu to filter relationships in this graph");
@@ -158,8 +155,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
                 areaCount, pareaCount, conceptCount));
     }
 
-    public void replaceInternalFrameDataWith(final SCTPAreaTaxonomy data,
-            final boolean areaGraph, final boolean conceptCountLabels, final GraphOptions options) {
+    public void replaceInternalFrameDataWith(final SCTPAreaTaxonomy data, final boolean areaGraph) {
         
         GroupEntryLabelCreator labelCreator;
         
@@ -205,15 +201,17 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
             };
         }
         
-        BluGraph graph = new PAreaBluGraph(parentFrame, data, areaGraph, conceptCountLabels, options, displayListener, labelCreator);
-        
-        PAreaOptionsConfiguration optionsConfig;
+                SCTPAreaTaxonomyGEPConfiguration optionsConfig;
         
         if(data.isReduced()) {
             optionsConfig = new ReducedPAreaOptionsConfiguration(parentFrame, this, data, displayListener);
         } else {
-            optionsConfig = new PAreaOptionsConfiguration(parentFrame, this, data, displayListener);
+            optionsConfig = new SCTPAreaTaxonomyGEPConfiguration(parentFrame, this, data, displayListener);
         }
+        
+        BluGraph graph = new PAreaBluGraph(parentFrame, data, areaGraph, displayListener, labelCreator, optionsConfig);
+
+        currentConfiguration = optionsConfig;
 
         initializeGraphTabs(graph, abnPainter, optionsConfig);
         
