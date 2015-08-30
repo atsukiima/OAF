@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportButton;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.ReducedSCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
  */
 public class SCTExportAggregatePAreaButton extends ExportButton {
     
-    private Optional<ReducedSCTPArea> currentPArea = Optional.empty();
+    private Optional<SCTAggregatePArea> currentPArea = Optional.empty();
     
     private final SCTPAreaTaxonomyConfiguration config;
 
@@ -31,7 +31,7 @@ public class SCTExportAggregatePAreaButton extends ExportButton {
         this.config = config;
     }
         
-    public void setCurrentPArea(ReducedSCTPArea parea) {
+    public void setCurrentPArea(SCTAggregatePArea parea) {
         currentPArea = Optional.ofNullable(parea);
     }
     

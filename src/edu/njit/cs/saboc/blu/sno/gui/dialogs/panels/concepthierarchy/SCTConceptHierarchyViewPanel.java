@@ -7,6 +7,7 @@ import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.HierarchyPanelCli
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
@@ -28,7 +29,14 @@ public class SCTConceptHierarchyViewPanel extends ConceptGroupHierarchicalViewPa
     
     public SCTConceptGroupHierarchyLoader getHierarchyLoader() {
         if(abstractionNetwork instanceof SCTPAreaTaxonomy) {
-            return new SCTPAreaHierarchyLoader((SCTPAreaTaxonomy)abstractionNetwork, (SCTPArea)group, this);
+            SCTPAreaTaxonomy taxonomy = (SCTPAreaTaxonomy)abstractionNetwork;
+            
+            if(taxonomy.isReduced()) {
+                return new SCTAggregatePAreaHierarchyLoader(taxonomy, (SCTAggregatePArea)group, this);
+            } else {
+                return new SCTPAreaHierarchyLoader(taxonomy, (SCTPArea)group, this);
+            }
+ 
         } else if(abstractionNetwork instanceof TribalAbstractionNetwork) {
             return new SCTTANHierarchyLoader((TribalAbstractionNetwork)abstractionNetwork, (ClusterSummary)group, this);
         } else if(abstractionNetwork instanceof DisjointPAreaTaxonomy) {

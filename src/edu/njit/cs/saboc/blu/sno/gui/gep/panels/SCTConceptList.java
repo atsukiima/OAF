@@ -1,5 +1,5 @@
 
-package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea;
+package edu.njit.cs.saboc.blu.sno.gui.gep.panels;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractEntityList;

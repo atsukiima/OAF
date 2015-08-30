@@ -418,10 +418,10 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
         
         AggregatePAreaTaxonomyGenerator<SCTPAreaTaxonomy, SCTPArea, 
                 SCTArea, SCTRegion, Concept, 
-                InheritedRelationship, SCTConceptHierarchy, ReducedSCTPArea> aggregateGenerator = new AggregatePAreaTaxonomyGenerator();
+                InheritedRelationship, SCTConceptHierarchy, SCTAggregatePArea> aggregateGenerator = new AggregatePAreaTaxonomyGenerator();
         
         SCTPAreaTaxonomy aggregateTaxonomy = aggregateGenerator.createAggregatePAreaTaxonomy(this, 
-                taxonomyGenerator, new ReducedSCTPAreaTaxonomyGenerator(), min, max);
+                taxonomyGenerator, new SCTAggregatePAreaTaxonomyGenerator(), min, max);
 
         return aggregateTaxonomy;
     }

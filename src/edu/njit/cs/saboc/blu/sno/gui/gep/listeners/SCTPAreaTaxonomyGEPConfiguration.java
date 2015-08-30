@@ -6,7 +6,9 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.area.SCTAreaPanel;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.area.aggregate.SCTAggregateAreaPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea.SCTPAreaPanel;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea.aggregate.SCTAggregatePAreaPanel;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
 import javax.swing.JFrame;
 
@@ -45,7 +47,11 @@ public class SCTPAreaTaxonomyGEPConfiguration extends BLUGraphConfiguration {
 
     @Override
     public AbstractNodePanel createGroupDetailsPanel() {
-        return new SCTPAreaPanel(uiConfiguration);
+        if(taxonomy.isReduced()) {
+            return new SCTAggregatePAreaPanel(uiConfiguration);
+        } else {
+            return new SCTPAreaPanel(uiConfiguration);
+        }
     }
     
     @Override
@@ -55,7 +61,12 @@ public class SCTPAreaTaxonomyGEPConfiguration extends BLUGraphConfiguration {
 
     @Override
     public AbstractNodePanel createContainerDetailsPanel() {
-        return new SCTAreaPanel(uiConfiguration);
+        
+        if(taxonomy.isReduced()) {
+            return new SCTAggregateAreaPanel(uiConfiguration);
+        } else {
+            return new SCTAreaPanel(uiConfiguration);
+        }
     }
     
 }

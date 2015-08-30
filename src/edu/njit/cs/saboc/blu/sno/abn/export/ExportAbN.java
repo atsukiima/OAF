@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.abn.export;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.ReducedSCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import java.io.File;
@@ -88,7 +88,7 @@ public class ExportAbN {
             ArrayList<SCTPArea> pareas = new ArrayList<SCTPArea>(taxonomy.getPAreas().values());
 
             for (SCTPArea parea : pareas) {
-                ReducedSCTPArea reducedPArea = (ReducedSCTPArea) parea;
+                SCTAggregatePArea reducedPArea = (SCTAggregatePArea) parea;
 
                 writer.println(String.format("%d\t%s\t%d\t%d", 
                         parea.getRoot().getId(), 

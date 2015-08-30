@@ -10,12 +10,12 @@ import java.util.HashSet;
  *
  * @author Chris O
  */
-public class ReducedSCTPArea extends SCTPArea implements AggregateableConceptGroup<Concept, SCTPArea> {
+public class SCTAggregatePArea extends SCTPArea implements AggregateableConceptGroup<Concept, SCTPArea> {
 
     
     private GroupHierarchy<SCTPArea> reducedPAreaHierarchy;
     
-    public ReducedSCTPArea(SCTPArea parea, HashSet<Integer> reducedParentIds, GroupHierarchy<SCTPArea> reducedPAreaHierarchy) {
+    public SCTAggregatePArea(SCTPArea parea, HashSet<Integer> reducedParentIds, GroupHierarchy<SCTPArea> reducedPAreaHierarchy) {
         super(parea.getId(), (SCTConceptHierarchy)parea.getHierarchy(), reducedParentIds, parea.getRelationships());
         
         this.reducedPAreaHierarchy = reducedPAreaHierarchy;

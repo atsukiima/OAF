@@ -3,7 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy;
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeDetailsPanel;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea.SCTConceptList;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTConceptList;
 import java.util.ArrayList;
 
 /**

@@ -3,7 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.listeners;
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
 import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.ReducedSCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
@@ -31,7 +31,7 @@ public class ReducedPAreaOptionsConfiguration extends SCTPAreaTaxonomyGEPConfigu
 
     }
     
-    private SCTPAreaTaxonomy createExpandedPAreaTaxonomy(SCTPAreaTaxonomy sourceTaxonomy, ReducedSCTPArea reducedPArea) {
+    private SCTPAreaTaxonomy createExpandedPAreaTaxonomy(SCTPAreaTaxonomy sourceTaxonomy, SCTAggregatePArea reducedPArea) {
         
         GroupHierarchy<SCTPArea> reducedGroupHierarchy = reducedPArea.getAggregatedGroupHierarchy();
         
