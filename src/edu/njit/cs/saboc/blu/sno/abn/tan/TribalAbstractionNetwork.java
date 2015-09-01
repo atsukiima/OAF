@@ -9,7 +9,6 @@ import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  *
@@ -21,8 +20,6 @@ public class TribalAbstractionNetwork extends PartitionedAbstractionNetwork<Comm
     protected String sctVersion;
     
     protected SCTDataSource dataSource;
-    
-    protected Concept sctRootConcept;
 
     private ArrayList<ClusterSummary> disjointClusters;
 
@@ -30,7 +27,7 @@ public class TribalAbstractionNetwork extends PartitionedAbstractionNetwork<Comm
 
     private HashMap<Long, String> patriarchNames = new HashMap<Long, String>();
 
-    public TribalAbstractionNetwork(Concept SNOMEDHierarchyRoot,
+    public TribalAbstractionNetwork(
             ArrayList<CommonOverlapSet> overlapSets,
             HashMap<Integer, ClusterSummary> clusters,
             GroupHierarchy<ClusterSummary> clusterHierarchy,
@@ -40,8 +37,6 @@ public class TribalAbstractionNetwork extends PartitionedAbstractionNetwork<Comm
             SCTDataSource dataSource) {
 
         super(overlapSets, clusters, clusterHierarchy);
-        
-        this.sctRootConcept = SNOMEDHierarchyRoot;
         
         this.dataSource = dataSource;
         
@@ -65,10 +60,6 @@ public class TribalAbstractionNetwork extends PartitionedAbstractionNetwork<Comm
     
     public String getSCTVersion() {
         return sctVersion;
-    }
-    
-    public Concept getSCTRootConcept() {
-        return sctRootConcept;
     }
     
     public SCTDataSource getDataSource() {

@@ -6,6 +6,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNod
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTCreateDisjointTaxonomyButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTCreateTANFromAreaButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTExportAreaButton;
 import java.util.Optional;
 
@@ -24,6 +25,8 @@ public class SCTAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTArea> {
     private final PopoutNodeDetailsButton popoutBtn;
     
     private final SCTExportAreaButton exportBtn;
+    
+    private final SCTCreateTANFromAreaButton tanBtn;
 
     public SCTAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config) {
         this.config = config;
@@ -32,13 +35,17 @@ public class SCTAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTArea> {
         
         super.addOptionButton(disjointTaxonomyBtn);
 
+        this.tanBtn = new SCTCreateTANFromAreaButton(config);
+        
+        super.addOptionButton(tanBtn);
+                
         popoutBtn = new PopoutNodeDetailsButton("area") {
 
             @Override
             public AbstractNodePanel getCurrentDetailsPanel() {
                 AbstractNodePanel anp = config.getGEPConfiguration().createContainerDetailsPanel();
                 anp.setContents(selectedArea.get());
-                
+
                 return anp;
             }
         };
@@ -54,8 +61,10 @@ public class SCTAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTArea> {
     public void enableOptionsForGroup(SCTArea area) {
         if(area.getOverlappingConcepts().isEmpty()) {
             disjointTaxonomyBtn.setEnabled(false);
+            tanBtn.setEnabled(false);
         } else {
             disjointTaxonomyBtn.setEnabled(true);
+            tanBtn.setEnabled(true);
         }
     }
 
@@ -66,6 +75,7 @@ public class SCTAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTArea> {
         exportBtn.setCurrentArea(area);
         
         disjointTaxonomyBtn.setCurrentArea(area);
+        tanBtn.setCurrentArea(area);
         
         this.enableOptionsForGroup(area);
     }
@@ -75,5 +85,6 @@ public class SCTAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTArea> {
         
         exportBtn.setCurrentArea(null);
         disjointTaxonomyBtn.setCurrentArea(null);
+        tanBtn.setCurrentArea(null);
     }    
 }

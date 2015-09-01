@@ -10,7 +10,7 @@ import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
 import edu.njit.cs.saboc.blu.sno.abn.local.LocalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
-import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
+import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
@@ -23,11 +23,11 @@ import java.util.HashMap;
  */
 public class LocalTribalAbstractionNetwork extends TribalAbstractionNetwork implements LocalAbstractionNetwork {
     
-    private SCTConceptHierarchy conceptHierarchy;
+    private SCTMultiRootedConceptHierarchy conceptHierarchy;
     
     private HashMap<Long, Concept> concepts;
     
-    public LocalTribalAbstractionNetwork(Concept SNOMEDHierarchyRoot,
+    public LocalTribalAbstractionNetwork(
             ArrayList<CommonOverlapSet> overlapSets,
             HashMap<Integer, ClusterSummary> clusters,
             GroupHierarchy<ClusterSummary> clusterHierarchy,
@@ -35,10 +35,10 @@ public class LocalTribalAbstractionNetwork extends TribalAbstractionNetwork impl
             ArrayList<ClusterSummary> entryPoints,
             ArrayList<ClusterSummary> nonContributingEntryPoints,
             HashMap<Long, Concept> concepts,
-            SCTConceptHierarchy conceptHierarchy,
+            SCTMultiRootedConceptHierarchy conceptHierarchy,
             SCTLocalDataSource dataSource) {
         
-        super(SNOMEDHierarchyRoot, overlapSets, clusters, clusterHierarchy, SNOMEDVersion, entryPoints, nonContributingEntryPoints, dataSource);
+        super(overlapSets, clusters, clusterHierarchy, SNOMEDVersion, entryPoints, nonContributingEntryPoints, dataSource);
         
         this.concepts = concepts;
         this.conceptHierarchy = conceptHierarchy;
@@ -48,7 +48,7 @@ public class LocalTribalAbstractionNetwork extends TribalAbstractionNetwork impl
         return concepts;
     }
     
-    public SCTConceptHierarchy getConceptHierarchy() {
+    public SCTMultiRootedConceptHierarchy getConceptHierarchy() {
         return conceptHierarchy;
     }
     

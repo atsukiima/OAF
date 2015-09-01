@@ -1,9 +1,10 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons;
 
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateDisjointAbNButton;
-import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANButton;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 import java.util.Optional;
@@ -13,43 +14,42 @@ import javax.swing.SwingUtilities;
  *
  * @author Chris O
  */
-public class SCTCreateDisjointTaxonomyButton extends CreateDisjointAbNButton {
-
-    private Optional<SCTArea> currentArea = Optional.empty();
+public class SCTCreateTANFromPAreaButton extends CreateTANButton {
+    private Optional<SCTPArea> currentPArea = Optional.empty();
     
     private final SCTPAreaTaxonomyConfiguration config;
-
-    public SCTCreateDisjointTaxonomyButton(SCTPAreaTaxonomyConfiguration config) {
-        super("Create Disjoint Partial-area Taxonomy for Selected Area");
+    
+    public SCTCreateTANFromPAreaButton(SCTPAreaTaxonomyConfiguration config) {
+        super("partial-area");
         
         this.config = config;
     }
-        
-    public void setCurrentArea(SCTArea area) {
-        currentArea = Optional.ofNullable(area);
+    
+    public void setCurrentPArea(SCTPArea parea) {
+        currentPArea = Optional.ofNullable(parea);
     }
     
     @Override
-    public void createDisjointAbNAction() {
-        if (currentArea.isPresent()) {
-
+    public void deriveTANAction() {
+        if (currentPArea.isPresent()) {
             Thread loadThread = new Thread(new Runnable() {
 
                 private LoadStatusDialog loadStatusDialog = null;
 
                 public void run() {
                     SCTDisplayFrameListener displayListener = config.getDisplayListener();
-
-                    SCTArea area = currentArea.get();
+                    
+                    SCTPArea parea = currentPArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s Disjoint Partial-area Taxonomy", config.getContainerName(area)));
-
-                    DisjointPAreaTaxonomy disjointTaxonomy = config.createDisjointAbN(area);
+                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getGroupName(parea)));
+                    
+                    TribalAbstractionNetwork tan = TANGenerator.createTANFromConceptHierarchy(config.getPAreaTaxonomy().getSCTVersion(), parea.getHierarchy());
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            displayListener.addNewDisjointPAreaTaxonomyGraphFrame(disjointTaxonomy);
+                            
+                            displayListener.addNewClusterGraphFrame(tan, true, true);
 
                             loadStatusDialog.setVisible(false);
                             loadStatusDialog.dispose();

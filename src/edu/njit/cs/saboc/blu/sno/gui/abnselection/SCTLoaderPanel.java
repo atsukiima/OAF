@@ -404,7 +404,7 @@ public class SCTLoaderPanel extends JPanel {
                             hierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getId()));
                         }
                         
-                        tan = TANGenerator.createTANFromConceptHierarchy(root, dataSource.getSelectedVersion(), hierarchy);
+                        tan = TANGenerator.createTANFromConceptHierarchy(dataSource.getSelectedVersion(), hierarchy);
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {

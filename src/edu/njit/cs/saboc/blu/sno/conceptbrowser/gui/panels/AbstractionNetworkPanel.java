@@ -530,7 +530,6 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             ClusterSummary cluster = tan.getClusterFromRootConceptId(firstDetail.getClusterRootId());
 
             String labelText = "<html>";
-            labelText += "<b>Hierarchy:</b> " + tan.getSCTRootConcept().getName() + "<br>";
 
             labelText += "<b>Band:</b> ";
 

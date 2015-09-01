@@ -50,11 +50,6 @@ public class DisjointPAreaTaxonomy extends DisjointAbstractionNetwork<SCTPAreaTa
     }
 
     @Override
-    public Concept getSCTRootConcept() {
-        return parentAbN.getSCTRootConcept();
-    }
-
-    @Override
     public SCTDataSource getDataSource() {
         return parentAbN.getDataSource();
     }

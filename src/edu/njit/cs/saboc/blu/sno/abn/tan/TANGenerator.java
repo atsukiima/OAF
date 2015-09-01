@@ -10,6 +10,7 @@ import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.LocalCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.LocalTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
+import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSnomedConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import java.util.ArrayList;
@@ -34,10 +35,20 @@ public class TANGenerator {
      * @return 
      */
     public static LocalTribalAbstractionNetwork createTANFromConceptHierarchy(
-               Concept hierarchyRoot, 
                String snomedVersion,
                SCTConceptHierarchy hierarchy) {
-  
+        
+        HashSet<Concept> patriarchs = hierarchy.getChildren(hierarchy.getRoot());
+        
+        
+        SCTMultiRootedConceptHierarchy multiRootedHierarchy = new SCTMultiRootedConceptHierarchy(patriarchs);
+        multiRootedHierarchy.addAllHierarchicalRelationships(hierarchy);
+
+        return deriveTANFromMultiRootedHierarchy(multiRootedHierarchy, snomedVersion);
+    }
+    
+    public static LocalTribalAbstractionNetwork deriveTANFromMultiRootedHierarchy(SCTMultiRootedConceptHierarchy hierarchy, String snomedVersion) {
+          
         // The set of concepts in this hierarchy, mapped according to their ID.
         HashMap<Long, Concept> concepts = new HashMap<Long, Concept>();
         
@@ -45,7 +56,7 @@ public class TANGenerator {
             concepts.put(c.getId(), c);
         }
 
-        HashSet<Concept> patriarchs = hierarchy.getChildren(hierarchyRoot);
+        HashSet<Concept> patriarchs = hierarchy.getRoots();
         
         // The set of tribes a given concept belongs to
         HashMap<Concept, HashSet<Concept>> conceptTribes = new HashMap<Concept, HashSet<Concept>>();
@@ -191,7 +202,8 @@ public class TANGenerator {
             ArrayList<GroupParentInfo> parentInfo = new ArrayList<GroupParentInfo>();
             
             for (Concept parent : parents) {
-                if(parent.equals(hierarchyRoot)) {
+                // When a single rooted hierarchy is used the IS As to the root are still there. Skip them.
+                if(!conceptTribes.containsKey(parent)) {
                     continue;
                 }
                 
@@ -288,7 +300,7 @@ public class TANGenerator {
             });
         });
                 
-        return new LocalTribalAbstractionNetwork(hierarchyRoot, 
+        return new LocalTribalAbstractionNetwork(
                 new ArrayList<CommonOverlapSet>(tribalBands.values()), 
                 new HashMap<Integer, ClusterSummary>(hierarchyClusters), 
                 convertedHierarchy, 

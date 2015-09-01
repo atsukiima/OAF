@@ -7,6 +7,7 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTCreateRootSubtaxonomyButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTCreateTANFromPAreaButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTExportPAreaButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTOpenBrowserButton;
 import java.util.Optional;
@@ -28,6 +29,8 @@ public class SCTPAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTPArea> {
     private final SCTExportPAreaButton exportBtn;
     
     private final SCTCreateRootSubtaxonomyButton rootSubtaxonomyBtn;
+    
+    private final SCTCreateTANFromPAreaButton tanBtn;
         
     public SCTPAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config) {
         this.config = config;
@@ -57,6 +60,10 @@ public class SCTPAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTPArea> {
         rootSubtaxonomyBtn = new SCTCreateRootSubtaxonomyButton(config);
         
         super.addOptionButton(rootSubtaxonomyBtn);
+        
+        tanBtn = new SCTCreateTANFromPAreaButton(config);
+        
+        super.addOptionButton(tanBtn);
     }
     
     @Override
@@ -77,6 +84,7 @@ public class SCTPAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTPArea> {
         btnNAT.setCurrentRootConcept(parea.getRoot());
         exportBtn.setCurrentPArea(parea);
         rootSubtaxonomyBtn.setCurrentPArea(parea);
+        tanBtn.setCurrentPArea(parea);
         
         this.enableOptionsForGroup(parea);
     }
@@ -87,5 +95,6 @@ public class SCTPAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTPArea> {
         btnNAT.setCurrentRootConcept(null);
         exportBtn.setCurrentPArea(null);
         rootSubtaxonomyBtn.setCurrentPArea(null);
+        tanBtn.setCurrentPArea(null);
     }
 }

@@ -36,7 +36,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         
         this.displayListener = displayListener;
 
-        String frameTitle = UtilityMethods.getPrintableVersionName(data.getSCTVersion()) + " | Hierarchy: " + data.getSCTRootConcept().getName();
+        String frameTitle = UtilityMethods.getPrintableVersionName(data.getSCTVersion());
         this.setTitle(frameTitle);
 
         JButton tribalBandReportBtn = new JButton("Common Overlap Set Report");

@@ -469,7 +469,7 @@ public class SCTLocalDataSource implements SCTDataSource {
             LocalCluster localCluster = (LocalCluster)cluster;
             
             if(localCluster.getConcepts().contains(c)) {
-                clustersWithConcept.add(new ConceptClusterInfo(tan.getSCTRootConcept().getId(), localCluster.getRoot().getId()));
+                clustersWithConcept.add(new ConceptClusterInfo(localCluster.getRoot().getId()));
             }
         }
         
@@ -932,7 +932,7 @@ public class SCTLocalDataSource implements SCTDataSource {
         if (!hierarchyTANs.containsKey(root)) {
             SCTConceptHierarchy hierarchy = (SCTConceptHierarchy)this.conceptHierarchy.getSubhierarchyRootedAt(root);
 
-            hierarchyTANs.put(root, TANGenerator.createTANFromConceptHierarchy(root, version, hierarchy));
+            hierarchyTANs.put(root, TANGenerator.createTANFromConceptHierarchy(version, hierarchy));
         }
 
         tan = hierarchyTANs.get(root);

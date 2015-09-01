@@ -12,8 +12,6 @@ public interface SCTAbstractionNetwork<T extends AbstractionNetwork> {
     
     public String getSCTVersion();
     
-    public Concept getSCTRootConcept();
-    
     public SCTDataSource getDataSource();
     
     public T getAbstractionNetwork();

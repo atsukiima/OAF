@@ -44,13 +44,6 @@ public class ClusterPartitionLayout extends GenericClusterLayout {
             }
         }
 
-        ClusterSummary hierarchyRootSummary = new ClusterSummary(-1, hierarchyData.getSCTRootConcept(),
-                1, new HashSet<Integer>(), new EntryPointSet());
-
-        CommonOverlapSet hierarchyRootSet = new CommonOverlapSet(-2, new HashSet<Long>());
-        hierarchyRootSet.addClusterToSet(hierarchyRootSummary);
-
-        overlapSets.add(hierarchyRootSet);
 
         ArrayList<ClusterSummary> entryPoints = hierarchyData.getHierarchyEntryPoints();
         HashSet<Long> fakeEPSet = new HashSet<Long>();
