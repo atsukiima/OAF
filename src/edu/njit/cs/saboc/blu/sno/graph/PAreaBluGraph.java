@@ -52,49 +52,6 @@ public class PAreaBluGraph extends BluGraph {
             layout = SCTGraphLayoutFactory.createRegionsPAreaLayout(this);
             ((RegionsLayout) layout).doLayout(showConceptCountLabels);
         }
-
-        partitionMenu = new JPopupMenu();
-        partitionMenu.setFocusable(true);
-
-        JMenuItem menuItem1 = new JMenuItem("Create Subtaxonomy From Relationships");
-
-        menuItem1.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent ae) {
-                SCTRegion region = (SCTRegion)getCurrentPartitionEntry().getPartition();
-
-                ArrayList<Long> relTypes = new ArrayList<Long>();
-                ArrayList<InheritedRelationship> regionRels = new ArrayList<InheritedRelationship>(region.getRelationships());
-
-                for (InheritedRelationship ir : regionRels) {
-                    relTypes.add(ir.getRelationshipTypeId());
-                }
-
-                SCTPAreaTaxonomy data = ((SCTPAreaTaxonomy)hierarchyData).getRelationshipSubtaxonomy(relTypes);
-
-                displayListener.addNewPAreaGraphFrame(data, true);
-
-                partitionMenu.setVisible(false);
-            }
-        });
-
-        JMenuItem menuItem2 = new JMenuItem("Select PAreas to Show / Hide");
-        menuItem2.addActionListener(new ShowHideGroupEntryListener(this));
-
-        JMenuItem menuItem5 = new JMenuItem("Resize Region");
-
-        menuItem5.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent ae) {
-                new ContainerResize(parentFrame, currentPartition, PAreaBluGraph.this);
-                partitionMenu.setVisible(false);
-            }
-        });
-
-        partitionMenu.add(menuItem1);
-        partitionMenu.add(new JPopupMenu.Separator());
-        partitionMenu.add(menuItem2);
-        partitionMenu.add(menuItem5);
     }
     
     public SCTPAreaTaxonomyGEPConfiguration getGEPConfiguration() {

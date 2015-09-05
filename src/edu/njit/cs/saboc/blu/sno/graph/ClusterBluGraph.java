@@ -39,26 +39,6 @@ public class ClusterBluGraph extends BluGraph {
 
         layout = SCTGraphLayoutFactory.createClusterNoPartitionLayout(this);
         ((ClusterNoPartitionLayout) layout).doLayout();
-
-        partitionMenu = new JPopupMenu();
-        partitionMenu.setFocusable(true);
-
-        JMenuItem menuItem2 = new JMenuItem("Select Clusters to Show / Hide");
-        menuItem2.addActionListener(new ShowHideGroupEntryListener(this));
-
-        JMenuItem menuItem5 = new JMenuItem("Resize Layout");
-
-        menuItem5.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent ae) {
-                new ContainerResize(parentFrame, currentPartition, ClusterBluGraph.this);
-                partitionMenu.setVisible(false);
-            }
-        });
-
-        partitionMenu.add(new JPopupMenu.Separator());
-        partitionMenu.add(menuItem2);
-        partitionMenu.add(menuItem5);
     }
 
     public TribalAbstractionNetwork getClusterHierarchyData() {
