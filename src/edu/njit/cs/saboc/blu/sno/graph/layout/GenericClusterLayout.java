@@ -1,7 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.graph.layout;
 
 import SnomedShared.generic.GenericContainerPartition;
-import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.CommonOverlapSet;
 import SnomedShared.overlapping.EntryPoint;
 import SnomedShared.overlapping.EntryPoint.InheritanceType;
@@ -14,6 +13,8 @@ import edu.njit.cs.saboc.blu.core.graph.edges.GraphLevel;
 import edu.njit.cs.saboc.blu.core.graph.layout.BluGraphLayout;
 import edu.njit.cs.saboc.blu.core.graph.nodes.GenericGroupEntry;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.graph.tan.BluCluster;
 import edu.njit.cs.saboc.blu.sno.graph.tan.BluCommonOverlapSet;
 import edu.njit.cs.saboc.blu.sno.graph.tan.BluOverlapPartition;
@@ -34,11 +35,11 @@ import javax.swing.JLabel;
  */
 public abstract class GenericClusterLayout extends BluGraphLayout<CommonOverlapSet, BluCommonOverlapSet, BluCluster> {
 
-    protected TribalAbstractionNetwork hierarchyData;
+    protected SCTTribalAbstractionNetwork hierarchyData;
 
     protected ArrayList<CommonOverlapSet> commonOverlapSets;
 
-    public GenericClusterLayout(BluGraph graph, TribalAbstractionNetwork hierarchyData) {
+    public GenericClusterLayout(BluGraph graph, SCTTribalAbstractionNetwork hierarchyData) {
         super(graph);
 
         this.hierarchyData = hierarchyData;
@@ -125,7 +126,7 @@ public abstract class GenericClusterLayout extends BluGraphLayout<CommonOverlapS
         return layoutGroupContainers;
     }
 
-    protected BluCluster createClusterPanel(ClusterSummary p, BluOverlapPartition parent, int x, int y, int pAreaX, GraphGroupLevel clusterLevel) {
+    protected BluCluster createClusterPanel(SCTCluster p, BluOverlapPartition parent, int x, int y, int pAreaX, GraphGroupLevel clusterLevel) {
         BluCluster clusterPanel = new BluCluster(p, graph, parent, pAreaX, clusterLevel, new ArrayList<GraphEdge>());
 
         //Make sure this panel dimensions will fit on the graph, stretch the graph if necessary
@@ -239,7 +240,8 @@ public abstract class GenericClusterLayout extends BluGraphLayout<CommonOverlapS
         String countStr;
         
         if (graph.showingConceptCountLabels()) {
-                int conceptCount = hierarchyData.getDataSource().getConceptCountInClusterHierarchy(hierarchyData, bandPartition.getClusters());
+                int conceptCount = hierarchyData.getDataSource().getConceptCountInClusterHierarchy(hierarchyData,
+                        hierarchyData.convertClusters(bandPartition.getClusters()));
 
                 if (conceptCount == 1) {
                     countStr = " (1 Concept)";

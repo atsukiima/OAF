@@ -6,11 +6,11 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTAN
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
-import static java.lang.Math.tan;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
@@ -66,7 +66,9 @@ public class SCTCreateTANFromAreaButton extends CreateTANButton {
                         hierarchy.addAllHierarchicalRelationships(parea.getHierarchy());
                     });
   
-                    TribalAbstractionNetwork tan = TANGenerator.deriveTANFromMultiRootedHierarchy(hierarchy, config.getPAreaTaxonomy().getSCTVersion());
+                    SCTTribalAbstractionNetwork tan = TANGenerator.deriveTANFromMultiRootedHierarchy(hierarchy, 
+                            (SCTLocalDataSource)config.getPAreaTaxonomy().getDataSource(),  
+                            config.getPAreaTaxonomy().getSCTVersion());
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {

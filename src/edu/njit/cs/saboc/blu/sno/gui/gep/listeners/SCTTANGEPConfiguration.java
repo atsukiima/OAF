@@ -2,8 +2,11 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.listeners;
 
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.BLUGraphConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.band.SCTBandPanel;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.cluster.SCTClusterPanel;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.ClusterInternalGraphFrame;
 import javax.swing.JFrame;
 
@@ -11,33 +14,40 @@ import javax.swing.JFrame;
  *
  * @author Chris
  */
-public class ClusterOptionsConfiguration extends BLUGraphConfiguration {
+public class SCTTANGEPConfiguration extends BLUGraphConfiguration {
+    
+    private final SCTTANConfiguration config;
 
-    public ClusterOptionsConfiguration(
+    public SCTTANGEPConfiguration(
             final JFrame parentFrame, 
             final ClusterInternalGraphFrame graphFrame,
-            final TribalAbstractionNetwork tan, 
+            final SCTTribalAbstractionNetwork tan, 
             final SCTDisplayFrameListener displayListener) {
 
+        this.config = new SCTTANConfiguration(tan, displayListener, this);
+    }
+    
+    public SCTTANConfiguration getConfiguration() {
+        return config;
     }
     
     @Override
     public boolean hasGroupDetailsPanel() {
-        return false;
+        return true;
     }
 
     @Override
     public AbstractNodePanel createGroupDetailsPanel() {
-        return null;
+        return new SCTClusterPanel(config);
     }
     
     @Override
     public boolean hasContainerDetailsPanel() {
-        return false;
+        return true;
     }
 
     @Override
     public AbstractNodePanel createContainerDetailsPanel() {
-        return null;
+        return new SCTBandPanel(config);
     }
 }

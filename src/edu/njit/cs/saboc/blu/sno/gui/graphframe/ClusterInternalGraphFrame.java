@@ -10,9 +10,12 @@ import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.abn.export.ExportAbN;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.graph.ClusterBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.ClusterOptionsConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.SCTTANGEPConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.reports.SCTTANReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.TANInternalSearchButton;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.utils.UtilityMethods;
@@ -25,12 +28,19 @@ import javax.swing.JFrame;
 
 public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
     
-    private TANInternalSearchButton searchButton;
+    private final TANInternalSearchButton searchButton;
     
-    private SCTDisplayFrameListener displayListener;
+    private final SCTDisplayFrameListener displayListener;
+    
+    private SCTTANGEPConfiguration currentConfiguration;
+    
+    private final JButton openReportsBtn;
 
-    public ClusterInternalGraphFrame(final JFrame parentFrame, final TribalAbstractionNetwork data, final boolean setGraph, 
-            final boolean conceptCounts, final SCTDisplayFrameListener displayListener) {
+    public ClusterInternalGraphFrame(final JFrame parentFrame, 
+            final SCTTribalAbstractionNetwork data, 
+            final boolean setGraph, 
+            final boolean conceptCounts, 
+            final SCTDisplayFrameListener displayListener) {
         
         super(parentFrame, "SNOMED Tribal Abstraction Network");
         
@@ -39,21 +49,17 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         String frameTitle = UtilityMethods.getPrintableVersionName(data.getSCTVersion());
         this.setTitle(frameTitle);
 
-        JButton tribalBandReportBtn = new JButton("Common Overlap Set Report");
-        tribalBandReportBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                
-            }
+        openReportsBtn = new JButton("TAN Reports and Metrics");
+        openReportsBtn.addActionListener((ActionEvent ae) -> {
+            SCTTANReportDialog reportDialog = new SCTTANReportDialog(currentConfiguration.getConfiguration());
+            reportDialog.showReports(currentConfiguration.getConfiguration().getTribalAbstractionNetwork());
+            reportDialog.setModal(true);
+            
+            reportDialog.setVisible(true);
         });
+        
+        addReportButtonToMenu(openReportsBtn);
 
-        tribalBandReportBtn.setToolTipText("Display a selectable list of Clusters within this hierarchy.");
-
-        JButton levelReportBtn = new JButton("Level Report");
-        levelReportBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                //new LevelReportDialog(graph);
-            }
-        });
         
         JButton exportBtn = new JButton("Export TAN");
         exportBtn.addActionListener(new ActionListener() {
@@ -62,34 +68,30 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
             }
         });
 
-        levelReportBtn.setToolTipText("Display a list of detailed information about each level of this Tribal AN.");
-
-        searchButton = new TANInternalSearchButton(parentFrame, this);
-
-        addReportButtonToMenu(tribalBandReportBtn);
-        addReportButtonToMenu(levelReportBtn);
         addReportButtonToMenu(exportBtn);
+        
+        searchButton = new TANInternalSearchButton(parentFrame, this);
         
         replaceInternalFrameDataWith(data, setGraph, conceptCounts, null);
         
         addToggleableButtonToMenu(searchButton);
     }
 
-    private void updateHierarchyInfoLabel(TribalAbstractionNetwork data) {
-        ArrayList<ClusterSummary> clusters = new ArrayList<ClusterSummary>();
+    private void updateHierarchyInfoLabel(SCTTribalAbstractionNetwork data) {
+        ArrayList<SCTCluster> clusters = new ArrayList<>();
 
         int clusterCount = 0;
         int setCount = 0;
 
-        ArrayList<ClusterSummary> patriarchs = data.getHierarchyEntryPoints();
+        ArrayList<SCTCluster> patriarchs = data.getHierarchyEntryPoints();
 
-        for (ClusterSummary s : patriarchs) {
+        for (SCTCluster s : patriarchs) {
             clusters.add(s);
         }
 
         for (CommonOverlapSet a : data.getBands()) {
             for (ClusterSummary cluster : a.getAllClusters()) {
-                clusters.add(cluster);
+                clusters.add((SCTCluster)cluster);
 
                 clusterCount++;
             }
@@ -97,8 +99,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
             setCount++;
         }
 
-        int conceptCount = data.getDataSource().getConceptCountInClusterHierarchy(
-                (TribalAbstractionNetwork)data, clusters);     
+        int conceptCount = data.getDataSource().getConceptCountInClusterHierarchy(data, clusters);     
         
         setHierarchyInfoText(String.format("Common Overlap Sets: %d | Clusters: %d | Concepts: %d",
                 setCount, clusterCount, conceptCount));
@@ -123,7 +124,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         ExportAbN.exportAbNGroups(clusterConcepts, "CLUSTER");
     }
 
-    public void replaceInternalFrameDataWith(TribalAbstractionNetwork data,
+    public void replaceInternalFrameDataWith(SCTTribalAbstractionNetwork data,
             boolean areaGraph, boolean conceptCountLabels, GraphOptions options) {
         
         GroupEntryLabelCreator labelCreator = new GroupEntryLabelCreator<ClusterSummary>() {
@@ -132,11 +133,11 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
             }
         };
 
-        BluGraph graph = new ClusterBluGraph(parentFrame, data, areaGraph, conceptCountLabels, options, displayListener, labelCreator);
+        BluGraph graph = new ClusterBluGraph(parentFrame, data, displayListener, labelCreator);
         
         searchButton.setGraph(graph);
     
-        initializeGraphTabs(graph, new AbNPainter(), new ClusterOptionsConfiguration(parentFrame, this, data, displayListener));
+        initializeGraphTabs(graph, new AbNPainter(), currentConfiguration = new SCTTANGEPConfiguration(parentFrame, this, data, displayListener));
         
         updateHierarchyInfoLabel(data);
     }

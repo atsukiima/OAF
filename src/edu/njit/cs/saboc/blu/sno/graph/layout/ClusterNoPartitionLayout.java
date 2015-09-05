@@ -1,15 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package edu.njit.cs.saboc.blu.sno.graph.layout;
 
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.CommonOverlapSet;
 import SnomedShared.overlapping.EntryPointSet;
 import SnomedShared.overlapping.OverlapInheritancePartition;
-import SnomedShared.pareataxonomy.GroupParentInfo;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphGroupLevel;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphLane;
@@ -17,8 +11,8 @@ import edu.njit.cs.saboc.blu.core.graph.edges.GraphLevel;
 import edu.njit.cs.saboc.blu.core.graph.layout.GraphLayoutConstants;
 import edu.njit.cs.saboc.blu.core.graph.nodes.GenericGroupEntry;
 import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.LocalCluster;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.graph.tan.BluCluster;
 import edu.njit.cs.saboc.blu.sno.graph.tan.BluCommonOverlapSet;
 import edu.njit.cs.saboc.blu.sno.graph.tan.BluOverlapPartition;
@@ -35,10 +29,10 @@ import javax.swing.JLabel;
 public class ClusterNoPartitionLayout extends GenericClusterLayout {
 
     public ClusterNoPartitionLayout(BluGraph graph) {
-        super(graph, (TribalAbstractionNetwork) graph.getAbstractionNetwork());
+        super(graph, (SCTTribalAbstractionNetwork) graph.getAbstractionNetwork());
     }
 
-    public void doLayout(GraphOptions options, boolean showConceptCounts) {
+    public void doLayout() {
 
         HashMap<Long, String> hierarchyEntryPointNames = hierarchyData.getPatriarchNames();
 
@@ -51,22 +45,17 @@ public class ClusterNoPartitionLayout extends GenericClusterLayout {
             }
         }
 
-        ArrayList<ClusterSummary> entryPoints = hierarchyData.getHierarchyEntryPoints();
+        ArrayList<SCTCluster> entryPoints = hierarchyData.getHierarchyEntryPoints();
         HashSet<Long> fakeEPSet = new HashSet<Long>();
         fakeEPSet.add(0l);
 
         CommonOverlapSet entryPointSet = new CommonOverlapSet(-1, fakeEPSet);
 
-        for(ClusterSummary cluster : entryPoints) {
-            ClusterSummary newCluster;
+        for(SCTCluster cluster : entryPoints) {
             
-            if(cluster instanceof LocalCluster) {
-                newCluster = new LocalCluster(cluster.getId(), cluster.getHeaderConcept(),
-                    ((LocalCluster)cluster).getConceptHierarchy(), cluster.getParentIds(), new EntryPointSet(), new ArrayList<GroupParentInfo>());
-            } else {
-                newCluster = new ClusterSummary(cluster.getId(), cluster.getHeaderConcept(),
-                    cluster.getConceptCount(), cluster.getParentIds(), new EntryPointSet());
-            }
+            SCTCluster newCluster = new SCTCluster(cluster.getId(), cluster.getHeaderConcept(),
+                    ((SCTCluster)cluster).getConceptHierarchy(), cluster.getParentIds(), new EntryPointSet());
+            newCluster.setParentGroupInformation(new ArrayList<>());
 
             entryPointSet.addClusterToSet(newCluster);
         }
@@ -107,7 +96,9 @@ public class ClusterNoPartitionLayout extends GenericClusterLayout {
 
         for (CommonOverlapSet a : layoutGroupContainers) {  // Loop through the areas and generate the diagram for each of them
             BluCommonOverlapSet setEntry;
-            ArrayList<ClusterSummary> clusters = a.getAllClusters();
+            
+            
+            ArrayList<SCTCluster> clusters = hierarchyData.convertClusters(a.getAllClusters());
 
             int maxRows, x2, y2, regionX, partitionBump;
 
@@ -132,20 +123,8 @@ public class ClusterNoPartitionLayout extends GenericClusterLayout {
             width = 0;
             maxRows = 0;
 
-            int clusterCount = 0;
-
-            if (options != null) {
-                for (ClusterSummary parea : clusters) {
-                    int conceptCount = parea.getConceptCount();
-
-                    if (conceptCount <= options.pareaMaxThreshold && conceptCount >= options.pareaMinThreshold) {
-                        clusterCount++;
-                    }
-                }
-            } else {
-                clusterCount = clusters.size();
-            }
-
+            int clusterCount = clusters.size();
+            
             int clusterEntriesWide;
 
             if(a.getId() == -1) {
@@ -170,24 +149,14 @@ public class ClusterNoPartitionLayout extends GenericClusterLayout {
             
             String countString;
 
-            if (showConceptCounts) {
-                int conceptCount = hierarchyData.getDataSource().getConceptCountInClusterHierarchy(
-                                    hierarchyData, clusters);
+            int conceptCount = hierarchyData.getDataSource().getConceptCountInClusterHierarchy(hierarchyData, clusters);
 
-                if (conceptCount == 1) {
-                    countString = " (1 Concept)";
-                } else {
-                    countString = " (" + conceptCount + " Concepts)";
-                }
-
+            if (conceptCount == 1) {
+                countString = " (1 Concept, 1 Cluster)";
             } else {
-                if (clusters.size() == 1) {
-                    countString = " (1 Cluster)";
-                } else {
-                    countString = " (" + clusters.size() + " Clusters)";
-                }
+                countString = String.format(" (%d Concepts, %d Clusters)", conceptCount, clusterCount);
             }
-            
+
             regionName += (" " + countString);
             
             JLabel bandLabel = createOverlapPartitionLabel(hierarchyData, a.getOverlapPartitions().get(0).getEntryPointSet(), countString, setWidth, true);
@@ -246,7 +215,7 @@ public class ClusterNoPartitionLayout extends GenericClusterLayout {
 
             PseudoPartition partition = new PseudoPartition();
 
-            for(ClusterSummary c : clusters) {
+            for(SCTCluster c : clusters) {
                 partition.addClusterToPartition(c);
             }
             
@@ -266,21 +235,12 @@ public class ClusterNoPartitionLayout extends GenericClusterLayout {
 
             int i = 0;
 
-            for (ClusterSummary p : clusters) { // Draw the pArease inside this region
+            for (SCTCluster p : clusters) { // Draw the pArease inside this region
                 BluCluster pAreaPanel;
 
                 currentClusterLevel = currentPartition.getGroupLevels().get(clusterY);
 
                 pAreaPanel = createClusterPanel(p, overlapPartition, x2, y2, clusterX, currentClusterLevel);
-
-                if (options != null) {
-                    int conceptCount = p.getConceptCount();
-
-                    if (conceptCount > options.pareaMaxThreshold || conceptCount < options.pareaMinThreshold) {
-                        overlapPartition.getHiddenGroups().add(pAreaPanel);
-                        continue;
-                    }
-                }
 
                 overlapPartition.getVisibleGroups().add(pAreaPanel);
 

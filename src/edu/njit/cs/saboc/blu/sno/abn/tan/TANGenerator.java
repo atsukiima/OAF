@@ -1,20 +1,21 @@
 package edu.njit.cs.saboc.blu.sno.abn.tan;
 
 import SnomedShared.Concept;
-import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.CommonOverlapSet;
 import SnomedShared.overlapping.EntryPoint;
 import SnomedShared.overlapping.EntryPointSet;
-import SnomedShared.pareataxonomy.GroupParentInfo;
+import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
 import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.LocalCluster;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.LocalTribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSnomedConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -34,20 +35,20 @@ public class TANGenerator {
      * @param hierarchy
      * @return 
      */
-    public static LocalTribalAbstractionNetwork createTANFromConceptHierarchy(
+    public static SCTTribalAbstractionNetwork createTANFromConceptHierarchy(
                String snomedVersion,
-               SCTConceptHierarchy hierarchy) {
+               SCTConceptHierarchy hierarchy,
+               SCTLocalDataSource dataSource) {
         
         HashSet<Concept> patriarchs = hierarchy.getChildren(hierarchy.getRoot());
-        
         
         SCTMultiRootedConceptHierarchy multiRootedHierarchy = new SCTMultiRootedConceptHierarchy(patriarchs);
         multiRootedHierarchy.addAllHierarchicalRelationships(hierarchy);
 
-        return deriveTANFromMultiRootedHierarchy(multiRootedHierarchy, snomedVersion);
+        return deriveTANFromMultiRootedHierarchy(multiRootedHierarchy, dataSource, snomedVersion);
     }
     
-    public static LocalTribalAbstractionNetwork deriveTANFromMultiRootedHierarchy(SCTMultiRootedConceptHierarchy hierarchy, String snomedVersion) {
+    public static SCTTribalAbstractionNetwork deriveTANFromMultiRootedHierarchy(SCTMultiRootedConceptHierarchy hierarchy, SCTLocalDataSource dataSource, String snomedVersion) {
           
         // The set of concepts in this hierarchy, mapped according to their ID.
         HashMap<Long, Concept> concepts = new HashMap<Long, Concept>();
@@ -187,10 +188,10 @@ public class TANGenerator {
             }
         }
 
-        HashMap<Integer, LocalCluster> hierarchyClusters = new HashMap<Integer, LocalCluster>();
-        HashMap<Integer, HashSet<Integer>> clusterHierarchy = new HashMap<Integer, HashSet<Integer>>();
+        HashMap<Integer, SCTCluster> hierarchyClusters = new HashMap<>();
+        HashMap<Integer, HashSet<Integer>> clusterHierarchy = new HashMap<>();
         
-        ArrayList<ClusterSummary> patriarchClusters = new ArrayList<ClusterSummary>();
+        ArrayList<SCTCluster> patriarchClusters = new ArrayList<>();
 
         for (Concept root : roots) {
             HashSet<Concept> rootsTribes = conceptTribes.get(root);
@@ -198,9 +199,7 @@ public class TANGenerator {
             
             HashSet<Concept> parentTribes = new HashSet<Concept>();
             HashSet<Integer> parentClusters = new HashSet<Integer>();
-            
-            ArrayList<GroupParentInfo> parentInfo = new ArrayList<GroupParentInfo>();
-            
+                        
             for (Concept parent : parents) {
                 // When a single rooted hierarchy is used the IS As to the root are still there. Skip them.
                 if(!conceptTribes.containsKey(parent)) {
@@ -213,9 +212,7 @@ public class TANGenerator {
    
                 for (Concept parentCluster : rootParentClusters) {
                     int parentClusterId = clusterIds.get(parentCluster);
-                    
-                    parentInfo.add(new GroupParentInfo(parent, parentCluster.getId()));
-                    
+
                     parentClusters.add(parentClusterId);
 
                     if (!clusterHierarchy.containsKey(parentClusterId)) {
@@ -236,13 +233,12 @@ public class TANGenerator {
                 }
             }
 
-            LocalCluster cluster = new LocalCluster(
+            SCTCluster cluster = new SCTCluster(
                     clusterIds.get(root), 
                     root, 
                     clusters.get(root), 
                     parentClusters, 
-                    epSet, 
-                    parentInfo);
+                    epSet);
 
             hierarchyClusters.put(clusterIds.get(root), cluster);
 
@@ -271,9 +267,9 @@ public class TANGenerator {
             tribalBands.get(rootTribes).addClusterToSet(hierarchyClusters.get(clusterIds.get(root)));
         }
 
-        ArrayList<ClusterSummary> nonOverlappingPatriarchs = new ArrayList<ClusterSummary>();
+        ArrayList<SCTCluster> nonOverlappingPatriarchs = new ArrayList<SCTCluster>();
 
-        for (ClusterSummary patriarchCluster : patriarchClusters) {
+        for (SCTCluster patriarchCluster : patriarchClusters) {
             boolean overlaps = false;
 
             long patriarchId = patriarchCluster.getHeaderConcept().getId();
@@ -290,25 +286,50 @@ public class TANGenerator {
             }
         }
         
-        GroupHierarchy<ClusterSummary> convertedHierarchy = new GroupHierarchy<>(new HashSet<>(patriarchClusters));
+        GroupHierarchy<SCTCluster> convertedHierarchy = new GroupHierarchy<>(new HashSet<>(patriarchClusters));
         
-        hierarchyClusters.values().forEach((ClusterSummary summary) -> {
-            HashSet<Integer> parentIds = summary.getParentIds();
+        hierarchyClusters.values().forEach((SCTCluster cluster) -> {
+            HashSet<Concept> parents = hierarchy.getParents(cluster.getRoot());
+            
+            ArrayList<GenericParentGroupInfo<Concept, SCTCluster>> parentInformation = new ArrayList<>();
+            
+            parents.forEach((Concept parent) -> {
+
+                if (conceptClusters.containsKey(parent)) {
+                    HashSet<Concept> parentClusterRoots = conceptClusters.get(parent);
+
+                    parentClusterRoots.forEach((Concept parentClusterRoot) -> {
+                        SCTCluster parentCluster = hierarchyClusters.get(clusterIds.get(parentClusterRoot));
+
+                        parentInformation.add(new GenericParentGroupInfo<>(parent, parentCluster));
+                    });
+                }
+            });
+            
+            Collections.sort(parentInformation, new Comparator<GenericParentGroupInfo<Concept, SCTCluster>>() {
+                public int compare(GenericParentGroupInfo<Concept, SCTCluster> a, GenericParentGroupInfo<Concept, SCTCluster> b) {
+                    return a.getParentConcept().getName().compareTo(b.getParentConcept().getName());
+                }
+            });
+            
+            cluster.setParentGroupInformation(parentInformation);
+            
+            HashSet<Integer> parentIds = cluster.getParentIds();
             
             parentIds.forEach((Integer parentId) -> {
-               convertedHierarchy.addIsA(summary, hierarchyClusters.get(parentId));
+               convertedHierarchy.addIsA(cluster, hierarchyClusters.get(parentId));
             });
         });
                 
-        return new LocalTribalAbstractionNetwork(
+        return new SCTTribalAbstractionNetwork(
                 new ArrayList<CommonOverlapSet>(tribalBands.values()), 
-                new HashMap<Integer, ClusterSummary>(hierarchyClusters), 
+                new HashMap<Integer, SCTCluster>(hierarchyClusters), 
                 convertedHierarchy, 
                 snomedVersion,
                 patriarchClusters,
                 nonOverlappingPatriarchs,
                 concepts,
                 hierarchy,
-                new SCTLocalDataSource(new HashMap<Long, LocalSnomedConcept>(), null, false, snomedVersion));
+                dataSource);
     }
 }

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.njit.cs.saboc.blu.sno.abn.tan.local;
 
 import SnomedShared.Concept;
@@ -21,19 +17,19 @@ import java.util.HashMap;
  *
  * @author Chris
  */
-public class LocalTribalAbstractionNetwork extends TribalAbstractionNetwork implements LocalAbstractionNetwork {
+public class SCTTribalAbstractionNetwork extends TribalAbstractionNetwork<SCTCluster> implements LocalAbstractionNetwork {
     
     private SCTMultiRootedConceptHierarchy conceptHierarchy;
     
     private HashMap<Long, Concept> concepts;
     
-    public LocalTribalAbstractionNetwork(
+    public SCTTribalAbstractionNetwork(
             ArrayList<CommonOverlapSet> overlapSets,
-            HashMap<Integer, ClusterSummary> clusters,
-            GroupHierarchy<ClusterSummary> clusterHierarchy,
+            HashMap<Integer, SCTCluster> clusters,
+            GroupHierarchy<SCTCluster> clusterHierarchy,
             String SNOMEDVersion,
-            ArrayList<ClusterSummary> entryPoints,
-            ArrayList<ClusterSummary> nonContributingEntryPoints,
+            ArrayList<SCTCluster> entryPoints,
+            ArrayList<SCTCluster> nonContributingEntryPoints,
             HashMap<Long, Concept> concepts,
             SCTMultiRootedConceptHierarchy conceptHierarchy,
             SCTLocalDataSource dataSource) {
@@ -46,6 +42,16 @@ public class LocalTribalAbstractionNetwork extends TribalAbstractionNetwork impl
     
     public HashMap<Long, Concept> getConcepts() {
         return concepts;
+    }
+    
+    public ArrayList<SCTCluster> convertClusters(ArrayList<ClusterSummary> summaries) {
+        ArrayList<SCTCluster> clusters = new ArrayList<>();
+        
+        summaries.forEach( (ClusterSummary summary) -> {
+            clusters.add( (SCTCluster) summary);
+        });
+        
+        return clusters;
     }
     
     public SCTMultiRootedConceptHierarchy getConceptHierarchy() {

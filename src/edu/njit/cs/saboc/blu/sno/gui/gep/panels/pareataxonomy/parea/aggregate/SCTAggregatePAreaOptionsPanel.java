@@ -6,6 +6,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNod
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTCreateExpandedSubtaxonomyButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTExportAggregatePAreaButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTOpenBrowserButton;
 import java.util.Optional;
@@ -22,6 +23,8 @@ public class SCTAggregatePAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTA
     
     private final SCTOpenBrowserButton btnNAT;
     
+    private final SCTCreateExpandedSubtaxonomyButton expandedSubtaxonomyBtn;
+    
     private final PopoutNodeDetailsButton popoutBtn;
     
     private final SCTExportAggregatePAreaButton exportBtn;
@@ -33,6 +36,10 @@ public class SCTAggregatePAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTA
                 "aggregate partial-area", config.getDisplayListener());
 
         super.addOptionButton(btnNAT);
+        
+        expandedSubtaxonomyBtn = new SCTCreateExpandedSubtaxonomyButton(config);
+        
+        super.addOptionButton(expandedSubtaxonomyBtn);
         
         popoutBtn = new PopoutNodeDetailsButton("aggregate partial-area") {
 
@@ -53,8 +60,12 @@ public class SCTAggregatePAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTA
     }
     
     @Override
-    public void enableOptionsForGroup(SCTAggregatePArea group) {
-        
+    public void enableOptionsForGroup(SCTAggregatePArea parea) {
+        if(parea.getAggregatedGroups().isEmpty()) {
+            expandedSubtaxonomyBtn.setEnabled(false);
+        } else {
+            expandedSubtaxonomyBtn.setEnabled(true);
+        }
     }
 
     @Override
@@ -65,6 +76,8 @@ public class SCTAggregatePAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTA
         
         exportBtn.setCurrentPArea(parea);
         
+        expandedSubtaxonomyBtn.setCurrentPArea(parea);
+        
         this.enableOptionsForGroup(parea);
     }
     
@@ -72,6 +85,11 @@ public class SCTAggregatePAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTA
         selectedPArea = Optional.empty();
         
         btnNAT.setCurrentRootConcept(null);
+        
+        exportBtn.setCurrentPArea(null);
+        
+        expandedSubtaxonomyBtn.setCurrentPArea(null);
+        
         this.enableOptionsForGroup(null);
     }
 }

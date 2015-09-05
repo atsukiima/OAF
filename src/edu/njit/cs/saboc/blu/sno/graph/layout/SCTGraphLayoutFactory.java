@@ -22,10 +22,6 @@ public class SCTGraphLayoutFactory {
         return new RegionsLayout(graph, graph.getPAreaTaxonomy());
     }
 
-    public static ClusterPartitionLayout createClusterPartitionLayout(ClusterBluGraph graph) {
-        return new ClusterPartitionLayout(graph);
-    }
-
     public static ClusterNoPartitionLayout createClusterNoPartitionLayout(ClusterBluGraph graph) {
         return new ClusterNoPartitionLayout(graph);
     }

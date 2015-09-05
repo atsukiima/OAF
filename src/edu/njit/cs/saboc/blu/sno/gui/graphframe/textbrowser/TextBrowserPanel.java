@@ -4,11 +4,13 @@ import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import SnomedShared.pareataxonomy.InheritedRelationship.InheritanceType;
 import SnomedShared.pareataxonomy.GroupParentInfo;
+import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTRegion;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.utils.models.AreaTableModel;
 import edu.njit.cs.saboc.blu.sno.gui.utils.models.ChildPAreaTableModel;
@@ -201,7 +203,7 @@ public class TextBrowserPanel extends JPanel {
         JPanel parentPanel = new JPanel(new BorderLayout());
         parentPanel.setBorder(BorderFactory.createTitledBorder("Selected Partial-area Parents"));
 
-        parentModel = new ParentPAreaTableModel(graph.getPAreaTaxonomy(), new ArrayList<GroupParentInfo>());
+        parentModel = new ParentPAreaTableModel(graph.getPAreaTaxonomy(), new ArrayList<>());
 
         selectedPAreaParentTable = new JTable(parentModel) {
             public TableCellRenderer getCellRenderer(int row, int column) {
@@ -217,8 +219,9 @@ public class TextBrowserPanel extends JPanel {
             public void mouseClicked(MouseEvent me) {
                 if(me.getClickCount() == 2) {
                     if(selectedPAreaParentTable.getSelectedRow() >= 0) {
-                        GroupParentInfo parent = parentModel.getParents().get(selectedPAreaParentTable.getSelectedRow());
-                        SCTPArea parea = graph.getPAreaTaxonomy().getPAreaFromRootConceptId(parent.getParentPAreaRootId());
+                        GenericParentGroupInfo<Concept, SCTPArea> parent = parentModel.getParents().get(selectedPAreaParentTable.getSelectedRow());
+                        SCTPArea parea = parent.getParentGroup();
+                        
                         navigateTo(parea);
                     }
                 }
@@ -376,18 +379,18 @@ public class TextBrowserPanel extends JPanel {
 
     private void setPAreaParentsTable(final SCTPArea parea) {
 
-        parentModel.setData(graph.getPAreaTaxonomy(), new ArrayList<GroupParentInfo>());
+        parentModel.setData(graph.getPAreaTaxonomy(), new ArrayList<GenericParentGroupInfo<Concept, SCTPArea>>());
 
         new Thread(new Runnable() {
 
             public void run() {
                 final SCTPAreaTaxonomy taxonomy = graph.getPAreaTaxonomy();
 
-                final ArrayList<GroupParentInfo> parents = 
+                final ArrayList<GenericParentGroupInfo<Concept, SCTPArea>> parents = 
                         taxonomy.getDataSource().getPAreaParentInfo(taxonomy, parea);
 
-                Collections.sort(parents, new Comparator<GroupParentInfo>() {
-                    public int compare(GroupParentInfo a, GroupParentInfo b) {
+                Collections.sort(parents, new Comparator<GenericParentGroupInfo<Concept, SCTPArea>>() {
+                    public int compare(GenericParentGroupInfo<Concept, SCTPArea> a, GenericParentGroupInfo<Concept, SCTPArea> b) {
                         return a.getParentConcept().getName().compareToIgnoreCase(b.getParentConcept().getName());
                     }
                 });

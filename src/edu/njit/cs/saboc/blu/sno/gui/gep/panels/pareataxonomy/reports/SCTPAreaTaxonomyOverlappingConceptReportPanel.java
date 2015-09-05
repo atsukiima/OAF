@@ -11,8 +11,8 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
  *
  * @author Chris O
  */
-public class SCTPAreaTaxonomyOverlappingClassReportPanel extends GenericOverlappingConceptReportPanel<Concept, SCTPAreaTaxonomy, SCTArea, SCTPArea>{
-    public SCTPAreaTaxonomyOverlappingClassReportPanel(SCTPAreaTaxonomyConfiguration config) {
+public class SCTPAreaTaxonomyOverlappingConceptReportPanel extends GenericOverlappingConceptReportPanel<Concept, SCTPAreaTaxonomy, SCTArea, SCTPArea>{
+    public SCTPAreaTaxonomyOverlappingConceptReportPanel(SCTPAreaTaxonomyConfiguration config) {
         super(config);
     }
 }

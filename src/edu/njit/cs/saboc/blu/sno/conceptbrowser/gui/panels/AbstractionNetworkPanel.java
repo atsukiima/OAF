@@ -3,7 +3,6 @@ package edu.njit.cs.saboc.blu.sno.conceptbrowser.gui.panels;
 import SnomedShared.Concept;
 import SnomedShared.OutgoingLateralRelationship;
 import SnomedShared.PAreaDetailsForConcept;
-import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.EntryPoint;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.FocusConcept;
@@ -14,6 +13,8 @@ import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.ConceptClusterInfo;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.graph.ClusterBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.ClusterInternalGraphFrame;
@@ -124,7 +125,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                         ArrayList<Concept> hierarchies = localDS.getHierarchiesConceptBelongTo(focusConcept.getConcept());
 
                         if (!hierarchies.isEmpty()) {
-                            TribalAbstractionNetwork tan = localDS.getCompleteTAN(hierarchies.get(0));
+                            SCTTribalAbstractionNetwork tan = localDS.getCompleteTAN(hierarchies.get(0));
 
                             clusterDetailsPanel.displayDetails(tan, details);
                         }
@@ -489,7 +490,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
         private JLabel detailsLabel = new JLabel();
         private JPanel individualDetailsListPanel = new JPanel();
         
-        private TribalAbstractionNetwork tan;
+        private SCTTribalAbstractionNetwork tan;
 
         public ClusterDetailsPanel() {
             this.setBackground(Color.WHITE);
@@ -515,7 +516,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             detailsLabel.setText(text);
         }
 
-        public void displayDetails(TribalAbstractionNetwork tan, ArrayList<ConceptClusterInfo> details) {
+        public void displayDetails(SCTTribalAbstractionNetwork tan, ArrayList<ConceptClusterInfo> details) {
             if (details.isEmpty()) {
                 displayLabel("");
                 return;
@@ -527,7 +528,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
             ConceptClusterInfo firstDetail = details.get(0);
             
-            ClusterSummary cluster = tan.getClusterFromRootConceptId(firstDetail.getClusterRootId());
+            SCTCluster cluster = tan.getClusterFromRootConceptId(firstDetail.getClusterRootId());
 
             String labelText = "<html>";
 
@@ -586,9 +587,9 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
         private class ClustersDetailsEntry extends JPanel {
 
-            private ClusterSummary cluster;
+            private SCTCluster cluster;
 
-            public ClustersDetailsEntry(ClusterSummary cluster) {
+            public ClustersDetailsEntry(SCTCluster cluster) {
                 this.cluster = cluster;
                
                 this.setBackground(new Color(250, 250, 250));
@@ -639,13 +640,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             }
             
             private void displayGroupSummary() {
-                /*
-                ConceptGroupDetailsDialog dialog = new ConceptGroupDetailsDialog(
-                        tan.getClusterFromRootConceptId(cluster.getRoot().getId()), 
-                        tan,
-                        ConceptGroupDetailsDialog.DialogType.Cluster,
-                        mainPanel.getDisplayFrameListener());
-                        */
+
             }
 
             private void displayAN() {

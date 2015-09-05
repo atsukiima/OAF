@@ -4,7 +4,7 @@ import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.FrameCreationListener;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.InternalConceptBrowserFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.ClusterInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.DisjointPAreaInternalGraphFrame;
@@ -55,7 +55,7 @@ public abstract class SCTDisplayFrameListener implements FrameCreationListener {
      * number of concepts. False for displaying total number of clusters.
      * @return The newly created internal graph frame.
      */
-    public ClusterInternalGraphFrame addNewClusterGraphFrame(TribalAbstractionNetwork data, boolean setGraph, boolean conceptCount) {
+    public ClusterInternalGraphFrame addNewClusterGraphFrame(SCTTribalAbstractionNetwork data, boolean setGraph, boolean conceptCount) {
         
         ClusterInternalGraphFrame cigf = new ClusterInternalGraphFrame(mainFrame, data, true, false, this);
 

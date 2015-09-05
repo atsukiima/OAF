@@ -3,13 +3,13 @@ package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.ImportLocalData;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LoadLocalRelease;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LocalLoadStateMonitor;
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.ImportLocalDataRF2;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.RelationshipsRetrieverFactory;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
@@ -390,7 +390,7 @@ public class SCTLoaderPanel extends JPanel {
                 loadStatusDialog = LoadStatusDialog.display(parentFrame, String.format("Creating the %s Tribal Abstraction Network (TAN).", root.getName()));
 
                 if (localSourceBtn.isSelected()) {
-                    final TribalAbstractionNetwork tan;
+                    final SCTTribalAbstractionNetwork tan;
 
                     try {
                         SCTLocalDataSource dataSource = localReleasePanel.getLoadedDataSource();
@@ -404,7 +404,7 @@ public class SCTLoaderPanel extends JPanel {
                             hierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getId()));
                         }
                         
-                        tan = TANGenerator.createTANFromConceptHierarchy(dataSource.getSelectedVersion(), hierarchy);
+                        tan = TANGenerator.createTANFromConceptHierarchy(dataSource.getSelectedVersion(), hierarchy, dataSource);
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {

@@ -1,15 +1,14 @@
 package edu.njit.cs.saboc.blu.sno.graph;
 
 import SnomedShared.overlapping.ClusterSummary;
-import SnomedShared.pareataxonomy.Region;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.ShowHideGroupEntryListener;
 import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.ContainerResize;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.graph.layout.ClusterNoPartitionLayout;
-import edu.njit.cs.saboc.blu.sno.graph.layout.ClusterPartitionLayout;
 import edu.njit.cs.saboc.blu.sno.graph.layout.SCTGraphLayoutFactory;
 import edu.njit.cs.saboc.blu.sno.graph.tan.BluCluster;
 import edu.njit.cs.saboc.blu.sno.graph.tan.BluCommonOverlapSet;
@@ -29,22 +28,17 @@ public class ClusterBluGraph extends BluGraph {
 
     private SCTDisplayFrameListener displayListener;
     
-    public ClusterBluGraph(final JFrame parentFrame, final TribalAbstractionNetwork hierarchyData, 
-            boolean setGraph, boolean conceptLabels, GraphOptions options, final SCTDisplayFrameListener displayListener,
+    public ClusterBluGraph(final JFrame parentFrame, 
+            final SCTTribalAbstractionNetwork hierarchyData, 
+            final SCTDisplayFrameListener displayListener,
             GroupEntryLabelCreator<ClusterSummary> labelCreator) {
         
-        super(hierarchyData, setGraph, conceptLabels, labelCreator);
+        super(hierarchyData, true, true, labelCreator);
         
         this.displayListener = displayListener;
 
-        if (setGraph) {
-            layout = SCTGraphLayoutFactory.createClusterNoPartitionLayout(this);
-            ((ClusterNoPartitionLayout)layout).doLayout(options, showConceptCountLabels);
-
-        } else {
-            layout = SCTGraphLayoutFactory.createClusterPartitionLayout(this);
-            ((ClusterPartitionLayout) layout).doLayout(options, showConceptCountLabels);
-        }
+        layout = SCTGraphLayoutFactory.createClusterNoPartitionLayout(this);
+        ((ClusterNoPartitionLayout) layout).doLayout();
 
         partitionMenu = new JPopupMenu();
         partitionMenu.setFocusable(true);

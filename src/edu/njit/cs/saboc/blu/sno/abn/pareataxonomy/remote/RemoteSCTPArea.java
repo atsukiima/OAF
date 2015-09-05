@@ -44,16 +44,7 @@ public class RemoteSCTPArea extends SCTPArea {
     }
     
     public HashSet<GenericParentGroupInfo<Concept, SCTPArea>> getParentPAreaInfo() {
-        ArrayList<GroupParentInfo> parentGroups = dataSource.getPAreaParentInfo(sourceTaxonomy, this);
-        
-        HashSet<GenericParentGroupInfo<Concept, SCTPArea>> parentInfo = new HashSet<GenericParentGroupInfo<Concept, SCTPArea>>();
-        
-        for(GroupParentInfo parent : parentGroups) {
-            parentInfo.add(new GenericParentGroupInfo<Concept, SCTPArea>(parent.getParentConcept(), 
-                    sourceTaxonomy.getPAreaFromRootConceptId(parent.getParentPAreaRootId())));
-        }
-        
-        return parentInfo;
+        return new HashSet<>(); // TODO: This no logner works currently with the new UI layout
     }
 
     public SCTConceptHierarchy getHierarchy() {
