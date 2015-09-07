@@ -115,23 +115,7 @@ public class GraphOptionsButton extends PopupToggleButton {
         popupPanel.add(edgeOptionsPanel);
 
         JPanel pareaThresholdPanel = new JPanel();
-        pareaThresholdPanel.setBorder(BorderFactory.createTitledBorder("Display PAreas With # of Concepts Between"));
-        pareaThresholdPanel.add(new JLabel("Max: "));
-
-        HashMap<Integer, SCTPArea> pareas = data.getPAreas();
-
-        int max = 0;
-
-        for(SCTPArea summary : pareas.values()) {
-            if(summary.getConceptCount() > max) {
-                max = summary.getConceptCount();
-            }
-        }
-
-        final JTextField txtMax = new JTextField(6);
-        pareaThresholdPanel.add(txtMax);
-        txtMax.setHorizontalAlignment(JTextField.RIGHT);
-        txtMax.setText(Integer.toString(max));
+        pareaThresholdPanel.setBorder(BorderFactory.createTitledBorder("Create Aggregate Partial-area Taxonomy with Bound"));
 
         pareaThresholdPanel.add(new JLabel("Min: "));
 
@@ -145,26 +129,20 @@ public class GraphOptionsButton extends PopupToggleButton {
 
         btnOkay.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                int maxThresh = 0;
                 int minThresh = 0;
-
-                if(!txtMax.getText().trim().isEmpty()) {
-                    maxThresh = Integer.parseInt(txtMax.getText());
-                }
 
                 if(!txtMin.getText().trim().isEmpty()) {
                     minThresh = Integer.parseInt(txtMin.getText());
                 }
-
-                if (minThresh > maxThresh) {
-                    JOptionPane.showMessageDialog(null,
-                            "You have entered a minimum value that is greater than the entered maximum value.",
-                            "ERROR: Minumum Greater than Maximum",
-                            JOptionPane.ERROR_MESSAGE);
+                
+                if(minThresh < 1) {
+                    txtMin.setText("1");
                     return;
                 }
+                
+                SCTPAreaTaxonomy aggregateTaxonomy = data.getReduced(minThresh);
 
-                igf.replaceInternalFrameDataWith(data.getReduced(minThresh, maxThresh), graph.getIsAreaGraph());
+                igf.replaceInternalFrameDataWith(aggregateTaxonomy, graph.getIsAreaGraph());
             }
         });
 

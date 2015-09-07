@@ -1,4 +1,4 @@
-package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons;
+package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy;
 
 import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.InheritedRelationship;

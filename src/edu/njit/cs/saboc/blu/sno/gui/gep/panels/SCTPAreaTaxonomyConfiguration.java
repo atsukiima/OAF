@@ -7,6 +7,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.PAreaTaxo
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.SCTDisjointPAreaTaxonomyGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
@@ -32,7 +33,8 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
         DisjointPartialArea, 
         InheritedRelationship,
         SCTConceptHierarchy,
-        DisjointPAreaTaxonomy> {
+        DisjointPAreaTaxonomy,
+        SCTAggregatePArea> {
     
     private final SCTPAreaTaxonomy taxonomy;
     
@@ -179,7 +181,14 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
         SCTMultiRootedConceptHierarchy hierarchy = new SCTMultiRootedConceptHierarchy(roots);
         
         pareas.forEach( (SCTPArea parea) -> {
-            hierarchy.addAllHierarchicalRelationships(parea.getHierarchy());
+            if(taxonomy.isReduced()) {
+                SCTAggregatePArea aggregatePArea = (SCTAggregatePArea)parea;
+                
+                hierarchy.addAllHierarchicalRelationships(this.getAggregatedPAreaHierarchy(aggregatePArea));
+                
+            } else {
+                hierarchy.addAllHierarchicalRelationships(parea.getHierarchy());
+            }
         });
         
         return generator.generateDisjointAbstractionNetwork(taxonomy, pareas, hierarchy);
@@ -216,5 +225,40 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
     @Override
     public String getGroupsContainerName(SCTPArea parea) {
         return this.getRelationshipNamesCommaSeparated(parea.getRelationships());
+    }
+    
+    @Override
+    public SCTConceptHierarchy getAggregatedPAreaHierarchy(SCTAggregatePArea aggregatePArea) {
+        SCTConceptHierarchy aggregateConceptHierarchy = new SCTConceptHierarchy(aggregatePArea.getRoot());
+
+        HashSet<SCTPArea> aggregatedPAreaSet = aggregatePArea.getAggregatedGroupHierarchy().getNodesInHierarchy();
+        
+        aggregatedPAreaSet.forEach((SCTPArea aggregatedPArea) -> {
+            aggregateConceptHierarchy.addAllHierarchicalRelationships(aggregatedPArea.getHierarchy());
+        });
+
+        HashSet<Concept> conceptsInAggregatedHierarchy = aggregateConceptHierarchy.getConceptsInHierarchy();
+        
+        aggregatedPAreaSet.forEach((SCTPArea aggregatedPArea) -> {
+            conceptsInAggregatedHierarchy.add(aggregatedPArea.getRoot());
+        });
+        
+        aggregatedPAreaSet.forEach((SCTPArea aggregatedPArea) -> {
+            if(!aggregatedPArea.equals(aggregatePArea.getAggregatedGroupHierarchy().getRoots().iterator().next())) {
+                ArrayList<Concept> aggregatedPAreaClasses = aggregatedPArea.getConceptsInPArea();
+                
+                aggregatedPAreaClasses.forEach((Concept c) -> {
+                    ArrayList<Concept> parents = taxonomy.getDataSource().getConceptParents(c);
+
+                    parents.forEach((Concept parent) -> {
+                        if (conceptsInAggregatedHierarchy.contains(parent)) {
+                            aggregateConceptHierarchy.addIsA(c, parent);
+                        }
+                    });
+                });
+            }
+        });
+        
+        return aggregateConceptHierarchy;
     }
 }

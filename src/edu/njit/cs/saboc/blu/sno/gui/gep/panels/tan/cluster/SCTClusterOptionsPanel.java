@@ -5,7 +5,8 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTCreateTANFromClusterButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan.SCTCreateTANFromClusterButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan.SCTExportClusterButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTOpenBrowserButton;
 import java.util.Optional;
 
@@ -23,6 +24,8 @@ public class SCTClusterOptionsPanel extends AbstractNodeOptionsPanel<SCTCluster>
     
     private final SCTCreateTANFromClusterButton tanBtn;
     
+    private final SCTExportClusterButton exportBtn;
+    
     private final PopoutNodeDetailsButton popoutBtn;
         
     public SCTClusterOptionsPanel(SCTTANConfiguration config) {
@@ -36,6 +39,10 @@ public class SCTClusterOptionsPanel extends AbstractNodeOptionsPanel<SCTCluster>
         tanBtn = new SCTCreateTANFromClusterButton(config);
         
         super.addOptionButton(tanBtn);
+        
+        exportBtn = new SCTExportClusterButton();
+        
+        super.addOptionButton(exportBtn);
         
         popoutBtn = new PopoutNodeDetailsButton("cluster") {
 
@@ -63,8 +70,9 @@ public class SCTClusterOptionsPanel extends AbstractNodeOptionsPanel<SCTCluster>
         btnNAT.setCurrentRootConcept(cluster.getRoot());
         
         tanBtn.setCurrentCluster(cluster);
-
         
+        exportBtn.setCurrentCluster(cluster);
+
         this.enableOptionsForGroup(cluster);
     }
     
@@ -73,5 +81,6 @@ public class SCTClusterOptionsPanel extends AbstractNodeOptionsPanel<SCTCluster>
 
         btnNAT.setCurrentRootConcept(null);
         tanBtn.setCurrentCluster(null);
+        exportBtn.setCurrentCluster(null);
     }
 }

@@ -1,10 +1,9 @@
-
-package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons;
+package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportButton;
-import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.ExportAbNUtilities;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -14,28 +13,24 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author 
+ * @author Chris O
  */
-public class SCTExportDisjointPAreaButton extends ExportButton {
+public class SCTExportPAreaButton extends ExportButton {
     
-    private Optional<DisjointPartialArea> currentDisjointPArea = Optional.empty();
-    
-    private final SCTPAreaTaxonomyConfiguration config;
+    private Optional<SCTPArea> currentPArea = Optional.empty();
 
-    public SCTExportDisjointPAreaButton(SCTPAreaTaxonomyConfiguration config) {
-        super("Export Disjoint Partial-area's Classes");
-        
-        this.config = config;
+    public SCTExportPAreaButton() {
+        super("Export Partial-area's Concepts");
     }
         
-    public void setCurrentPArea(DisjointPartialArea parea) {
-        currentDisjointPArea = Optional.ofNullable(parea);
+    public void setCurrentPArea(SCTPArea parea) {
+        currentPArea = Optional.ofNullable(parea);
     }
     
     @Override
     public void exportAction() {
 
-        if (currentDisjointPArea.isPresent()) {
+        if (currentPArea.isPresent()) {
             Optional<File> exportFile = ExportAbNUtilities.displayFileSelectDialog();
 
             if (exportFile.isPresent()) {
@@ -48,7 +43,7 @@ public class SCTExportDisjointPAreaButton extends ExportButton {
                         choices, 
                         choices[0]);
 
-                ArrayList<Concept> concepts = currentDisjointPArea.get().getConceptsAsList();
+                ArrayList<Concept> concepts = currentPArea.get().getConceptsInPArea();
 
                 try(PrintWriter writer = new PrintWriter(exportFile.get())) {
                     

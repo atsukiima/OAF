@@ -5,9 +5,9 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTCreateDisjointTaxonomyButton;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTCreateTANFromAreaButton;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTExportAreaButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateDisjointTaxonomyButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateTANFromAreaButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTExportAreaButton;
 import java.util.Optional;
 
 /**
@@ -22,11 +22,12 @@ public class SCTAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTArea> {
     
     private final SCTCreateDisjointTaxonomyButton disjointTaxonomyBtn;
     
+    private final SCTCreateTANFromAreaButton tanBtn;
+    
     private final PopoutNodeDetailsButton popoutBtn;
     
     private final SCTExportAreaButton exportBtn;
     
-    private final SCTCreateTANFromAreaButton tanBtn;
 
     public SCTAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config) {
         this.config = config;

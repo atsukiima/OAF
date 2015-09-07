@@ -5,7 +5,8 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTCreateExpandedSubtaxonomyButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateDisjointTaxonomyButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateTANFromAreaButton;
 import java.util.Optional;
 
 /**
@@ -17,11 +18,23 @@ public class SCTAggregateAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTAr
     private Optional<SCTArea> selectedArea = Optional.empty();
     
     private final SCTPAreaTaxonomyConfiguration config;
-
+    
+    private final SCTCreateDisjointTaxonomyButton disjointTaxonomyBtn;
+    
+    private final SCTCreateTANFromAreaButton tanBtn;
+    
     private final PopoutNodeDetailsButton popoutBtn;
 
     public SCTAggregateAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config) {
         this.config = config;
+        
+        this.disjointTaxonomyBtn = new SCTCreateDisjointTaxonomyButton(config);
+        
+        super.addOptionButton(disjointTaxonomyBtn);
+
+        this.tanBtn = new SCTCreateTANFromAreaButton(config);
+        
+        super.addOptionButton(tanBtn);
         
         popoutBtn = new PopoutNodeDetailsButton("aggregate area") {
 
@@ -46,10 +59,16 @@ public class SCTAggregateAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTAr
     public void setContents(SCTArea area) {
         selectedArea = Optional.of(area);
         
+        disjointTaxonomyBtn.setCurrentArea(area);
+        tanBtn.setCurrentArea(area);
+        
         this.enableOptionsForGroup(area);
     }
     
     public void clearContents() {
         selectedArea = Optional.empty();
+        
+        disjointTaxonomyBtn.setCurrentArea(null);
+        tanBtn.setCurrentArea(null);
     }
 }

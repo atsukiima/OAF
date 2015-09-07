@@ -1,32 +1,32 @@
-package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons;
+package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan;
 
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANButton;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import java.util.Optional;
 import javax.swing.SwingUtilities;
 
 /**
  *
- * @author Chris O
+ * @author Den
  */
-public class SCTCreateTANFromPAreaButton extends CreateTANButton {
-    private Optional<SCTPArea> currentPArea = Optional.empty();
+public class SCTCreateTANFromClusterButton extends CreateTANButton {
+    private Optional<SCTCluster> currentPArea = Optional.empty();
     
-    private final SCTPAreaTaxonomyConfiguration config;
+    private final SCTTANConfiguration config;
     
-    public SCTCreateTANFromPAreaButton(SCTPAreaTaxonomyConfiguration config) {
+    public SCTCreateTANFromClusterButton(SCTTANConfiguration config) {
         super("partial-area");
         
         this.config = config;
     }
     
-    public void setCurrentPArea(SCTPArea parea) {
+    public void setCurrentCluster(SCTCluster parea) {
         currentPArea = Optional.ofNullable(parea);
     }
     
@@ -40,15 +40,15 @@ public class SCTCreateTANFromPAreaButton extends CreateTANButton {
                 public void run() {
                     SCTDisplayFrameListener displayListener = config.getDisplayListener();
                     
-                    SCTPArea parea = currentPArea.get();
+                    SCTCluster cluster = currentPArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getGroupName(parea)));
+                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getGroupName(cluster)));
                     
                     SCTTribalAbstractionNetwork tan = TANGenerator.createTANFromConceptHierarchy(
-                            config.getPAreaTaxonomy().getSCTVersion(), 
-                            parea.getHierarchy(),
-                            (SCTLocalDataSource)config.getPAreaTaxonomy().getDataSource());
+                            config.getTribalAbstractionNetwork().getSCTVersion(),
+                            cluster.getConceptHierarchy(),
+                            (SCTLocalDataSource)config.getTribalAbstractionNetwork().getDataSource());
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {

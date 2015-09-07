@@ -194,8 +194,12 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
      * @return 
      */
     public SCTPAreaTaxonomy getRootSubtaxonomy(SCTPArea root) {
+        
         SCTPAreaTaxonomyGenerator taxonomyGenerator = new SCTPAreaTaxonomyGenerator(
-                this.getSCTRootConcept(), this.getDataSource(), (SCTConceptHierarchy) this.getConceptHierarchy(), new InferredRelationshipsRetriever());
+                this.getSCTRootConcept(), 
+                this.getDataSource(), 
+                this.getConceptHierarchy(), 
+                new InferredRelationshipsRetriever());
 
         return super.createRootSubtaxonomy(root, taxonomyGenerator);
     }
@@ -412,18 +416,18 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
         return hd;
     }
     
-    public SCTPAreaTaxonomy getReduced(int min, int max) {
+    public SCTPAreaTaxonomy getReduced(int min) {
         SCTPAreaTaxonomyGenerator taxonomyGenerator = new SCTPAreaTaxonomyGenerator(
             this.getSCTRootConcept(), this.getDataSource(), (SCTConceptHierarchy)this.getConceptHierarchy(), new InferredRelationshipsRetriever());
         
         AggregatePAreaTaxonomyGenerator<SCTPAreaTaxonomy, SCTPArea, 
                 SCTArea, SCTRegion, Concept, 
-                InheritedRelationship, SCTConceptHierarchy, SCTAggregatePArea> aggregateGenerator = new AggregatePAreaTaxonomyGenerator();
+                InheritedRelationship, SCTConceptHierarchy, 
+                SCTAggregatePArea> aggregateGenerator = new AggregatePAreaTaxonomyGenerator();
         
         SCTPAreaTaxonomy aggregateTaxonomy = aggregateGenerator.createAggregatePAreaTaxonomy(this, 
-                taxonomyGenerator, new SCTAggregatePAreaTaxonomyGenerator(), min, max);
+                taxonomyGenerator, new SCTAggregatePAreaTaxonomyGenerator(), min);
 
         return aggregateTaxonomy;
     }
-
 }

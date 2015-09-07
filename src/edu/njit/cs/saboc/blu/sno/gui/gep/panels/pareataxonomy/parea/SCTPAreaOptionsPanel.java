@@ -6,9 +6,9 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNod
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTCreateRootSubtaxonomyButton;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTCreateTANFromPAreaButton;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTExportPAreaButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateRootSubtaxonomyButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateTANFromPAreaButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTExportPAreaButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTOpenBrowserButton;
 import java.util.Optional;
 

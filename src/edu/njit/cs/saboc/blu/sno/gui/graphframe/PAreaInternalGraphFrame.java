@@ -200,7 +200,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
             };
         }
         
-                SCTPAreaTaxonomyGEPConfiguration optionsConfig;
+        SCTPAreaTaxonomyGEPConfiguration optionsConfig;
         
         if(data.isReduced()) {
             optionsConfig = new ReducedPAreaOptionsConfiguration(parentFrame, this, data, displayListener);

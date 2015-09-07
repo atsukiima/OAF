@@ -1,8 +1,9 @@
-package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons;
+package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANButton;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
@@ -63,7 +64,13 @@ public class SCTCreateTANFromAreaButton extends CreateTANButton {
                     SCTMultiRootedConceptHierarchy hierarchy = new SCTMultiRootedConceptHierarchy(patriarchs);
                     
                     pareas.forEach((SCTPArea parea) -> {
-                        hierarchy.addAllHierarchicalRelationships(parea.getHierarchy());
+                        if(config.getPAreaTaxonomy().isReduced()) {
+                            SCTAggregatePArea aggregatePArea = (SCTAggregatePArea)parea;
+                            
+                            hierarchy.addAllHierarchicalRelationships(config.getAggregatedPAreaHierarchy(aggregatePArea));
+                        } else {
+                            hierarchy.addAllHierarchicalRelationships(parea.getHierarchy());
+                        }
                     });
   
                     SCTTribalAbstractionNetwork tan = TANGenerator.deriveTANFromMultiRootedHierarchy(hierarchy, 

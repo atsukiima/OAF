@@ -1,12 +1,15 @@
-package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons;
+package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportButton;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.ExportAbNUtilities;
+import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Optional;
 import javax.swing.JOptionPane;
 
@@ -14,35 +17,36 @@ import javax.swing.JOptionPane;
  *
  * @author Chris O
  */
-public class SCTExportPAreaButton extends ExportButton {
+public class SCTExportClusterButton extends ExportButton {
     
-    private Optional<SCTPArea> currentPArea = Optional.empty();
+    private Optional<SCTCluster> currentCluster = Optional.empty();
 
-    public SCTExportPAreaButton() {
-        super("Export Partial-area's Concepts");
+    public SCTExportClusterButton() {
+        super("Export Cluster's Concepts");
     }
         
-    public void setCurrentPArea(SCTPArea parea) {
-        currentPArea = Optional.ofNullable(parea);
+    public void setCurrentCluster(SCTCluster cluster) {
+        currentCluster = Optional.ofNullable(cluster);
     }
     
     @Override
     public void exportAction() {
 
-        if (currentPArea.isPresent()) {
+        if (currentCluster.isPresent()) {
             Optional<File> exportFile = ExportAbNUtilities.displayFileSelectDialog();
 
             if (exportFile.isPresent()) {
                 String[] choices = {"Concept ID and Concept Name", "Concept Name Only", "Concept ID Only"};
                 
-                String input = (String) JOptionPane.showInputDialog(null, "Select Partial-area Export Option",
+                String input = (String) JOptionPane.showInputDialog(null, "Select Cluster Export Option",
                         "Choose an Export Option",
                         JOptionPane.QUESTION_MESSAGE,
                         null,
                         choices, 
                         choices[0]);
 
-                ArrayList<Concept> concepts = currentPArea.get().getConceptsInPArea();
+                ArrayList<Concept> concepts = new ArrayList<>(currentCluster.get().getConcepts());
+                Collections.sort(concepts, new ConceptNameComparator());
 
                 try(PrintWriter writer = new PrintWriter(exportFile.get())) {
                     
