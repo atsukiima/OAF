@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy;
 
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.SCTDisjointPAreaTaxonomyGEPConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.SCTDisjointPAreaTaxonomyGEPConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 
 /**

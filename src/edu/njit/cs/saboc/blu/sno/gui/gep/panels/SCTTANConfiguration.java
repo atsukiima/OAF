@@ -7,10 +7,11 @@ import SnomedShared.overlapping.EntryPoint;
 import SnomedShared.overlapping.EntryPointSet;
 import edu.njit.cs.saboc.blu.core.abn.OverlappingConceptResult;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.BLUPartitionedAbNConfiguration;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.EntitySelectionListener;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.SCTTANGEPConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.SCTTANGEPConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -221,6 +222,16 @@ public class SCTTANConfiguration implements BLUPartitionedAbNConfiguration<
         Collections.sort(clusterConcepts, new ConceptNameComparator());
         
         return clusterConcepts;
+    }
+    
+    @Override
+    public ArrayList<EntitySelectionListener<Concept>> getConceptSelectedListeners() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ArrayList<EntitySelectionListener<SCTCluster>> getGroupSelectedListeners() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

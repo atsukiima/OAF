@@ -1,4 +1,4 @@
-package edu.njit.cs.saboc.blu.sno.gui.gep.listeners;
+package edu.njit.cs.saboc.blu.sno.gui.gep.configuration;
 
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.BLUGraphConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
@@ -20,7 +20,12 @@ public class SCTDisjointPAreaTaxonomyGEPConfiguration extends BLUGraphConfigurat
     
     private final SCTDisjointPAreaTaxonomyConfiguration uiConfiguration;
     
-    public SCTDisjointPAreaTaxonomyGEPConfiguration(JFrame parentFrame, DisjointPAreaTaxonomy taxonomy, SCTDisplayFrameListener displayListener) {
+    public SCTDisjointPAreaTaxonomyGEPConfiguration(JFrame parentFrame, 
+            DisjointPAreaTaxonomy taxonomy, 
+            SCTDisplayFrameListener displayListener) {
+        
+        super("Disjoint Partial-area Taxonomy");
+
         this.parentFrame = parentFrame;
         this.displayListener = displayListener;
         

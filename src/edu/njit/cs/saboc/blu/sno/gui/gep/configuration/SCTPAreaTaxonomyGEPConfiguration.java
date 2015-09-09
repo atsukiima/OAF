@@ -1,4 +1,4 @@
-package edu.njit.cs.saboc.blu.sno.gui.gep.listeners;
+package edu.njit.cs.saboc.blu.sno.gui.gep.configuration;
 
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.BLUGraphConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
@@ -29,6 +29,8 @@ public class SCTPAreaTaxonomyGEPConfiguration extends BLUGraphConfiguration {
             final PAreaInternalGraphFrame graphFrame,
             final SCTPAreaTaxonomy taxonomy, 
             final SCTDisplayFrameListener displayListener) {
+        
+        super("Partial-area Taxonomy");
         
         this.taxonomy = taxonomy;
         this.displayListener = displayListener;

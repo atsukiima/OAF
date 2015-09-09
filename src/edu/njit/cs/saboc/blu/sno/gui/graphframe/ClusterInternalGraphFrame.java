@@ -14,7 +14,7 @@ import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.graph.ClusterBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.SCTTANGEPConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.SCTTANGEPConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.reports.SCTTANReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.TANInternalSearchButton;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;

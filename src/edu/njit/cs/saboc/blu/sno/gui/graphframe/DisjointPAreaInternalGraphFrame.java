@@ -9,7 +9,7 @@ import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
 import edu.njit.cs.saboc.blu.sno.graph.DisjointPAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.SCTDisjointPAreaTaxonomyGEPConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.SCTDisjointPAreaTaxonomyGEPConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.UtilityMethods;
 import javax.swing.JFrame;
 

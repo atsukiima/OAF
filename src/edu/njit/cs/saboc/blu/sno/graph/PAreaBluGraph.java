@@ -12,7 +12,7 @@ import edu.njit.cs.saboc.blu.sno.graph.layout.NoRegionsLayout;
 import edu.njit.cs.saboc.blu.sno.graph.layout.RegionsLayout;
 import edu.njit.cs.saboc.blu.sno.graph.layout.SCTGraphLayoutFactory;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.SCTPAreaTaxonomyGEPConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.SCTPAreaTaxonomyGEPConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

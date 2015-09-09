@@ -18,7 +18,8 @@ public class SCTClusterHierarchyPanel extends AbstractGroupHierarchyPanel<Concep
     private final SCTTANConfiguration config;
 
     public SCTClusterHierarchyPanel(SCTTANConfiguration config) {
-        super(  new SCTParentClusterTableModel(config),
+        super(config,
+                new SCTParentClusterTableModel(config),
                 new SCTChildClusterTableModel(config));
         
         this.config = config;

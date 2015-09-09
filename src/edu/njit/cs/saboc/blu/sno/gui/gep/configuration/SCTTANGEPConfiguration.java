@@ -1,4 +1,4 @@
-package edu.njit.cs.saboc.blu.sno.gui.gep.listeners;
+package edu.njit.cs.saboc.blu.sno.gui.gep.configuration;
 
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.BLUGraphConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
@@ -23,6 +23,8 @@ public class SCTTANGEPConfiguration extends BLUGraphConfiguration {
             final ClusterInternalGraphFrame graphFrame,
             final SCTTribalAbstractionNetwork tan, 
             final SCTDisplayFrameListener displayListener) {
+        
+        super("Tribal Abstraction Network");
 
         this.config = new SCTTANConfiguration(tan, displayListener, this);
     }

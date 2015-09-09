@@ -1,4 +1,4 @@
-package edu.njit.cs.saboc.blu.sno.gui.gep.listeners;
+package edu.njit.cs.saboc.blu.sno.gui.gep.configuration;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;

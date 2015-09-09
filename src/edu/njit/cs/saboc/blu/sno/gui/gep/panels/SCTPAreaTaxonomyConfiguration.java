@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels;
 import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import edu.njit.cs.saboc.blu.core.abn.OverlappingConceptResult;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.EntitySelectionListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.PAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
@@ -14,7 +15,7 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.listeners.SCTPAreaTaxonomyGEPConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.SCTPAreaTaxonomyGEPConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +36,7 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
         SCTConceptHierarchy,
         DisjointPAreaTaxonomy,
         SCTAggregatePArea> {
-    
+
     private final SCTPAreaTaxonomy taxonomy;
     
     private final SCTDisplayFrameListener displayListener;
@@ -45,7 +46,6 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
     public SCTPAreaTaxonomyConfiguration(SCTPAreaTaxonomy taxonomy, 
             SCTDisplayFrameListener displayListener, 
             SCTPAreaTaxonomyGEPConfiguration gepConfig) {
-        
         
         this.taxonomy = taxonomy;
         this.displayListener = displayListener;
@@ -260,5 +260,15 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
         });
         
         return aggregateConceptHierarchy;
+    }
+    
+    @Override
+    public ArrayList<EntitySelectionListener<Concept>> getConceptSelectedListeners() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ArrayList<EntitySelectionListener<SCTPArea>> getGroupSelectedListeners() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
