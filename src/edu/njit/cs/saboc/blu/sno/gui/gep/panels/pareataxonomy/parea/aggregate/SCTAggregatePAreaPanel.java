@@ -2,7 +2,6 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea.aggregate;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.GenericAggregatePAreaPanel;
-import edu.njit.cs.saboc.blu.owl.gui.gep.panels.pareataxonomy.parea.aggregate.SCTAggregatedPAreaConceptHierarchyPanel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;

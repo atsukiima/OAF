@@ -2,8 +2,9 @@ package edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
-import edu.njit.cs.saboc.blu.core.abn.reduced.AggregateableConceptGroup;
+import edu.njit.cs.saboc.blu.core.abn.aggregate.AggregateableConceptGroup;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -12,7 +13,6 @@ import java.util.HashSet;
  */
 public class SCTAggregatePArea extends SCTPArea implements AggregateableConceptGroup<Concept, SCTPArea> {
 
-    
     private GroupHierarchy<SCTPArea> reducedPAreaHierarchy;
     
     public SCTAggregatePArea(SCTPArea parea, HashSet<Integer> reducedParentIds, GroupHierarchy<SCTPArea> reducedPAreaHierarchy) {
@@ -43,4 +43,15 @@ public class SCTAggregatePArea extends SCTPArea implements AggregateableConceptG
         
         return allConcepts;
     }
+    
+    @Override
+    public ArrayList<Concept> getConceptsInPArea() {       
+        return new ArrayList<>(getAllGroupsConcepts()); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int getConceptCount() {
+        return getAllGroupsConcepts().size();
+    }
+
 }

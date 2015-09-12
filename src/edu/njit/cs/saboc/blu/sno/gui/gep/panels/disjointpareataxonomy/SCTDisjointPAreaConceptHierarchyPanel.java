@@ -1,4 +1,4 @@
-package edu.njit.cs.saboc.blu.owl.gui.gep.panels.disjointpareataxonomy;
+package edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.HierarchyPanelClickListener;
@@ -6,7 +6,6 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.disjointabn.GenericDisj
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptHierarchyViewPanel;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.SCTDisjointPAreaTaxonomyConfiguration;
 
 /**
  *
@@ -21,7 +20,7 @@ public class SCTDisjointPAreaConceptHierarchyPanel extends GenericDisjointGroupC
                 "Disjoint Partial-area",
                 new HierarchyPanelClickListener<Concept>() {
                     public void conceptDoubleClicked(Concept c) {
-
+                        config.getGroupConceptListListener().entityDoubleClicked(c);
                     }
                 }), 
                 config);

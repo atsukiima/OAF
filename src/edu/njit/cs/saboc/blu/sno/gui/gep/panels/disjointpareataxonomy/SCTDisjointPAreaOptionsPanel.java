@@ -4,7 +4,6 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPane
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTOpenBrowserButton;
 import java.util.Optional;
 
@@ -16,17 +15,17 @@ public class SCTDisjointPAreaOptionsPanel extends AbstractNodeOptionsPanel<Disjo
     
     private Optional<DisjointPartialArea> selectedPArea = Optional.empty();
     
-    private final SCTPAreaTaxonomyConfiguration configuration;
+    private final SCTDisjointPAreaTaxonomyConfiguration configuration;
     
     private final SCTOpenBrowserButton btnNAT;
     
     private final PopoutNodeDetailsButton popoutBtn;
 
-    public SCTDisjointPAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config) {
+    public SCTDisjointPAreaOptionsPanel(SCTDisjointPAreaTaxonomyConfiguration config) {
 
         this.configuration = config;
         
-        btnNAT = new SCTOpenBrowserButton(config.getPAreaTaxonomy().getDataSource(),
+        btnNAT = new SCTOpenBrowserButton(config.getDisjointPAreaTaxonomy().getSourcePAreaTaxonomy().getDataSource(),
                 "aggregate partial-area", config.getDisplayListener());
 
         super.addOptionButton(btnNAT);

@@ -22,6 +22,7 @@ public class SCTPAreaTaxonomyReportDialog extends JDialog {
     private final JTabbedPane tabbedPane;
     
     public SCTPAreaTaxonomyReportDialog(SCTPAreaTaxonomyConfiguration config) {
+        
         levelReportPanel = new SCTPAreaTaxonomyLevelReportPanel(config);
         areaReportPanel = new SCTPAreaTaxonomyAreaReportPanel(config);
         overlappingClassPanel = new SCTPAreaTaxonomyOverlappingConceptReportPanel(config);

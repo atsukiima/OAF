@@ -25,6 +25,8 @@ public class SCTClusterDetailsPanel extends AbstractNodeDetailsPanel<SCTCluster,
               new SCTConceptList());
         
         this.tan = config.getTribalAbstractionNetwork();
+        
+        getConceptList().addEntitySelectionListener(config.getGroupConceptListListener());
     }
     
     @Override

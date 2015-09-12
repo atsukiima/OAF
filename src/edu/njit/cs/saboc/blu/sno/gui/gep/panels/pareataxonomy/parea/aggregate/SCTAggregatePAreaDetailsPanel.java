@@ -25,6 +25,8 @@ public class SCTAggregatePAreaDetailsPanel extends AbstractNodeDetailsPanel<SCTA
               new SCTConceptList());
         
         this.taxonomy = config.getPAreaTaxonomy();
+        
+        getConceptList().addEntitySelectionListener(config.getGroupConceptListListener());
     }
     
     @Override

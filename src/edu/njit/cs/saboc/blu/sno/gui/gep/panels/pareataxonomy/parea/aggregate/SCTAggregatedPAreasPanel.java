@@ -19,7 +19,7 @@ import java.util.HashSet;
 public class SCTAggregatedPAreasPanel extends AbstractAggregatedGroupsPanel<SCTAggregatePArea, SCTPArea, Concept> {
 
     public SCTAggregatedPAreasPanel(SCTPAreaTaxonomyConfiguration config) {
-        super(new SCTPAreaList(config), 
+        super(new SCTPAreaList(new SCTAggregatedPAreaListTableModel(config)), 
                 new SCTConceptList(), 
                 config);
     }

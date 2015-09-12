@@ -1,4 +1,4 @@
-package edu.njit.cs.saboc.blu.owl.gui.gep.panels.pareataxonomy.parea.aggregate;
+package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea.aggregate;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.HierarchyPanelClickListener;
@@ -21,7 +21,7 @@ public class SCTAggregatedPAreaConceptHierarchyPanel extends PAreaConceptHierarc
                 "Partial-area",
                 new HierarchyPanelClickListener<Concept>() {
                     public void conceptDoubleClicked(Concept c) {
-                       
+                        config.getGroupConceptListListener().entityDoubleClicked(c);
                     }
                 }), config);
     }

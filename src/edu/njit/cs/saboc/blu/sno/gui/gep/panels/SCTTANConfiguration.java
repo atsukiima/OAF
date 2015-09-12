@@ -5,13 +5,17 @@ import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.CommonOverlapSet;
 import SnomedShared.overlapping.EntryPoint;
 import SnomedShared.overlapping.EntryPointSet;
+import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
 import edu.njit.cs.saboc.blu.core.abn.OverlappingConceptResult;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.BLUPartitionedAbNConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.EntitySelectionListener;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.NavigateToGroupListener;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.ParentGroupSelectedListener;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.SCTTANGEPConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayConceptBrowserListener;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -225,13 +229,17 @@ public class SCTTANConfiguration implements BLUPartitionedAbNConfiguration<
     }
     
     @Override
-    public ArrayList<EntitySelectionListener<Concept>> getConceptSelectedListeners() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public EntitySelectionListener<Concept> getGroupConceptListListener() {
+        return new DisplayConceptBrowserListener(this.getDisplayListener(), this.getTribalAbstractionNetwork().getDataSource());
     }
 
     @Override
-    public ArrayList<EntitySelectionListener<SCTCluster>> getGroupSelectedListeners() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public EntitySelectionListener<SCTCluster> getChildGroupListener() {
+        return new NavigateToGroupListener<>(this.getGEPConfiguration().getGEP());
     }
-
+    
+    @Override
+    public EntitySelectionListener<GenericParentGroupInfo<Concept, SCTCluster>> getParentGroupListener() {
+        return new ParentGroupSelectedListener<>(this.getGEPConfiguration().getGEP());
+    }
 }

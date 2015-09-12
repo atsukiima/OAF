@@ -15,7 +15,8 @@ public class SCTAggregatePAreaHierarchyPanel extends GenericPAreaHierarchyPanel<
         super(
                 new SCTAggregateParentPAreaTableModel(config),
                 new SCTAggregateChildPAreaTableModel(config),
-                config.getPAreaTaxonomy(), config);
+                config.getPAreaTaxonomy(), 
+                config);
     }
 }
 

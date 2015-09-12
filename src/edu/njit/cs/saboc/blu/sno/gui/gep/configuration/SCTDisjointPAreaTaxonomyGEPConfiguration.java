@@ -32,7 +32,7 @@ public class SCTDisjointPAreaTaxonomyGEPConfiguration extends BLUGraphConfigurat
         this.uiConfiguration = new SCTDisjointPAreaTaxonomyConfiguration(taxonomy, displayListener, this);
     }
     
-    public SCTPAreaTaxonomyConfiguration getConfiguration() {
+    public SCTDisjointPAreaTaxonomyConfiguration getConfiguration() {
         return uiConfiguration;
     }
     

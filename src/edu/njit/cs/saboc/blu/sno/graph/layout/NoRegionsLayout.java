@@ -43,7 +43,7 @@ public class NoRegionsLayout extends GenericNoRegionsPAreaGraphLayout<
         Concept,
         InheritedRelationship,
         SCTConceptHierarchy> {
-    
+
     public NoRegionsLayout(BluGraph graph, SCTPAreaTaxonomy hierarchyData, SCTPAreaTaxonomyConfiguration config) {
         super(graph, hierarchyData, config);        
     }
@@ -65,7 +65,7 @@ public class NoRegionsLayout extends GenericNoRegionsPAreaGraphLayout<
 
     @Override
     protected ArrayList<String> getAreaRelationshipNames(SCTArea a) {
-        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<String> names = new ArrayList<>();
         
         HashSet<Long> relIds = a.getRelationshipIds();
         

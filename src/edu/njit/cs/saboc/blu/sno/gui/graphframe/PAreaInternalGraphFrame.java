@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.abn.reduced.AggregateableConceptGroup;
+import edu.njit.cs.saboc.blu.core.abn.aggregate.AggregateableConceptGroup;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
@@ -14,10 +14,10 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.SCTPAreaTaxonomyGEPConfiguration;
-import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.ReducedPAreaOptionsConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTAggregateTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.reports.SCTPAreaTaxonomyReportDialog;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.reports.aggregate.SCTAggregatePAreaTaxonomyReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.GraphOptionsButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.RelationshipSelectionButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.PAreaInternalSearchButton;
@@ -46,31 +46,46 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
     private final SCTDisplayFrameListener displayListener;
     
     private SCTPAreaTaxonomyGEPConfiguration currentConfiguration;
+    
+    private SCTPAreaTaxonomy currentTaxonomy;
 
-    public PAreaInternalGraphFrame(final JFrame parentFrame, final SCTPAreaTaxonomy data, 
-            boolean areaGraph, SCTDisplayFrameListener displayListener) {
+    public PAreaInternalGraphFrame(final JFrame parentFrame, 
+            final SCTPAreaTaxonomy taxonomy, 
+            boolean areaGraph, 
+            SCTDisplayFrameListener displayListener) {
         
         super(parentFrame, "SNOMED CT Partial-area Taxonomy");
         
         this.displayListener = displayListener;
+        
+        this.currentTaxonomy = taxonomy;
 
-        String frameTitle = UtilityMethods.getPrintableVersionName(data.getSCTVersion()) + " | Hierarchy: " + data.getSCTRootConcept().getName();
+        String frameTitle = UtilityMethods.getPrintableVersionName(taxonomy.getSCTVersion()) + " | Hierarchy: " + taxonomy.getSCTRootConcept().getName();
 
-        if (!data.getSCTRootConcept().equals(data.getRootPArea().getRoot())) {
-            frameTitle += " | Subhierarchy Rooted At: " + data.getRootPArea().getRoot().getName();
+        if (!taxonomy.getSCTRootConcept().equals(taxonomy.getRootPArea().getRoot())) {
+            frameTitle += " | Subhierarchy Rooted At: " + taxonomy.getRootPArea().getRoot().getName();
         }
 
         this.setTitle(frameTitle);
 
         openReportsBtn = new JButton("Partial-area Taxonomy Reports and Metrics");
         openReportsBtn.addActionListener((ActionEvent ae) -> {
-            SCTPAreaTaxonomyReportDialog reportDialog = new SCTPAreaTaxonomyReportDialog(currentConfiguration.getConfiguration());
-            reportDialog.showReports(currentConfiguration.getConfiguration().getPAreaTaxonomy());
-            reportDialog.setModal(true);
             
-            reportDialog.setVisible(true);
+            if (currentTaxonomy.isReduced()) {
+                SCTAggregatePAreaTaxonomyReportDialog reportDialog = new SCTAggregatePAreaTaxonomyReportDialog(currentConfiguration.getConfiguration());
+                reportDialog.showReports(currentConfiguration.getConfiguration().getPAreaTaxonomy());
+                reportDialog.setModal(true);
+
+                reportDialog.setVisible(true);
+            } else {
+                SCTPAreaTaxonomyReportDialog reportDialog = new SCTPAreaTaxonomyReportDialog(currentConfiguration.getConfiguration());
+                reportDialog.showReports(currentConfiguration.getConfiguration().getPAreaTaxonomy());
+                reportDialog.setModal(true);
+
+                reportDialog.setVisible(true);
+            }
         });
-        
+
         addReportButtonToMenu(openReportsBtn);
         
         JButton exportBtn = new JButton("Export Taxonomy");
@@ -85,13 +100,13 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
         addReportButtonToMenu(exportBtn);
         
-        final RelationshipSelectionButton filterRelationships = new RelationshipSelectionButton(parentFrame, this, data);
+        final RelationshipSelectionButton filterRelationships = new RelationshipSelectionButton(parentFrame, this, taxonomy);
 
-        optionsButton = new GraphOptionsButton(parentFrame, this, data);
+        optionsButton = new GraphOptionsButton(parentFrame, this, taxonomy);
 
         searchButton = new PAreaInternalSearchButton(parentFrame, this);
 
-        replaceInternalFrameDataWith(data, areaGraph);
+        replaceInternalFrameDataWith(taxonomy, areaGraph);
 
         optionsButton.setToolTipText("Click to open the options menu for this graph.");
         filterRelationships.setToolTipText("Click to open the menu to filter relationships in this graph");
@@ -154,13 +169,15 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
                 areaCount, pareaCount, conceptCount));
     }
 
-    public void replaceInternalFrameDataWith(final SCTPAreaTaxonomy data, final boolean areaGraph) {
+    public void replaceInternalFrameDataWith(final SCTPAreaTaxonomy taxonomy, final boolean areaGraph) {
+        
+        this.currentTaxonomy = taxonomy;
         
         GroupEntryLabelCreator labelCreator;
         
         AbNPainter abnPainter;
         
-        if (data.isReduced()) {
+        if (taxonomy.isReduced()) {
             abnPainter = new SCTAggregateTaxonomyPainter();
             
             labelCreator = new GroupEntryLabelCreator<SCTPArea>() {
@@ -200,15 +217,9 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
             };
         }
         
-        SCTPAreaTaxonomyGEPConfiguration optionsConfig;
-        
-        if(data.isReduced()) {
-            optionsConfig = new ReducedPAreaOptionsConfiguration(parentFrame, this, data, displayListener);
-        } else {
-            optionsConfig = new SCTPAreaTaxonomyGEPConfiguration(parentFrame, this, data, displayListener);
-        }
-        
-        BluGraph graph = new PAreaBluGraph(parentFrame, data, areaGraph, displayListener, labelCreator, optionsConfig);
+        SCTPAreaTaxonomyGEPConfiguration optionsConfig = new SCTPAreaTaxonomyGEPConfiguration(parentFrame, this, taxonomy, displayListener);
+
+        BluGraph graph = new PAreaBluGraph(parentFrame, taxonomy, areaGraph, displayListener, labelCreator, optionsConfig);
 
         currentConfiguration = optionsConfig;
 
@@ -216,7 +227,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         
         tbp = null;
 
-        updateHierarchyInfoLabel((SCTPAreaTaxonomy) data);
+        updateHierarchyInfoLabel((SCTPAreaTaxonomy) taxonomy);
 
         searchButton.setGraph(graph);
         optionsButton.setGraph(graph);

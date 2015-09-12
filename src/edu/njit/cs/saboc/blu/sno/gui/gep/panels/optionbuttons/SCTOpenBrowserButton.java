@@ -42,12 +42,11 @@ public class SCTOpenBrowserButton extends OpenBrowserButton {
 
                     loadStatusDialog = LoadStatusDialog.display(null,
                             String.format("Opening SNOMED CT NAT Browser to %s", currentRootConcept.get().getName()));
-                    
-                    InternalConceptBrowserFrame browserFrame = displayListener.addNewBrowserFrame(currentRootConcept.get(), 
-                            dataSource);
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
+                            displayListener.addNewBrowserFrame(currentRootConcept.get(), dataSource);
+                            
                             loadStatusDialog.setVisible(false);
                             loadStatusDialog.dispose();
                         }

@@ -21,7 +21,7 @@ public class SCTPAreaConceptHierarchyPanel extends PAreaConceptHierarchyPanel<Co
                 "Partial-area",
                 new HierarchyPanelClickListener<Concept>() {
                     public void conceptDoubleClicked(Concept c) {
-                       
+                        config.getGroupConceptListListener().entityDoubleClicked(c);
                     }
                 }), config);
     }

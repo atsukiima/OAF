@@ -16,6 +16,8 @@ public class SCTDisjointPAreaDetailsPanel extends AbstractNodeDetailsPanel<Disjo
         super(new SCTDisjointPAreaSummaryPanel(config), 
                 new SCTDisjointPAreaOptionsPanel(config), 
                 new SCTConceptList());
+        
+        getConceptList().addEntitySelectionListener(config.getGroupConceptListListener());
     }
     
     @Override

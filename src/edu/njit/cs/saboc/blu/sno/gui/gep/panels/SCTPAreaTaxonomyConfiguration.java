@@ -2,8 +2,11 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels;
 
 import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.InheritedRelationship;
+import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
 import edu.njit.cs.saboc.blu.core.abn.OverlappingConceptResult;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.EntitySelectionListener;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.NavigateToGroupListener;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.ParentGroupSelectedListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.PAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
@@ -16,6 +19,7 @@ import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.SCTPAreaTaxonomyGEPConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayConceptBrowserListener;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +40,8 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
         SCTConceptHierarchy,
         DisjointPAreaTaxonomy,
         SCTAggregatePArea> {
+
+
 
     private final SCTPAreaTaxonomy taxonomy;
     
@@ -263,12 +269,17 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
     }
     
     @Override
-    public ArrayList<EntitySelectionListener<Concept>> getConceptSelectedListeners() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public EntitySelectionListener<Concept> getGroupConceptListListener() {
+        return new DisplayConceptBrowserListener(this.getDisplayListener(), this.getPAreaTaxonomy().getDataSource());
     }
 
     @Override
-    public ArrayList<EntitySelectionListener<SCTPArea>> getGroupSelectedListeners() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public EntitySelectionListener<SCTPArea> getChildGroupListener() {
+        return new NavigateToGroupListener<>(this.getGEPConfiguration().getGEP());
+    }
+    
+    @Override
+    public EntitySelectionListener<GenericParentGroupInfo<Concept, SCTPArea>> getParentGroupListener() {
+        return new ParentGroupSelectedListener<>(this.getGEPConfiguration().getGEP());
     }
 }

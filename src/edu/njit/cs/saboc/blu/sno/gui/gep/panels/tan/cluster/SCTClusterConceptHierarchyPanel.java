@@ -24,10 +24,10 @@ public class SCTClusterConceptHierarchyPanel extends AbNNodeInformationPanel<SCT
                 "Cluster",
                 new HierarchyPanelClickListener<Concept>() {
                     public void conceptDoubleClicked(Concept c) {
-                       
+                        config.getGroupConceptListListener().entityDoubleClicked(c);
                     }
                 });
-        
+
         this.setLayout(new BorderLayout());
         
         this.add(new JScrollPane(hierarchyPanel), BorderLayout.CENTER);

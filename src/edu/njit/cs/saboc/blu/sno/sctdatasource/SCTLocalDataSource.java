@@ -428,7 +428,7 @@ public class SCTLocalDataSource implements SCTDataSource {
         HashSet<Concept> concepts = new HashSet<Concept>();
 
         for (SCTPArea parea : pareas) {
-            concepts.addAll(parea.getHierarchy().getNodesInHierarchy());
+            concepts.addAll(parea.getConceptsInPArea());
         }
 
         return concepts.size();

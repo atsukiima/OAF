@@ -5,14 +5,18 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.disjointabn.GenericDisj
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaList;
 
 /**
  *
  * @author Chris O
  */
-public class SCTDisjointPAreaSummaryPanel extends GenericDisjointGroupSummaryPanel <Concept, SCTPArea, DisjointPAreaTaxonomy, DisjointPartialArea>{
+public class SCTDisjointPAreaSummaryPanel extends GenericDisjointGroupSummaryPanel <Concept, SCTPArea, DisjointPAreaTaxonomy, DisjointPartialArea> {
+    
     public SCTDisjointPAreaSummaryPanel(SCTDisjointPAreaTaxonomyConfiguration config) {
-        super(new SCTPAreaList(config), config.getDisjointPAreaTaxonomy(), config);
+        super(
+                new SCTOverlappingPAreaList(config), 
+                config.getDisjointPAreaTaxonomy(), 
+                config
+        );
     }
 }
