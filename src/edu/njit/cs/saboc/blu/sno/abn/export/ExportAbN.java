@@ -43,11 +43,10 @@ public class ExportAbN {
             return;
         }
         
-        if(!file.getName().endsWith(".csv")) {
-            file = new File(file.getAbsolutePath() + ".csv");
+        if(!file.getName().endsWith(".txt")) {
+            file = new File(file.getAbsolutePath() + ".txt");
         }
         
-
         try { 
             PrintWriter writer = new PrintWriter(file);
             
@@ -102,7 +101,5 @@ public class ExportAbN {
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();
         }
-
-
     }
 }
