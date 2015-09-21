@@ -20,11 +20,16 @@ import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHi
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.SCTPAreaTaxonomyGEPConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayConceptBrowserListener;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Optional;
+import java.util.Queue;
 
 /**
  *
@@ -40,8 +45,6 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
         SCTConceptHierarchy,
         DisjointPAreaTaxonomy,
         SCTAggregatePArea> {
-
-
 
     private final SCTPAreaTaxonomy taxonomy;
     
@@ -172,32 +175,163 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
         return pareaConcepts;
     }
     
-    @Override
-    public DisjointPAreaTaxonomy createDisjointAbN(SCTArea area) {
+    private DisjointPAreaTaxonomy createSimpleDisjointPAreaTaxonomy(SCTArea area) {
         SCTDisjointPAreaTaxonomyGenerator generator = new SCTDisjointPAreaTaxonomyGenerator();
-        
+
         HashSet<SCTPArea> pareas = this.getContainerGroupSet(area);
-        
+
         HashSet<Concept> roots = new HashSet<>();
-        
-        pareas.forEach( (SCTPArea parea) -> {
+
+        pareas.forEach((SCTPArea parea) -> {
             roots.add(parea.getRoot());
         });
-        
+
         SCTMultiRootedConceptHierarchy hierarchy = new SCTMultiRootedConceptHierarchy(roots);
-        
-        pareas.forEach( (SCTPArea parea) -> {
-            if(taxonomy.isReduced()) {
-                SCTAggregatePArea aggregatePArea = (SCTAggregatePArea)parea;
-                
+
+        pareas.forEach((SCTPArea parea) -> {
+            if (taxonomy.isReduced()) {
+                SCTAggregatePArea aggregatePArea = (SCTAggregatePArea) parea;
+
                 hierarchy.addAllHierarchicalRelationships(this.getAggregatedPAreaHierarchy(aggregatePArea));
-                
             } else {
                 hierarchy.addAllHierarchicalRelationships(parea.getHierarchy());
             }
         });
-        
+
         return generator.generateDisjointAbstractionNetwork(taxonomy, pareas, hierarchy);
+    }
+    
+    private Optional<SCTArea> getCompleteArea(SCTArea area) {
+        SCTLocalDataSource dataSource = (SCTLocalDataSource)taxonomy.getDataSource();
+        
+        ArrayList<Concept> rootHierarchies = dataSource.getHierarchiesConceptBelongTo(taxonomy.getRootGroup().getRoot());
+        
+        Concept hierarchyRoot = rootHierarchies.get(0); // There may be more than one hierarchy a concept belongs to, but we're not dealing with that for now
+        
+        SCTPAreaTaxonomy completeTaxonomy = dataSource.getCompleteTaxonomy(hierarchyRoot);
+        
+        ArrayList<SCTArea> completeAreas = completeTaxonomy.getAreas();
+        
+        Optional<SCTArea> matchingCompleteArea = Optional.empty();
+        
+        for(SCTArea completeArea : completeAreas) {
+            if(completeArea.getRelationshipIds().equals(area.getRelationshipIds())) {
+                matchingCompleteArea = Optional.of(completeArea);
+                break;
+            }
+        }
+        
+        return matchingCompleteArea;
+    }
+    
+    private DisjointPAreaTaxonomy createSubjectDisjointPAreaTaxonomy(SCTArea area) {
+        SCTLocalDataSource dataSource = (SCTLocalDataSource)taxonomy.getDataSource();
+        
+        Optional<SCTArea> completeArea = getCompleteArea(area);
+        
+        HashSet<Concept> subhierarchyConcepts = area.getConcepts();
+        
+        HashSet<Concept> subhierarchyRoots = new HashSet<>();
+        
+        area.getAllPAreas().forEach( (SCTPArea parea) -> {
+            subhierarchyRoots.add(parea.getRoot());
+        });
+        
+        if(completeArea.isPresent()) {
+            HashSet<Concept> completeAreaConcepts = completeArea.get().getConcepts();
+            
+            HashSet<SCTPArea> externalOverlappingPAreas = new HashSet<>();
+            
+            ArrayList<SCTPArea> allPAreas = completeArea.get().getAllPAreas();
+            
+            HashSet<Concept> externalConceptInArea = new HashSet<>();
+                        
+            subhierarchyConcepts.forEach((Concept c) -> {
+                
+                allPAreas.forEach((SCTPArea parea) -> {
+                    if (parea.getHierarchy().getConceptsInHierarchy().contains(c)) {
+                        externalOverlappingPAreas.add(parea);
+                    }
+                });
+                
+                HashSet<Concept> children = dataSource.getConceptHierarchy().getChildren(c);
+                
+                boolean isLeaf = true;
+                
+                for(Concept child : children) {
+                    if(subhierarchyConcepts.contains(child)) {
+                        isLeaf = false;
+                        break;
+                    }
+                }
+                
+                if(isLeaf) {
+                    externalConceptInArea.add(c);
+                }
+            });
+            
+            HashSet<SCTPArea> subjectPAreas = new HashSet<>(area.getAllPAreas());
+            
+            HashSet<SCTPArea> allSubjectOverlappingPAreas = new HashSet<>(subjectPAreas);
+            allSubjectOverlappingPAreas.addAll(externalOverlappingPAreas);
+            
+            HashSet<Concept> roots = new HashSet<>();
+            
+            allSubjectOverlappingPAreas.forEach( (SCTPArea parea) -> {
+                roots.add(parea.getRoot());
+            });
+            
+            SCTMultiRootedConceptHierarchy hierarchy = new SCTMultiRootedConceptHierarchy(roots);
+            
+            HashSet<Concept> processedConcepts = new HashSet<>();
+            HashSet<Concept> inQueueConcepts = new HashSet<>(externalConceptInArea);
+            
+            Queue<Concept> queue = new LinkedList<>(externalConceptInArea);
+            
+            while(!queue.isEmpty()) {
+                Concept c = queue.remove();
+                
+                processedConcepts.add(c);
+                inQueueConcepts.remove(c);
+                
+                HashSet<Concept> parents = dataSource.getConceptHierarchy().getParents(c);
+                
+                parents.forEach( (Concept parent) -> {
+                    
+                    if (completeAreaConcepts.contains(parent)) {
+                         hierarchy.addIsA(c, parent);
+                        
+                        if (!inQueueConcepts.contains(parent) && !processedConcepts.contains(parent)) {
+                            queue.add(parent);
+                            inQueueConcepts.add(parent);
+                        }
+                    }
+                });
+            }
+            
+            SCTDisjointPAreaTaxonomyGenerator generator = new SCTDisjointPAreaTaxonomyGenerator();
+            
+            return generator.generateDisjointAbstractionNetwork(taxonomy, allSubjectOverlappingPAreas, hierarchy);
+            
+        } else {
+            
+            // This should never ever happen...
+            
+            return null;
+        }
+    }
+    
+    @Override
+    public DisjointPAreaTaxonomy createDisjointAbN(SCTArea area) {
+        if(isSubjectSubtaxonomy()) {
+            return createSubjectDisjointPAreaTaxonomy(area);
+        } else {
+            return createSimpleDisjointPAreaTaxonomy(area);
+        }
+    }
+    
+    private boolean isSubjectSubtaxonomy() {
+        return !taxonomy.getDataSource().getHierarchyRootConcepts().contains(taxonomy.getRootPArea().getRoot());
     }
     
     @Override
@@ -209,18 +343,56 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
     public HashSet<Concept> getGroupConceptSet(SCTPArea parea) {
         return new HashSet<>(parea.getConceptsInPArea());
     }
-
+    
+    private HashSet<OverlappingConceptResult<Concept, SCTPArea>> getExternalOverlappingResults(SCTArea area) {
+        Optional<SCTArea> completeArea = getCompleteArea(area);
+        
+        if(completeArea.isPresent()) {
+            HashSet<SCTPArea> internalPAreas = this.getContainerGroupSet(area);
+            
+            HashSet<SCTPArea> externalPAreas = this.getContainerGroupSet(completeArea.get());
+            
+            HashMap<Concept, HashSet<SCTPArea>> conceptPAreas = new HashMap<>();
+            
+            HashSet<Concept> internalConcepts = area.getConcepts();
+            
+            internalConcepts.forEach( (Concept c) -> {
+                conceptPAreas.put(c, new HashSet<>());
+                
+                internalPAreas.forEach((SCTPArea internalPArea) -> {
+                    if(internalPArea.getHierarchy().getConceptsInHierarchy().contains(c)) {
+                        conceptPAreas.get(c).add(internalPArea);
+                    }
+                });
+                
+                externalPAreas.forEach((SCTPArea externalPArea) -> {
+                    if(externalPArea.getHierarchy().getConceptsInHierarchy().contains(c)) {
+                        conceptPAreas.get(c).add(externalPArea);
+                    }
+                });
+            });
+            
+            HashSet<OverlappingConceptResult<Concept, SCTPArea>> allOverlappingResults = new HashSet<>();
+            
+            conceptPAreas.forEach((Concept c, HashSet<SCTPArea> pareas) -> {
+                if (pareas.size() > 1) {
+                    allOverlappingResults.add(new OverlappingConceptResult<>(c, pareas));
+                }
+            });
+            
+            return allOverlappingResults;
+        } else {
+            return new HashSet<>();
+        }
+    }
+    
     @Override
-    public HashSet<Concept> getContainerOverlappingConcepts(SCTArea area) {
-        HashSet<OverlappingConceptResult<Concept, SCTPArea>> overlappingConceptResults = area.getOverlappingConcepts();
-        
-        HashSet<Concept> overlappingConcepts = new HashSet<>();
-        
-        overlappingConceptResults.forEach( (OverlappingConceptResult<Concept, SCTPArea> result) -> {
-            overlappingConcepts.add(result.getConcept());
-        });
-        
-        return overlappingConcepts;
+    public HashSet<OverlappingConceptResult<Concept, SCTPArea>> getContainerOverlappingResults(SCTArea area) {
+        if(isSubjectSubtaxonomy()) {
+            return getExternalOverlappingResults(area);
+        } else {
+            return super.getContainerOverlappingResults(area);
+        }
     }
 
     @Override

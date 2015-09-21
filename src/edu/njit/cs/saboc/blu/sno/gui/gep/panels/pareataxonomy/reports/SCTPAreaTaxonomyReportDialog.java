@@ -21,7 +21,11 @@ public class SCTPAreaTaxonomyReportDialog extends JDialog {
     
     private final JTabbedPane tabbedPane;
     
+    private final SCTPAreaTaxonomyConfiguration config;
+    
     public SCTPAreaTaxonomyReportDialog(SCTPAreaTaxonomyConfiguration config) {
+        
+        this.config = config;
         
         levelReportPanel = new SCTPAreaTaxonomyLevelReportPanel(config);
         areaReportPanel = new SCTPAreaTaxonomyAreaReportPanel(config);
@@ -48,7 +52,7 @@ public class SCTPAreaTaxonomyReportDialog extends JDialog {
         boolean hasOverlapping = false;
         
         for(SCTArea area : areas) {
-            if(area.hasOverlappingConcepts()) {
+            if(!config.getContainerOverlappingResults(area).isEmpty()) {
                 hasOverlapping = true;
                 break;
             }

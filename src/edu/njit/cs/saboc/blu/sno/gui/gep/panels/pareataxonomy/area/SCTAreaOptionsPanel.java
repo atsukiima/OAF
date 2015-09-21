@@ -60,7 +60,7 @@ public class SCTAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTArea> {
     
     @Override
     public void enableOptionsForGroup(SCTArea area) {
-        if(area.getOverlappingConcepts().isEmpty()) {
+        if(config.getContainerOverlappingConcepts(area).isEmpty()) {
             disjointTaxonomyBtn.setEnabled(false);
             tanBtn.setEnabled(false);
         } else {

@@ -32,7 +32,6 @@ public class SCTCreateDisjointTaxonomyButton extends CreateDisjointAbNButton {
     @Override
     public void createDisjointAbNAction() {
         if (currentArea.isPresent()) {
-
             Thread loadThread = new Thread(new Runnable() {
 
                 private LoadStatusDialog loadStatusDialog = null;

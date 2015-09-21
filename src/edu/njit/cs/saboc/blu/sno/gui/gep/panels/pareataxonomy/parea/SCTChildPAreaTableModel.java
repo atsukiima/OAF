@@ -22,7 +22,6 @@ public class SCTChildPAreaTableModel extends BLUAbstractChildGroupTableModel<SCT
         
         this.config = config;
     }
-    
 
     @Override
     protected Object[] createRow(SCTPArea parea) {       
@@ -30,7 +29,7 @@ public class SCTChildPAreaTableModel extends BLUAbstractChildGroupTableModel<SCT
         return new Object[] {
             parea.getRoot().getName(),
             parea.getConceptCount(),
-            config.getGroupsContainerName(parea)
+            config.getGroupsContainerName(parea).replaceAll(", ", "\n")
         };
     }
 }
