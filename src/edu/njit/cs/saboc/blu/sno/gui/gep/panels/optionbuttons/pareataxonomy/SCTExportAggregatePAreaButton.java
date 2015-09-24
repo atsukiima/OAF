@@ -5,7 +5,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportBut
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.ExportAbNUtilities;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportAbNUtilities;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.io.File;
 import java.io.FileNotFoundException;
