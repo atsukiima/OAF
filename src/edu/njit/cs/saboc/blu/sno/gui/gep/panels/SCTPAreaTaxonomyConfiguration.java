@@ -52,7 +52,8 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
     
     private final SCTPAreaTaxonomyGEPConfiguration gepConfig;
     
-    public SCTPAreaTaxonomyConfiguration(SCTPAreaTaxonomy taxonomy, 
+    public SCTPAreaTaxonomyConfiguration(
+            SCTPAreaTaxonomy taxonomy, 
             SCTDisplayFrameListener displayListener, 
             SCTPAreaTaxonomyGEPConfiguration gepConfig) {
         

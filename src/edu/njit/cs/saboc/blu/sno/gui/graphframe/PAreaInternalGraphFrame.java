@@ -3,11 +3,11 @@ package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.aggregate.AggregateableConceptGroup;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.GenericExportPartitionedAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.core.gui.hierarchypainter.HierarchyPainterPanel;
-import edu.njit.cs.saboc.blu.sno.abn.export.ExportAbN;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
@@ -22,12 +22,9 @@ import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.GraphOptionsButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.RelationshipSelectionButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.PAreaInternalSearchButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.textbrowser.TextBrowserPanel;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.utils.UtilityMethods;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -39,6 +36,8 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
     
     private final JButton openReportsBtn;
     
+    private GenericExportPartitionedAbNButton<Concept, SCTPArea, SCTArea> exportBtn;
+    
     private final PAreaInternalSearchButton searchButton;
     
     private final GraphOptionsButton optionsButton;
@@ -49,7 +48,8 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
     
     private SCTPAreaTaxonomy currentTaxonomy;
 
-    public PAreaInternalGraphFrame(final JFrame parentFrame, 
+    public PAreaInternalGraphFrame(
+            final JFrame parentFrame, 
             final SCTPAreaTaxonomy taxonomy, 
             boolean areaGraph, 
             SCTDisplayFrameListener displayListener) {
@@ -88,17 +88,6 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
         addReportButtonToMenu(openReportsBtn);
         
-        JButton exportBtn = new JButton("Export Taxonomy");
-        exportBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                exportPAreaCSV();
-            }
-        });
-        
-        exportBtn.setToolTipText("Exports the taxonomy as a tab-delimited CSV file.");
-        
-
-        addReportButtonToMenu(exportBtn);
         
         final RelationshipSelectionButton filterRelationships = new RelationshipSelectionButton(parentFrame, this, taxonomy);
 
@@ -115,29 +104,6 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         addToggleableButtonToMenu(optionsButton);
         addToggleableButtonToMenu(filterRelationships);
         addToggleableButtonToMenu(searchButton);
-    }
-    
-    private void exportPAreaCSV() {
-        SCTPAreaTaxonomy taxonomy = (SCTPAreaTaxonomy) graph.getAbstractionNetwork();
-
-        if (taxonomy.isReduced()) {
-            ExportAbN.exportAggregateTaxonomy(taxonomy);
-        } else {
-
-            SCTDataSource dataSource = taxonomy.getDataSource();
-
-            ArrayList<SCTArea> areas = taxonomy.getHierarchyAreas();
-
-            HashMap<Long, ArrayList<Concept>> pareaConcepts = new HashMap<Long, ArrayList<Concept>>();
-
-            for (SCTArea a : areas) {
-                ArrayList<SCTPArea> areaPAreas = a.getAllPAreas();
-                pareaConcepts.putAll(dataSource.getConceptsInPAreaSet(taxonomy, areaPAreas));
-            }
-
-            ExportAbN.exportAbNGroups(pareaConcepts, "PARTIALAREA");
-        }
-
     }
 
     public PAreaBluGraph getGraph() {
@@ -223,6 +189,22 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
         currentConfiguration = optionsConfig;
 
+        
+        if(exportBtn != null) {
+            removeReportButtonFromMenu(exportBtn);
+        }
+        
+        exportBtn = new GenericExportPartitionedAbNButton<>(taxonomy, currentConfiguration.getConfiguration());
+        
+        if(taxonomy.isReduced()) {
+            exportBtn.setEnabled(false);
+        } else {
+            exportBtn.setEnabled(true);
+        }
+
+        addReportButtonToMenu(exportBtn);
+        
+
         initializeGraphTabs(graph, abnPainter, optionsConfig);
         
         tbp = null;
@@ -239,23 +221,6 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         
         tabbedPane.validate();
         tabbedPane.repaint();
-        
-        /*
-        if (data.getAbstractionNetwork().getDataSource().isLocalDataSource() && data.getAbstractionNetwork().getConceptHierarchy().getNodesInHierarchy().size() < 3000) {
-            hierarchyPanel = new HierarchyPainterPanel<Concept>();
-
-            tabbedPane.add("Complete Concept Hierarchy", hierarchyPanel);
-
-            Thread painterThread = new Thread(new Runnable() {
-                public void run() {
-                    hierarchyPanel.paintHierarchy(data.getConceptHierarchy());
-                }
-            });
-
-            painterThread.run();
-        }
-        */
-
     }
 
     public void viewInTextBrowser(SCTPArea parea) {

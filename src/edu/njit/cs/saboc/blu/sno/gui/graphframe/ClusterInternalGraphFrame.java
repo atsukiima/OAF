@@ -5,6 +5,7 @@ import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.GenericExportPartitionedAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
@@ -33,6 +34,8 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
     private final SCTDisplayFrameListener displayListener;
     
     private SCTTANGEPConfiguration currentConfiguration;
+    
+    private GenericExportPartitionedAbNButton<Concept, SCTCluster, CommonOverlapSet> exportBtn;
     
     private final JButton openReportsBtn;
 
@@ -136,8 +139,18 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         BluGraph graph = new ClusterBluGraph(parentFrame, data, displayListener, labelCreator);
         
         searchButton.setGraph(graph);
+        
+        currentConfiguration = new SCTTANGEPConfiguration(parentFrame, this, data, displayListener);
     
-        initializeGraphTabs(graph, new AbNPainter(), currentConfiguration = new SCTTANGEPConfiguration(parentFrame, this, data, displayListener));
+        initializeGraphTabs(graph, new AbNPainter(), currentConfiguration);
+        
+        if(exportBtn != null) {
+            removeReportButtonFromMenu(exportBtn);
+        }
+        
+        exportBtn = new GenericExportPartitionedAbNButton<>(data, currentConfiguration.getConfiguration());
+
+        addReportButtonToMenu(exportBtn);
         
         updateHierarchyInfoLabel(data);
     }
