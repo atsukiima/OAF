@@ -59,8 +59,16 @@ public class SCTClusterOptionsPanel extends AbstractNodeOptionsPanel<SCTCluster>
     }
     
     @Override
-    public void enableOptionsForGroup(SCTCluster parea) {
-
+    public void enableOptionsForGroup(SCTCluster cluster) {
+        if (cluster.getConceptCount() > 1) {
+            if (cluster.getConceptHierarchy().getChildren(cluster.getRoot()).size() > 1) {
+                tanBtn.setEnabled(true);
+            } else {
+                tanBtn.setEnabled(false);
+            }
+        } else {
+            tanBtn.setEnabled(false);
+        }
     }
 
     @Override

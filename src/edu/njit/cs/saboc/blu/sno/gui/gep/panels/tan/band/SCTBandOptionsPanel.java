@@ -4,9 +4,11 @@ import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan.SCTCreateTANFromBandButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan.SCTExportBandButton;
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -52,8 +54,19 @@ public class SCTBandOptionsPanel extends AbstractNodeOptionsPanel<CommonOverlapS
     
     @Override
     public void enableOptionsForGroup(CommonOverlapSet band) {
-        if(config.getContainerOverlappingConcepts(band).isEmpty()) {
-            tanBtn.setEnabled(false);
+        if(band.getAllClusters().size() > 1) {
+            boolean tanPossible = false;
+            
+            ArrayList<SCTCluster> clusters = config.convertClusterSummaryList(band.getAllClusters());
+            
+            for(SCTCluster cluster : clusters) {
+                if(cluster.getConceptCount() > 1) {
+                    tanPossible = true;
+                    break;
+                }
+            }
+            
+            tanBtn.setEnabled(tanPossible);
         } else {
             tanBtn.setEnabled(true);
         }
@@ -71,7 +84,6 @@ public class SCTBandOptionsPanel extends AbstractNodeOptionsPanel<CommonOverlapS
     }
     
     public void clearContents() {
-        
         selectedArea = Optional.empty();
         
         tanBtn.setCurrentBand(null);

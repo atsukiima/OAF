@@ -86,6 +86,16 @@ public class SCTAggregatePAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTA
         } else { 
             rootSubtaxonomyBtn.setEnabled(true);
         }
+        
+        if(parea.getConceptCount() > 1) {
+            if(config.getAggregatedPAreaHierarchy(parea).getChildren(parea.getRoot()).size() > 1) {
+                tanBtn.setEnabled(true);
+            } else {
+                tanBtn.setEnabled(false);
+            }
+        } else {
+            tanBtn.setEnabled(false);
+        }
     }
 
     @Override

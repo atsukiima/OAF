@@ -40,6 +40,14 @@ public class SCTPAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTPArea> {
         
         super.addOptionButton(btnNAT);
         
+        rootSubtaxonomyBtn = new SCTCreateRootSubtaxonomyButton(config);
+        
+        super.addOptionButton(rootSubtaxonomyBtn);
+        
+        tanBtn = new SCTCreateTANFromPAreaButton(config);
+        
+        super.addOptionButton(tanBtn);
+        
         popoutBtn = new PopoutNodeDetailsButton("partial-area") {
 
             @Override
@@ -56,14 +64,6 @@ public class SCTPAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTPArea> {
         exportBtn = new SCTExportPAreaButton();
         
         super.addOptionButton(exportBtn);
-        
-        rootSubtaxonomyBtn = new SCTCreateRootSubtaxonomyButton(config);
-        
-        super.addOptionButton(rootSubtaxonomyBtn);
-        
-        tanBtn = new SCTCreateTANFromPAreaButton(config);
-        
-        super.addOptionButton(tanBtn);
     }
     
     @Override
@@ -74,6 +74,16 @@ public class SCTPAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTPArea> {
             rootSubtaxonomyBtn.setEnabled(false);
         } else {
             rootSubtaxonomyBtn.setEnabled(true);
+        }
+        
+        if(parea.getConceptCount() > 1) {
+            if(parea.getHierarchy().getChildren(parea.getRoot()).size() > 1) {
+                tanBtn.setEnabled(true);
+            } else {
+                tanBtn.setEnabled(false);
+            }
+        } else {
+            tanBtn.setEnabled(false);
         }
     }
 

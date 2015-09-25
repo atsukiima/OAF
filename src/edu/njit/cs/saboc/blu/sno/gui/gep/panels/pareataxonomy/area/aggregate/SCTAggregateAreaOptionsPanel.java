@@ -4,9 +4,11 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPane
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateDisjointTaxonomyButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateTANFromAreaButton;
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -52,7 +54,22 @@ public class SCTAggregateAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTAr
 
     @Override
     public void enableOptionsForGroup(SCTArea area) {
-        
+        if (area.getAllPAreas().size() > 2) {
+            ArrayList<SCTPArea> pareas = area.getAllPAreas();
+
+            boolean tanPossible = false;
+
+            for (SCTPArea parea : pareas) {
+                if (parea.getConceptCount() > 1) {
+                    tanPossible = true;
+                    break;
+                }
+            }
+
+            tanBtn.setEnabled(tanPossible);
+        } else {
+            tanBtn.setEnabled(false);
+        }
     }
 
     @Override

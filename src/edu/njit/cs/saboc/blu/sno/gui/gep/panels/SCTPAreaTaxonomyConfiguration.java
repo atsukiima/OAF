@@ -140,7 +140,11 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
 
     @Override
     public String getContainerName(SCTArea container) {
-        return getRelationshipNamesCommaSeparated(container.getRelationships());
+        if(container.getRelationships().isEmpty()) {
+            return "root area (no attribute relationships)";
+        } else {
+            return getRelationshipNamesCommaSeparated(container.getRelationships());
+        }
     }
 
     @Override
