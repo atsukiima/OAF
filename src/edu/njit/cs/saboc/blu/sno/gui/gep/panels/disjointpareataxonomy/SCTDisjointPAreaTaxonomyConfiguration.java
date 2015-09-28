@@ -117,4 +117,37 @@ public class SCTDisjointPAreaTaxonomyConfiguration implements BLUDisjointAbNConf
     public EntitySelectionListener<GenericParentGroupInfo<Concept, DisjointPartialArea>> getParentGroupListener() {
         return new ParentGroupSelectedListener<>(this.getGEPConfiguration().getGEP());
     }
+    
+    @Override
+    public String getGroupHelpDescriptions(DisjointPartialArea group) {
+        StringBuilder helpDescription = new StringBuilder();
+        
+        helpDescription.append("A <b>disjoint partial-area</b> represents a summary of a disjoint hierarchy of concepts within a partial-area taxonomy area. ");
+        
+        helpDescription.append("A <b>basis</b> (non-overlapping) disjoint partial-area is a disjoint partial-area that summarizes all of the concepts "
+                + "that are summarized by exactly one partial-area in the complete partial-area taxonomy. "
+                + "Basis disjoint partial-areas are assigned one color and are named after this partial-area.");
+        
+        helpDescription.append("An <b>overlapping</b> disjoint partial-area is a disjoint partial-area that summarizes a set of concepts that are summarized "
+                + "by two or more partial-areas in the complete partial-area taxonomy. Overlapping disjoint partial-areas are color coded according to the "
+                + "partial-areas in which their concepts overlap and are named after the concept which is the point of intersection between the partial-areas. "
+                + "There may be multiple points of intersection, thus, there may be many similarly color coded overlapping disjoint partial-areas.");
+        
+        return helpDescription.toString();
+    }
+    
+    @Override
+    public String getAbNName() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getAbNSummary() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public String getAbNHelpDescription() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

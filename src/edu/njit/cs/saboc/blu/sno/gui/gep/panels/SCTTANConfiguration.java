@@ -31,6 +31,7 @@ public class SCTTANConfiguration implements BLUPartitionedAbNConfiguration<
         SCTCluster, 
         CommonOverlapSet> {
 
+
     private final SCTTribalAbstractionNetwork tan;
     
     private final SCTDisplayFrameListener displayListener;
@@ -241,5 +242,42 @@ public class SCTTANConfiguration implements BLUPartitionedAbNConfiguration<
     @Override
     public EntitySelectionListener<GenericParentGroupInfo<Concept, SCTCluster>> getParentGroupListener() {
         return new ParentGroupSelectedListener<>(this.getGEPConfiguration().getGEP());
+    }
+    
+    @Override
+    public String getContainerHelpDescription(CommonOverlapSet container) {
+        StringBuilder helpDescription = new StringBuilder();
+        
+        helpDescription.append("A <b>band</b> summarizes the set of all concepts which belong to the intersection of the"
+                + " exact same subhierarchies. "
+                + "That is, the concepts summarized by a band are all descendants of the same patriarch concepts (shown below)."
+                + "Each concept belongs to exactly one band.");
+        
+        return helpDescription.toString();
+    }
+
+    @Override
+    public String getGroupHelpDescriptions(SCTCluster group) {
+        StringBuilder helpDescription = new StringBuilder();
+        
+        helpDescription.append("A <b>cluster</b> summarizes the subhierarchy of concepts at a specific point of intersection between two or more "
+                + "subhierarchies.");
+        
+        return helpDescription.toString();
+    }
+    
+    @Override
+    public String getAbNName() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getAbNSummary() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public String getAbNHelpDescription() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

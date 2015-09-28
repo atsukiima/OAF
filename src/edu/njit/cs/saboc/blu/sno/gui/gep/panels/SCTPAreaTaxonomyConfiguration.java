@@ -459,4 +459,71 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
     public EntitySelectionListener<GenericParentGroupInfo<Concept, SCTPArea>> getParentGroupListener() {
         return new ParentGroupSelectedListener<>(this.getGEPConfiguration().getGEP());
     }
+    
+    
+    @Override
+    public String getContainerHelpDescription(SCTArea container) {
+        StringBuilder helpDesc = new StringBuilder();
+        
+        if(taxonomy.isReduced()) {
+            helpDesc.append("An <b>aggregate area</b> represents a set of concepts (shown below) which are defined using the "
+                    + " exact same set of attribute relationships types."
+                    + "<p><p>"
+                    + "Additionally, an aggregate area will summarize one or more concepts "
+                    + "from one or more areas with additional attribute relationships if this area"
+                    + "has at least one aggregate partial-area. This information is viewable in the <i>aggregated partial-areas</i> tab.");
+        } else {
+            helpDesc.append("An <b>area</b> represents a set of concepts (shown below) which are defined using the exact same set of attribute relationship "
+                    + "types.");
+        }
+        
+        return helpDesc.toString();
+    }
+
+    @Override
+    public String getGroupHelpDescriptions(SCTPArea group) {
+         StringBuilder helpDesc = new StringBuilder();
+        
+        if(taxonomy.isReduced()) {
+            helpDesc.append("A <b>regular partial-area</b> summarizes a subhierarchy of structurally and semantically similar concepts in an ontology. "
+                    + "All of the concepts in a regular partial-area are defined using the same types of attribute relationships."
+                    
+                    + "All of the concepts summarized by a regular partial-area are descendants of the same concepts, called the root, "
+                    + "which is the introduction point for the set of attribute relationships. "
+                    
+                    + "A partial-area is named after the root and is labeled with the total number of concepts summarized by the partial-area (in parenthesis).");
+            
+            helpDesc.append("<p><p>");
+            
+            helpDesc.append("An <b>aggregate partial-area</b> summarizes the same content as a regular partial-area and "
+                    + "one or more removed descendant partial-areas which were below the chosen minimum threshold and are defined using one or more additional "
+                    + "attribute relationships in relation to the aggregated partial-area. "
+                    + "To view the aggregated removed partial-areas, and which areas they came from, see the <i>aggregated partial-area</i> tab.");
+        } else {
+            helpDesc.append("A <b>partial-area</b> summarizes a subhierarchy of structurally and semantically similar concepts in SNOMED CT. "
+                    + "All of the concepts in a partial-area are defined using the exact same types of attribute relationships. "
+                    
+                    + "All of the concepts summarized by a partial-area are descendants of the same concept, called the root, "
+                    + "which is the introduction point for the set of attribute relationships. "
+                    + "A partial-area is named after the root and is labeled with the total number "
+                    + "of concepts summarized by the partial-area (in parenthesis).");
+        }
+        
+        return helpDesc.toString();
+    }
+    
+        @Override
+    public String getAbNName() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getAbNSummary() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public String getAbNHelpDescription() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

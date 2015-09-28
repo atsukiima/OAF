@@ -2,6 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.configuration;
 
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.BLUGraphConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.abn.AbstractAbNDetailsPanel;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
@@ -31,6 +32,11 @@ public class SCTTANGEPConfiguration extends BLUGraphConfiguration {
     
     public SCTTANConfiguration getConfiguration() {
         return config;
+    }
+    
+    @Override
+    public AbstractAbNDetailsPanel createAbNDetailsPanel() {
+        return null;
     }
     
     @Override
