@@ -24,6 +24,7 @@ public class SCTTribalAbstractionNetwork extends TribalAbstractionNetwork<SCTClu
     private HashMap<Long, Concept> concepts;
     
     public SCTTribalAbstractionNetwork(
+            String tanName,
             ArrayList<CommonOverlapSet> overlapSets,
             HashMap<Integer, SCTCluster> clusters,
             GroupHierarchy<SCTCluster> clusterHierarchy,
@@ -34,7 +35,7 @@ public class SCTTribalAbstractionNetwork extends TribalAbstractionNetwork<SCTClu
             SCTMultiRootedConceptHierarchy conceptHierarchy,
             SCTLocalDataSource dataSource) {
         
-        super(overlapSets, clusters, clusterHierarchy, SNOMEDVersion, entryPoints, nonContributingEntryPoints, dataSource);
+        super(tanName, overlapSets, clusters, clusterHierarchy, SNOMEDVersion, entryPoints, nonContributingEntryPoints, dataSource);
         
         this.concepts = concepts;
         this.conceptHierarchy = conceptHierarchy;

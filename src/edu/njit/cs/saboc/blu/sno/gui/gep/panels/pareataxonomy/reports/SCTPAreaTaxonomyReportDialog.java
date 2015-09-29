@@ -12,11 +12,7 @@ import javax.swing.JTabbedPane;
  * @author Chris O
  */
 public class SCTPAreaTaxonomyReportDialog extends JDialog {
-    
-    private final SCTPAreaTaxonomyLevelReportPanel levelReportPanel;
-    
-    private final SCTPAreaTaxonomyAreaReportPanel areaReportPanel;
-    
+
     private final SCTPAreaTaxonomyOverlappingConceptReportPanel overlappingClassPanel;
     
     private final JTabbedPane tabbedPane;
@@ -26,15 +22,11 @@ public class SCTPAreaTaxonomyReportDialog extends JDialog {
     public SCTPAreaTaxonomyReportDialog(SCTPAreaTaxonomyConfiguration config) {
         
         this.config = config;
-        
-        levelReportPanel = new SCTPAreaTaxonomyLevelReportPanel(config);
-        areaReportPanel = new SCTPAreaTaxonomyAreaReportPanel(config);
+
         overlappingClassPanel = new SCTPAreaTaxonomyOverlappingConceptReportPanel(config);
         
         tabbedPane = new JTabbedPane();
-        
-        tabbedPane.addTab("Partial-area Taxonomy Levels", levelReportPanel);
-        tabbedPane.addTab("Areas in Partial-area Taxonomy", areaReportPanel);
+;
         tabbedPane.addTab("Overlapping Concepts", overlappingClassPanel);
         
         this.add(tabbedPane);
@@ -61,10 +53,7 @@ public class SCTPAreaTaxonomyReportDialog extends JDialog {
         if(hasOverlapping) {
             overlappingClassPanel.displayAbNReport(taxonomy);
         } else {
-            tabbedPane.setEnabledAt(2, false);
+            tabbedPane.setEnabledAt(0, false);
         }
-        
-        levelReportPanel.displayAbNReport(taxonomy);
-        areaReportPanel.displayAbNReport(taxonomy);
     }
 }

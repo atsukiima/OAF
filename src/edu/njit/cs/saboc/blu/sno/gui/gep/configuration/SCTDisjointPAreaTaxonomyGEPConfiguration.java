@@ -7,6 +7,7 @@ import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.SCTDisjointPAreaPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.SCTDisjointPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.SCTDisjointPAreaTaxonomyDetailsPanel;
 import javax.swing.JFrame;
 
 /**
@@ -38,7 +39,7 @@ public class SCTDisjointPAreaTaxonomyGEPConfiguration extends BLUGraphConfigurat
     
     @Override
     public AbstractAbNDetailsPanel createAbNDetailsPanel() {
-        return null;
+        return new SCTDisjointPAreaTaxonomyDetailsPanel(uiConfiguration);
     }
     
     @Override

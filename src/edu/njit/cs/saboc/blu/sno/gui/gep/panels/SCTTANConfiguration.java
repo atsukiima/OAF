@@ -31,7 +31,6 @@ public class SCTTANConfiguration implements BLUPartitionedAbNConfiguration<
         SCTCluster, 
         CommonOverlapSet> {
 
-
     private final SCTTribalAbstractionNetwork tan;
     
     private final SCTDisplayFrameListener displayListener;
@@ -41,7 +40,6 @@ public class SCTTANConfiguration implements BLUPartitionedAbNConfiguration<
     public SCTTANConfiguration(SCTTribalAbstractionNetwork tan, 
             SCTDisplayFrameListener displayListener, 
             SCTTANGEPConfiguration gepConfig) {
-        
         
         this.tan = tan;
         this.displayListener = displayListener;
@@ -85,6 +83,11 @@ public class SCTTANConfiguration implements BLUPartitionedAbNConfiguration<
     }
     
     private String getCommaSeparatedBandName(HashSet<Long> tribeIds) {
+        
+        if(tribeIds.isEmpty()) {
+            return "";
+        }
+        
         ArrayList<String> tribeNames = new ArrayList<>();
         
         tribeIds.forEach( (Long tribeId) -> {
@@ -268,16 +271,86 @@ public class SCTTANConfiguration implements BLUPartitionedAbNConfiguration<
     
     @Override
     public String getAbNName() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return tan.getTANName() + " Tribal Abstraction Network (TAN)";
     }
 
     @Override
     public String getAbNSummary() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String tanName = tan.getTANName();
+        
+        int conceptCount = tan.getConceptHierarchy().getConceptsInHierarchy().size();
+        
+        int bandCount = tan.getBands().size();
+        int clusterCount = tan.getClusters().values().size();
+        
+        HashSet<Concept> intersectionConcepts = new HashSet<>();
+        
+        tan.getClusters().values().forEach((SCTCluster cluster) -> {
+            if(cluster.getEntryPointSet().size() > 1) {
+                intersectionConcepts.addAll(cluster.getConcepts());
+            }
+        });
+        
+        ArrayList<SCTCluster> patriarchClusters = tan.getHierarchyEntryPoints();
+        
+        ArrayList<SCTCluster> nonintersectingPatriarchClusters = tan.getNonOverlappingEntryPoints();
+        
+        String result = String.format("The <b>%s</b> Tribal Abstraction Network (TAN) summarizes %d concepts in %d band(s) and %d cluster(s). "
+                + "There are a total of %d patriarch clusters that intersect. A total of %d concepts are descendants of more than one tribe.",
+                tanName, 
+                conceptCount, 
+                bandCount, 
+                clusterCount,
+                (patriarchClusters.size() - nonintersectingPatriarchClusters.size()),
+                intersectionConcepts.size()
+            );
+
+        if (!nonintersectingPatriarchClusters.isEmpty()) {
+            ArrayList<String> nonOverlappingClusterNames = new ArrayList<>();
+
+            nonintersectingPatriarchClusters.forEach((SCTCluster cluster) -> {
+                nonOverlappingClusterNames.add(
+                        String.format("%s (%d)", cluster.getRoot().getName(), cluster.getConceptCount()));
+            });
+
+            Collections.sort(nonOverlappingClusterNames);
+
+            String nonOverlappingClustersStr = nonOverlappingClusterNames.get(0);
+            
+            for(String s : nonOverlappingClusterNames) {
+                nonOverlappingClustersStr += String.format(", %s", s);
+            }
+            
+            result += String.format("<p>The following %d patriarch cluster(s) don't intersect with any other patriarch cluster: %s", 
+                    nonintersectingPatriarchClusters.size(), nonOverlappingClustersStr);
+        }
+
+        
+        result += "<p><b>Help / Description:</b><br>";
+        result += this.getAbNHelpDescription();
+        
+        return result;
     }
     
     @Override
     public String getAbNHelpDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String result = "A <b>Tribal Abstraction Network (TAN)</b> is an abstraction network which summarizes the major points of intersection within a "
+                + "SNOMED CT hierarchy. Given a hierarchy of SNOMED CT concepts, the children of the root of the hierarchy are defined as <i>patriarchs</i>. "
+                + "Patriarchs are root concepts of subhierarchies within the overall hierarchy. The subhierarchies rooted at the patriarchs may intersect. "
+                + "A given concept in the overall hierarchy may be a descendant of multiple patriarchs."
+                + "<p>"
+                + "The TAN is composed of two kinds of nodes: Bands and Clusters.<p>"
+                + "A <b>band</b> summarizes the set of all concepts that are descendants of the exact same patriarchs. Bands are organized into "
+                + "color coded levels according to the number of patriarchs their concepts are descendnats of (e.g., green is two). Bands are labeled "
+                + "with this set of patriarchs, the total number of concepts which belong to the band, and the total number of clusters in the band."
+                + "<p>"
+                + "A <b>cluster</b> summarizes the subhierarchy of concepts that exists at one intersection point between two or more subhierarchies. "
+                + "Clusters are shown as white boxes within each band. Clusters are named after the concept which is at the exact point of intersection. "
+                + "The total number of concepts summarized by a cluster is shown in parenthesis."
+                + "<p>"
+                + "A TAN also summarizes the <i>Is a</i> hierarchy between concepts. Clicking on a cluster will show you the root's parents (in blue) "
+                + "and child clusters, which summarize descendants of one or more additional patriarchs, in purple.";
+        
+        return result;
     }
 }

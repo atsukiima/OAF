@@ -1,6 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.area;
 
 import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.core.abn.OverlappingConceptResult;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeDetailsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.entry.ContainerConceptEntry;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
@@ -8,6 +9,7 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -33,7 +35,13 @@ public class SCTAreaDetailsPanel extends AbstractNodeDetailsPanel<SCTArea, Conta
     @Override
     protected ArrayList<ContainerConceptEntry<Concept, SCTPArea>> getSortedConceptList(SCTArea area) {
         
+        HashSet<OverlappingConceptResult<Concept,SCTPArea>> overlappingConcepts = configuration.getContainerOverlappingResults(area);
+        
         HashMap<Concept, HashSet<SCTPArea>> conceptPAreas = new HashMap<>();
+        
+        overlappingConcepts.forEach( (OverlappingConceptResult<Concept,SCTPArea> overlappingResult) -> {
+            conceptPAreas.put(overlappingResult.getConcept(), overlappingResult.getOverlappingGroups());
+        });
         
         ArrayList<SCTPArea> pareas = area.getAllPAreas();
         
@@ -42,10 +50,8 @@ public class SCTAreaDetailsPanel extends AbstractNodeDetailsPanel<SCTArea, Conta
             
             pareaClses.forEach((Concept c) -> {
                 if(!conceptPAreas.containsKey(c)) {
-                    conceptPAreas.put(c, new HashSet<>());
+                    conceptPAreas.put(c, new HashSet<>(Arrays.asList(parea)));
                 }
-                
-                conceptPAreas.get(c).add(parea);
             });
         });
         

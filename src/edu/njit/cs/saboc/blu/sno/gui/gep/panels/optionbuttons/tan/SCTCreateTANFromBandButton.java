@@ -4,8 +4,6 @@ import SnomedShared.Concept;
 import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANButton;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
@@ -68,7 +66,9 @@ public class SCTCreateTANFromBandButton extends CreateTANButton {
                         hierarchy.addAllHierarchicalRelationships(cluster.getConceptHierarchy());
                     });
   
-                    SCTTribalAbstractionNetwork tan = TANGenerator.deriveTANFromMultiRootedHierarchy(hierarchy, 
+                    SCTTribalAbstractionNetwork tan = TANGenerator.deriveTANFromMultiRootedHierarchy(
+                            config.getContainerName(band),
+                            hierarchy, 
                             (SCTLocalDataSource)config.getTribalAbstractionNetwork().getDataSource(),  
                             config.getTribalAbstractionNetwork().getSCTVersion());
 

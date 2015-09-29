@@ -10,7 +10,6 @@ import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
-import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSnomedConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,10 +44,17 @@ public class TANGenerator {
         SCTMultiRootedConceptHierarchy multiRootedHierarchy = new SCTMultiRootedConceptHierarchy(patriarchs);
         multiRootedHierarchy.addAllHierarchicalRelationships(hierarchy);
 
-        return deriveTANFromMultiRootedHierarchy(multiRootedHierarchy, dataSource, snomedVersion);
+        return deriveTANFromMultiRootedHierarchy(hierarchy.getRoot().getName(), 
+                multiRootedHierarchy, 
+                dataSource, 
+                snomedVersion);
     }
     
-    public static SCTTribalAbstractionNetwork deriveTANFromMultiRootedHierarchy(SCTMultiRootedConceptHierarchy hierarchy, SCTLocalDataSource dataSource, String snomedVersion) {
+    public static SCTTribalAbstractionNetwork deriveTANFromMultiRootedHierarchy(
+            String tanName,
+            SCTMultiRootedConceptHierarchy hierarchy, 
+            SCTLocalDataSource dataSource, 
+            String snomedVersion) {
           
         // The set of concepts in this hierarchy, mapped according to their ID.
         HashMap<Long, Concept> concepts = new HashMap<Long, Concept>();
@@ -123,14 +129,12 @@ public class TANGenerator {
 
             boolean isRoot = true;
 
-            if (parents != null) {
-                for (Concept parent : parents) { // For each parent
-                    HashSet<Concept> parentTribes = conceptTribes.get(parent);
+            for (Concept parent : parents) { // For each parent
+                HashSet<Concept> parentTribes = conceptTribes.get(parent);
 
-                    if (parentTribes.equals(myCluster)) { // If a parent has the same group of tribes
-                        isRoot = false; // Then this is not a root concept
-                        break;
-                    }
+                if (parentTribes.equals(myCluster)) { // If a parent has the same group of tribes
+                    isRoot = false; // Then this is not a root concept
+                    break;
                 }
             }
 
@@ -206,8 +210,10 @@ public class TANGenerator {
                     continue;
                 }
                 
-                parentTribes.addAll(conceptTribes.get(parent));
-                
+                if(conceptTribes.get(parent).size() == 1) {
+                    parentTribes.addAll(conceptTribes.get(parent));
+                }
+
                 HashSet<Concept> rootParentClusters = conceptClusters.get(parent);
    
                 for (Concept parentCluster : rootParentClusters) {
@@ -226,10 +232,11 @@ public class TANGenerator {
             EntryPointSet epSet = new EntryPointSet();
 
             for (Concept rootPatriarch : rootsTribes) {
+                
                 if (parentTribes.contains(rootPatriarch)) {
-                    epSet.add(new EntryPoint(rootPatriarch.getId(), EntryPoint.InheritanceType.INHERITED));
-                } else {
                     epSet.add(new EntryPoint(rootPatriarch.getId(), EntryPoint.InheritanceType.INTRODUCED));
+                } else {
+                    epSet.add(new EntryPoint(rootPatriarch.getId(), EntryPoint.InheritanceType.INHERITED));
                 }
             }
 
@@ -322,6 +329,7 @@ public class TANGenerator {
         });
                 
         return new SCTTribalAbstractionNetwork(
+                tanName,
                 new ArrayList<CommonOverlapSet>(tribalBands.values()), 
                 new HashMap<Integer, SCTCluster>(hierarchyClusters), 
                 convertedHierarchy, 

@@ -39,7 +39,8 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
     
     private final JButton openReportsBtn;
 
-    public ClusterInternalGraphFrame(final JFrame parentFrame, 
+    public ClusterInternalGraphFrame(
+            final JFrame parentFrame, 
             final SCTTribalAbstractionNetwork data, 
             final boolean setGraph, 
             final boolean conceptCounts, 
@@ -63,16 +64,6 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         
         addReportButtonToMenu(openReportsBtn);
 
-        
-        JButton exportBtn = new JButton("Export TAN");
-        exportBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                exportTANCSV();
-            }
-        });
-
-        addReportButtonToMenu(exportBtn);
-        
         searchButton = new TANInternalSearchButton(parentFrame, this);
         
         replaceInternalFrameDataWith(data, setGraph, conceptCounts, null);
@@ -106,25 +97,6 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         
         setHierarchyInfoText(String.format("Common Overlap Sets: %d | Clusters: %d | Concepts: %d",
                 setCount, clusterCount, conceptCount));
-    }
-    
-    private void exportTANCSV() {
-        TribalAbstractionNetwork tan = (TribalAbstractionNetwork) graph.getAbstractionNetwork();
-
-        SCTDataSource dataSource = tan.getDataSource();
-
-        ArrayList<CommonOverlapSet> bands = tan.getBands();
-
-        HashMap<Long, ArrayList<Concept>> clusterConcepts = new HashMap<Long, ArrayList<Concept>>();
-        
-        clusterConcepts.putAll(dataSource.getConceptsInClusterSet(tan, tan.getHierarchyEntryPoints()));
-
-        for (CommonOverlapSet band : bands) {
-            ArrayList<ClusterSummary> areaPAreas = band.getAllClusters();
-            clusterConcepts.putAll(dataSource.getConceptsInClusterSet(tan, areaPAreas));
-        }
-
-        ExportAbN.exportAbNGroups(clusterConcepts, "CLUSTER");
     }
 
     public void replaceInternalFrameDataWith(SCTTribalAbstractionNetwork data,

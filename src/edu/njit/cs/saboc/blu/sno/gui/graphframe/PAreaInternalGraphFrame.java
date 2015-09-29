@@ -72,11 +72,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         openReportsBtn.addActionListener((ActionEvent ae) -> {
             
             if (currentTaxonomy.isReduced()) {
-                SCTAggregatePAreaTaxonomyReportDialog reportDialog = new SCTAggregatePAreaTaxonomyReportDialog(currentConfiguration.getConfiguration());
-                reportDialog.showReports(currentConfiguration.getConfiguration().getPAreaTaxonomy());
-                reportDialog.setModal(true);
 
-                reportDialog.setVisible(true);
             } else {
                 SCTPAreaTaxonomyReportDialog reportDialog = new SCTPAreaTaxonomyReportDialog(currentConfiguration.getConfiguration());
                 reportDialog.showReports(currentConfiguration.getConfiguration().getPAreaTaxonomy());
@@ -198,8 +194,12 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         
         if(taxonomy.isReduced()) {
             exportBtn.setEnabled(false);
+            
+            openReportsBtn.setEnabled(false);
         } else {
             exportBtn.setEnabled(true);
+            
+            openReportsBtn.setEnabled(true);
         }
 
         addReportButtonToMenu(exportBtn);

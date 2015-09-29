@@ -52,6 +52,10 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
     
     private final SCTPAreaTaxonomyGEPConfiguration gepConfig;
     
+    // When working with subject subtaxonomies in large hierarchies it takes
+    private final HashMap<Integer, DisjointPAreaTaxonomy> loadedDisjointTaxonomies = new HashMap<>();
+    private final HashMap<Integer, HashSet<OverlappingConceptResult<Concept, SCTPArea>>> loadedAreaOverlappingConcepts = new HashMap<>();
+    
     public SCTPAreaTaxonomyConfiguration(
             SCTPAreaTaxonomy taxonomy, 
             SCTDisplayFrameListener displayListener, 
@@ -328,11 +332,22 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
     
     @Override
     public DisjointPAreaTaxonomy createDisjointAbN(SCTArea area) {
-        if(isSubjectSubtaxonomy()) {
-            return createSubjectDisjointPAreaTaxonomy(area);
+        DisjointPAreaTaxonomy disjointTaxonomy;
+        
+        if (loadedDisjointTaxonomies.containsKey(area.getId())) {
+            disjointTaxonomy = loadedDisjointTaxonomies.get(area.getId());
         } else {
-            return createSimpleDisjointPAreaTaxonomy(area);
+            if (isSubjectSubtaxonomy()) {
+                disjointTaxonomy = createSubjectDisjointPAreaTaxonomy(area);
+            } else {
+                disjointTaxonomy = createSimpleDisjointPAreaTaxonomy(area);
+            }
+            
+            loadedDisjointTaxonomies.put(area.getId(), disjointTaxonomy);
         }
+
+        return disjointTaxonomy;
+
     }
     
     private boolean isSubjectSubtaxonomy() {
@@ -393,11 +408,22 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
     
     @Override
     public HashSet<OverlappingConceptResult<Concept, SCTPArea>> getContainerOverlappingResults(SCTArea area) {
-        if(isSubjectSubtaxonomy()) {
-            return getExternalOverlappingResults(area);
+        
+        HashSet<OverlappingConceptResult<Concept, SCTPArea>> overlappingConcepts;
+        
+        if(loadedAreaOverlappingConcepts.containsKey(area.getId())) {
+            overlappingConcepts = loadedAreaOverlappingConcepts.get(area.getId());
         } else {
-            return super.getContainerOverlappingResults(area);
+            if (isSubjectSubtaxonomy()) {
+                overlappingConcepts = getExternalOverlappingResults(area);
+            } else {
+                overlappingConcepts = super.getContainerOverlappingResults(area);
+            }
+            
+            loadedAreaOverlappingConcepts.put(area.getId(), overlappingConcepts);
         }
+        
+        return overlappingConcepts;
     }
 
     @Override
@@ -428,9 +454,9 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
         
         aggregatedPAreaSet.forEach((SCTPArea aggregatedPArea) -> {
             if(!aggregatedPArea.equals(aggregatePArea.getAggregatedGroupHierarchy().getRoots().iterator().next())) {
-                ArrayList<Concept> aggregatedPAreaClasses = aggregatedPArea.getConceptsInPArea();
+                ArrayList<Concept> aggregatedPAreaConcepts = aggregatedPArea.getConceptsInPArea();
                 
-                aggregatedPAreaClasses.forEach((Concept c) -> {
+                aggregatedPAreaConcepts.forEach((Concept c) -> {
                     ArrayList<Concept> parents = taxonomy.getDataSource().getConceptParents(c);
 
                     parents.forEach((Concept parent) -> {
@@ -459,7 +485,6 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
     public EntitySelectionListener<GenericParentGroupInfo<Concept, SCTPArea>> getParentGroupListener() {
         return new ParentGroupSelectedListener<>(this.getGEPConfiguration().getGEP());
     }
-    
     
     @Override
     public String getContainerHelpDescription(SCTArea container) {
@@ -512,18 +537,120 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration<
         return helpDesc.toString();
     }
     
-        @Override
+    @Override
     public String getAbNName() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (taxonomy.isReduced()) {
+            return String.format("%s Aggregate Partial-area Taxonomy", getGroupName(taxonomy.getRootGroup()));
+        } else {
+            return String.format("%s Partial-area Taxonomy", getGroupName(taxonomy.getRootGroup()));
+        }
+    }
+    
+    private String getRegularPAreaTaxonomySummary() {
+        
+        String rootName = getGroupName(taxonomy.getRootGroup());
+        
+        int pareaCount = taxonomy.getPAreaCount();
+        int areaCount = taxonomy.getAreaCount();
+        int conceptCount = taxonomy.getConceptHierarchy().getConceptsInHierarchy().size();
+
+        String result = String.format("<html>The <b>%s</b> partial-area taxonomy summarizes a total of %d concept(s) in %d area(s) and %d partial-areas(s).", 
+                rootName, conceptCount, areaCount, pareaCount);
+        
+        return result;
+    }
+    
+    private String getAggregatePAreaTaxonomySummary() {
+        String rootName = getGroupName(taxonomy.getRootGroup());
+        
+        int areaCount = taxonomy.getAreaCount();
+        int conceptCount = taxonomy.getConceptHierarchy().getConceptsInHierarchy().size();
+        
+        HashSet<SCTAggregatePArea> aggregatePAreas = new HashSet<>();
+        
+        HashSet<SCTAggregatePArea> regularPAreas = new HashSet<>();
+        
+        taxonomy.getAreas().forEach( (SCTArea area) -> {
+            ArrayList<SCTPArea> pareas = area.getAllPAreas();
+            
+            pareas.forEach( (SCTPArea parea) -> {
+                SCTAggregatePArea aggregatePArea = (SCTAggregatePArea)parea;
+                
+                if(aggregatePArea.getAggregatedGroups().isEmpty()) {
+                    regularPAreas.add(aggregatePArea);
+                } else {
+                    aggregatePAreas.add(aggregatePArea);
+                }
+            });
+        });
+        
+        HashSet<SCTPArea> removedPAreas = new HashSet<>();
+        
+        aggregatePAreas.forEach( (SCTAggregatePArea parea) -> {
+            removedPAreas.addAll(parea.getAggregatedGroups());
+        });
+
+        String result = String.format("<html>The <b>%s</b> aggregate partial-area "
+                + "taxonomy summarizes a total of %d concept(s) in %d area(s), %d "
+                + "aggregate partial-area(s), %d regular partial-area(s), and %d removed partial-area(s).", 
+                rootName, 
+                conceptCount, 
+                areaCount, 
+                aggregatePAreas.size(), 
+                regularPAreas.size(), 
+                removedPAreas.size());
+
+        return result;
     }
 
     @Override
     public String getAbNSummary() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String summary;
+
+        if (taxonomy.isReduced()) {
+            summary = getAggregatePAreaTaxonomySummary();
+        } else {
+            summary = getRegularPAreaTaxonomySummary();
+        }
+
+        summary += "<p><b>Help / Description:</b><br>";
+        summary += getAbNHelpDescription();
+
+        return summary;
     }
-    
+
     @Override
     public String getAbNHelpDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                
+        String pareaTaxonomyDesc = "A partial-area taxonomy is a type of abstraction network that summarizes structurally similar "
+                + "and semantically similar concepts. The partial-area taxonomy reveals and highlights "
+                + "high-level structural and hierarchical aggregation patterns in SNOMED CT. "
+                + "<p>"
+                + "A partial-area taxonomy is composed of two kinds of nodes. Areas summarize disjoint sets of concepts that are modeled using "
+                + "the exact same types of attribute relationships. "
+                + "The concepts summarized by an area are all structurally similar in that they summarize concepts that have the same relationship structure. "
+                + "Areas are shown as colored boxes and are labeled with their set of attribute relationship types, the number of concepts summarized, "
+                + "and the number of partial-areas."
+                + "Areas are organized into color-coded levels according to their number of attribute relationship types."
+                + "<p>"
+                + "The second type of node, called the partial-area, summarizes subhierarchies of semantically similar concepts within each area. "
+                + "Within each area there may be multiple such subhierarchies. Partial-areas are shown as white boxes "
+                + "within each area. Each partial-area is named after the concept that is the root of the subhierarchy "
+                + "and is labeled with the total number of concepts summarized by the partial-area in parenthesis. "
+                + "<p>"
+                + "The <i>Is a</i> hierarchy between concepts is also summarized by the partial-area taxonomy. When a given partial-area is selected then its "
+                + "parent partial-areas are shown in blue and its child partial-areas are shown in purple.";
+        
+        if(taxonomy.isReduced()) {
+            String aggregateTaxonomyDesc = "An <b>aggregate partial-area taxonomy</b> is a partial-area taxonomy where the small partial-areas, which summarize "
+                    + "a number of concepts below a chosen threshold, are not shown. The small removed partial-areas are aggregated into and summarized by"
+                    + "their closest ancestor partial-area(s) which are above the chosen threshold. "
+                    + "An aggregate partial-area, shown as a rounded rectangle, summarizes at least one removed partial-area. Regular partial-areas "
+                    + "are partial-areas which summarize no removed partial-areas in an aggregate partial-area taxonomy.";
+            
+            return String.format("%s<p>%s", pareaTaxonomyDesc, aggregateTaxonomyDesc);
+        } else {
+            return pareaTaxonomyDesc;
+        }
     }
 }

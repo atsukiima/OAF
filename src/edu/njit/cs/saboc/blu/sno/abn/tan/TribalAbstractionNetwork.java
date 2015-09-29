@@ -1,6 +1,5 @@
 package edu.njit.cs.saboc.blu.sno.abn.tan;
 
-import SnomedShared.Concept;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
@@ -17,17 +16,20 @@ import java.util.HashMap;
 public class TribalAbstractionNetwork<CLUSTER_T extends ClusterSummary> extends PartitionedAbstractionNetwork<CommonOverlapSet, CLUSTER_T> 
         implements SCTAbstractionNetwork<TribalAbstractionNetwork> {
     
-    protected String sctVersion;
+    private final String tanName;
     
-    protected SCTDataSource dataSource;
+    private final String sctVersion;
+    
+    private final SCTDataSource dataSource;
 
-    private ArrayList<CLUSTER_T> disjointClusters;
+    private final ArrayList<CLUSTER_T> disjointClusters;
 
-    private ArrayList<CLUSTER_T> nonOverlappingDisjointClusters;
+    private final ArrayList<CLUSTER_T> nonOverlappingDisjointClusters;
 
-    private HashMap<Long, String> patriarchNames = new HashMap<Long, String>();
+    private final HashMap<Long, String> patriarchNames = new HashMap<>();
 
     public TribalAbstractionNetwork(
+            String tanName,
             ArrayList<CommonOverlapSet> overlapSets,
             HashMap<Integer, CLUSTER_T> clusters,
             GroupHierarchy<CLUSTER_T> clusterHierarchy,
@@ -37,6 +39,8 @@ public class TribalAbstractionNetwork<CLUSTER_T extends ClusterSummary> extends 
             SCTDataSource dataSource) {
 
         super(overlapSets, clusters, clusterHierarchy);
+        
+        this.tanName = tanName;
         
         this.dataSource = dataSource;
         
@@ -52,6 +56,10 @@ public class TribalAbstractionNetwork<CLUSTER_T extends ClusterSummary> extends 
             patriarchNames.put(entryPoint.getHeaderConcept().getId(),
                     entryPointName);
         }
+    }
+    
+    public String getTANName() {
+        return tanName;
     }
     
     public TribalAbstractionNetwork getAbstractionNetwork() {

@@ -43,8 +43,13 @@ public class SCTBandSummaryPanel extends AbstractNodeSummaryPanel<CommonOverlapS
             allConcepts.addAll(cluster.getConcepts());
         });
         
-        return String.format("<html><b>%s</b> is a tribal band that summarizes %d concepts in %d clusters.", 
+        String result = String.format("<html><b>%s</b> is a tribal band that summarizes %d concepts in %d clusters.", 
                 bandName, allConcepts.size(), band.getAllClusters().size());
+        
+        result += "<p><b>Help / Description:</b><br>";
+        result += config.getContainerHelpDescription(band);
+        
+        return result;
     }
     
     @Override

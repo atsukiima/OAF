@@ -88,9 +88,14 @@ public class SCTClusterSummaryPanel extends AbstractNodeSummaryPanel<SCTCluster>
         descendantPAreas.forEach((SCTCluster c) -> {
             descendantClasses.addAll(c.getConcepts());
         });
-
-        return String.format("<html><b>%s</b> is a cluster that summarizes %d %s. It has %d parent clusters and %d child clusters. "
-                + "There are a total of %d descendant clusters that summarizes %d %s",
+        
+        String result = String.format("<html><b>%s</b> is a cluster that summarizes %d %s. It has %d parent clusters and %d child clusters. "
+                + "There are a total of %d descendant clusters that summarize %d %s",
                 rootName, classCount, conceptType, parentCount, childCount, descendantPAreas.size(), descendantClasses.size(), conceptType);
+        
+        result += "<p><b>Help / Description:</b><br>";
+        result += config.getGroupHelpDescriptions(cluster);
+
+        return result;
     }
 }

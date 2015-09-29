@@ -73,7 +73,9 @@ public class SCTCreateTANFromAreaButton extends CreateTANButton {
                         }
                     });
   
-                    SCTTribalAbstractionNetwork tan = TANGenerator.deriveTANFromMultiRootedHierarchy(hierarchy, 
+                    SCTTribalAbstractionNetwork tan = TANGenerator.deriveTANFromMultiRootedHierarchy(
+                            config.getContainerName(area),
+                            hierarchy, 
                             (SCTLocalDataSource)config.getPAreaTaxonomy().getDataSource(),  
                             config.getPAreaTaxonomy().getSCTVersion());
 

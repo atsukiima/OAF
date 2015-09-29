@@ -10,6 +10,7 @@ import edu.njit.cs.saboc.blu.sno.graph.DisjointPAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.SCTDisjointPAreaTaxonomyGEPConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.DisjointPAreaInternalSearchButton;
 import edu.njit.cs.saboc.blu.sno.utils.UtilityMethods;
 import javax.swing.JFrame;
 
@@ -20,12 +21,18 @@ import javax.swing.JFrame;
 public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
     private SCTDisplayFrameListener displayListener;
+    
+    private final DisjointPAreaInternalSearchButton searchBtn;
 
     public DisjointPAreaInternalGraphFrame(final JFrame parentFrame, final DisjointPAreaTaxonomy data, SCTDisplayFrameListener displayListener) {
         
         super(parentFrame, "SNOMED CT Disjoint Partial-area Taxonomy");
         
         this.displayListener = displayListener;
+        
+        this.searchBtn = new DisjointPAreaInternalSearchButton(parentFrame, this);
+        
+        super.addToggleableButtonToMenu(searchBtn);
 
         String frameTitle = UtilityMethods.getPrintableVersionName(data.getParentAbstractionNetwork().getSCTVersion()) + " | Hierarchy: " + data.getParentAbstractionNetwork().getSCTRootConcept().getName();
 
@@ -34,8 +41,8 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
         replaceInternalFrameDataWith(data);
     }
 
-    public PAreaBluGraph getGraph() {
-        return (PAreaBluGraph)super.getGraph();
+    public DisjointPAreaBluGraph getGraph() {
+        return (DisjointPAreaBluGraph)super.getGraph();
     }
 
     public void replaceInternalFrameDataWith(final DisjointPAreaTaxonomy data) {
@@ -53,6 +60,8 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
         };
 
         BluGraph graph = new DisjointPAreaBluGraph(parentFrame, data, displayListener, labelCreator);
+        
+        searchBtn.setGraph(graph);
         
         initializeGraphTabs(graph, new DisjointAbNPainter(), new SCTDisjointPAreaTaxonomyGEPConfiguration(parentFrame, data, displayListener));
         

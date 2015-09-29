@@ -6,6 +6,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.abn.AbstractAbNDetailsP
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyDetailsPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.area.SCTAreaPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.area.aggregate.SCTAggregateAreaPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea.SCTPAreaPanel;
@@ -45,7 +46,7 @@ public class SCTPAreaTaxonomyGEPConfiguration extends BLUGraphConfiguration {
     
     @Override
     public AbstractAbNDetailsPanel createAbNDetailsPanel() {
-        return null;
+        return new SCTPAreaTaxonomyDetailsPanel(uiConfiguration);
     }
     
     @Override
