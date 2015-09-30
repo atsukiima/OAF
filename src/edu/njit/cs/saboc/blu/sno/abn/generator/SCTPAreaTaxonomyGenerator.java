@@ -34,8 +34,11 @@ public class SCTPAreaTaxonomyGenerator extends PAreaTaxonomyGenerator<SCTPAreaTa
     
     private HashMap<Long, String> relNames = new HashMap<Long, String>();
 
-    public SCTPAreaTaxonomyGenerator(Concept sctRootConcept, SCTDataSource dataSource, 
-            SCTConceptHierarchy conceptHierarchy, ConceptRelationshipsRetriever conceptRelsRetriever) {
+    public SCTPAreaTaxonomyGenerator(
+            Concept sctRootConcept, 
+            SCTDataSource dataSource, 
+            SCTConceptHierarchy conceptHierarchy, 
+            ConceptRelationshipsRetriever conceptRelsRetriever) {
         
         this.sctRootConcept = sctRootConcept;
         

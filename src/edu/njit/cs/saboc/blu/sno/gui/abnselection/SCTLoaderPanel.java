@@ -10,6 +10,9 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.load.LoadLocalRelease;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LocalLoadStateMonitor;
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.target.SCTTargetAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.abn.target.SCTTargetAbstractionNetworkGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.target.SCTTargetGroup;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.ImportLocalDataRF2;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.RelationshipsRetrieverFactory;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
@@ -30,6 +33,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -65,6 +71,8 @@ public class SCTLoaderPanel extends JPanel {
     
     private final SCTHierarchySelectionPanel pareaTaxonomySelectionPanel;
     private final SCTHierarchySelectionPanel tanSelectionPanel;
+    
+    private final SCTHierarchySelectionPanel targetSelectionPanel;
     
     private JButton openBrowserBtn;
 
@@ -185,9 +193,28 @@ public class SCTLoaderPanel extends JPanel {
                 }
             });
         tanSelectionPanel.setEnabled(false);
+        
+        ArrayList<Concept> targetEnabledHierarchies = new ArrayList<>();
+        
+        rootConcepts.forEach((Concept root) -> {
+            if(root.getId() == 71388002L) { // Procedure
+                targetEnabledHierarchies.add(root);
+            }
+        });
+        
+        targetSelectionPanel = new SCTHierarchySelectionPanel(rootConcepts, targetEnabledHierarchies, "Target AbN",
+            new SCTHierarchySelectionPanel.HierarchySelectionAction() {
+                public void performHierarchySelectionAction(Concept root, boolean useStated) {
+                    loadTargetAbN(root);
+                }
+            });
+        
+        tanSelectionPanel.setEnabled(false);
 
         blusnoTabbedPane.addTab("Partial-area Taxonomy", pareaTaxonomySelectionPanel);
         blusnoTabbedPane.addTab("Tribal Abstraction Network", tanSelectionPanel);
+        blusnoTabbedPane.addTab("Target Abstraction Network (Test)", targetSelectionPanel);
+        
         blusnoTabbedPane.setEnabled(false);
 
         JPanel blusnoTabPanel = new JPanel(new BorderLayout());
@@ -426,6 +453,75 @@ public class SCTLoaderPanel extends JPanel {
 
         
     }
+    
+    private void loadTargetAbN(final Concept root) {
+    
+        Thread loadThread = new Thread(new Runnable() {
+            private LoadStatusDialog loadStatusDialog = null;
+
+            public void run() {
+
+                loadStatusDialog = LoadStatusDialog.display(parentFrame, String.format("Creating the %s Target Abstraction Network.", root.getName()));
+
+                if (localSourceBtn.isSelected()) {
+                    final SCTTargetAbstractionNetwork abn;
+
+                    try {
+                        SCTLocalDataSource dataSource = localReleasePanel.getLoadedDataSource();
+                        
+                        SCTTargetAbstractionNetworkGenerator generator = new SCTTargetAbstractionNetworkGenerator(dataSource);
+                        
+                        SCTConceptHierarchy procedureHierarchyConcepts = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(
+                                dataSource.getConceptFromId(71388002l));
+                        
+                        HashSet<Concept> relTypes = new HashSet<>();
+                        relTypes.add(dataSource.getConceptFromId(363704007L)); // Procedure site
+                        relTypes.add(dataSource.getConceptFromId(405813007L)); // Procedure site - direct
+                        relTypes.add(dataSource.getConceptFromId(405814001L)); // Procedure site - indirect
+                        
+                        
+                        Concept targetHierarchyRoot = dataSource.getConceptFromId(123037004l);
+                        
+                        SCTTargetAbstractionNetwork targetAbN = generator.deriveTargetAbstractionNetwork(
+                                procedureHierarchyConcepts.getConceptsInHierarchy(), relTypes, targetHierarchyRoot);
+                        
+                        Collection<SCTTargetGroup> targetGroups = (Collection<SCTTargetGroup>)(targetAbN.getGroups().values());
+                        
+                        targetGroups.forEach( (SCTTargetGroup group) -> {
+                            
+                            /*
+                            HashMap<Concept, HashSet<Concept>> incomingRelSources = group.getGroupIncomingRelSources();
+                            
+                            incomingRelSources.forEach( (Concept c, HashSet<Concept> sourceConcepts) -> {
+                                System.out.println(String.format("%s\t%s\t%d", 
+                                        group.getRoot().getName(), 
+                                        c.getName(),
+                                        sourceConcepts.size()));
+                            });
+                            */
+                            
+                            System.out.println(String.format("%s\t%d\t%d", 
+                                        group.getRoot().getName(), 
+                                        group.getConceptCount(),
+                                        group.getSourceConcepts().size()));
+                            
+                        });
+                        
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                loadStatusDialog.setVisible(false);
+                                loadStatusDialog.dispose();
+                            }
+                        });
+                    } catch (NoSCTDataSourceLoadedException e) {
+                        // TODO: Show error...
+                    }
+                }
+            }
+        });
+
+        loadThread.start();
+    }
 
     private SCTDataSource getSelectedDataSource() {
         SCTDataSource dataSource;
@@ -463,6 +559,8 @@ public class SCTLoaderPanel extends JPanel {
         blusnoTabbedPane.setEnabled(value);
     }
 }
+
+
 
 /**
  * Panel which contains all of the options for a SCT release that is stored
