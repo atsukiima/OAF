@@ -2,31 +2,36 @@
 package edu.njit.cs.saboc.blu.sno.abn.target;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.abn.reduced.ReducingGroup;
-import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.ConceptGroupHierarchy;
+import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
+import edu.njit.cs.saboc.blu.core.abn.aggregate.AggregateableConceptGroup;
+
 import java.util.HashSet;
 
 /**
  *
  * @author Chris O
  */
-public class SCTAggregateTargetGroup extends SCTTargetGroup implements ReducingGroup<Concept, SCTTargetGroup> {
+public class SCTAggregateTargetGroup extends SCTTargetGroup implements AggregateableConceptGroup<Concept, SCTTargetGroup> {
 
-    private ConceptGroupHierarchy<SCTTargetGroup> reducedGroupHierarchy;
+
+    private GroupHierarchy<SCTTargetGroup> reducedGroupHierarchy;
     
-    public SCTAggregateTargetGroup(SCTTargetGroup group, HashSet<Integer> parentIds, ConceptGroupHierarchy<SCTTargetGroup> reducedGroupHierarchy) {
+    public SCTAggregateTargetGroup(SCTTargetGroup group, HashSet<Integer> parentIds, GroupHierarchy<SCTTargetGroup> reducedGroupHierarchy) {
         
         super(group.getId(), group.getRoot(), parentIds, group.getGroupSCTConceptHierarchy(), group.getGroupIncomingRelSources());
         
         this.reducedGroupHierarchy = reducedGroupHierarchy;
     }
     
-    public ConceptGroupHierarchy<SCTTargetGroup> getReducedGroupHierarchy() {
+    public GroupHierarchy<SCTTargetGroup> getAggregatedGroupHierarchy() {
         return reducedGroupHierarchy;
     }
     
-    public HashSet<SCTTargetGroup> getReducedGroups() {
-        return new HashSet(reducedGroupHierarchy.getNodesInHierarchy());
+    public HashSet<SCTTargetGroup> getAggregatedGroups() {
+        HashSet<SCTTargetGroup> aggregatedGroups = new HashSet(reducedGroupHierarchy.getNodesInHierarchy());
+        aggregatedGroups.removeAll(reducedGroupHierarchy.getRoots());
+        
+        return aggregatedGroups;
     }
     
     public HashSet<Concept> getAllGroupsConcepts() {

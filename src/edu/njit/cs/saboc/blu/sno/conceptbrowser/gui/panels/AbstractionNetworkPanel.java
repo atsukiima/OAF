@@ -372,7 +372,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                     subhierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(root);
                 }
                 
-                TribalAbstractionNetwork tan = TANGenerator.createTANFromConceptHierarchy(root, dataSource.getSelectedVersion(), subhierarchy);
+                SCTTribalAbstractionNetwork tan = TANGenerator.createTANFromConceptHierarchy(root.getName(), subhierarchy, dataSource);
                 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {

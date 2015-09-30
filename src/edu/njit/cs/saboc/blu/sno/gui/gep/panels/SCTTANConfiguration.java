@@ -318,7 +318,7 @@ public class SCTTANConfiguration implements BLUPartitionedAbNConfiguration<
             String nonOverlappingClustersStr = nonOverlappingClusterNames.get(0);
             
             for(String s : nonOverlappingClusterNames) {
-                nonOverlappingClustersStr += String.format(", %s", s);
+                nonOverlappingClustersStr += String.format("<br>%s", s);
             }
             
             result += String.format("<p>The following %d patriarch cluster(s) don't intersect with any other patriarch cluster: %s", 

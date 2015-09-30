@@ -24,6 +24,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -188,32 +189,31 @@ public abstract class GenericClusterLayout extends BluGraphLayout<CommonOverlapS
         
         HashMap<Long, String> patriarchNames = tan.getPatriarchNames();
         
-        String [] entries = new String[patriarchs.size() + 1];
-        entries[entries.length - 1] = countString;
-
-        int c = 0;
-        
-        int longestPatriarch = -1;
+        ArrayList<String> bandPatriarchLabels = new ArrayList<>();
         
         for(EntryPoint patriarch : patriarchs) {
             String patriarchName = patriarchNames.get(patriarch.getEntryPointConceptId());
             
-            if(!treatAsBand) {
-                if(patriarch.getInheritanceType() == InheritanceType.INHERITED) {
-                    patriarchName += "*";
-                } else {
-                    patriarchName += "+";
-                }
-            }
+            bandPatriarchLabels.add(patriarchName);
+        }
+        
+        Collections.sort(bandPatriarchLabels);
+        
+        int c = 0;
+        
+        int longestPatriarch = -1;
+        
+
+        for(String patriarchLabel : bandPatriarchLabels) {
             
-            int relNameWidth = fontMetrics.stringWidth(patriarchName);
+            int relNameWidth = fontMetrics.stringWidth(patriarchLabel);
             
             if(relNameWidth > longestPatriarch) {
                 longestPatriarch = relNameWidth;
             }
-            
-            entries[c++] = patriarchName;
         }
+        
+        bandPatriarchLabels.add(countString);
         
         if(fontMetrics.stringWidth(countString) > longestPatriarch) {
             longestPatriarch = fontMetrics.stringWidth(countString);
@@ -231,7 +231,7 @@ public abstract class GenericClusterLayout extends BluGraphLayout<CommonOverlapS
             width = longestPatriarch + 4;
         }
         
-        return this.createFittedPartitionLabel(entries, width, fontMetrics);
+        return this.createFittedPartitionLabel(bandPatriarchLabels.toArray(new String[0]), width, fontMetrics);
     }
     
     public JLabel createPartitionLabel(GenericContainerPartition partition, int width) {

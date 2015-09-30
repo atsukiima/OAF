@@ -1,6 +1,5 @@
 package edu.njit.cs.saboc.blu.sno.graph.layout;
 
-import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.CommonOverlapSet;
 import SnomedShared.overlapping.EntryPointSet;
 import SnomedShared.overlapping.OverlapInheritancePartition;
@@ -10,7 +9,6 @@ import edu.njit.cs.saboc.blu.core.graph.edges.GraphLane;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphLevel;
 import edu.njit.cs.saboc.blu.core.graph.layout.GraphLayoutConstants;
 import edu.njit.cs.saboc.blu.core.graph.nodes.GenericGroupEntry;
-import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.graph.tan.BluCluster;

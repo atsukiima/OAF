@@ -238,6 +238,7 @@ public class TANGenerator {
                 } else {
                     epSet.add(new EntryPoint(rootPatriarch.getId(), EntryPoint.InheritanceType.INHERITED));
                 }
+                
             }
 
             SCTCluster cluster = new SCTCluster(
