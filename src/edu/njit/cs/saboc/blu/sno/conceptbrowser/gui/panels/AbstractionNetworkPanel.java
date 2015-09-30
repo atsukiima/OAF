@@ -11,6 +11,7 @@ import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.ConceptClusterInfo;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
@@ -140,75 +141,127 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             tribalANPanel.add(new JScrollPane(clusterDetailsPanel), BorderLayout.CENTER);
             tabbedPane.addTab("Cluster Details", tribalANPanel);
             
-            final JCheckBox chkUseStatedRels = new JCheckBox("Derive Use Stated Relationships");
-            chkUseStatedRels.setSelected(false);
-            
-            if(dataSource.supportsStatedRelationships()) {
-                chkUseStatedRels.setVisible(true);
-            } else {
-                chkUseStatedRels.setVisible(false);
-            }
-            
-            JPanel subtaxonomySelectionPanel = new JPanel(new GridLayout(1, 2, 2, 2));
-
-            JButton descTaxonomyBtn = new JButton("Create Subject Subtaxonomy");
-            
-            descTaxonomyBtn.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    Concept c = focusConcept.getConcept();
-                    
-                    createAndDisplaySubjectSubtaxonomy(localDS, c, chkUseStatedRels.isSelected());
-                }
-            });
-            
-            JEditorPane subjectSubtaxonomyDesc = new JEditorPane();
-            subjectSubtaxonomyDesc.setEditable(false);
-            subjectSubtaxonomyDesc.setContentType("text/html");
-            subjectSubtaxonomyDesc.setText("A <b>subject subtaxonomy</b> is a taxonomy derived using the chosen focus concept and all of its "
-                    + "descendants. It summarizes the subhierarchy of classes rooted at the chosen focus concept.");
-
-            JPanel descBtnPanel = new JPanel(new BorderLayout());
-            descBtnPanel.setBorder(BorderFactory.createEtchedBorder());
-            descBtnPanel.add(descTaxonomyBtn, BorderLayout.NORTH);
-            descBtnPanel.add(subjectSubtaxonomyDesc, BorderLayout.CENTER);
-            
-            subtaxonomySelectionPanel.add(descBtnPanel);
-            
-            JButton focusTaxonomyBtn = new JButton("Create Focus Subtaxonomy");
-            
-            focusTaxonomyBtn.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    Concept c = focusConcept.getConcept();
-
-                    createAndDisplayFocusSubtaxonomy(localDS, c, chkUseStatedRels.isSelected());
-                }
-            });
-            
-            JEditorPane focusSubtaxonomyDesc = new JEditorPane();
-            focusSubtaxonomyDesc.setEditable(false);
-            focusSubtaxonomyDesc.setContentType("text/html");
-            focusSubtaxonomyDesc.setText("A <b>focus subtaxonomy</b> is a taxonomy derived using the chosen focus concept and all of its "
-                    + "ancestors descendants. A focus subtaxonomy summarizes the ancestors and descendants of the chosen concept.");
-            
-            JPanel focusBtnPanel = new JPanel(new BorderLayout());
-            focusBtnPanel.setBorder(BorderFactory.createEtchedBorder());
-            focusBtnPanel.add(focusTaxonomyBtn, BorderLayout.NORTH);
-            focusBtnPanel.add(focusSubtaxonomyDesc, BorderLayout.CENTER);
-            
-            subtaxonomySelectionPanel.add(focusBtnPanel);
-
-            JPanel subtaxonomyOptionsPanel = new JPanel(new BorderLayout());
-            
-            subtaxonomyOptionsPanel.add(chkUseStatedRels, BorderLayout.NORTH);
-            subtaxonomyOptionsPanel.add(subtaxonomySelectionPanel, BorderLayout.CENTER);
-            
-            tabbedPane.addTab("Create Focus Concept Subtaxonomy", subtaxonomyOptionsPanel);
+            tabbedPane.addTab("Create Subject Partial-area Subtaxonomy", createSubjectSubtaxonomyPanel());
+            tabbedPane.addTab("Create Subject TAN", createSubjectTANPanel());
         }
         
         focusConcept.addDisplayPanel(FocusConcept.Fields.TRIBALAN, tribalANPanel);
         focusConcept.addDisplayPanel(FocusConcept.Fields.PARTIALAREA, partialAreaPanel);
 
         add(tabbedPane, BorderLayout.CENTER);
+    }
+    
+    private JPanel createSubjectSubtaxonomyPanel() {
+        final SCTLocalDataSource localDS = (SCTLocalDataSource)dataSource;
+        
+        final JCheckBox chkUseStatedRels = new JCheckBox("Derive Using Stated Relationships");
+        chkUseStatedRels.setSelected(false);
+
+        if (dataSource.supportsStatedRelationships()) {
+            chkUseStatedRels.setVisible(true);
+        } else {
+            chkUseStatedRels.setVisible(false);
+        }
+
+        JPanel subtaxonomySelectionPanel = new JPanel(new GridLayout(1, 2, 2, 2));
+
+        JButton descTaxonomyBtn = new JButton("Create Subject Subtaxonomy");
+
+        descTaxonomyBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                Concept c = focusConcept.getConcept();
+
+                createAndDisplaySubjectSubtaxonomy(localDS, c, chkUseStatedRels.isSelected());
+            }
+        });
+
+        JEditorPane subjectSubtaxonomyDesc = new JEditorPane();
+        subjectSubtaxonomyDesc.setEditable(false);
+        subjectSubtaxonomyDesc.setContentType("text/html");
+        subjectSubtaxonomyDesc.setText("A <b>subject subtaxonomy</b> is a taxonomy derived using the chosen focus concept and all of its "
+                + "descendants. It summarizes the subhierarchy of classes rooted at the chosen focus concept.");
+
+        JPanel descBtnPanel = new JPanel(new BorderLayout());
+        descBtnPanel.setBorder(BorderFactory.createEtchedBorder());
+        descBtnPanel.add(descTaxonomyBtn, BorderLayout.NORTH);
+        descBtnPanel.add(subjectSubtaxonomyDesc, BorderLayout.CENTER);
+
+        subtaxonomySelectionPanel.add(descBtnPanel);
+
+        JButton focusTaxonomyBtn = new JButton("Create Focus Subtaxonomy");
+
+        focusTaxonomyBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                Concept c = focusConcept.getConcept();
+
+                createAndDisplayFocusSubtaxonomy(localDS, c, chkUseStatedRels.isSelected());
+            }
+        });
+
+        JEditorPane focusSubtaxonomyDesc = new JEditorPane();
+        focusSubtaxonomyDesc.setEditable(false);
+        focusSubtaxonomyDesc.setContentType("text/html");
+        focusSubtaxonomyDesc.setText("A <b>focus subtaxonomy</b> is a taxonomy derived using the chosen focus concept and all of its "
+                + "ancestors descendants. A focus subtaxonomy summarizes the ancestors and descendants of the chosen concept.");
+
+        JPanel focusBtnPanel = new JPanel(new BorderLayout());
+        focusBtnPanel.setBorder(BorderFactory.createEtchedBorder());
+        focusBtnPanel.add(focusTaxonomyBtn, BorderLayout.NORTH);
+        focusBtnPanel.add(focusSubtaxonomyDesc, BorderLayout.CENTER);
+
+        subtaxonomySelectionPanel.add(focusBtnPanel);
+
+        JPanel subtaxonomyOptionsPanel = new JPanel(new BorderLayout());
+
+        subtaxonomyOptionsPanel.add(chkUseStatedRels, BorderLayout.NORTH);
+        subtaxonomyOptionsPanel.add(subtaxonomySelectionPanel, BorderLayout.CENTER);
+        
+        return subtaxonomyOptionsPanel;
+    }
+    
+    private JPanel createSubjectTANPanel() {
+        final SCTLocalDataSource localDS = (SCTLocalDataSource)dataSource;
+        
+        final JCheckBox chkUseStatedRels = new JCheckBox("Derive Using Stated Relationships");
+        chkUseStatedRels.setSelected(false);
+
+        if (dataSource.supportsStatedRelationships()) {
+            chkUseStatedRels.setVisible(true);
+        } else {
+            chkUseStatedRels.setVisible(false);
+        }
+
+        JPanel subjectTANSelectionPanel = new JPanel(new GridLayout(1, 1, 2, 2));
+
+        JButton subjectTANBtn = new JButton("Create Subject TAN");
+
+        subjectTANBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                Concept c = focusConcept.getConcept();
+
+                createAndDisplaySubjectTAN(localDS, c, chkUseStatedRels.isSelected());
+            }
+        });
+
+        JEditorPane subjectTANDesc = new JEditorPane();
+        subjectTANDesc.setEditable(false);
+        subjectTANDesc.setContentType("text/html");
+        subjectTANDesc.setText("A <b>subject TAN</b> is a Tribal Abstraction Network (TAN) derived using the chosen focus concept and all of its "
+                + "descendants. It summarizes the points of intersection among the focus concept's descendants.");
+
+        JPanel descBtnPanel = new JPanel(new BorderLayout());
+        descBtnPanel.setBorder(BorderFactory.createEtchedBorder());
+        descBtnPanel.add(subjectTANBtn, BorderLayout.NORTH);
+        descBtnPanel.add(subjectTANDesc, BorderLayout.CENTER);
+
+        subjectTANSelectionPanel.add(descBtnPanel);
+
+        JPanel subjectTANOptionsPanel = new JPanel(new BorderLayout());
+
+        subjectTANOptionsPanel.add(chkUseStatedRels, BorderLayout.NORTH);
+        subjectTANOptionsPanel.add(subjectTANSelectionPanel, BorderLayout.CENTER);
+        
+        return subjectTANOptionsPanel;
     }
     
     private void createAndDisplaySubjectSubtaxonomy(final SCTLocalDataSource dataSource, final Concept root, boolean useStatedRelationships) {
@@ -250,7 +303,6 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
         loadThread.start();        
     }
-    
     
     private void createAndDisplayFocusSubtaxonomy(final SCTLocalDataSource dataSource, final Concept focusConcept, boolean useStatedRelationships) {
         
@@ -302,6 +354,40 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
         loadThread.start();        
     }
 
+    private void createAndDisplaySubjectTAN(final SCTLocalDataSource dataSource, final Concept root, boolean useStatedRelationships) {
+         Thread loadThread = new Thread(new Runnable() {
+            private LoadStatusDialog loadStatusDialog = null;
+
+            public void run() {
+                
+                loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating the %s Subject TAN.", root.getName()));
+
+                ArrayList<Concept> hierarchy = dataSource.getHierarchiesConceptBelongTo(root);
+
+                SCTConceptHierarchy subhierarchy;
+                
+                if(useStatedRelationships) {
+                    subhierarchy = ((SCTLocalDataSourceWithStated)dataSource).getStatedHierarchy().getSubhierarchyRootedAt(root);
+                } else {
+                    subhierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(root);
+                }
+                
+                TribalAbstractionNetwork tan = TANGenerator.createTANFromConceptHierarchy(root, dataSource.getSelectedVersion(), subhierarchy);
+                
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        mainPanel.getDisplayFrameListener().addNewClusterGraphFrame(tan, true, true);
+
+                        loadStatusDialog.setVisible(false);
+                        loadStatusDialog.dispose();
+                    }
+                });
+            }
+        });
+
+        loadThread.start();        
+    }
+    
     private class PAreaTaxonomyDetailsPanel extends JPanel {
 
         private JLabel detailsLabel = new JLabel();
@@ -483,7 +569,6 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             }
         }
     }
-    
     
     private class ClusterDetailsPanel extends JPanel {
 

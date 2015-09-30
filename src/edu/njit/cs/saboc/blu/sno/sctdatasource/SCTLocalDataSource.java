@@ -6,7 +6,9 @@ import SnomedShared.PAreaDetailsForConcept;
 import SnomedShared.SearchResult;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.pareataxonomy.ConceptPAreaInfo;
-import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
+import SnomedShared.pareataxonomy.GroupParentInfo;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.GenericParentPAreaInfo;
+import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.visitor.result.AncestorDepthResult;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
@@ -46,9 +48,9 @@ public class SCTLocalDataSource implements SCTDataSource {
     private class DescriptionEntry {
 
         public Description description;
-        public Concept concept;
+        public LocalSnomedConcept concept;
 
-        public DescriptionEntry(Description d, Concept c) {
+        public DescriptionEntry(Description d, LocalSnomedConcept c) {
             this.description = d;
             this.concept = c;
         }
@@ -335,23 +337,26 @@ public class SCTLocalDataSource implements SCTDataSource {
 
             if (withinIndexBounds) {
                 if (descFirstChar == firstChar) {
-                    if(entry.description.getTerm().equalsIgnoreCase(term)) {
-                        results.add(new SearchResult(
-                            entry.description.getTerm(), 
-                            entry.concept.getName(), 
-                            entry.concept.getId())
-                        );
+                    if (entry.description.getTerm().equalsIgnoreCase(term)) {
+
+                        if (entry.concept.isActive()) {
+                            results.add(new SearchResult(
+                                    entry.description.getTerm(),
+                                    entry.concept.getName(),
+                                    entry.concept.getId())
+                            );
+                        }
                     }
                 }
             } else {
-                if(firstChar < 'a') {
-                    if(descFirstChar == 'a') {
+                if (firstChar < 'a') {
+                    if (descFirstChar == 'a') {
                         break;
                     }
                 }
             }
         }
-        
+
         return results;
     }
 
@@ -383,12 +388,14 @@ public class SCTLocalDataSource implements SCTDataSource {
 
             if (firstChar >= 'a' && firstChar <= 'z') {
                 if (descFirstChar == firstChar) {
-                    if(entry.description.getTerm().toLowerCase().startsWith(term)) {
-                        results.add(new SearchResult(
-                            entry.description.getTerm(), 
-                            entry.concept.getName(), 
-                            entry.concept.getId())
-                        );
+                    if (entry.description.getTerm().toLowerCase().startsWith(term)) {
+                        if (entry.concept.isActive()) {
+                            results.add(new SearchResult(
+                                    entry.description.getTerm(),
+                                    entry.concept.getName(),
+                                    entry.concept.getId())
+                            );
+                        }
                     }
                 } else {
                     break;
@@ -413,7 +420,13 @@ public class SCTLocalDataSource implements SCTDataSource {
 
         for (DescriptionEntry entry : descriptions) {
             if (entry.description.getTerm().toLowerCase().contains(term)) {
-                results.add(new SearchResult(entry.description.getTerm(), entry.concept.getName(), entry.concept.getId()));
+                if (entry.concept.isActive()) {
+                    results.add(new SearchResult(
+                            entry.description.getTerm(),
+                            entry.concept.getName(),
+                            entry.concept.getId())
+                    );
+                }
             }
         }
 
@@ -757,7 +770,7 @@ public class SCTLocalDataSource implements SCTDataSource {
         } else {
             hierarchy = (SCTConceptHierarchy)conceptHierarchy.getSubhierarchyRootedAt(c);
         }
-        
+
         HashSet<Concept> descendantSet = hierarchy.getConceptsInHierarchy();
         descendantSet.remove(c);
         
@@ -782,15 +795,15 @@ public class SCTLocalDataSource implements SCTDataSource {
         int childCount = this.getConceptChildren(c).size();
         int siblingCount = this.getConceptSiblings(c).size();
         
+        int descendantCount = conceptHierarchy.countDescendants(c);
+                        
         int ancestorCount = 0;
         
         for(Concept hierarchy : hierarchies) {
             ancestorCount += this.getAncestorHierarchy(conceptHierarchy, hierarchy, c).getConceptsInHierarchy().size() - 1;
         }
-        
-        ArrayList<Concept> descendants = this.getAllDescendantsAsList(c);
-        
-        return new HierarchyMetrics(c, hierarchies, ancestorCount, descendants.size(), parentCount, childCount, siblingCount);
+
+        return new HierarchyMetrics(c, hierarchies, ancestorCount, descendantCount, parentCount, childCount, siblingCount);
     }
     
     
