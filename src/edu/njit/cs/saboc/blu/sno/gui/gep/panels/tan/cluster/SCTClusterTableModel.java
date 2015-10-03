@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.cluster;
 
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.BLUAbstractGroupTableModel;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 
 /**
  *

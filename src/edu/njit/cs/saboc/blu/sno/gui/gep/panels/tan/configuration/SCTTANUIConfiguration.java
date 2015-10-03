@@ -1,39 +1,40 @@
-package edu.njit.cs.saboc.blu.sno.gui.gep.configuration;
+package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration;
 
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.BLUGraphConfiguration;
+import SnomedShared.Concept;
+import SnomedShared.overlapping.CommonOverlapSet;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.ui.BLUPartitionedAbNUIConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.abn.AbstractAbNDetailsPanel;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANDetailsPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.band.SCTBandPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.cluster.SCTClusterPanel;
-import edu.njit.cs.saboc.blu.sno.gui.graphframe.ClusterInternalGraphFrame;
-import javax.swing.JFrame;
 
 /**
  *
- * @author Chris
+ * @author Chris O
  */
-public class SCTTANGEPConfiguration extends BLUGraphConfiguration {
+public class SCTTANUIConfiguration extends BLUPartitionedAbNUIConfiguration<SCTTribalAbstractionNetwork, CommonOverlapSet, SCTCluster, Concept, SCTTANConfiguration, SCTTANListenerConfiguration> {
+    
     
     private final SCTTANConfiguration config;
-
-    public SCTTANGEPConfiguration(
-            final JFrame parentFrame, 
-            final ClusterInternalGraphFrame graphFrame,
-            final SCTTribalAbstractionNetwork tan, 
-            final SCTDisplayFrameListener displayListener) {
+    
+    private final SCTDisplayFrameListener displayListener;
+            
+    public SCTTANUIConfiguration(SCTTANConfiguration config, SCTDisplayFrameListener displayListener) {
+        super(new SCTTANListenerConfiguration(config));
         
-        super("Tribal Abstraction Network");
-
-        this.config = new SCTTANConfiguration(tan, displayListener, this);
+        this.config = config;
+        
+        this.displayListener = displayListener;
     }
     
-    public SCTTANConfiguration getConfiguration() {
-        return config;
+    public SCTDisplayFrameListener getDisplayFrameListener() {
+        return displayListener;
     }
+    
     
     @Override
     public AbstractAbNDetailsPanel createAbNDetailsPanel() {

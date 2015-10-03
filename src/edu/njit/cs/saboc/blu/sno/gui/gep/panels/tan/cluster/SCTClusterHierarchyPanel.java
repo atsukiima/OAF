@@ -3,7 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.cluster;
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractGroupHierarchyPanel;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,7 +13,7 @@ import java.util.HashSet;
  *
  * @author Chris O
  */
-public class SCTClusterHierarchyPanel extends AbstractGroupHierarchyPanel<Concept, SCTCluster> {
+public class SCTClusterHierarchyPanel extends AbstractGroupHierarchyPanel<Concept, SCTCluster, SCTTANConfiguration> {
     
     private final SCTTANConfiguration config;
 
@@ -32,7 +32,7 @@ public class SCTClusterHierarchyPanel extends AbstractGroupHierarchyPanel<Concep
 
     @Override
     protected void loadChildGroupInfo(SCTCluster group) {
-       HashSet<SCTCluster> childClusters = config.getTribalAbstractionNetwork().getChildGroups(group);
+       HashSet<SCTCluster> childClusters = config.getDataConfiguration().getTribalAbstractionNetwork().getChildGroups(group);
        
        ArrayList<SCTCluster> sortedChildClusters = new ArrayList<>(childClusters);
        

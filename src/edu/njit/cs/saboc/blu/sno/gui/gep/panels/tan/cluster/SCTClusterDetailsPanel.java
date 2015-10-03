@@ -5,7 +5,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeDetailsPane
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTConceptList;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,9 +24,9 @@ public class SCTClusterDetailsPanel extends AbstractNodeDetailsPanel<SCTCluster,
                new SCTClusterOptionsPanel(config),
               new SCTConceptList());
         
-        this.tan = config.getTribalAbstractionNetwork();
+        this.tan = config.getDataConfiguration().getTribalAbstractionNetwork();
         
-        getConceptList().addEntitySelectionListener(config.getGroupConceptListListener());
+        getConceptList().addEntitySelectionListener(config.getUIConfiguration().getListenerConfiguration().getGroupConceptListListener());
     }
     
     @Override

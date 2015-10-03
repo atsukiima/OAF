@@ -4,10 +4,10 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPane
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan.SCTCreateTANFromClusterButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan.SCTExportClusterButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTOpenBrowserButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import java.util.Optional;
 
 /**
@@ -31,8 +31,8 @@ public class SCTClusterOptionsPanel extends AbstractNodeOptionsPanel<SCTCluster>
     public SCTClusterOptionsPanel(SCTTANConfiguration config) {
         this.config = config;
        
-        btnNAT = new SCTOpenBrowserButton(config.getTribalAbstractionNetwork().getDataSource(),
-            "cluster", config.getDisplayListener());
+        btnNAT = new SCTOpenBrowserButton(config.getDataConfiguration().getTribalAbstractionNetwork().getDataSource(),
+            "cluster", config.getUIConfiguration().getDisplayFrameListener());
         
         super.addOptionButton(btnNAT);
         
@@ -48,7 +48,7 @@ public class SCTClusterOptionsPanel extends AbstractNodeOptionsPanel<SCTCluster>
 
             @Override
             public AbstractNodePanel getCurrentDetailsPanel() {
-                AbstractNodePanel anp = config.getGEPConfiguration().createGroupDetailsPanel();
+                AbstractNodePanel anp = config.getUIConfiguration().createGroupDetailsPanel();
                 anp.setContents(selectedCluster.get());
                 
                 return anp;

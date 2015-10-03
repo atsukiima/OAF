@@ -7,9 +7,8 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
 import edu.njit.cs.saboc.blu.sno.graph.DisjointPAreaBluGraph;
-import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.SCTDisjointPAreaTaxonomyGEPConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.DisjointPAreaInternalSearchButton;
 import edu.njit.cs.saboc.blu.sno.utils.UtilityMethods;
 import javax.swing.JFrame;
@@ -20,7 +19,7 @@ import javax.swing.JFrame;
  */
 public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
-    private SCTDisplayFrameListener displayListener;
+    private final SCTDisplayFrameListener displayListener;
     
     private final DisjointPAreaInternalSearchButton searchBtn;
 
@@ -63,7 +62,9 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
         
         searchBtn.setGraph(graph);
         
-        initializeGraphTabs(graph, new DisjointAbNPainter(), new SCTDisjointPAreaTaxonomyGEPConfiguration(parentFrame, data, displayListener));
+        SCTDisjointPAreaTaxonomyConfigurationFactory factory = new SCTDisjointPAreaTaxonomyConfigurationFactory();
+        
+        initializeGraphTabs(graph, new DisjointAbNPainter(), factory.createConfiguration(data, displayListener));
         
         tabbedPane.validate();
         tabbedPane.repaint();

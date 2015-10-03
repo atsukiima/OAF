@@ -6,13 +6,13 @@ import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractContainerPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.entry.ContainerConceptEntry;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 
 /**
  *
  * @author Chris O
  */
-public class SCTBandPanel extends AbstractContainerPanel<CommonOverlapSet, SCTCluster, Concept, ContainerConceptEntry<Concept, SCTCluster>> {
+public class SCTBandPanel extends AbstractContainerPanel<CommonOverlapSet, SCTCluster, Concept, ContainerConceptEntry<Concept, SCTCluster>, SCTTANConfiguration> {
     
     private final SCTTANConfiguration config;
 
@@ -26,6 +26,6 @@ public class SCTBandPanel extends AbstractContainerPanel<CommonOverlapSet, SCTCl
 
     @Override
     protected String getNodeTitle(CommonOverlapSet area) {
-        return config.getContainerName(area);
+        return config.getTextConfiguration().getContainerName(area);
     }
 }

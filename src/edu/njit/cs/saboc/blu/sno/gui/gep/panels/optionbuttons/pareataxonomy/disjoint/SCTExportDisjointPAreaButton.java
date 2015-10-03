@@ -4,8 +4,8 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.dis
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportButton;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportAbNUtilities;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;

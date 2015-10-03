@@ -5,7 +5,7 @@ import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.HierarchyPanelCli
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbNNodeInformationPanel;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptHierarchyViewPanel;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import java.awt.BorderLayout;
 import javax.swing.JScrollPane;
 
@@ -20,11 +20,11 @@ public class SCTClusterConceptHierarchyPanel extends AbNNodeInformationPanel<SCT
     public SCTClusterConceptHierarchyPanel(SCTTANConfiguration config) {
         
         this.hierarchyPanel = new SCTConceptHierarchyViewPanel(
-                config.getTribalAbstractionNetwork(),
+                config.getDataConfiguration().getTribalAbstractionNetwork(),
                 "Cluster",
                 new HierarchyPanelClickListener<Concept>() {
                     public void conceptDoubleClicked(Concept c) {
-                        config.getGroupConceptListListener().entityDoubleClicked(c);
+                        config.getUIConfiguration().getListenerConfiguration().getGroupConceptListListener().entityDoubleClicked(c);
                     }
                 });
 

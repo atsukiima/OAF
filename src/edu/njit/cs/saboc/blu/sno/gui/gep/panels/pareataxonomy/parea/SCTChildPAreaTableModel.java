@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea;
 
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.BLUAbstractChildGroupTableModel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 
 /**
  *
@@ -29,7 +29,7 @@ public class SCTChildPAreaTableModel extends BLUAbstractChildGroupTableModel<SCT
         return new Object[] {
             parea.getRoot().getName(),
             parea.getConceptCount(),
-            config.getGroupsContainerName(parea).replaceAll(", ", "\n")
+            config.getTextConfiguration().getGroupsContainerName(parea).replaceAll(", ", "\n")
         };
     }
 }

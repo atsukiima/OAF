@@ -4,8 +4,8 @@ import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportButton;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportAbNUtilities;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -85,7 +85,7 @@ public class SCTExportAggregatePAreaButton extends ExportButton {
         
         try (PrintWriter writer = new PrintWriter(file)) {
             pareas.forEach((SCTPArea parea) -> {
-                String areaName = config.getGroupsContainerName(parea);
+                String areaName = config.getTextConfiguration().getGroupsContainerName(parea);
                 
                 ArrayList<Concept> pareaConcepts = parea.getConceptsInPArea();
                 
@@ -93,7 +93,7 @@ public class SCTExportAggregatePAreaButton extends ExportButton {
                     writer.println(String.format("%d\t%s\t%s\t%s",
                             c.getId(),
                             c.getName(),
-                            String.format("%s (%d)", config.getGroupName(parea), parea.getConceptCount()),
+                            String.format("%s (%d)", config.getTextConfiguration().getGroupName(parea), parea.getConceptCount()),
                             areaName));
                 });
             });

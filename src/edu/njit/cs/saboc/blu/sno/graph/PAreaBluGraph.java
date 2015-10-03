@@ -1,25 +1,15 @@
 package edu.njit.cs.saboc.blu.sno.graph;
 
-import SnomedShared.pareataxonomy.InheritedRelationship;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
-import edu.njit.cs.saboc.blu.core.graph.ShowHideGroupEntryListener;
-import edu.njit.cs.saboc.blu.core.gui.dialogs.ContainerResize;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTRegion;
 import edu.njit.cs.saboc.blu.sno.graph.layout.NoRegionsLayout;
 import edu.njit.cs.saboc.blu.sno.graph.layout.RegionsLayout;
 import edu.njit.cs.saboc.blu.sno.graph.layout.SCTGraphLayoutFactory;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.SCTPAreaTaxonomyGEPConfiguration;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 
 /**
  *
@@ -29,7 +19,7 @@ public class PAreaBluGraph extends BluGraph {
     
     private SCTDisplayFrameListener displayListener;
     
-    private final SCTPAreaTaxonomyGEPConfiguration config;
+    private final SCTPAreaTaxonomyConfiguration config;
 
     public PAreaBluGraph(
             JFrame parentFrame, 
@@ -37,7 +27,7 @@ public class PAreaBluGraph extends BluGraph {
             boolean areaGraph,
             SCTDisplayFrameListener displayListener, 
             GroupEntryLabelCreator<SCTPArea> labelCreator,
-            SCTPAreaTaxonomyGEPConfiguration config) {
+            SCTPAreaTaxonomyConfiguration config) {
         
         super(hierarchyData, areaGraph, hierarchyData.getDataSource().isLocalDataSource(), labelCreator);
         
@@ -54,7 +44,7 @@ public class PAreaBluGraph extends BluGraph {
         }
     }
     
-    public SCTPAreaTaxonomyGEPConfiguration getGEPConfiguration() {
+    public SCTPAreaTaxonomyConfiguration getConfiguration() {
         return config;
     }
 

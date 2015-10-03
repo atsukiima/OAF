@@ -13,7 +13,7 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTRegion;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
 import java.util.Optional;
 import javax.swing.SwingUtilities;
@@ -46,14 +46,14 @@ public class SCTCreateExpandedSubtaxonomyButton extends ExpandAggregateButton {
                 private LoadStatusDialog loadStatusDialog = null;
 
                 public void run() {
-                    SCTDisplayFrameListener displayListener = config.getDisplayListener();
+                    SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
 
                     SCTAggregatePArea parea = currentPArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s Expanded Partial-area Subtaxonomy", config.getGroupName(parea)));
+                            String.format("Creating %s Expanded Partial-area Subtaxonomy", config.getTextConfiguration().getGroupName(parea)));
                     
-                    SCTPAreaTaxonomy sourceTaxonomy = config.getPAreaTaxonomy();
+                    SCTPAreaTaxonomy sourceTaxonomy = config.getDataConfiguration().getPAreaTaxonomy();
                     
                     SCTPAreaTaxonomyGenerator taxonomyGenerator = new SCTPAreaTaxonomyGenerator(
                             sourceTaxonomy.getSCTRootConcept(), 

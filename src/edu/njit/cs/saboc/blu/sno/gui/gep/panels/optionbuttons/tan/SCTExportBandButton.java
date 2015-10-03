@@ -4,8 +4,8 @@ import SnomedShared.Concept;
 import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportButton;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportAbNUtilities;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -63,7 +63,7 @@ public class SCTExportBandButton extends ExportButton {
     
     private void exportBandConcepts(File file) {
         
-        ArrayList<SCTCluster> bandClusters = config.convertClusterSummaryList(currentBand.get().getAllClusters());
+        ArrayList<SCTCluster> bandClusters = config.getDataConfiguration().convertClusterSummaryList(currentBand.get().getAllClusters());
         
         HashSet<Concept> allConcepts = new HashSet<>();
         
@@ -84,7 +84,7 @@ public class SCTExportBandButton extends ExportButton {
     }
     
     private void exportBandClusters(File file) {
-        ArrayList<SCTCluster> clusters = config.convertClusterSummaryList(currentBand.get().getAllClusters());
+        ArrayList<SCTCluster> clusters = config.getDataConfiguration().convertClusterSummaryList(currentBand.get().getAllClusters());
         
         try (PrintWriter writer = new PrintWriter(file)) {
             clusters.forEach( (SCTCluster cluster) -> {
@@ -94,7 +94,7 @@ public class SCTExportBandButton extends ExportButton {
                     writer.println(String.format("%d\t%s\t%s",
                             c.getId(),
                             c.getName(),
-                            String.format("%s (%d)", config.getGroupName(cluster), cluster.getConceptCount())));
+                            String.format("%s (%d)", config.getTextConfiguration().getGroupName(cluster), cluster.getConceptCount())));
                 });
             });
 

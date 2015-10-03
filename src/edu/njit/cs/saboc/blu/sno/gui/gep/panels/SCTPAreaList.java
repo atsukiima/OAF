@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractGroupList;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.BLUAbstractTableModel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea.SCTPAreaTableModel;
 import java.util.ArrayList;
 import java.util.Optional;

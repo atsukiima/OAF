@@ -5,10 +5,10 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateDisjointTaxonomyButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateTANFromAreaButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTExportAreaButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -46,7 +46,7 @@ public class SCTAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTArea> {
 
             @Override
             public AbstractNodePanel getCurrentDetailsPanel() {
-                AbstractNodePanel anp = config.getGEPConfiguration().createContainerDetailsPanel();
+                AbstractNodePanel anp = config.getUIConfiguration().createContainerDetailsPanel();
                 anp.setContents(selectedArea.get());
 
                 return anp;
@@ -62,7 +62,7 @@ public class SCTAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTArea> {
     
     @Override
     public void enableOptionsForGroup(SCTArea area) {
-        if(config.getContainerOverlappingConcepts(area).isEmpty()) {
+        if(config.getDataConfiguration().getContainerOverlappingConcepts(area).isEmpty()) {
             disjointTaxonomyBtn.setEnabled(false);
         } else {
             disjointTaxonomyBtn.setEnabled(true);

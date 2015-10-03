@@ -5,11 +5,11 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateRootSubtaxonomyButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateTANFromPAreaButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTExportPAreaButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTOpenBrowserButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import java.util.Optional;
 
 /**
@@ -35,8 +35,8 @@ public class SCTPAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTPArea> {
     public SCTPAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config) {
         this.config = config;
        
-        btnNAT = new SCTOpenBrowserButton(config.getPAreaTaxonomy().getDataSource(),
-            "partial-area", config.getDisplayListener());
+        btnNAT = new SCTOpenBrowserButton(config.getDataConfiguration().getPAreaTaxonomy().getDataSource(),
+            "partial-area", config.getUIConfiguration().getDisplayFrameListener());
         
         super.addOptionButton(btnNAT);
         
@@ -52,7 +52,7 @@ public class SCTPAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTPArea> {
 
             @Override
             public AbstractNodePanel getCurrentDetailsPanel() {
-                AbstractNodePanel anp = config.getGEPConfiguration().createGroupDetailsPanel();
+                AbstractNodePanel anp = config.getUIConfiguration().createGroupDetailsPanel();
                 anp.setContents(selectedPArea.get());
                 
                 return anp;
@@ -68,7 +68,7 @@ public class SCTPAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTPArea> {
     
     @Override
     public void enableOptionsForGroup(SCTPArea parea) {
-        SCTPAreaTaxonomy taxonomy = config.getPAreaTaxonomy();
+        SCTPAreaTaxonomy taxonomy = config.getDataConfiguration().getPAreaTaxonomy();
         
         if(taxonomy.getDescendantGroups(parea).isEmpty()) {
             rootSubtaxonomyBtn.setEnabled(false);

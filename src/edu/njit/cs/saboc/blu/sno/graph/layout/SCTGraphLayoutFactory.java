@@ -15,7 +15,7 @@ public class SCTGraphLayoutFactory {
     }
 
     public static NoRegionsLayout createNoRegionsPAreaLayout(PAreaBluGraph graph) {
-        return new NoRegionsLayout(graph, graph.getPAreaTaxonomy(), graph.getGEPConfiguration().getConfiguration());
+        return new NoRegionsLayout(graph, graph.getPAreaTaxonomy(), graph.getConfiguration());
     }
 
     public static RegionsLayout createRegionsPAreaLayout(PAreaBluGraph graph) {

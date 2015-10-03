@@ -5,9 +5,9 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPane
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan.SCTCreateTANFromBandButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan.SCTExportBandButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -42,7 +42,7 @@ public class SCTBandOptionsPanel extends AbstractNodeOptionsPanel<CommonOverlapS
 
             @Override
             public AbstractNodePanel getCurrentDetailsPanel() {
-                AbstractNodePanel anp = config.getGEPConfiguration().createContainerDetailsPanel();
+                AbstractNodePanel anp = config.getUIConfiguration().createContainerDetailsPanel();
                 anp.setContents(selectedArea.get());
 
                 return anp;
@@ -57,7 +57,7 @@ public class SCTBandOptionsPanel extends AbstractNodeOptionsPanel<CommonOverlapS
         if(band.getAllClusters().size() > 1) {
             boolean tanPossible = false;
             
-            ArrayList<SCTCluster> clusters = config.convertClusterSummaryList(band.getAllClusters());
+            ArrayList<SCTCluster> clusters = config.getDataConfiguration().convertClusterSummaryList(band.getAllClusters());
             
             for(SCTCluster cluster : clusters) {
                 if(cluster.getConceptCount() > 1) {

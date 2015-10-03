@@ -15,7 +15,7 @@ import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluArea;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluPArea;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluRegion;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;

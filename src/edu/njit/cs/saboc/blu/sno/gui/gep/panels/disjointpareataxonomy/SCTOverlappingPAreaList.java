@@ -4,6 +4,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.disjointabn.GenericOverlappingGroupList;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.disjointabn.GenericOverlappingGroupTableModel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfiguration;
 
 /**
  *

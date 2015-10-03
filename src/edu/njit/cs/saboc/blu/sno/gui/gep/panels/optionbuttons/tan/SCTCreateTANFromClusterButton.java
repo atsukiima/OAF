@@ -6,7 +6,7 @@ import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import java.util.Optional;
 import javax.swing.SwingUtilities;
@@ -38,17 +38,17 @@ public class SCTCreateTANFromClusterButton extends CreateTANButton {
                 private LoadStatusDialog loadStatusDialog = null;
 
                 public void run() {
-                    SCTDisplayFrameListener displayListener = config.getDisplayListener();
+                    SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
                     
                     SCTCluster cluster = currentPArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getGroupName(cluster)));
+                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getTextConfiguration().getGroupName(cluster)));
                     
                     SCTTribalAbstractionNetwork tan = TANGenerator.createTANFromConceptHierarchy(
-                            config.getTribalAbstractionNetwork().getSCTVersion(),
+                            config.getDataConfiguration().getTribalAbstractionNetwork().getSCTVersion(),
                             cluster.getConceptHierarchy(),
-                            (SCTLocalDataSource)config.getTribalAbstractionNetwork().getDataSource());
+                            (SCTLocalDataSource)config.getDataConfiguration().getTribalAbstractionNetwork().getDataSource());
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {

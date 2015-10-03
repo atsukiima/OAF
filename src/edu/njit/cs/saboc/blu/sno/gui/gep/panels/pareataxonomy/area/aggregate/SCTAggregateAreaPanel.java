@@ -5,13 +5,13 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.GenericAg
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 
 /**
  *
  * @author Chris O
  */
-public class SCTAggregateAreaPanel extends GenericAggregateAreaPanel<SCTArea, SCTPArea, SCTAggregatePArea, Concept, Concept> {
+public class SCTAggregateAreaPanel extends GenericAggregateAreaPanel<SCTArea, SCTPArea, SCTAggregatePArea, Concept, Concept, SCTPAreaTaxonomyConfiguration> {
     
     private final SCTPAreaTaxonomyConfiguration config;
     
@@ -28,9 +28,9 @@ public class SCTAggregateAreaPanel extends GenericAggregateAreaPanel<SCTArea, SC
     @Override
     protected String getNodeTitle(SCTArea node) {
         if(node.getRelationships().isEmpty()) {
-            return "root area (no properties)";
+            return "root area (no attribute relationships)";
         } else {
-            String areaName = config.getContainerName(node);
+            String areaName = config.getTextConfiguration().getContainerName(node);
         
             return String.format("{%s}", areaName);
         }

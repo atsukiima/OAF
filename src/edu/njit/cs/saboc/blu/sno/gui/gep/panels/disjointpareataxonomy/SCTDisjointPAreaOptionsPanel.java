@@ -6,6 +6,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTOpenBrowserButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.disjoint.SCTCreateTANFromDisjointPAreaButton;
 import java.util.Optional;
@@ -30,8 +31,8 @@ public class SCTDisjointPAreaOptionsPanel extends AbstractNodeOptionsPanel<Disjo
 
         this.configuration = config;
         
-        btnNAT = new SCTOpenBrowserButton(config.getDisjointPAreaTaxonomy().getSourcePAreaTaxonomy().getDataSource(),
-                "aggregate partial-area", config.getDisplayListener());
+        btnNAT = new SCTOpenBrowserButton(config.getDataConfiguration().getDisjointPAreaTaxonomy().getSourcePAreaTaxonomy().getDataSource(),
+                "aggregate partial-area", config.getUIConfiguration().getDisplayListener());
 
         super.addOptionButton(btnNAT);
         
@@ -43,7 +44,7 @@ public class SCTDisjointPAreaOptionsPanel extends AbstractNodeOptionsPanel<Disjo
 
             @Override
             public AbstractNodePanel getCurrentDetailsPanel() {
-                AbstractNodePanel anp = config.getGEPConfiguration().createGroupDetailsPanel();
+                AbstractNodePanel anp = config.getUIConfiguration().createGroupDetailsPanel();
                 anp.setContents(selectedPArea.get());
                 
                 return anp;
@@ -55,7 +56,7 @@ public class SCTDisjointPAreaOptionsPanel extends AbstractNodeOptionsPanel<Disjo
     
     @Override
     public void enableOptionsForGroup(DisjointPartialArea parea) {
-        DisjointPAreaTaxonomy disjointTaxonomy = configuration.getDisjointPAreaTaxonomy();
+        DisjointPAreaTaxonomy disjointTaxonomy = configuration.getDataConfiguration().getDisjointPAreaTaxonomy();
 
         if (parea.getConceptCount() > 2) {
             Concept root = parea.getRoot();

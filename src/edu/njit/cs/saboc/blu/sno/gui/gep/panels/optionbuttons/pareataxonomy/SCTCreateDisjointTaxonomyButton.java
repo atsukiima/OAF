@@ -5,7 +5,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateDis
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import java.util.Optional;
 import javax.swing.SwingUtilities;
 
@@ -37,14 +37,14 @@ public class SCTCreateDisjointTaxonomyButton extends CreateDisjointAbNButton {
                 private LoadStatusDialog loadStatusDialog = null;
 
                 public void run() {
-                    SCTDisplayFrameListener displayListener = config.getDisplayListener();
+                    SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
 
                     SCTArea area = currentArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s Disjoint Partial-area Taxonomy", config.getContainerName(area)));
+                            String.format("Creating %s Disjoint Partial-area Taxonomy", config.getTextConfiguration().getContainerName(area)));
 
-                    DisjointPAreaTaxonomy disjointTaxonomy = config.createDisjointAbN(area);
+                    DisjointPAreaTaxonomy disjointTaxonomy = config.getDataConfiguration().createDisjointAbN(area);
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {

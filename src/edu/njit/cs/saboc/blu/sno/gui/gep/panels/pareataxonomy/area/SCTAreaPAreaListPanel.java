@@ -6,7 +6,7 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTConceptList;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaList;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import java.util.ArrayList;
 
 /**
@@ -23,6 +23,6 @@ public class SCTAreaPAreaListPanel extends AbstractContainerGroupListPanel<SCTAr
     
     @Override
     public ArrayList<Concept> getSortedConceptList(SCTPArea parea) {
-        return configuration.getSortedConceptList(parea);
+        return configuration.getDataConfiguration().getSortedConceptList(parea);
     }
 }

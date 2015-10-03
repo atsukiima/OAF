@@ -4,13 +4,13 @@ import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.GenericPAreaPanel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 
 /**
  *
  * @author Chris O
  */
-public class SCTPAreaPanel extends GenericPAreaPanel<Concept, SCTPArea, SCTConceptHierarchy> {
+public class SCTPAreaPanel extends GenericPAreaPanel<Concept, SCTPArea, SCTConceptHierarchy, SCTPAreaTaxonomyConfiguration> {
     public SCTPAreaPanel(SCTPAreaTaxonomyConfiguration config) {
         super(new SCTPAreaDetailsPanel(config), 
                 new SCTPAreaHierarchyPanel(config), 

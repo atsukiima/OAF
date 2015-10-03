@@ -10,7 +10,7 @@ import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -46,12 +46,12 @@ public class SCTCreateTANFromAreaButton extends CreateTANButton {
                 private LoadStatusDialog loadStatusDialog = null;
 
                 public void run() {
-                    SCTDisplayFrameListener displayListener = config.getDisplayListener();
+                    SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
 
                     SCTArea area = currentArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getContainerName(area)));
+                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getTextConfiguration().getContainerName(area)));
                     
                     HashSet<Concept> patriarchs = new HashSet<>();
                     
@@ -64,20 +64,20 @@ public class SCTCreateTANFromAreaButton extends CreateTANButton {
                     SCTMultiRootedConceptHierarchy hierarchy = new SCTMultiRootedConceptHierarchy(patriarchs);
                     
                     pareas.forEach((SCTPArea parea) -> {
-                        if(config.getPAreaTaxonomy().isReduced()) {
+                        if(config.getDataConfiguration().getPAreaTaxonomy().isReduced()) {
                             SCTAggregatePArea aggregatePArea = (SCTAggregatePArea)parea;
                             
-                            hierarchy.addAllHierarchicalRelationships(config.getAggregatedPAreaHierarchy(aggregatePArea));
+                            hierarchy.addAllHierarchicalRelationships(config.getDataConfiguration().getAggregatedPAreaHierarchy(aggregatePArea));
                         } else {
                             hierarchy.addAllHierarchicalRelationships(parea.getHierarchy());
                         }
                     });
   
                     SCTTribalAbstractionNetwork tan = TANGenerator.deriveTANFromMultiRootedHierarchy(
-                            config.getContainerName(area),
+                            config.getTextConfiguration().getContainerName(area),
                             hierarchy, 
-                            (SCTLocalDataSource)config.getPAreaTaxonomy().getDataSource(),  
-                            config.getPAreaTaxonomy().getSCTVersion());
+                            (SCTLocalDataSource)config.getDataConfiguration().getPAreaTaxonomy().getDataSource(),  
+                            config.getDataConfiguration().getPAreaTaxonomy().getSCTVersion());
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {

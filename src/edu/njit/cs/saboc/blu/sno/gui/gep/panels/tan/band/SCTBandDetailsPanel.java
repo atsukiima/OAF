@@ -5,7 +5,7 @@ import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeDetailsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.entry.ContainerConceptEntry;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +35,7 @@ public class SCTBandDetailsPanel extends AbstractNodeDetailsPanel<CommonOverlapS
         
         HashMap<Concept, HashSet<SCTCluster>> conceptClusters = new HashMap<>();
         
-        ArrayList<SCTCluster> clusters = configuration.convertClusterSummaryList(band.getAllClusters());
+        ArrayList<SCTCluster> clusters = configuration.getDataConfiguration().convertClusterSummaryList(band.getAllClusters());
         
         clusters.forEach((SCTCluster cluster) -> {
             HashSet<Concept> pareaClses = cluster.getConcepts();

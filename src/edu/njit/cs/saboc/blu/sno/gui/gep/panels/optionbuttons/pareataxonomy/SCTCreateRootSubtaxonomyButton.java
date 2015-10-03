@@ -5,7 +5,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.C
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import java.util.Optional;
 import javax.swing.SwingUtilities;
 
@@ -35,14 +35,14 @@ public class SCTCreateRootSubtaxonomyButton extends CreateSubtaxonomyButton {
                 private LoadStatusDialog loadStatusDialog = null;
 
                 public void run() {
-                    SCTDisplayFrameListener displayListener = config.getDisplayListener();
+                    SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
                     
                     SCTPArea parea = currentPArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s root subtaxonomy", config.getGroupName(parea)));
+                            String.format("Creating %s root subtaxonomy", config.getTextConfiguration().getGroupName(parea)));
                     
-                    SCTPAreaTaxonomy subtaxonomy = config.getPAreaTaxonomy().getRootSubtaxonomy(parea);
+                    SCTPAreaTaxonomy subtaxonomy = config.getDataConfiguration().getPAreaTaxonomy().getRootSubtaxonomy(parea);
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {

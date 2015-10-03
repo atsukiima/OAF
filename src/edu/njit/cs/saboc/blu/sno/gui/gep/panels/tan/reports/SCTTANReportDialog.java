@@ -1,9 +1,8 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.reports;
 
 import SnomedShared.overlapping.CommonOverlapSet;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import java.util.ArrayList;
 import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
@@ -13,11 +12,7 @@ import javax.swing.JTabbedPane;
  * @author Chris O
  */
 public class SCTTANReportDialog extends JDialog {
-    
-    private final SCTTANLevelReportPanel levelReportPanel;
-    
-    private final SCTTANBandReportPanel areaReportPanel;
-    
+        
     private final SCTTANOverlappingConceptReportPanel overlappingClassPanel;
     
     private final JTabbedPane tabbedPane;
@@ -27,14 +22,10 @@ public class SCTTANReportDialog extends JDialog {
     public SCTTANReportDialog(SCTTANConfiguration config) {
         this.config = config;
         
-        levelReportPanel = new SCTTANLevelReportPanel(config);
-        areaReportPanel = new SCTTANBandReportPanel(config);
         overlappingClassPanel = new SCTTANOverlappingConceptReportPanel(config);
         
         tabbedPane = new JTabbedPane();
         
-        tabbedPane.addTab("Tribal Abstraction Network Levels", levelReportPanel);
-        tabbedPane.addTab("Bands in Tribal Abstraction Network", areaReportPanel);
         tabbedPane.addTab("Overlapping Concepts", overlappingClassPanel);
         
         this.add(tabbedPane);
@@ -52,7 +43,7 @@ public class SCTTANReportDialog extends JDialog {
         boolean hasOverlapping = false;
         
         for(CommonOverlapSet band : bands) {
-            if(!config.getContainerOverlappingConcepts(band).isEmpty()) {
+            if(!config.getDataConfiguration().getContainerOverlappingConcepts(band).isEmpty()) {
                 hasOverlapping = true;
                 break;
             }
@@ -61,10 +52,7 @@ public class SCTTANReportDialog extends JDialog {
         if(hasOverlapping) {
             overlappingClassPanel.displayAbNReport(tan);
         } else {
-            tabbedPane.setEnabledAt(2, false);
+            tabbedPane.setEnabledAt(0, false);
         }
-        
-        levelReportPanel.displayAbNReport(tan);
-        areaReportPanel.displayAbNReport(tan);
     }
 }

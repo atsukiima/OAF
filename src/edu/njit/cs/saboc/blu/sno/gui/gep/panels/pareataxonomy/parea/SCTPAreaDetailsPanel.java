@@ -5,7 +5,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeDetailsPane
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTConceptList;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,9 +24,9 @@ public class SCTPAreaDetailsPanel extends AbstractNodeDetailsPanel<SCTPArea, Con
                new SCTPAreaOptionsPanel(config),
               new SCTConceptList());
         
-        this.taxonomy = config.getPAreaTaxonomy();
+        this.taxonomy = config.getDataConfiguration().getPAreaTaxonomy();
         
-        getConceptList().addEntitySelectionListener(config.getGroupConceptListListener());
+        getConceptList().addEntitySelectionListener(config.getUIConfiguration().getListenerConfiguration().getGroupConceptListListener());
     }
     
     @Override

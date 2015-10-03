@@ -5,7 +5,7 @@ import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.BLUAbstractParentGroupTableModel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 
 /**
  *
@@ -31,12 +31,12 @@ public class SCTAggregateParentPAreaTableModel extends
 
     @Override
     protected Object[] createRow( GenericParentGroupInfo<Concept, SCTAggregatePArea> item) {
-        String parentArea = config.getGroupsContainerName(item.getParentGroup()).replaceAll(", ", "\n");
+        String parentArea = config.getTextConfiguration().getGroupsContainerName(item.getParentGroup()).replaceAll(", ", "\n");
 
         return new Object[] {
             item.getParentConcept().getName(),
             item.getParentConcept().getId(),
-            config.getGroupName(item.getParentGroup()),
+            config.getTextConfiguration().getGroupName(item.getParentGroup()),
             item.getParentGroup().getAllGroupsConcepts().size(),
             item.getParentGroup().getAggregatedGroups().size(),
             parentArea

@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea.aggregate;
 
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.BLUAbstractChildGroupTableModel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 
 /**
  *
@@ -26,10 +26,10 @@ public class SCTAggregateChildPAreaTableModel extends BLUAbstractChildGroupTable
 
     @Override
     protected Object[] createRow(SCTAggregatePArea parea) {
-        String areaName = config.getGroupsContainerName(parea).replaceAll(", ", "\n");
+        String areaName = config.getTextConfiguration().getGroupsContainerName(parea).replaceAll(", ", "\n");
         
         return new Object[] {
-            config.getGroupName(parea),
+            config.getTextConfiguration().getGroupName(parea),
             parea.getAllGroupsConcepts().size(),
             parea.getAggregatedGroups().size(),
             areaName

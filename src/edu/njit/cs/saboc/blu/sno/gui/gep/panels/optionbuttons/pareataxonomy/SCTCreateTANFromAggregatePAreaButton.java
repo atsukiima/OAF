@@ -6,7 +6,7 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import java.util.Optional;
 import javax.swing.SwingUtilities;
@@ -39,17 +39,17 @@ public class SCTCreateTANFromAggregatePAreaButton extends CreateTANButton {
                 private LoadStatusDialog loadStatusDialog = null;
 
                 public void run() {
-                    SCTDisplayFrameListener displayListener = config.getDisplayListener();
+                    SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
                     
                     SCTAggregatePArea parea = currentPArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getGroupName(parea)));
+                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getTextConfiguration().getGroupName(parea)));
                     
                     SCTTribalAbstractionNetwork tan = TANGenerator.createTANFromConceptHierarchy(
-                            config.getPAreaTaxonomy().getSCTVersion(), 
-                            config.getAggregatedPAreaHierarchy(parea),
-                            (SCTLocalDataSource)config.getPAreaTaxonomy().getDataSource());
+                            config.getDataConfiguration().getPAreaTaxonomy().getSCTVersion(), 
+                            config.getDataConfiguration().getAggregatedPAreaHierarchy(parea),
+                            (SCTLocalDataSource)config.getDataConfiguration().getPAreaTaxonomy().getDataSource());
                     
 
                     SwingUtilities.invokeLater(new Runnable() {

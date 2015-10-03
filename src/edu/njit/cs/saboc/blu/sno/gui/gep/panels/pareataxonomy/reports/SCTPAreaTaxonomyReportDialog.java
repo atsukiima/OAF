@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.reports;
 
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import java.util.ArrayList;
 import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
@@ -44,7 +44,7 @@ public class SCTPAreaTaxonomyReportDialog extends JDialog {
         boolean hasOverlapping = false;
         
         for(SCTArea area : areas) {
-            if(!config.getContainerOverlappingResults(area).isEmpty()) {
+            if(!config.getDataConfiguration().getContainerOverlappingResults(area).isEmpty()) {
                 hasOverlapping = true;
                 break;
             }

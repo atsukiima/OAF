@@ -6,7 +6,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeDetailsPane
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.entry.ContainerConceptEntry;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +35,7 @@ public class SCTAreaDetailsPanel extends AbstractNodeDetailsPanel<SCTArea, Conta
     @Override
     protected ArrayList<ContainerConceptEntry<Concept, SCTPArea>> getSortedConceptList(SCTArea area) {
         
-        HashSet<OverlappingConceptResult<Concept,SCTPArea>> overlappingConcepts = configuration.getContainerOverlappingResults(area);
+        HashSet<OverlappingConceptResult<Concept,SCTPArea>> overlappingConcepts = configuration.getDataConfiguration().getContainerOverlappingResults(area);
         
         HashMap<Concept, HashSet<SCTPArea>> conceptPAreas = new HashMap<>();
         

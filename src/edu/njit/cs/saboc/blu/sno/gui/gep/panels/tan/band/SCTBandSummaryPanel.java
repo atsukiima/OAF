@@ -4,7 +4,7 @@ import SnomedShared.Concept;
 import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeSummaryPanel;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,8 +16,6 @@ import java.util.HashSet;
  */
 public class SCTBandSummaryPanel extends AbstractNodeSummaryPanel<CommonOverlapSet> {
 
-
-    
     private final SCTBandTribesDetailsPanel bandTribesPanel;
     
     private final SCTTANConfiguration config;
@@ -33,9 +31,9 @@ public class SCTBandSummaryPanel extends AbstractNodeSummaryPanel<CommonOverlapS
     
     @Override
     protected String createDescriptionStr(CommonOverlapSet band) {
-        String bandName = config.getContainerName(band);
+        String bandName = config.getTextConfiguration().getContainerName(band);
         
-        ArrayList<SCTCluster> clusters = config.getTribalAbstractionNetwork().convertClusters(band.getAllClusters());
+        ArrayList<SCTCluster> clusters = config.getDataConfiguration().getTribalAbstractionNetwork().convertClusters(band.getAllClusters());
         
         HashSet<Concept> allConcepts = new HashSet<>();
         
@@ -47,7 +45,7 @@ public class SCTBandSummaryPanel extends AbstractNodeSummaryPanel<CommonOverlapS
                 bandName, allConcepts.size(), band.getAllClusters().size());
         
         result += "<p><b>Help / Description:</b><br>";
-        result += config.getContainerHelpDescription(band);
+        result += config.getTextConfiguration().getContainerHelpDescription(band);
         
         return result;
     }
@@ -68,7 +66,7 @@ public class SCTBandSummaryPanel extends AbstractNodeSummaryPanel<CommonOverlapS
         HashSet<Long> tribePatriarchIds = band.getSetEntryPoints();
         
         tribePatriarchIds.forEach( (Long tribePatriarchId) -> {
-            tribalPatriarchs.add(config.getTribalAbstractionNetwork().getConcepts().get(tribePatriarchId));
+            tribalPatriarchs.add(config.getDataConfiguration().getTribalAbstractionNetwork().getConcepts().get(tribePatriarchId));
         });
         
         Collections.sort(tribalPatriarchs, new ConceptNameComparator());

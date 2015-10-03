@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.reports.aggregate;
 
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
 
@@ -11,21 +11,13 @@ import javax.swing.JTabbedPane;
  */
 public class SCTAggregatePAreaTaxonomyReportDialog extends JDialog {
     
-    private final SCTAggregatePAreaTaxonomyLevelReportPanel levelReportPanel;
-    
-    private final SCTAggregatePAreaTaxonomyAreaReportPanel areaReportPanel;
+
     
     private final JTabbedPane tabbedPane;
     
     public SCTAggregatePAreaTaxonomyReportDialog(SCTPAreaTaxonomyConfiguration config) {
         
-        levelReportPanel = new SCTAggregatePAreaTaxonomyLevelReportPanel(config);
-        areaReportPanel = new SCTAggregatePAreaTaxonomyAreaReportPanel(config);
-        
         tabbedPane = new JTabbedPane();
-        
-        tabbedPane.addTab("Aggregate Partial-area Taxonomy Levels", levelReportPanel);
-        tabbedPane.addTab("Areas in Aggregate Partial-area Taxonomy", areaReportPanel);
         
         this.add(tabbedPane);
         
@@ -37,7 +29,6 @@ public class SCTAggregatePAreaTaxonomyReportDialog extends JDialog {
     }
     
     public void showReports(SCTPAreaTaxonomy taxonomy) {        
-        levelReportPanel.displayAbNReport(taxonomy);
-        areaReportPanel.displayAbNReport(taxonomy);
+
     }
 }

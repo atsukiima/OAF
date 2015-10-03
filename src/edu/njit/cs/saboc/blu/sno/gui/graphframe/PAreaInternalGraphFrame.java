@@ -13,11 +13,11 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.SCTPAreaTaxonomyGEPConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTAggregateTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTTaxonomyPainter;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.reports.SCTPAreaTaxonomyReportDialog;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.reports.aggregate.SCTAggregatePAreaTaxonomyReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.GraphOptionsButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.RelationshipSelectionButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.PAreaInternalSearchButton;
@@ -44,7 +44,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
     
     private final SCTDisplayFrameListener displayListener;
     
-    private SCTPAreaTaxonomyGEPConfiguration currentConfiguration;
+    private SCTPAreaTaxonomyConfiguration currentConfiguration;
     
     private SCTPAreaTaxonomy currentTaxonomy;
 
@@ -74,8 +74,8 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
             if (currentTaxonomy.isReduced()) {
 
             } else {
-                SCTPAreaTaxonomyReportDialog reportDialog = new SCTPAreaTaxonomyReportDialog(currentConfiguration.getConfiguration());
-                reportDialog.showReports(currentConfiguration.getConfiguration().getPAreaTaxonomy());
+                SCTPAreaTaxonomyReportDialog reportDialog = new SCTPAreaTaxonomyReportDialog(currentConfiguration);
+                reportDialog.showReports(currentConfiguration.getDataConfiguration().getPAreaTaxonomy());
                 reportDialog.setModal(true);
 
                 reportDialog.setVisible(true);
@@ -179,18 +179,18 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
             };
         }
         
-        SCTPAreaTaxonomyGEPConfiguration optionsConfig = new SCTPAreaTaxonomyGEPConfiguration(parentFrame, this, taxonomy, displayListener);
+        SCTPAreaTaxonomyConfigurationFactory factory = new SCTPAreaTaxonomyConfigurationFactory();
+        
+        currentConfiguration = factory.createConfiguration(taxonomy, displayListener);
 
-        BluGraph graph = new PAreaBluGraph(parentFrame, taxonomy, areaGraph, displayListener, labelCreator, optionsConfig);
-
-        currentConfiguration = optionsConfig;
+        BluGraph graph = new PAreaBluGraph(parentFrame, taxonomy, areaGraph, displayListener, labelCreator, currentConfiguration);
 
         
         if(exportBtn != null) {
             removeReportButtonFromMenu(exportBtn);
         }
         
-        exportBtn = new GenericExportPartitionedAbNButton<>(taxonomy, currentConfiguration.getConfiguration());
+        exportBtn = new GenericExportPartitionedAbNButton<>(taxonomy, currentConfiguration);
         
         if(taxonomy.isReduced()) {
             exportBtn.setEnabled(false);
@@ -205,7 +205,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         addReportButtonToMenu(exportBtn);
         
 
-        initializeGraphTabs(graph, abnPainter, optionsConfig);
+        initializeGraphTabs(graph, abnPainter, currentConfiguration);
         
         tbp = null;
 

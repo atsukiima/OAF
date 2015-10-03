@@ -3,7 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea.aggregate;
 
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.BLUAbstractTableModel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 
 /**
  *
@@ -27,10 +27,10 @@ public class SCTAggregatedPAreaListTableModel extends BLUAbstractTableModel<SCTP
     @Override
     protected Object[] createRow(SCTPArea parea) {
         
-        String areaName = configuration.getGroupsContainerName(parea);
+        String areaName = configuration.getTextConfiguration().getGroupsContainerName(parea);
         
         return new Object [] {
-            configuration.getGroupName(parea),
+            configuration.getTextConfiguration().getGroupName(parea),
             parea.getConceptCount(),
             areaName.replaceAll(", ", "\n")
         };

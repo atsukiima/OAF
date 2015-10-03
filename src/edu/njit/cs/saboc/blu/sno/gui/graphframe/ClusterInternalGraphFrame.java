@@ -9,21 +9,17 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.GenericExportPartitio
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
-import edu.njit.cs.saboc.blu.sno.abn.export.ExportAbN;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.graph.ClusterBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.SCTTANGEPConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.reports.SCTTANReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.TANInternalSearchButton;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.utils.UtilityMethods;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -33,7 +29,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
     
     private final SCTDisplayFrameListener displayListener;
     
-    private SCTTANGEPConfiguration currentConfiguration;
+    private SCTTANConfiguration currentConfiguration;
     
     private GenericExportPartitionedAbNButton<Concept, SCTCluster, CommonOverlapSet> exportBtn;
     
@@ -55,8 +51,8 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
 
         openReportsBtn = new JButton("TAN Reports and Metrics");
         openReportsBtn.addActionListener((ActionEvent ae) -> {
-            SCTTANReportDialog reportDialog = new SCTTANReportDialog(currentConfiguration.getConfiguration());
-            reportDialog.showReports(currentConfiguration.getConfiguration().getTribalAbstractionNetwork());
+            SCTTANReportDialog reportDialog = new SCTTANReportDialog(currentConfiguration);
+            reportDialog.showReports(currentConfiguration.getDataConfiguration().getTribalAbstractionNetwork());
             reportDialog.setModal(true);
             
             reportDialog.setVisible(true);
@@ -112,7 +108,9 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         
         searchButton.setGraph(graph);
         
-        currentConfiguration = new SCTTANGEPConfiguration(parentFrame, this, data, displayListener);
+        SCTTANConfigurationFactory factory = new SCTTANConfigurationFactory();
+
+        currentConfiguration = factory.createConfiguration(data, displayListener);
     
         initializeGraphTabs(graph, new AbNPainter(), currentConfiguration);
         
@@ -120,7 +118,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
             removeReportButtonFromMenu(exportBtn);
         }
         
-        exportBtn = new GenericExportPartitionedAbNButton<>(data, currentConfiguration.getConfiguration());
+        exportBtn = new GenericExportPartitionedAbNButton<>(data, currentConfiguration);
 
         addReportButtonToMenu(exportBtn);
         

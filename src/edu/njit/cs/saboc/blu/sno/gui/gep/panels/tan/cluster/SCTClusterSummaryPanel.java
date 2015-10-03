@@ -6,7 +6,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractEntityList;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeSummaryPanel;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +27,7 @@ public class SCTClusterSummaryPanel extends AbstractNodeSummaryPanel<SCTCluster>
     public SCTClusterSummaryPanel(SCTTANConfiguration config) {
         this.config = config;
         
-        patriarchList = new AbstractEntityList<EntryPoint>(new SCTClusterPatriarchsTableModel(config.getTribalAbstractionNetwork())) {
+        patriarchList = new AbstractEntityList<EntryPoint>(new SCTClusterPatriarchsTableModel(config.getDataConfiguration().getTribalAbstractionNetwork())) {
 
             @Override
             protected String getBorderText(Optional<ArrayList<EntryPoint>> entities) {
@@ -48,7 +48,7 @@ public class SCTClusterSummaryPanel extends AbstractNodeSummaryPanel<SCTCluster>
      public void setContents(SCTCluster cluster) {
         super.setContents(cluster);
         
-        SCTTribalAbstractionNetwork tan = config.getTribalAbstractionNetwork();
+        SCTTribalAbstractionNetwork tan = config.getDataConfiguration().getTribalAbstractionNetwork();
         
         ArrayList<EntryPoint> patriarchs = new ArrayList<>(cluster.getEntryPointSet());
         
@@ -71,17 +71,17 @@ public class SCTClusterSummaryPanel extends AbstractNodeSummaryPanel<SCTCluster>
     }
 
     protected String createDescriptionStr(SCTCluster cluster) {
-        SCTTribalAbstractionNetwork tan = config.getTribalAbstractionNetwork();
+        SCTTribalAbstractionNetwork tan = config.getDataConfiguration().getTribalAbstractionNetwork();
         
-        String conceptType = config.getConceptTypeName(true).toLowerCase();
+        String conceptType = config.getTextConfiguration().getConceptTypeName(true).toLowerCase();
         
-        String rootName = config.getGroupName(cluster);
+        String rootName = config.getTextConfiguration().getGroupName(cluster);
         int classCount = cluster.getConceptCount();
 
         int parentCount = tan.getParentGroups(cluster).size();
         int childCount = tan.getChildGroups(cluster).size();
 
-        ArrayList<SCTCluster> descendantPAreas = config.convertClusterSummaryList(new ArrayList<>(tan.getDescendantGroups(cluster)));
+        ArrayList<SCTCluster> descendantPAreas = config.getDataConfiguration().convertClusterSummaryList(new ArrayList<>(tan.getDescendantGroups(cluster)));
 
         HashSet<Concept> descendantClasses = new HashSet<>();
 
@@ -94,7 +94,7 @@ public class SCTClusterSummaryPanel extends AbstractNodeSummaryPanel<SCTCluster>
                 rootName, classCount, conceptType, parentCount, childCount, descendantPAreas.size(), descendantClasses.size(), conceptType);
         
         result += "<p><b>Help / Description:</b><br>";
-        result += config.getGroupHelpDescriptions(cluster);
+        result += config.getTextConfiguration().getGroupHelpDescriptions(cluster);
 
         return result;
     }

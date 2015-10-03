@@ -9,7 +9,7 @@ import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,16 +45,16 @@ public class SCTCreateTANFromBandButton extends CreateTANButton {
                 private LoadStatusDialog loadStatusDialog = null;
 
                 public void run() {
-                    SCTDisplayFrameListener displayListener = config.getDisplayListener();
+                    SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
 
                     CommonOverlapSet band = currentBand.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getContainerName(band)));
+                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getTextConfiguration().getContainerName(band)));
                     
                     HashSet<Concept> patriarchs = new HashSet<>();
                     
-                    ArrayList<SCTCluster> clusters = config.convertClusterSummaryList(band.getAllClusters());
+                    ArrayList<SCTCluster> clusters = config.getDataConfiguration().convertClusterSummaryList(band.getAllClusters());
                     
                     clusters.forEach((SCTCluster cluster) -> {
                         patriarchs.add(cluster.getRoot());
@@ -67,10 +67,10 @@ public class SCTCreateTANFromBandButton extends CreateTANButton {
                     });
   
                     SCTTribalAbstractionNetwork tan = TANGenerator.deriveTANFromMultiRootedHierarchy(
-                            config.getContainerName(band),
+                            config.getTextConfiguration().getContainerName(band),
                             hierarchy, 
-                            (SCTLocalDataSource)config.getTribalAbstractionNetwork().getDataSource(),  
-                            config.getTribalAbstractionNetwork().getSCTVersion());
+                            (SCTLocalDataSource)config.getDataConfiguration().getTribalAbstractionNetwork().getDataSource(),  
+                            config.getDataConfiguration().getTribalAbstractionNetwork().getSCTVersion());
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {

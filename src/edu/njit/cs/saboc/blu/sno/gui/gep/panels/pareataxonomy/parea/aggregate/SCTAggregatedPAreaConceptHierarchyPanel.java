@@ -6,7 +6,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.PAreaConc
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptHierarchyViewPanel;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 
 /**
  *
@@ -17,11 +17,11 @@ public class SCTAggregatedPAreaConceptHierarchyPanel extends PAreaConceptHierarc
     public SCTAggregatedPAreaConceptHierarchyPanel(SCTPAreaTaxonomyConfiguration config) {
         
         super(new SCTConceptHierarchyViewPanel(
-                config.getPAreaTaxonomy(),
+                config.getDataConfiguration().getPAreaTaxonomy(),
                 "Partial-area",
                 new HierarchyPanelClickListener<Concept>() {
                     public void conceptDoubleClicked(Concept c) {
-                        config.getGroupConceptListListener().entityDoubleClicked(c);
+                        config.getUIConfiguration().getListenerConfiguration().getGroupConceptListListener().entityDoubleClicked(c);
                     }
                 }), config);
     }

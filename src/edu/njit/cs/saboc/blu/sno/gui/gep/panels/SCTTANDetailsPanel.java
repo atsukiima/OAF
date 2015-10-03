@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels;
 
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.abn.AbstractAbNDetailsPanel;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.reports.SCTTANBandReportPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.reports.SCTTANLevelReportPanel;
 
@@ -16,10 +17,10 @@ public class SCTTANDetailsPanel extends AbstractAbNDetailsPanel<SCTTribalAbstrac
         super(config);
 
         SCTTANLevelReportPanel levelReportPanel = new SCTTANLevelReportPanel(config);
-        levelReportPanel.displayAbNReport(config.getTribalAbstractionNetwork());
+        levelReportPanel.displayAbNReport(config.getDataConfiguration().getTribalAbstractionNetwork());
 
         SCTTANBandReportPanel bandReportPanel = new SCTTANBandReportPanel(config);
-        bandReportPanel.displayAbNReport(config.getTribalAbstractionNetwork());
+        bandReportPanel.displayAbNReport(config.getDataConfiguration().getTribalAbstractionNetwork());
 
         super.addDetailsTab("Tribal Abstraction Network Levels", levelReportPanel);
         super.addDetailsTab("Bands in Tribal Abstraction Network", bandReportPanel);
