@@ -33,6 +33,7 @@ public class SCTCreateRootSubtaxonomyButton extends CreateSubtaxonomyButton {
             Thread loadThread = new Thread(new Runnable() {
 
                 private LoadStatusDialog loadStatusDialog = null;
+                private boolean doLoad = true;
 
                 public void run() {
                     SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
@@ -40,17 +41,25 @@ public class SCTCreateRootSubtaxonomyButton extends CreateSubtaxonomyButton {
                     SCTPArea parea = currentPArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s root subtaxonomy", config.getTextConfiguration().getGroupName(parea)));
+                            String.format("Creating %s root subtaxonomy", config.getTextConfiguration().getGroupName(parea)),
+                            new LoadStatusDialog.LoadingDialogClosedListener() {
+
+                            @Override
+                            public void dialogClosed() {
+                                doLoad = false;
+                            }
+                        });
                     
                     SCTPAreaTaxonomy subtaxonomy = config.getDataConfiguration().getPAreaTaxonomy().getRootSubtaxonomy(parea);
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            
-                            displayListener.addNewPAreaGraphFrame(subtaxonomy, true);
+                            if (doLoad) {
+                                displayListener.addNewPAreaGraphFrame(subtaxonomy, true);
 
-                            loadStatusDialog.setVisible(false);
-                            loadStatusDialog.dispose();
+                                loadStatusDialog.setVisible(false);
+                                loadStatusDialog.dispose();
+                            }
                         }
                     });
                 }

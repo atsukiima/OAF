@@ -43,6 +43,7 @@ public class SCTCreateTANFromBandButton extends CreateTANButton {
             Thread loadThread = new Thread(new Runnable() {
 
                 private LoadStatusDialog loadStatusDialog = null;
+                private boolean doLoad = true;
 
                 public void run() {
                     SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
@@ -50,7 +51,14 @@ public class SCTCreateTANFromBandButton extends CreateTANButton {
                     CommonOverlapSet band = currentBand.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getTextConfiguration().getContainerName(band)));
+                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getTextConfiguration().getContainerName(band)),
+                            new LoadStatusDialog.LoadingDialogClosedListener() {
+
+                            @Override
+                            public void dialogClosed() {
+                                doLoad = false;
+                            }
+                        });
                     
                     HashSet<Concept> patriarchs = new HashSet<>();
                     
@@ -74,11 +82,12 @@ public class SCTCreateTANFromBandButton extends CreateTANButton {
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            
-                            displayListener.addNewClusterGraphFrame(tan, true, true);
+                            if (doLoad) {
+                                displayListener.addNewClusterGraphFrame(tan, true, true);
 
-                            loadStatusDialog.setVisible(false);
-                            loadStatusDialog.dispose();
+                                loadStatusDialog.setVisible(false);
+                                loadStatusDialog.dispose();
+                            }
                         }
                     });
                 }

@@ -49,7 +49,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         String frameTitle = UtilityMethods.getPrintableVersionName(data.getSCTVersion());
         this.setTitle(frameTitle);
 
-        openReportsBtn = new JButton("TAN Reports and Metrics");
+        openReportsBtn = new JButton("Reports and Metrics");
         openReportsBtn.addActionListener((ActionEvent ae) -> {
             SCTTANReportDialog reportDialog = new SCTTANReportDialog(currentConfiguration);
             reportDialog.showReports(currentConfiguration.getDataConfiguration().getTribalAbstractionNetwork());

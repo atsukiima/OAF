@@ -12,7 +12,6 @@ import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.ConceptClusterInfo;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
@@ -268,9 +267,18 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
         Thread loadThread = new Thread(new Runnable() {
             private LoadStatusDialog loadStatusDialog = null;
 
+            private boolean doLoad = true;
+            
             public void run() {
                 
-                loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating the %s Subject Subtaxonomy.", root.getName()));
+                loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating the %s Subject Subtaxonomy.", root.getName()),
+                        new LoadStatusDialog.LoadingDialogClosedListener() {
+
+                            @Override
+                            public void dialogClosed() {
+                                doLoad = false;
+                            }
+                        });
 
                 ArrayList<Concept> hierarchy = dataSource.getHierarchiesConceptBelongTo(root);
 
@@ -292,10 +300,13 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true);
+                        
+                        if (doLoad) {
+                            mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true);
 
-                        loadStatusDialog.setVisible(false);
-                        loadStatusDialog.dispose();
+                            loadStatusDialog.setVisible(false);
+                            loadStatusDialog.dispose();
+                        }
                     }
                 });
             }
@@ -308,9 +319,17 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
         
         Thread loadThread = new Thread(new Runnable() {
             private LoadStatusDialog loadStatusDialog = null;
+            private boolean doLoad = true;
 
             public void run() {
-                loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating the %s Focus Subtaxonomy.", focusConcept.getName()));
+                loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating the %s Focus Subtaxonomy.", focusConcept.getName()),
+                        new LoadStatusDialog.LoadingDialogClosedListener() {
+
+                            @Override
+                            public void dialogClosed() {
+                                doLoad = false;
+                            }
+                        });
                 
                 ArrayList<Concept> hierarchy = dataSource.getHierarchiesConceptBelongTo(focusConcept);
 
@@ -342,10 +361,12 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true);
+                        if (doLoad) {
+                            mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true);
 
-                        loadStatusDialog.setVisible(false);
-                        loadStatusDialog.dispose();
+                            loadStatusDialog.setVisible(false);
+                            loadStatusDialog.dispose();
+                        }
                     }
                 });
             }
@@ -357,12 +378,18 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
     private void createAndDisplaySubjectTAN(final SCTLocalDataSource dataSource, final Concept root, boolean useStatedRelationships) {
          Thread loadThread = new Thread(new Runnable() {
             private LoadStatusDialog loadStatusDialog = null;
+            private boolean doLoad = true;
 
             public void run() {
                 
-                loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating the %s Subject TAN.", root.getName()));
+                loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating the %s Subject TAN.", root.getName()), 
+                        new LoadStatusDialog.LoadingDialogClosedListener() {
 
-                ArrayList<Concept> hierarchy = dataSource.getHierarchiesConceptBelongTo(root);
+                            @Override
+                            public void dialogClosed() {
+                                doLoad = false;
+                            }
+                        });
 
                 SCTConceptHierarchy subhierarchy;
                 
@@ -376,10 +403,12 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        mainPanel.getDisplayFrameListener().addNewClusterGraphFrame(tan, true, true);
+                        if (doLoad) {
+                            mainPanel.getDisplayFrameListener().addNewClusterGraphFrame(tan, true, true);
 
-                        loadStatusDialog.setVisible(false);
-                        loadStatusDialog.dispose();
+                            loadStatusDialog.setVisible(false);
+                            loadStatusDialog.dispose();
+                        }
                     }
                 });
             }

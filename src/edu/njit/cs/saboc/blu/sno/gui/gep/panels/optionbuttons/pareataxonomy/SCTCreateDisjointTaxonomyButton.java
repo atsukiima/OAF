@@ -35,6 +35,7 @@ public class SCTCreateDisjointTaxonomyButton extends CreateDisjointAbNButton {
             Thread loadThread = new Thread(new Runnable() {
 
                 private LoadStatusDialog loadStatusDialog = null;
+                private boolean doLoad = true;
 
                 public void run() {
                     SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
@@ -42,16 +43,25 @@ public class SCTCreateDisjointTaxonomyButton extends CreateDisjointAbNButton {
                     SCTArea area = currentArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s Disjoint Partial-area Taxonomy", config.getTextConfiguration().getContainerName(area)));
+                            String.format("Creating %s Disjoint Partial-area Taxonomy", config.getTextConfiguration().getContainerName(area)),
+                            new LoadStatusDialog.LoadingDialogClosedListener() {
+
+                            @Override
+                            public void dialogClosed() {
+                                doLoad = false;
+                            }
+                        });
 
                     DisjointPAreaTaxonomy disjointTaxonomy = config.getDataConfiguration().createDisjointAbN(area);
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            displayListener.addNewDisjointPAreaTaxonomyGraphFrame(disjointTaxonomy);
+                            if (doLoad) {
+                                displayListener.addNewDisjointPAreaTaxonomyGraphFrame(disjointTaxonomy);
 
-                            loadStatusDialog.setVisible(false);
-                            loadStatusDialog.dispose();
+                                loadStatusDialog.setVisible(false);
+                                loadStatusDialog.dispose();
+                            }
                         }
                     });
                 }

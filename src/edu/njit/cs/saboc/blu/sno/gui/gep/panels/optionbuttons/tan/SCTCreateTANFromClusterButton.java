@@ -36,6 +36,7 @@ public class SCTCreateTANFromClusterButton extends CreateTANButton {
             Thread loadThread = new Thread(new Runnable() {
 
                 private LoadStatusDialog loadStatusDialog = null;
+                private boolean doLoad = true;
 
                 public void run() {
                     SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
@@ -43,7 +44,14 @@ public class SCTCreateTANFromClusterButton extends CreateTANButton {
                     SCTCluster cluster = currentPArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getTextConfiguration().getGroupName(cluster)));
+                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getTextConfiguration().getGroupName(cluster)),
+                            new LoadStatusDialog.LoadingDialogClosedListener() {
+
+                            @Override
+                            public void dialogClosed() {
+                                doLoad = false;
+                            }
+                        });
                     
                     SCTTribalAbstractionNetwork tan = TANGenerator.createTANFromConceptHierarchy(
                             config.getDataConfiguration().getTribalAbstractionNetwork().getSCTVersion(),
@@ -52,11 +60,12 @@ public class SCTCreateTANFromClusterButton extends CreateTANButton {
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            
-                            displayListener.addNewClusterGraphFrame(tan, true, true);
+                            if (doLoad) {
+                                displayListener.addNewClusterGraphFrame(tan, true, true);
 
-                            loadStatusDialog.setVisible(false);
-                            loadStatusDialog.dispose();
+                                loadStatusDialog.setVisible(false);
+                                loadStatusDialog.dispose();
+                            }
                         }
                     });
                 }

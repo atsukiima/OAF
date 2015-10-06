@@ -21,6 +21,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetri
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalLateralRelationship;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.SearchResultComparator;
 import java.util.ArrayDeque;
@@ -223,9 +224,21 @@ public class SCTLocalDataSource implements SCTDataSource {
                 ArrayList<Concept> pareaConcepts = this.getConceptsInPArea(taxonomy, parea);
                 
                 if(pareaConcepts.contains(c)) {
+                    ArrayList<OutgoingLateralRelationship> rels = this.getOutgoingLateralRelationships(parea.getRoot());
+                    
+                    ArrayList<OutgoingLateralRelationship> definingRels = new ArrayList<>();
+                    
+                    rels.forEach((OutgoingLateralRelationship rel) -> {
+                        LocalLateralRelationship localRel = (LocalLateralRelationship)rel;
+                        
+                        if(localRel.getCharacteristicType() == 0) {
+                            definingRels.add(rel);
+                        }
+                    });
+                    
                     results.add(new PAreaDetailsForConcept(hierarchies.get(0), 
                             parea.getRoot(), 
-                            this.getOutgoingLateralRelationships(parea.getRoot()), 
+                            definingRels, 
                             parea.getConceptCount()));
                 }
             }

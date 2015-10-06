@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.aggregate.AggregateableConceptGroup;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.BLUConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.GenericExportPartitionedAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
@@ -68,7 +69,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
         this.setTitle(frameTitle);
 
-        openReportsBtn = new JButton("Partial-area Taxonomy Reports and Metrics");
+        openReportsBtn = new JButton("Taxonomy Reports and Metrics");
         openReportsBtn.addActionListener((ActionEvent ae) -> {
             
             if (currentTaxonomy.isReduced()) {
@@ -214,13 +215,16 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         searchButton.setGraph(graph);
         optionsButton.setGraph(graph);
 
-        tabbedPane.addTab("Text-Diagram Hybrid View", tbp = new TextBrowserPanel((PAreaBluGraph)graph));
+    }
+    
+    
+    protected void initializeTabs(BluGraph graph, BLUConfiguration gepConfiguration) {
+        super.initializeTabs(graph, gepConfiguration);
+
+        tabbedPane.addTab("Text-Diagram Hybrid View", tbp = new TextBrowserPanel((PAreaBluGraph) graph));
 
         tabbedPane.setToolTipTextAt(2, "<html><b>Hybrid Graph View</b> allows you to quickly obtain informatin <br>"
                 + "about Areas and PAreas in a text/diagram hybrid view.");
-        
-        tabbedPane.validate();
-        tabbedPane.repaint();
     }
 
     public void viewInTextBrowser(SCTPArea parea) {

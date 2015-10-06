@@ -3,7 +3,6 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons;
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.OpenBrowserButton;
-import edu.njit.cs.saboc.blu.sno.conceptbrowser.InternalConceptBrowserFrame;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import java.util.Optional;
@@ -37,18 +36,28 @@ public class SCTOpenBrowserButton extends OpenBrowserButton {
             Thread loadThread = new Thread(new Runnable() {
 
                 private LoadStatusDialog loadStatusDialog = null;
+                private boolean doLoad = true;
 
                 public void run() {
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Opening SNOMED CT NAT Browser to %s", currentRootConcept.get().getName()));
+                            String.format("Opening SNOMED CT NAT Browser to %s", currentRootConcept.get().getName()),
+                            new LoadStatusDialog.LoadingDialogClosedListener() {
+
+                            @Override
+                            public void dialogClosed() {
+                                doLoad = false;
+                            }
+                        });
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            displayListener.addNewBrowserFrame(currentRootConcept.get(), dataSource);
-                            
-                            loadStatusDialog.setVisible(false);
-                            loadStatusDialog.dispose();
+                            if (doLoad) {
+                                displayListener.addNewBrowserFrame(currentRootConcept.get(), dataSource);
+
+                                loadStatusDialog.setVisible(false);
+                                loadStatusDialog.dispose();
+                            }
                         }
                     });
                 }

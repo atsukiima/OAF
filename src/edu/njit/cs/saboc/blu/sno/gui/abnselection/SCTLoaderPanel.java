@@ -347,10 +347,18 @@ public class SCTLoaderPanel extends JPanel {
 
         Thread loadThread = new Thread(new Runnable() {
             private LoadStatusDialog loadStatusDialog = null;
+            private boolean doLoad = true;
 
             public void run() {
                 
-                loadStatusDialog = LoadStatusDialog.display(parentFrame, String.format("Creating the %s partial-area taxonomy.", root.getName()));
+                loadStatusDialog = LoadStatusDialog.display(parentFrame, String.format("Creating the %s partial-area taxonomy.", root.getName()),
+                        new LoadStatusDialog.LoadingDialogClosedListener() {
+
+                            @Override
+                            public void dialogClosed() {
+                                doLoad = false;
+                            }
+                        });
 
                 final SCTPAreaTaxonomy taxonomy;
 
@@ -389,10 +397,12 @@ public class SCTLoaderPanel extends JPanel {
 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        displayFrameListener.addNewPAreaGraphFrame(taxonomy, true);
+                        if (doLoad) {
+                            displayFrameListener.addNewPAreaGraphFrame(taxonomy, true);
 
-                        loadStatusDialog.setVisible(false);
-                        loadStatusDialog.dispose();
+                            loadStatusDialog.setVisible(false);
+                            loadStatusDialog.dispose();
+                        }
                     }
                 });
             }
@@ -410,10 +420,18 @@ public class SCTLoaderPanel extends JPanel {
         
         Thread loadThread = new Thread(new Runnable() {
             private LoadStatusDialog loadStatusDialog = null;
+            private boolean doLoad;
 
             public void run() {
 
-                loadStatusDialog = LoadStatusDialog.display(parentFrame, String.format("Creating the %s Tribal Abstraction Network (TAN).", root.getName()));
+                loadStatusDialog = LoadStatusDialog.display(parentFrame, String.format("Creating the %s Tribal Abstraction Network (TAN).", root.getName()),
+                        new LoadStatusDialog.LoadingDialogClosedListener() {
+
+                            @Override
+                            public void dialogClosed() {
+                                doLoad = false;
+                            }
+                        });
 
                 if (localSourceBtn.isSelected()) {
                     final SCTTribalAbstractionNetwork tan;
@@ -434,10 +452,12 @@ public class SCTLoaderPanel extends JPanel {
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
-                                displayFrameListener.addNewClusterGraphFrame(tan, true, false);
+                                if (doLoad) {
+                                    displayFrameListener.addNewClusterGraphFrame(tan, true, false);
 
-                                loadStatusDialog.setVisible(false);
-                                loadStatusDialog.dispose();
+                                    loadStatusDialog.setVisible(false);
+                                    loadStatusDialog.dispose();
+                                }
                             }
                         });
                     } catch (NoSCTDataSourceLoadedException e) {
@@ -457,10 +477,18 @@ public class SCTLoaderPanel extends JPanel {
     
         Thread loadThread = new Thread(new Runnable() {
             private LoadStatusDialog loadStatusDialog = null;
+            private boolean doLoad = true;
 
             public void run() {
 
-                loadStatusDialog = LoadStatusDialog.display(parentFrame, String.format("Creating the %s Target Abstraction Network.", root.getName()));
+                loadStatusDialog = LoadStatusDialog.display(parentFrame, String.format("Creating the %s Target Abstraction Network.", root.getName()), 
+                        new LoadStatusDialog.LoadingDialogClosedListener() {
+
+                            @Override
+                            public void dialogClosed() {
+                                doLoad = false;
+                            }
+                        });
 
                 if (localSourceBtn.isSelected()) {
                     final SCTTargetAbstractionNetwork abn;
@@ -508,8 +536,10 @@ public class SCTLoaderPanel extends JPanel {
                         
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
-                                loadStatusDialog.setVisible(false);
-                                loadStatusDialog.dispose();
+                                if (doLoad) {
+                                    loadStatusDialog.setVisible(false);
+                                    loadStatusDialog.dispose();
+                                }
                             }
                         });
                     } catch (NoSCTDataSourceLoadedException e) {

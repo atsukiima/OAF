@@ -44,6 +44,7 @@ public class SCTCreateExpandedSubtaxonomyButton extends ExpandAggregateButton {
             Thread loadThread = new Thread(new Runnable() {
 
                 private LoadStatusDialog loadStatusDialog = null;
+                private boolean doLoad = true;
 
                 public void run() {
                     SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
@@ -51,7 +52,14 @@ public class SCTCreateExpandedSubtaxonomyButton extends ExpandAggregateButton {
                     SCTAggregatePArea parea = currentPArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s Expanded Partial-area Subtaxonomy", config.getTextConfiguration().getGroupName(parea)));
+                            String.format("Creating %s Expanded Partial-area Subtaxonomy", config.getTextConfiguration().getGroupName(parea)),
+                            new LoadStatusDialog.LoadingDialogClosedListener() {
+
+                            @Override
+                            public void dialogClosed() {
+                                doLoad = false;
+                            }
+                        });
                     
                     SCTPAreaTaxonomy sourceTaxonomy = config.getDataConfiguration().getPAreaTaxonomy();
                     
@@ -68,11 +76,12 @@ public class SCTCreateExpandedSubtaxonomyButton extends ExpandAggregateButton {
                     
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
+                            if (doLoad) {
+                                displayListener.addNewPAreaGraphFrame(expandedSubtaxonomy, true);
 
-                            displayListener.addNewPAreaGraphFrame(expandedSubtaxonomy, true);
-
-                            loadStatusDialog.setVisible(false);
-                            loadStatusDialog.dispose();
+                                loadStatusDialog.setVisible(false);
+                                loadStatusDialog.dispose();
+                            }
                         }
                     });
                 }
