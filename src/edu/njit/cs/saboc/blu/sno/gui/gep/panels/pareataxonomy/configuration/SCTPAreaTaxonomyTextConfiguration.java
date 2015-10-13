@@ -81,6 +81,11 @@ public class SCTPAreaTaxonomyTextConfiguration extends BLUGenericPAreaTaxonomyTe
     public String getConceptName(Concept concept) {
         return concept.getName();
     }
+    
+    @Override
+    public String getConceptUniqueIdentifier(Concept concept) {
+        return Long.toString(concept.getId());
+    }
 
     @Override
     public String getGroupName(SCTPArea group) {

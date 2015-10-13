@@ -45,6 +45,11 @@ public class SCTTANTextConfiguration implements BLUPartitionedAbNTextConfigurati
     public String getConceptName(Concept concept) {
         return concept.getName();
     }
+    
+    @Override
+    public String getConceptUniqueIdentifier(Concept concept) {
+        return Long.toString(concept.getId());
+    }
 
     @Override
     public String getContainerTypeName(boolean plural) {
