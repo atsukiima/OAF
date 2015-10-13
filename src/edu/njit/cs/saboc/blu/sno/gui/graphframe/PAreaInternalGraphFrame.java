@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
@@ -136,95 +137,102 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         
         this.currentTaxonomy = taxonomy;
         
-        GroupEntryLabelCreator labelCreator;
-        
-        AbNPainter abnPainter;
-        
-        if (taxonomy.isReduced()) {
-            abnPainter = new SCTAggregateTaxonomyPainter();
+        Thread loadThread = new Thread(() -> {
+            gep.showLoading();
             
-            labelCreator = new GroupEntryLabelCreator<SCTPArea>() {
-                public String getRootNameStr(SCTPArea parea) {
-                    int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
-                    
-                    if(lastIndex == -1) {
-                        return parea.getRoot().getName();
-                    } else {
-                        return parea.getRoot().getName().substring(0, lastIndex);
+            GroupEntryLabelCreator labelCreator;
+
+            AbNPainter abnPainter;
+
+            if (taxonomy.isReduced()) {
+                abnPainter = new SCTAggregateTaxonomyPainter();
+
+                labelCreator = new GroupEntryLabelCreator<SCTPArea>() {
+                    public String getRootNameStr(SCTPArea parea) {
+                        int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
+
+                        if (lastIndex == -1) {
+                            return parea.getRoot().getName();
+                        } else {
+                            return parea.getRoot().getName().substring(0, lastIndex);
+                        }
                     }
-                }
-                
-                public String getCountStr(SCTPArea parea) {
-                    AggregateableConceptGroup reduced = (AggregateableConceptGroup)parea;
-                    
-                    if(reduced.getAggregatedGroups().isEmpty()) {
-                        return super.getCountStr(parea);
+
+                    public String getCountStr(SCTPArea parea) {
+                        AggregateableConceptGroup reduced = (AggregateableConceptGroup) parea;
+
+                        if (reduced.getAggregatedGroups().isEmpty()) {
+                            return super.getCountStr(parea);
+                        }
+
+                        return String.format("(%d) [%d]", reduced.getAllGroupsConcepts().size(), reduced.getAggregatedGroups().size());
                     }
-                    
-                    return String.format("(%d) [%d]", reduced.getAllGroupsConcepts().size(), reduced.getAggregatedGroups().size());
-                }
-            };
-        } else {
-            abnPainter = new SCTTaxonomyPainter();
-            
-            labelCreator = new GroupEntryLabelCreator<SCTPArea>() {
-                public String getRootNameStr(SCTPArea parea) {
-                    int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
-                    
-                    if(lastIndex == -1) {
-                        return parea.getRoot().getName();
-                    } else {
-                        return parea.getRoot().getName().substring(0, lastIndex);
+                };
+            } else {
+                abnPainter = new SCTTaxonomyPainter();
+
+                labelCreator = new GroupEntryLabelCreator<SCTPArea>() {
+                    public String getRootNameStr(SCTPArea parea) {
+                        int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
+
+                        if (lastIndex == -1) {
+                            return parea.getRoot().getName();
+                        } else {
+                            return parea.getRoot().getName().substring(0, lastIndex);
+                        }
                     }
+                };
+            }
+
+            SCTPAreaTaxonomyConfigurationFactory factory = new SCTPAreaTaxonomyConfigurationFactory();
+
+            currentConfiguration = factory.createConfiguration(taxonomy, displayListener);
+
+            BluGraph graph = new PAreaBluGraph(parentFrame, taxonomy, areaGraph, displayListener, labelCreator, currentConfiguration);
+
+            SwingUtilities.invokeLater(() -> {
+                if (exportBtn != null) {
+                    removeReportButtonFromMenu(exportBtn);
                 }
-            };
-        }
-        
-        SCTPAreaTaxonomyConfigurationFactory factory = new SCTPAreaTaxonomyConfigurationFactory();
-        
-        currentConfiguration = factory.createConfiguration(taxonomy, displayListener);
 
-        BluGraph graph = new PAreaBluGraph(parentFrame, taxonomy, areaGraph, displayListener, labelCreator, currentConfiguration);
+                exportBtn = new GenericExportPartitionedAbNButton<>(taxonomy, currentConfiguration);
 
-        
-        if(exportBtn != null) {
-            removeReportButtonFromMenu(exportBtn);
-        }
-        
-        exportBtn = new GenericExportPartitionedAbNButton<>(taxonomy, currentConfiguration);
-        
-        if(taxonomy.isReduced()) {
-            exportBtn.setEnabled(false);
-            
-            openReportsBtn.setEnabled(false);
-        } else {
-            exportBtn.setEnabled(true);
-            
-            openReportsBtn.setEnabled(true);
-        }
+                if (taxonomy.isReduced()) {
+                    exportBtn.setEnabled(false);
 
-        addReportButtonToMenu(exportBtn);
-        
+                    openReportsBtn.setEnabled(false);
+                } else {
+                    exportBtn.setEnabled(true);
 
-        initializeGraphTabs(graph, abnPainter, currentConfiguration);
-        
-        tbp = null;
+                    openReportsBtn.setEnabled(true);
+                }
 
-        updateHierarchyInfoLabel((SCTPAreaTaxonomy) taxonomy);
+                addReportButtonToMenu(exportBtn);
 
-        searchButton.setGraph(graph);
-        optionsButton.setGraph(graph);
+                displayAbstractionNetwork(graph, abnPainter, currentConfiguration);
 
+                updateHierarchyInfoLabel((SCTPAreaTaxonomy) taxonomy);
+
+                searchButton.setGraph(graph);
+                optionsButton.setGraph(graph);
+            });
+        });
+
+        loadThread.start();
     }
     
     
     protected void initializeTabs(BluGraph graph, BLUConfiguration gepConfiguration) {
         super.initializeTabs(graph, gepConfiguration);
 
+        if(tabbedPane.getTabCount() == 3) {
+            tabbedPane.removeTabAt(2);
+        }
+        
         tabbedPane.addTab("Text-Diagram Hybrid View", tbp = new TextBrowserPanel((PAreaBluGraph) graph));
 
         tabbedPane.setToolTipTextAt(2, "<html><b>Hybrid Graph View</b> allows you to quickly obtain informatin <br>"
-                + "about Areas and PAreas in a text/diagram hybrid view.");
+                + "about Areas and Partial-areas in a text/diagram hybrid view.");
     }
 
     public void viewInTextBrowser(SCTPArea parea) {

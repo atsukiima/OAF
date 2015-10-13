@@ -12,6 +12,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configurat
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.DisjointPAreaInternalSearchButton;
 import edu.njit.cs.saboc.blu.sno.utils.UtilityMethods;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -46,27 +47,35 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
     public void replaceInternalFrameDataWith(final DisjointPAreaTaxonomy data) {
         
-        GroupEntryLabelCreator labelCreator = new GroupEntryLabelCreator<DisjointPartialArea>() {
-            public String getRootNameStr(DisjointPartialArea parea) {
-                int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
+        Thread loadThread = new Thread(() -> {
+            gep.showLoading();
+            
+            GroupEntryLabelCreator labelCreator = new GroupEntryLabelCreator<DisjointPartialArea>() {
+                public String getRootNameStr(DisjointPartialArea parea) {
+                    int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
 
-                if (lastIndex == -1) {
-                    return parea.getRoot().getName();
-                } else {
-                    return parea.getRoot().getName().substring(0, lastIndex);
+                    if (lastIndex == -1) {
+                        return parea.getRoot().getName();
+                    } else {
+                        return parea.getRoot().getName().substring(0, lastIndex);
+                    }
                 }
-            }
-        };
+            };
 
-        BluGraph graph = new DisjointPAreaBluGraph(parentFrame, data, displayListener, labelCreator);
+            BluGraph graph = new DisjointPAreaBluGraph(parentFrame, data, displayListener, labelCreator);
+
+            searchBtn.setGraph(graph);
+
+            SCTDisjointPAreaTaxonomyConfigurationFactory factory = new SCTDisjointPAreaTaxonomyConfigurationFactory();
+            
+            SwingUtilities.invokeLater(() -> {
+                displayAbstractionNetwork(graph, new DisjointAbNPainter(), factory.createConfiguration(data, displayListener));
+
+                tabbedPane.validate();
+                tabbedPane.repaint();
+            });
+        });
         
-        searchBtn.setGraph(graph);
-        
-        SCTDisjointPAreaTaxonomyConfigurationFactory factory = new SCTDisjointPAreaTaxonomyConfigurationFactory();
-        
-        initializeGraphTabs(graph, new DisjointAbNPainter(), factory.createConfiguration(data, displayListener));
-        
-        tabbedPane.validate();
-        tabbedPane.repaint();
+        loadThread.start();
     }
 }

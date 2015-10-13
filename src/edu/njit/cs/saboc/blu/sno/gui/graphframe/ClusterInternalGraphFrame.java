@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
     
@@ -98,30 +99,38 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
     public void replaceInternalFrameDataWith(SCTTribalAbstractionNetwork data,
             boolean areaGraph, boolean conceptCountLabels, GraphOptions options) {
         
-        GroupEntryLabelCreator labelCreator = new GroupEntryLabelCreator<ClusterSummary>() {
-            public String getRootNameStr(ClusterSummary cluster) {
-                return cluster.getRoot().getName().substring(0, cluster.getRoot().getName().lastIndexOf("(") - 1);
-            }
-        };
+        Thread loadThread = new Thread(() -> {
+            gep.showLoading();
+            
+            GroupEntryLabelCreator labelCreator = new GroupEntryLabelCreator<ClusterSummary>() {
+                public String getRootNameStr(ClusterSummary cluster) {
+                    return cluster.getRoot().getName().substring(0, cluster.getRoot().getName().lastIndexOf("(") - 1);
+                }
+            };
 
-        BluGraph graph = new ClusterBluGraph(parentFrame, data, displayListener, labelCreator);
-        
-        searchButton.setGraph(graph);
-        
-        SCTTANConfigurationFactory factory = new SCTTANConfigurationFactory();
+            BluGraph graph = new ClusterBluGraph(parentFrame, data, displayListener, labelCreator);
 
-        currentConfiguration = factory.createConfiguration(data, displayListener);
-    
-        initializeGraphTabs(graph, new AbNPainter(), currentConfiguration);
-        
-        if(exportBtn != null) {
-            removeReportButtonFromMenu(exportBtn);
-        }
-        
-        exportBtn = new GenericExportPartitionedAbNButton<>(data, currentConfiguration);
+            searchButton.setGraph(graph);
 
-        addReportButtonToMenu(exportBtn);
+            SCTTANConfigurationFactory factory = new SCTTANConfigurationFactory();
+
+            currentConfiguration = factory.createConfiguration(data, displayListener);
+
+            SwingUtilities.invokeLater(() -> {
+                displayAbstractionNetwork(graph, new AbNPainter(), currentConfiguration);
+
+                if (exportBtn != null) {
+                    removeReportButtonFromMenu(exportBtn);
+                }
+
+                exportBtn = new GenericExportPartitionedAbNButton<>(data, currentConfiguration);
+
+                addReportButtonToMenu(exportBtn);
+
+                updateHierarchyInfoLabel(data);
+            });
+        });
         
-        updateHierarchyInfoLabel(data);
+        loadThread.start();
     }
 }
