@@ -9,6 +9,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTC
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateTANFromAggregatePAreaButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTExportAggregatePAreaButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTOpenBrowserButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateAncestorSubtaxonomyButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateRootSubtaxonomyButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import java.util.Optional;
@@ -31,6 +32,8 @@ public class SCTAggregatePAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTA
     
     private final SCTCreateRootSubtaxonomyButton rootSubtaxonomyBtn;
     
+    private final SCTCreateAncestorSubtaxonomyButton ancestorSubtaxonomyBtn;
+    
     private final PopoutNodeDetailsButton popoutBtn;
     
     private final SCTExportAggregatePAreaButton exportBtn;
@@ -46,6 +49,10 @@ public class SCTAggregatePAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTA
         expandedSubtaxonomyBtn = new SCTCreateExpandedSubtaxonomyButton(config);
         
         super.addOptionButton(expandedSubtaxonomyBtn);
+        
+        ancestorSubtaxonomyBtn = new SCTCreateAncestorSubtaxonomyButton(config);
+        
+        super.addOptionButton(ancestorSubtaxonomyBtn);
         
         tanBtn = new SCTCreateTANFromAggregatePAreaButton(config);
         
@@ -96,6 +103,12 @@ public class SCTAggregatePAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTA
         } else {
             tanBtn.setEnabled(false);
         }
+        
+        if(parea.getParentIds().isEmpty()) {
+            ancestorSubtaxonomyBtn.setEnabled(false);
+        } else {
+            ancestorSubtaxonomyBtn.setEnabled(true);
+        }
     }
 
     @Override
@@ -111,6 +124,8 @@ public class SCTAggregatePAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTA
         tanBtn.setCurrentPArea(parea);
         
         rootSubtaxonomyBtn.setCurrentPArea(parea);
+        
+        ancestorSubtaxonomyBtn.setCurrentPArea(parea);
         
         this.enableOptionsForGroup(parea);
     }
@@ -128,6 +143,6 @@ public class SCTAggregatePAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTA
         
         rootSubtaxonomyBtn.setCurrentPArea(null);
         
-        this.enableOptionsForGroup(null);
+        ancestorSubtaxonomyBtn.setCurrentPArea(null);
     }
 }

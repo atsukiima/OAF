@@ -203,6 +203,22 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
 
         return super.createRootSubtaxonomy(root, taxonomyGenerator);
     }
+    
+        /**
+     * Creates a root subtaxonomy rooted at the given partial-area
+     * @param source
+     * @return 
+     */
+    public SCTPAreaTaxonomy getAncestorSubtaxonomy(SCTPArea source) {
+        
+        SCTPAreaTaxonomyGenerator taxonomyGenerator = new SCTPAreaTaxonomyGenerator(
+                this.getSCTRootConcept(), 
+                this.getDataSource(), 
+                this.getConceptHierarchy(), 
+                new InferredRelationshipsRetriever());
+
+        return super.createAncestorSubtaxonomy(source, taxonomyGenerator);
+    }
 
     /**
      * Creates a relationship subtaxonomy using the relatationships with the given

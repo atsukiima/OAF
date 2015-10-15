@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy;
 
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.CreateRootSubtaxonomyButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.CreateAncestorSubtaxonomyButton;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
@@ -13,13 +13,13 @@ import javax.swing.SwingUtilities;
  *
  * @author Chris O
  */
-public class SCTCreateRootSubtaxonomyButton extends CreateRootSubtaxonomyButton {
+public class SCTCreateAncestorSubtaxonomyButton extends CreateAncestorSubtaxonomyButton {
 
     private Optional<SCTPArea> currentPArea = Optional.empty();
     
     private final SCTPAreaTaxonomyConfiguration config;
     
-    public SCTCreateRootSubtaxonomyButton(SCTPAreaTaxonomyConfiguration config) {
+    public SCTCreateAncestorSubtaxonomyButton(SCTPAreaTaxonomyConfiguration config) {
         this.config = config;
     }
     
@@ -41,7 +41,7 @@ public class SCTCreateRootSubtaxonomyButton extends CreateRootSubtaxonomyButton 
                     SCTPArea parea = currentPArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s root subtaxonomy", config.getTextConfiguration().getGroupName(parea)),
+                            String.format("Creating %s ancestor subtaxonomy", config.getTextConfiguration().getGroupName(parea)),
                             new LoadStatusDialog.LoadingDialogClosedListener() {
 
                             @Override
@@ -50,7 +50,7 @@ public class SCTCreateRootSubtaxonomyButton extends CreateRootSubtaxonomyButton 
                             }
                         });
                     
-                    SCTPAreaTaxonomy subtaxonomy = config.getDataConfiguration().getPAreaTaxonomy().getRootSubtaxonomy(parea);
+                    SCTPAreaTaxonomy subtaxonomy = config.getDataConfiguration().getPAreaTaxonomy().getAncestorSubtaxonomy(parea);
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
