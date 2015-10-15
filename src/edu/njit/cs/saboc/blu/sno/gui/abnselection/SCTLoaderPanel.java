@@ -96,6 +96,8 @@ public class SCTLoaderPanel extends JPanel {
                 enableRemoteReleaseSourceOptions();
             }
         });
+        
+        remoteSourceBtn.setEnabled(false);
 
         localSourceBtn.addActionListener(new ActionListener() {
 
