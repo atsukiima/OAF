@@ -2,6 +2,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration;
 
 import SnomedShared.Concept;
+import SnomedShared.pareataxonomy.InheritedRelationship;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.abn.AbstractAbNDetailsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configuration.BLUGenericPAreaTaxonomyUIConfiguration;
@@ -19,7 +20,8 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea.aggregate.SC
  *
  * @author Chris O
  */
-public class SCTPAreaTaxonomyUIConfiguration extends BLUGenericPAreaTaxonomyUIConfiguration<SCTPAreaTaxonomy, SCTArea, SCTPArea, Concept> {
+public class SCTPAreaTaxonomyUIConfiguration extends BLUGenericPAreaTaxonomyUIConfiguration<SCTPAreaTaxonomy, 
+        SCTArea, SCTPArea, Concept, InheritedRelationship, SCTPAreaTaxonomyListenerConfiguration> {
     
     private final SCTPAreaTaxonomyConfiguration config;
     
