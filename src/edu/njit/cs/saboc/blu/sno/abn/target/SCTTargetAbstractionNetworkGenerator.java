@@ -1,6 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.abn.target;
 
 import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
 import edu.njit.cs.saboc.blu.core.abn.targetbased.GenericRelationship;
 import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
@@ -56,9 +57,9 @@ public class SCTTargetAbstractionNetworkGenerator extends TargetAbstractionNetwo
     protected SCTTargetAbstractionNetwork createTargetAbstractionNetwork(
             SCTTargetGroup targetGroup, 
             HashMap<Integer, SCTTargetGroup> groups, 
-            HashMap<Integer, HashSet<Integer>> groupHierarchy) {    
+            GroupHierarchy<SCTTargetGroup> groupHierarchy) {    
         
-        return new SCTTargetAbstractionNetwork(targetGroup, new ArrayList<SCTTargetContainer>(), groups, groupHierarchy);
+        return new SCTTargetAbstractionNetwork(targetGroup, groups, groupHierarchy);
     }
     
     protected SCTConceptHierarchy createGroupHierarchy(Concept root) {

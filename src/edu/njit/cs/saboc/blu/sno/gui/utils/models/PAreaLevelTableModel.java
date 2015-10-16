@@ -1,6 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.utils.models;
 
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.ReducedSCTPArea;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
@@ -71,9 +71,9 @@ public class PAreaLevelTableModel extends AbstractTableModel {
             
             if(pareaTaxonomy.isReduced()) {
                 for(SCTPArea parea : areaPAreas) {
-                    ReducedSCTPArea reducedPArea = (ReducedSCTPArea)parea;
+                    SCTAggregatePArea reducedPArea = (SCTAggregatePArea)parea;
                     
-                    if(reducedPArea.getReducedGroups().size() - 1 > 0) {
+                    if(reducedPArea.getAggregatedGroups().size() - 1 > 0) {
                          level.aggregatePAreas++;
                     }
                 }

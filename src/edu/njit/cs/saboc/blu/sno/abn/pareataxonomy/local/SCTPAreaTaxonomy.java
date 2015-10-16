@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local;
 import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.AggregatePAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.GenericPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
@@ -24,6 +25,7 @@ import java.util.Map;
  */
 public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCTPArea, 
         SCTArea, SCTRegion, Concept, InheritedRelationship, SCTConceptHierarchy> 
+
     implements SCTAbstractionNetwork<SCTPAreaTaxonomy> {
 
     protected SCTDataSource dataSource;
@@ -192,8 +194,12 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
      * @return 
      */
     public SCTPAreaTaxonomy getRootSubtaxonomy(SCTPArea root) {
+        
         SCTPAreaTaxonomyGenerator taxonomyGenerator = new SCTPAreaTaxonomyGenerator(
-                this.getSCTRootConcept(), this.getDataSource(), (SCTConceptHierarchy) this.getConceptHierarchy(), new InferredRelationshipsRetriever());
+                this.getSCTRootConcept(), 
+                this.getDataSource(), 
+                this.getConceptHierarchy(), 
+                new InferredRelationshipsRetriever());
 
         return super.createRootSubtaxonomy(root, taxonomyGenerator);
     }
@@ -410,11 +416,34 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
         return hd;
     }
     
-    public SCTPAreaTaxonomy getReduced(int minPAreaSize, int maxPAreaSize) {
+    public SCTPAreaTaxonomy getReduced(int min) {
         SCTPAreaTaxonomyGenerator taxonomyGenerator = new SCTPAreaTaxonomyGenerator(
             this.getSCTRootConcept(), this.getDataSource(), (SCTConceptHierarchy)this.getConceptHierarchy(), new InferredRelationshipsRetriever());
+        
+        AggregatePAreaTaxonomyGenerator<SCTPAreaTaxonomy, SCTPArea, 
+                SCTArea, SCTRegion, Concept, 
+                InheritedRelationship, SCTConceptHierarchy, 
+                SCTAggregatePArea> aggregateGenerator = new AggregatePAreaTaxonomyGenerator();
+        
+        SCTPAreaTaxonomy aggregateTaxonomy = aggregateGenerator.createAggregatePAreaTaxonomy(this, 
+                taxonomyGenerator, new SCTAggregatePAreaTaxonomyGenerator(), min);
 
-        return super.createReducedTaxonomy(taxonomyGenerator, new ReducedSCTPAreaTaxonomyGenerator(), minPAreaSize, maxPAreaSize);
+        return aggregateTaxonomy;
     }
+    
+    /**
+     * Creates a root subtaxonomy rooted at the given partial-area
+     * @param source
+     * @return 
+     */
+    public SCTPAreaTaxonomy getAncestorSubtaxonomy(SCTPArea source) {
+        
+        SCTPAreaTaxonomyGenerator taxonomyGenerator = new SCTPAreaTaxonomyGenerator(
+                this.getSCTRootConcept(), 
+                this.getDataSource(), 
+                this.getConceptHierarchy(), 
+                new InferredRelationshipsRetriever());
 
+        return super.createAncestorSubtaxonomy(source, taxonomyGenerator);
+    }
 }

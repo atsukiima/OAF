@@ -1,8 +1,8 @@
 package edu.njit.cs.saboc.blu.sno.gui.utils.models;
 
-import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.CommonOverlapSet;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,7 +24,7 @@ public class ClusterLevelTableModel extends AbstractTableModel {
         public int conceptCount = 0;
     }
 
-    public ClusterLevelTableModel(TribalAbstractionNetwork tribalAbN) {
+    public ClusterLevelTableModel(SCTTribalAbstractionNetwork tribalAbN) {
         ArrayList<CommonOverlapSet> tribalBands = (ArrayList<CommonOverlapSet>)tribalAbN.getBands();
 
         Collections.sort(tribalBands, new Comparator<CommonOverlapSet>() {
@@ -40,7 +40,7 @@ public class ClusterLevelTableModel extends AbstractTableModel {
 
         CommonOverlapSet lastBand = tribalBands.get(0);
         LevelData level = new LevelData();
-        ArrayList<ClusterSummary> levelClusters = new ArrayList<ClusterSummary>();
+        ArrayList<SCTCluster> levelClusters = new ArrayList<>();
 
         for(CommonOverlapSet a : tribalBands) {
             if(lastBand.getSetEntryPoints().size() != a.getSetEntryPoints().size()) {
@@ -57,7 +57,7 @@ public class ClusterLevelTableModel extends AbstractTableModel {
             level.bandCount += 1;
             level.clusterCount += a.getAllClusters().size();
 
-            levelClusters.addAll(a.getAllClusters());
+            levelClusters.addAll(tribalAbN.convertClusters(a.getAllClusters()));
 
             lastBand = a;
         }

@@ -1,6 +1,5 @@
 package edu.njit.cs.saboc.blu.sno.abn.tan;
 
-import SnomedShared.Concept;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
@@ -9,39 +8,39 @@ import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  *
  * @author Chris
  */
-public class TribalAbstractionNetwork extends PartitionedAbstractionNetwork<CommonOverlapSet, ClusterSummary> 
+public class TribalAbstractionNetwork<CLUSTER_T extends ClusterSummary> extends PartitionedAbstractionNetwork<CommonOverlapSet, CLUSTER_T> 
         implements SCTAbstractionNetwork<TribalAbstractionNetwork> {
     
-    protected String sctVersion;
+    private final String tanName;
     
-    protected SCTDataSource dataSource;
+    private final String sctVersion;
     
-    protected Concept sctRootConcept;
+    private final SCTDataSource dataSource;
 
-    private ArrayList<ClusterSummary> disjointClusters;
+    private final ArrayList<CLUSTER_T> disjointClusters;
 
-    private ArrayList<ClusterSummary> nonOverlappingDisjointClusters;
+    private final ArrayList<CLUSTER_T> nonOverlappingDisjointClusters;
 
-    private HashMap<Long, String> patriarchNames = new HashMap<Long, String>();
+    private final HashMap<Long, String> patriarchNames = new HashMap<>();
 
-    public TribalAbstractionNetwork(Concept SNOMEDHierarchyRoot,
+    public TribalAbstractionNetwork(
+            String tanName,
             ArrayList<CommonOverlapSet> overlapSets,
-            HashMap<Integer, ClusterSummary> clusters,
-            GroupHierarchy<ClusterSummary> clusterHierarchy,
+            HashMap<Integer, CLUSTER_T> clusters,
+            GroupHierarchy<CLUSTER_T> clusterHierarchy,
             String SNOMEDVersion,
-            ArrayList<ClusterSummary> entryPoints,
-            ArrayList<ClusterSummary> nonContributingEntryPoints,
+            ArrayList<CLUSTER_T> entryPoints,
+            ArrayList<CLUSTER_T> nonContributingEntryPoints,
             SCTDataSource dataSource) {
 
         super(overlapSets, clusters, clusterHierarchy);
         
-        this.sctRootConcept = SNOMEDHierarchyRoot;
+        this.tanName = tanName;
         
         this.dataSource = dataSource;
         
@@ -50,13 +49,17 @@ public class TribalAbstractionNetwork extends PartitionedAbstractionNetwork<Comm
         this.disjointClusters = entryPoints;
         this.nonOverlappingDisjointClusters = nonContributingEntryPoints;
 
-        for(ClusterSummary entryPoint : entryPoints) {
+        for(CLUSTER_T entryPoint : entryPoints) {
             String entryPointName = entryPoint.getHeaderConcept().getName();
             entryPointName = entryPointName.substring(0, entryPointName.lastIndexOf("(")).trim();
 
             patriarchNames.put(entryPoint.getHeaderConcept().getId(),
                     entryPointName);
         }
+    }
+    
+    public String getTANName() {
+        return tanName;
     }
     
     public TribalAbstractionNetwork getAbstractionNetwork() {
@@ -67,19 +70,15 @@ public class TribalAbstractionNetwork extends PartitionedAbstractionNetwork<Comm
         return sctVersion;
     }
     
-    public Concept getSCTRootConcept() {
-        return sctRootConcept;
-    }
-    
     public SCTDataSource getDataSource() {
         return dataSource;
     }
 
-    public ArrayList<ClusterSummary> getHierarchyEntryPoints() {
+    public ArrayList<CLUSTER_T> getHierarchyEntryPoints() {
         return disjointClusters;
     }
 
-    public ArrayList<ClusterSummary> getNonOverlappingEntryPoints() {
+    public ArrayList<CLUSTER_T> getNonOverlappingEntryPoints() {
         return nonOverlappingDisjointClusters;
     }
 
@@ -95,23 +94,19 @@ public class TribalAbstractionNetwork extends PartitionedAbstractionNetwork<Comm
         return getContainerCount();
     }
 
-    public HashMap<Integer, ClusterSummary> getClusters() {
-        return (HashMap<Integer, ClusterSummary>)groups;
-    }
-
-    public ClusterSummary getClusterFromRootConceptId(long rootConceptId) {
-        return (ClusterSummary)getGroupFromRootConceptId(rootConceptId);
+    public HashMap<Integer, CLUSTER_T> getClusters() {
+        return (HashMap<Integer, CLUSTER_T>)groups;
     }
 
     public HashMap<Long, String> getPatriarchNames() {
         return patriarchNames;
     }
     
-    public ClusterSummary getRootCluster() {
+    public CLUSTER_T getRootCluster() {
         return disjointClusters.get(0);
     }
     
-    public ClusterSummary getRootGroup() {
+    public CLUSTER_T getRootGroup( ){
         return getRootCluster();
     }
     
@@ -158,5 +153,9 @@ public class TribalAbstractionNetwork extends PartitionedAbstractionNetwork<Comm
         }
 
         return searchResults;
+    }
+
+    public CLUSTER_T getClusterFromRootConceptId(long rootConceptId) {
+        return (CLUSTER_T) getGroupFromRootConceptId(rootConceptId);
     }
 }

@@ -9,6 +9,8 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.GenericInternalS
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.SearchButtonResult;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.ConceptClusterInfo;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.ClusterInternalGraphFrame;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,15 +34,15 @@ public class TANInternalSearchButton extends GenericInternalSearchButton {
                 ArrayList<SearchButtonResult> results = new ArrayList<SearchButtonResult>();
                 
                 if (query.length() >= 3) {
-                    ArrayList<ClusterSummary> pareas = new ArrayList<ClusterSummary>();
+                    ArrayList<SCTCluster> clusters = new ArrayList<SCTCluster>();
                     
-                    TribalAbstractionNetwork tan = (TribalAbstractionNetwork) graphFrame.getGraph().getAbstractionNetwork();
+                    SCTTribalAbstractionNetwork tan = (SCTTribalAbstractionNetwork) graphFrame.getGraph().getAbstractionNetwork();
 
                     for (CommonOverlapSet band : tan.getBands()) {
-                        pareas.addAll(band.getAllClusters());
+                        clusters.addAll(tan.convertClusters(band.getAllClusters()));
                     }
                     
-                    ArrayList<SearchResult> conceptResults = tan.getDataSource().searchForConceptsWithinTAN(tan, pareas, query.toLowerCase());
+                    ArrayList<SearchResult> conceptResults = tan.getDataSource().searchForConceptsWithinTAN(tan, clusters, query.toLowerCase());
                     
                     for(SearchResult sr : conceptResults) {
                         results.add(new SearchButtonResult(sr.toString(), sr));

@@ -15,6 +15,7 @@ import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluArea;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluPArea;
 import edu.njit.cs.saboc.blu.sno.graph.pareataxonomy.BluRegion;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
@@ -42,9 +43,9 @@ public class NoRegionsLayout extends GenericNoRegionsPAreaGraphLayout<
         Concept,
         InheritedRelationship,
         SCTConceptHierarchy> {
-    
-    public NoRegionsLayout(BluGraph graph, SCTPAreaTaxonomy hierarchyData) {
-        super(graph, hierarchyData);        
+
+    public NoRegionsLayout(BluGraph graph, SCTPAreaTaxonomy hierarchyData, SCTPAreaTaxonomyConfiguration config) {
+        super(graph, hierarchyData, config);        
     }
     
     @Override
@@ -64,7 +65,7 @@ public class NoRegionsLayout extends GenericNoRegionsPAreaGraphLayout<
 
     @Override
     protected ArrayList<String> getAreaRelationshipNames(SCTArea a) {
-        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<String> names = new ArrayList<>();
         
         HashSet<Long> relIds = a.getRelationshipIds();
         

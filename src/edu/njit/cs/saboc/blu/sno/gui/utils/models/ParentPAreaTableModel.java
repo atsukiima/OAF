@@ -1,8 +1,9 @@
 package edu.njit.cs.saboc.blu.sno.gui.utils.models;
 
+import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import SnomedShared.pareataxonomy.InheritedRelationship.InheritanceType;
-import SnomedShared.pareataxonomy.GroupParentInfo;
+import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import java.util.ArrayList;
@@ -12,19 +13,19 @@ public class ParentPAreaTableModel extends AbstractTableModel {
 
     String[] columnNames = new String[]{"Root Name", "Parent Name", "Relationships", "Concepts"};
     private Object[][] data;
-    private ArrayList<GroupParentInfo> parents;
+    private ArrayList<GenericParentGroupInfo<Concept, SCTPArea>> parents;
 
-    public ParentPAreaTableModel(SCTPAreaTaxonomy pareaTaxonomy, ArrayList<GroupParentInfo> parents) {
+    public ParentPAreaTableModel(SCTPAreaTaxonomy pareaTaxonomy, ArrayList<GenericParentGroupInfo<Concept, SCTPArea>> parents) {
         setData(pareaTaxonomy, parents);
     }
 
-    public final void setData(SCTPAreaTaxonomy pareaTaxonomy, ArrayList<GroupParentInfo> parents) {
+    public final void setData(SCTPAreaTaxonomy pareaTaxonomy, ArrayList<GenericParentGroupInfo<Concept, SCTPArea>> parents) {
         this.parents = parents;
         
         data = new Object[parents.size()][columnNames.length];
 
         for (int r = 0; r < parents.size(); r++) {
-            SCTPArea parea = pareaTaxonomy.getPAreaFromRootConceptId(parents.get(r).getParentPAreaRootId());
+            SCTPArea parea = parents.get(r).getParentGroup();
 
             String pareaRels = "";
 
@@ -66,7 +67,7 @@ public class ParentPAreaTableModel extends AbstractTableModel {
         return getValueAt(0, c).getClass();
     }
 
-    public ArrayList<GroupParentInfo> getParents() {
+    public ArrayList<GenericParentGroupInfo<Concept, SCTPArea>> getParents() {
         return parents;
     }
 }

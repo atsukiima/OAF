@@ -1,15 +1,20 @@
 package edu.njit.cs.saboc.blu.sno.abn.target;
 
-import edu.njit.cs.saboc.blu.core.abn.reduced.ReducedAbNGenerator;
-import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.ConceptGroupHierarchy;
+import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
+import edu.njit.cs.saboc.blu.core.abn.aggregate.AggregateAbNGenerator;
+
 import java.util.HashSet;
 
 /**
  *
  * @author Chris O
  */
-public class SCTAggregateTargetAbNGenerator extends ReducedAbNGenerator<SCTTargetGroup> {
-    protected SCTTargetGroup createReducedGroup(SCTTargetGroup targetGroup, HashSet<Integer> reducedParentIds, ConceptGroupHierarchy<SCTTargetGroup> reducedGroups) {
+public class SCTAggregateTargetAbNGenerator extends AggregateAbNGenerator<SCTTargetGroup, SCTAggregateTargetGroup> {
+    
+    protected SCTAggregateTargetGroup createReducedGroup(SCTTargetGroup targetGroup, 
+            HashSet<Integer> reducedParentIds, 
+            GroupHierarchy<SCTTargetGroup> reducedGroups) {
+        
         return new SCTAggregateTargetGroup(targetGroup, reducedParentIds, reducedGroups);
     }
 }

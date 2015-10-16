@@ -3,19 +3,18 @@ package edu.njit.cs.saboc.blu.sno.conceptbrowser.gui.panels;
 import SnomedShared.Concept;
 import SnomedShared.OutgoingLateralRelationship;
 import SnomedShared.PAreaDetailsForConcept;
-import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.overlapping.EntryPoint;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.FocusConcept;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.SnomedConceptBrowser;
 import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
-import edu.njit.cs.saboc.blu.sno.gui.dialogs.ConceptGroupDetailsDialog;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.ConceptClusterInfo;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.graph.ClusterBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.ClusterInternalGraphFrame;
@@ -126,7 +125,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                         ArrayList<Concept> hierarchies = localDS.getHierarchiesConceptBelongTo(focusConcept.getConcept());
 
                         if (!hierarchies.isEmpty()) {
-                            TribalAbstractionNetwork tan = localDS.getCompleteTAN(hierarchies.get(0));
+                            SCTTribalAbstractionNetwork tan = localDS.getCompleteTAN(hierarchies.get(0));
 
                             clusterDetailsPanel.displayDetails(tan, details);
                         }
@@ -268,9 +267,18 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
         Thread loadThread = new Thread(new Runnable() {
             private LoadStatusDialog loadStatusDialog = null;
 
+            private boolean doLoad = true;
+            
             public void run() {
                 
-                loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating the %s Subject Subtaxonomy.", root.getName()));
+                loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating the %s Subject Subtaxonomy.", root.getName()),
+                        new LoadStatusDialog.LoadingDialogClosedListener() {
+
+                            @Override
+                            public void dialogClosed() {
+                                doLoad = false;
+                            }
+                        });
 
                 ArrayList<Concept> hierarchy = dataSource.getHierarchiesConceptBelongTo(root);
 
@@ -292,10 +300,13 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
+                        
+                        if (doLoad) {
+                            mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true);
 
-                        loadStatusDialog.setVisible(false);
-                        loadStatusDialog.dispose();
+                            loadStatusDialog.setVisible(false);
+                            loadStatusDialog.dispose();
+                        }
                     }
                 });
             }
@@ -308,9 +319,17 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
         
         Thread loadThread = new Thread(new Runnable() {
             private LoadStatusDialog loadStatusDialog = null;
+            private boolean doLoad = true;
 
             public void run() {
-                loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating the %s Focus Subtaxonomy.", focusConcept.getName()));
+                loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating the %s Focus Subtaxonomy.", focusConcept.getName()),
+                        new LoadStatusDialog.LoadingDialogClosedListener() {
+
+                            @Override
+                            public void dialogClosed() {
+                                doLoad = false;
+                            }
+                        });
                 
                 ArrayList<Concept> hierarchy = dataSource.getHierarchiesConceptBelongTo(focusConcept);
 
@@ -342,10 +361,12 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true, false);
+                        if (doLoad) {
+                            mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(taxonomy, true);
 
-                        loadStatusDialog.setVisible(false);
-                        loadStatusDialog.dispose();
+                            loadStatusDialog.setVisible(false);
+                            loadStatusDialog.dispose();
+                        }
                     }
                 });
             }
@@ -357,12 +378,18 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
     private void createAndDisplaySubjectTAN(final SCTLocalDataSource dataSource, final Concept root, boolean useStatedRelationships) {
          Thread loadThread = new Thread(new Runnable() {
             private LoadStatusDialog loadStatusDialog = null;
+            private boolean doLoad = true;
 
             public void run() {
                 
-                loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating the %s Subject TAN.", root.getName()));
+                loadStatusDialog = LoadStatusDialog.display(null, String.format("Creating the %s Subject TAN.", root.getName()), 
+                        new LoadStatusDialog.LoadingDialogClosedListener() {
 
-                ArrayList<Concept> hierarchy = dataSource.getHierarchiesConceptBelongTo(root);
+                            @Override
+                            public void dialogClosed() {
+                                doLoad = false;
+                            }
+                        });
 
                 SCTConceptHierarchy subhierarchy;
                 
@@ -372,14 +399,16 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                     subhierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(root);
                 }
                 
-                TribalAbstractionNetwork tan = TANGenerator.createTANFromConceptHierarchy(root, dataSource.getSelectedVersion(), subhierarchy);
+                SCTTribalAbstractionNetwork tan = TANGenerator.createTANFromConceptHierarchy(root.getName(), subhierarchy, dataSource);
                 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        mainPanel.getDisplayFrameListener().addNewClusterGraphFrame(tan, true, true);
+                        if (doLoad) {
+                            mainPanel.getDisplayFrameListener().addNewClusterGraphFrame(tan, true, true);
 
-                        loadStatusDialog.setVisible(false);
-                        loadStatusDialog.dispose();
+                            loadStatusDialog.setVisible(false);
+                            loadStatusDialog.dispose();
+                        }
                     }
                 });
             }
@@ -550,15 +579,17 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             }
             
             private void displayGroupSummary() {
+                /*
                 ConceptGroupDetailsDialog dialog = new ConceptGroupDetailsDialog(
                         pareaTaxonomy.getPAreaFromRootConceptId(details.getPAreaRoot().getId()), 
                         pareaTaxonomy,
                         ConceptGroupDetailsDialog.DialogType.PartialArea,
                         mainPanel.getDisplayFrameListener());
+                        */
             }
 
             private void displayAN() {
-                PAreaInternalGraphFrame igf = mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(pareaTaxonomy, true, false);
+                PAreaInternalGraphFrame igf = mainPanel.getDisplayFrameListener().addNewPAreaGraphFrame(pareaTaxonomy, true);
 
                 PAreaBluGraph graph = (PAreaBluGraph) igf.getGraph();
 
@@ -573,7 +604,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
         private JLabel detailsLabel = new JLabel();
         private JPanel individualDetailsListPanel = new JPanel();
         
-        private TribalAbstractionNetwork tan;
+        private SCTTribalAbstractionNetwork tan;
 
         public ClusterDetailsPanel() {
             this.setBackground(Color.WHITE);
@@ -599,7 +630,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             detailsLabel.setText(text);
         }
 
-        public void displayDetails(TribalAbstractionNetwork tan, ArrayList<ConceptClusterInfo> details) {
+        public void displayDetails(SCTTribalAbstractionNetwork tan, ArrayList<ConceptClusterInfo> details) {
             if (details.isEmpty()) {
                 displayLabel("");
                 return;
@@ -611,10 +642,9 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
             ConceptClusterInfo firstDetail = details.get(0);
             
-            ClusterSummary cluster = tan.getClusterFromRootConceptId(firstDetail.getClusterRootId());
+            SCTCluster cluster = tan.getClusterFromRootConceptId(firstDetail.getClusterRootId());
 
             String labelText = "<html>";
-            labelText += "<b>Hierarchy:</b> " + tan.getSCTRootConcept().getName() + "<br>";
 
             labelText += "<b>Band:</b> ";
 
@@ -671,9 +701,9 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
         private class ClustersDetailsEntry extends JPanel {
 
-            private ClusterSummary cluster;
+            private SCTCluster cluster;
 
-            public ClustersDetailsEntry(ClusterSummary cluster) {
+            public ClustersDetailsEntry(SCTCluster cluster) {
                 this.cluster = cluster;
                
                 this.setBackground(new Color(250, 250, 250));
@@ -724,11 +754,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
             }
             
             private void displayGroupSummary() {
-                ConceptGroupDetailsDialog dialog = new ConceptGroupDetailsDialog(
-                        tan.getClusterFromRootConceptId(cluster.getRoot().getId()), 
-                        tan,
-                        ConceptGroupDetailsDialog.DialogType.Cluster,
-                        mainPanel.getDisplayFrameListener());
+
             }
 
             private void displayAN() {

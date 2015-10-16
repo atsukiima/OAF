@@ -6,11 +6,13 @@ import SnomedShared.PAreaDetailsForConcept;
 import SnomedShared.SearchResult;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.pareataxonomy.ConceptPAreaInfo;
-import SnomedShared.pareataxonomy.GroupParentInfo;
+import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.ConceptClusterInfo;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.middlewareproxy.MiddlewareAccessorProxy;
@@ -84,17 +86,11 @@ public class SCTRemoteDataSource implements SCTDataSource {
     }
 
     public ArrayList<Concept> getConceptsInCluster(TribalAbstractionNetwork tan, ClusterSummary cluster) {
-        return proxy.getConceptsInCluster(sctVersion, tan.getSCTRootConcept(), cluster.getRoot());
+        throw new RuntimeException("Method not yet support...");
     }
 
     public HashMap<Long, ArrayList<Concept>> getConceptsInClusterSet(TribalAbstractionNetwork tan, ArrayList<ClusterSummary> clusters) {
-        ArrayList<Long> clusterRootIds = new ArrayList<Long>();
-        
-        for(ClusterSummary cluster : clusters) {
-            clusterRootIds.add(cluster.getRoot().getId());
-        }
-        
-        return proxy.getConceptsInClusterSet(sctVersion, tan.getSCTRootConcept(), clusterRootIds);
+        throw new RuntimeException("Method not yet support...");
     }
 
     public ArrayList<SearchResult> searchExact(String term) {
@@ -123,14 +119,8 @@ public class SCTRemoteDataSource implements SCTDataSource {
         return proxy.getConceptCountInPAreaHierarchy(sctVersion, taxonomy.getSCTRootConcept(), pareaIds);
     }
 
-    public int getConceptCountInClusterHierarchy(TribalAbstractionNetwork tan, ArrayList<ClusterSummary> clusters) {
-        ArrayList<Integer> clusterIds = new ArrayList<Integer>();
-        
-        for(ClusterSummary cluster : clusters) {
-            clusterIds.add(cluster.getId());
-        }
-        
-        return proxy.getConceptCountInClusterHierarchy(sctVersion, tan.getSCTRootConcept(), clusterIds);
+    public int getConceptCountInClusterHierarchy(SCTTribalAbstractionNetwork tan, ArrayList<SCTCluster> clusters) {
+        throw new RuntimeException("Method not yet support...");
     }
 
     public ArrayList<ConceptPAreaInfo> getConceptPAreaInfo(SCTPAreaTaxonomy taxonomy, Concept c) {
@@ -141,12 +131,12 @@ public class SCTRemoteDataSource implements SCTDataSource {
         throw new RuntimeException("Method not yet support...");
     }
 
-    public ArrayList<GroupParentInfo> getPAreaParentInfo(SCTPAreaTaxonomy taxonomy, SCTPArea parea) {
-        return proxy.getPAreaParentInfo(sctVersion, taxonomy.getSCTRootConcept(), parea);
+    public ArrayList<GenericParentGroupInfo<Concept, SCTPArea>> getPAreaParentInfo(SCTPAreaTaxonomy taxonomy, SCTPArea parea) {
+        throw new RuntimeException("Method not yet support...");
     }
     
-    public ArrayList<GroupParentInfo> getClusterParentInfo(TribalAbstractionNetwork tan, ClusterSummary cluster) {
-        return proxy.getClusterParentInfo(sctVersion, tan.getSCTRootConcept(), cluster);
+    public ArrayList<GenericParentGroupInfo<Concept, SCTCluster>> getClusterParentInfo(TribalAbstractionNetwork tan, SCTCluster cluster) {
+         throw new RuntimeException("Method not yet support...");
     }
     
     public SCTConceptHierarchy getPAreaConceptHierarchy(SCTPAreaTaxonomy taxonomy, SCTPArea parea) {
@@ -157,10 +147,7 @@ public class SCTRemoteDataSource implements SCTDataSource {
     }
 
     public SCTConceptHierarchy getClusterConceptHierarchy(TribalAbstractionNetwork tan, ClusterSummary cluster) {
-        HashMap<Concept, ArrayList<Concept>> conceptHierarchy =
-                proxy.getClusterConceptHierarchy(sctVersion, tan.getSCTRootConcept().getId(), cluster.getRoot().getId());
-        
-        return new SCTConceptHierarchy(cluster.getRoot(), UtilityMethods.convertALMapToHSMap(conceptHierarchy));
+        throw new RuntimeException("Method not yet support...");
     }
 
     public SCTMultiRootedConceptHierarchy getRegionConceptHierarchy(SCTPAreaTaxonomy taxonomy, 
@@ -192,8 +179,8 @@ public class SCTRemoteDataSource implements SCTDataSource {
         return proxy.searchAnywhereWithinHierarchy(sctVersion, taxonomy.getSCTRootConcept().getId(), pareaIds, term);
     }
     
-    public ArrayList<SearchResult> searchForConceptsWithinTAN(TribalAbstractionNetwork tan, 
-            ArrayList<ClusterSummary> clusters, String term) {
+    public ArrayList<SearchResult> searchForConceptsWithinTAN(SCTTribalAbstractionNetwork tan, 
+            ArrayList<SCTCluster> clusters, String term) {
         
         throw new RuntimeException("Method not yet support...");
     }

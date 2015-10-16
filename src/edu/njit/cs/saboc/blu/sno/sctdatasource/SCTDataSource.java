@@ -6,11 +6,13 @@ import SnomedShared.PAreaDetailsForConcept;
 import SnomedShared.SearchResult;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.pareataxonomy.ConceptPAreaInfo;
-import SnomedShared.pareataxonomy.GroupParentInfo;
+import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.ConceptClusterInfo;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import java.util.ArrayList;
@@ -155,7 +157,7 @@ public interface SCTDataSource {
      * @param clusters
      * @return 
      */
-    public int getConceptCountInClusterHierarchy(TribalAbstractionNetwork tan, ArrayList<ClusterSummary> clusters);
+    public int getConceptCountInClusterHierarchy(SCTTribalAbstractionNetwork tan, ArrayList<SCTCluster> clusters);
 
     /**
      * Returns the list of partial-areas this concept belongs to
@@ -180,7 +182,7 @@ public interface SCTDataSource {
      * @param parea
      * @return 
      */
-    public ArrayList<GroupParentInfo> getPAreaParentInfo(SCTPAreaTaxonomy taxonomy, SCTPArea parea);
+    public ArrayList<GenericParentGroupInfo<Concept, SCTPArea>> getPAreaParentInfo(SCTPAreaTaxonomy taxonomy, SCTPArea parea);
     
     /**
      * Returns information about the parent concepts of the given cluster's root, e.g., what clusters they belong to
@@ -188,7 +190,7 @@ public interface SCTDataSource {
      * @param cluster
      * @return 
      */
-    public ArrayList<GroupParentInfo> getClusterParentInfo(TribalAbstractionNetwork tan, ClusterSummary cluster);
+    public ArrayList<GenericParentGroupInfo<Concept, SCTCluster>> getClusterParentInfo(TribalAbstractionNetwork tan, SCTCluster cluster);
     
     /**
      * Returns the hierarchy of concepts summarized bv the given partial-area in the given taxonomy
@@ -233,8 +235,8 @@ public interface SCTDataSource {
      * @param term
      * @return 
      */
-    public ArrayList<SearchResult> searchForConceptsWithinTAN(TribalAbstractionNetwork tan, 
-            ArrayList<ClusterSummary> clusters, String term);
+    public ArrayList<SearchResult> searchForConceptsWithinTAN(SCTTribalAbstractionNetwork tan, 
+            ArrayList<SCTCluster> clusters, String term);
     
     /**
      * Returns if the given SCT Data Source supports accessing multiple versions of SCT

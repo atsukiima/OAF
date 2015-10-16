@@ -15,15 +15,11 @@ public class SCTGraphLayoutFactory {
     }
 
     public static NoRegionsLayout createNoRegionsPAreaLayout(PAreaBluGraph graph) {
-        return new NoRegionsLayout(graph, graph.getPAreaTaxonomy());
+        return new NoRegionsLayout(graph, graph.getPAreaTaxonomy(), graph.getConfiguration());
     }
 
     public static RegionsLayout createRegionsPAreaLayout(PAreaBluGraph graph) {
         return new RegionsLayout(graph, graph.getPAreaTaxonomy());
-    }
-
-    public static ClusterPartitionLayout createClusterPartitionLayout(ClusterBluGraph graph) {
-        return new ClusterPartitionLayout(graph);
     }
 
     public static ClusterNoPartitionLayout createClusterNoPartitionLayout(ClusterBluGraph graph) {

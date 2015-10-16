@@ -6,14 +6,12 @@ import SnomedShared.PAreaDetailsForConcept;
 import SnomedShared.SearchResult;
 import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.pareataxonomy.ConceptPAreaInfo;
-import SnomedShared.pareataxonomy.GroupParentInfo;
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.GenericParentPAreaInfo;
-import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.visitor.result.AncestorDepthResult;
+import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.ConceptClusterInfo;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.LocalCluster;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
@@ -22,6 +20,8 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.conceptdata.HierarchyMetrics;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalLateralRelationship;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.SearchResultComparator;
 import java.util.ArrayDeque;
@@ -67,7 +67,7 @@ public class SCTLocalDataSource implements SCTDataSource {
     
     private HashMap<Concept, SCTPAreaTaxonomy> hierarchyTaxonomies = new HashMap<Concept, SCTPAreaTaxonomy>();
     
-    private HashMap<Concept, TribalAbstractionNetwork> hierarchyTANs = new HashMap<Concept, TribalAbstractionNetwork>();
+    private HashMap<Concept, SCTTribalAbstractionNetwork> hierarchyTANs = new HashMap<Concept, SCTTribalAbstractionNetwork>();
 
     public SCTLocalDataSource(Map<Long, LocalSnomedConcept> concepts,
             SCTConceptHierarchy conceptHierarchy, boolean processDescriptions, String version) {
@@ -224,9 +224,21 @@ public class SCTLocalDataSource implements SCTDataSource {
                 ArrayList<Concept> pareaConcepts = this.getConceptsInPArea(taxonomy, parea);
                 
                 if(pareaConcepts.contains(c)) {
+                    ArrayList<OutgoingLateralRelationship> rels = this.getOutgoingLateralRelationships(parea.getRoot());
+                    
+                    ArrayList<OutgoingLateralRelationship> definingRels = new ArrayList<>();
+                    
+                    rels.forEach((OutgoingLateralRelationship rel) -> {
+                        LocalLateralRelationship localRel = (LocalLateralRelationship)rel;
+                        
+                        if(localRel.getCharacteristicType() == 0) {
+                            definingRels.add(rel);
+                        }
+                    });
+                    
                     results.add(new PAreaDetailsForConcept(hierarchies.get(0), 
                             parea.getRoot(), 
-                            this.getOutgoingLateralRelationships(parea.getRoot()), 
+                            definingRels, 
                             parea.getConceptCount()));
                 }
             }
@@ -280,8 +292,8 @@ public class SCTLocalDataSource implements SCTDataSource {
     }
 
     public ArrayList<Concept> getConceptsInCluster(TribalAbstractionNetwork tan, ClusterSummary cluster) {
-        if (cluster instanceof LocalCluster) {
-            LocalCluster localCluster = (LocalCluster) cluster;
+        if (cluster instanceof SCTCluster) {
+            SCTCluster localCluster = (SCTCluster) cluster;
 
             ArrayList<Concept> clusterConcepts = new ArrayList<Concept>(localCluster.getConcepts());
 
@@ -440,18 +452,17 @@ public class SCTLocalDataSource implements SCTDataSource {
         HashSet<Concept> concepts = new HashSet<Concept>();
 
         for (SCTPArea parea : pareas) {
-            concepts.addAll(parea.getHierarchy().getNodesInHierarchy());
+            concepts.addAll(parea.getConceptsInPArea());
         }
 
         return concepts.size();
     }
 
-    public int getConceptCountInClusterHierarchy(TribalAbstractionNetwork tan, ArrayList<ClusterSummary> clusters) {
+    public int getConceptCountInClusterHierarchy(SCTTribalAbstractionNetwork tan, ArrayList<SCTCluster> clusters) {
         HashSet<Concept> concepts = new HashSet<Concept>();
 
-        for (ClusterSummary cluster : clusters) {
-            LocalCluster localCluster = (LocalCluster) cluster;
-            concepts.addAll(localCluster.getConcepts());
+        for (SCTCluster cluster : clusters) {
+            concepts.addAll(cluster.getConcepts());
         }
 
         return concepts.size();
@@ -478,56 +489,49 @@ public class SCTLocalDataSource implements SCTDataSource {
         Collection<ClusterSummary> clusters = tan.getClusters().values();
         
         for(ClusterSummary cluster : clusters) {
-            LocalCluster localCluster = (LocalCluster)cluster;
+            SCTCluster localCluster = (SCTCluster)cluster;
             
             if(localCluster.getConcepts().contains(c)) {
-                clustersWithConcept.add(new ConceptClusterInfo(tan.getSCTRootConcept().getId(), localCluster.getRoot().getId()));
+                clustersWithConcept.add(new ConceptClusterInfo(localCluster.getRoot().getId()));
             }
         }
         
         return clustersWithConcept;
     }
 
-    public ArrayList<GroupParentInfo> getPAreaParentInfo(SCTPAreaTaxonomy taxonomy, SCTPArea parea) {
-
-        HashSet<GenericParentPAreaInfo<Concept, SCTPArea>> parentInfo = parea.getParentPAreaInfo();
-                
-        ArrayList<GroupParentInfo> result = new ArrayList<GroupParentInfo>();
+    public ArrayList<GenericParentGroupInfo<Concept, SCTPArea>> getPAreaParentInfo(SCTPAreaTaxonomy taxonomy, SCTPArea parea) {
         
-        for(GenericParentPAreaInfo<Concept, SCTPArea> parent : parentInfo) {
-            result.add(new GroupParentInfo(parent.getParentConcept(), parent.getParentPArea().getRoot().getId()));
-        }
+        ArrayList<GenericParentGroupInfo<Concept, SCTPArea>> parentGroupInfo = new ArrayList(parea.getParentPAreaInfo());
 
-        Collections.sort(result, new Comparator<GroupParentInfo>() {
-            public int compare(GroupParentInfo a, GroupParentInfo b) {
-                if (a.getParentPAreaRootId() == b.getParentPAreaRootId()) {
+        Collections.sort(parentGroupInfo, new Comparator<GenericParentGroupInfo<Concept, SCTPArea>>() {
+            public int compare(GenericParentGroupInfo<Concept, SCTPArea> a, GenericParentGroupInfo<Concept, SCTPArea> b) {
+                if (a.getParentGroup().getRoot().getId() == b.getParentGroup().getRoot().getId()) {
                     return a.getParentConcept().getName().compareToIgnoreCase(b.getParentConcept().getName());
                 } else {
-                    Long aId = a.getParentPAreaRootId();
-                    Long bId = b.getParentPAreaRootId();
+                    Long aId = a.getParentGroup().getRoot().getId();
+                    Long bId = b.getParentGroup().getRoot().getId();
 
                     return aId.compareTo(bId);
                 }
             }
         });
 
-        return result;
+        return parentGroupInfo;
     }
 
+    public ArrayList<GenericParentGroupInfo<Concept, SCTCluster>> getClusterParentInfo(TribalAbstractionNetwork tan, SCTCluster cluster) {
+        if (cluster instanceof SCTCluster) {
+            SCTCluster localCluster = (SCTCluster) cluster;
 
-    public ArrayList<GroupParentInfo> getClusterParentInfo(TribalAbstractionNetwork tan, ClusterSummary cluster) {
-        if (cluster instanceof LocalCluster) {
-            LocalCluster localCluster = (LocalCluster) cluster;
+            ArrayList<GenericParentGroupInfo<Concept, SCTCluster>> parentInfo = localCluster.getParentGroupInformation();
 
-            ArrayList<GroupParentInfo> parentInfo = localCluster.getParentGroupInformation();
-
-            Collections.sort(parentInfo, new Comparator<GroupParentInfo>() {
-                public int compare(GroupParentInfo a, GroupParentInfo b) {
-                    if (a.getParentPAreaRootId() == b.getParentPAreaRootId()) {
+            Collections.sort(parentInfo, new Comparator<GenericParentGroupInfo<Concept, SCTCluster>>() {
+                public int compare(GenericParentGroupInfo<Concept, SCTCluster> a, GenericParentGroupInfo<Concept, SCTCluster> b) {
+                    if (a.getParentGroup().getRoot().getId() == b.getParentGroup().getRoot().getId()) {
                         return a.getParentConcept().getName().compareToIgnoreCase(b.getParentConcept().getName());
                     } else {
-                        Long aId = a.getParentPAreaRootId();
-                        Long bId = b.getParentPAreaRootId();
+                        Long aId = a.getParentGroup().getRoot().getId();
+                        Long bId = b.getParentGroup().getRoot().getId();
 
                         return aId.compareTo(bId);
                     }
@@ -545,8 +549,8 @@ public class SCTLocalDataSource implements SCTDataSource {
     }
 
     public SCTConceptHierarchy getClusterConceptHierarchy(TribalAbstractionNetwork tan, ClusterSummary cluster) {
-        if (cluster instanceof LocalCluster) {
-            LocalCluster localCluster = (LocalCluster) cluster;
+        if (cluster instanceof SCTCluster) {
+            SCTCluster localCluster = (SCTCluster) cluster;
 
             return localCluster.getConceptHierarchy();
         } else {
@@ -610,8 +614,8 @@ public class SCTLocalDataSource implements SCTDataSource {
         return results;
     }
     
-    public ArrayList<SearchResult> searchForConceptsWithinTAN(TribalAbstractionNetwork tan, 
-            ArrayList<ClusterSummary> clusters, String term) {
+    public ArrayList<SearchResult> searchForConceptsWithinTAN(SCTTribalAbstractionNetwork tan, 
+            ArrayList<SCTCluster> clusters, String term) {
         
         term = term.toLowerCase();
 
@@ -621,9 +625,8 @@ public class SCTLocalDataSource implements SCTDataSource {
         
         HashSet<Concept> uniqueConcepts = new HashSet<Concept>();
         
-        for(ClusterSummary cluster : clusters) {
-            LocalCluster localCluster = (LocalCluster)cluster;
-            uniqueConcepts.addAll(localCluster.getConcepts());
+        for(SCTCluster cluster : clusters) {
+            uniqueConcepts.addAll(cluster.getConcepts());
         }
         
         ArrayList<SearchResult> results = searchWithinUniqueConceptList(uniqueConcepts, term);
@@ -938,13 +941,13 @@ public class SCTLocalDataSource implements SCTDataSource {
         return taxonomy;
     }
     
-    public TribalAbstractionNetwork getCompleteTAN(Concept root) {
-        TribalAbstractionNetwork tan;
+    public SCTTribalAbstractionNetwork getCompleteTAN(Concept root) {
+        SCTTribalAbstractionNetwork tan;
 
         if (!hierarchyTANs.containsKey(root)) {
             SCTConceptHierarchy hierarchy = (SCTConceptHierarchy)this.conceptHierarchy.getSubhierarchyRootedAt(root);
 
-            hierarchyTANs.put(root, TANGenerator.createTANFromConceptHierarchy(root, version, hierarchy));
+            hierarchyTANs.put(root, TANGenerator.createTANFromConceptHierarchy(version, hierarchy, this));
         }
 
         tan = hierarchyTANs.get(root);
