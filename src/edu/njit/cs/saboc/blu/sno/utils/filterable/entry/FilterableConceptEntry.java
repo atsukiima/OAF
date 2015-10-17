@@ -87,4 +87,9 @@ public class FilterableConceptEntry extends Filterable<Concept> implements Navig
             return getInitialText();
         }
     }
+    
+    @Override
+    public String getClipboardText() {
+        return String.format("%d\t%s\t%s", concept.getId(), concept.getName(), concept.isPrimitive());
+    }
 }

@@ -9,6 +9,7 @@ import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
  * @author Chris
  */
 public class FilterableLateralRelationshipEntry extends Filterable<OutgoingLateralRelationship> implements NavigableEntry {
+
     private OutgoingLateralRelationship relationship;
 
     public FilterableLateralRelationshipEntry(OutgoingLateralRelationship olr) {
@@ -45,6 +46,14 @@ public class FilterableLateralRelationshipEntry extends Filterable<OutgoingLater
         return Integer.toString(relationship.getRelationshipGroup()).contains(filter) ||
                 relationship.getRelationship().getName().contains(filter) ||
                 relationship.getTarget().getName().toLowerCase().contains(filter);
+    }
+    
+    @Override
+    public String getClipboardText() {
+        return String.format("%d\t%s\t%s\t%d", relationship.getRelationshipGroup(), 
+                relationship.getRelationship().getName(), 
+                relationship.getTarget().getName(),
+                relationship.getTarget().getId());
     }
 
 }

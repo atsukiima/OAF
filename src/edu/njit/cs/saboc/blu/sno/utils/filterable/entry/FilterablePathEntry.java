@@ -56,4 +56,17 @@ public class FilterablePathEntry extends Filterable<ArrayList<Concept>> {
     public ArrayList<Concept> getPath() {
         return path;
     }
+    
+    @Override
+    public String getClipboardText() {
+        String pathStr = String.format("%s (%d)", path.get(0).getName(), path.get(0).getId());
+        
+        for(int c = 1; c < path.size(); c++) {
+            pathStr += (" => " + String.format("%s (%d)", path.get(c).getName(), path.get(c).getId()));
+        }
+
+        pathStr += " (Path Length: " + path.size() +")";
+        
+        return pathStr;
+    }
 }

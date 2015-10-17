@@ -9,6 +9,7 @@ import edu.njit.cs.saboc.blu.sno.conceptbrowser.Options;
  * @author harsh
  */
 public class GenericFilterableSearchEntry extends Filterable<SearchResult> implements NavigableEntry {
+
     private SearchResult entry;
     private Options options;
 
@@ -45,5 +46,10 @@ public class GenericFilterableSearchEntry extends Filterable<SearchResult> imple
         return entry.getTerm().toLowerCase().contains(filter) ||
                 entry.getFullySpecifiedName().toLowerCase().contains(filter) ||
                 Long.toString(entry.getConceptId()).contains(filter);
+    }
+    
+    @Override
+    public String getClipboardText() {
+        return String.format("%s\t%s\t%s", entry.getTerm(), entry.getConceptId(), entry.getFullySpecifiedName());
     }
 }

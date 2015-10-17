@@ -13,6 +13,7 @@ import java.util.Collections;
  * @author Chris
  */
 public class FilterableStatedAncestorEntry extends Filterable<LocalSCTConceptStated> implements NavigableEntry {
+
     private LocalSCTConceptStated concept;
 
     private boolean showConceptIds = true;
@@ -131,5 +132,10 @@ public class FilterableStatedAncestorEntry extends Filterable<LocalSCTConceptSta
         return concept.getName().toLowerCase().contains(filter) ||
                 Long.toString(concept.getId()).contains(filter) ||
                 statedRelsStr.toLowerCase().contains(filter);
+    }
+    
+    @Override
+    public String getClipboardText() {
+        return String.format("%s\t%d\t%s\t%s", concept.getName(), concept.getId(), concept.isPrimitive(), getStatedRelStr(statedRelsStr));
     }
 }
