@@ -256,7 +256,7 @@ public class ImportLocalDataRF2 {
 
                 long id = Long.parseLong(parts[0]);
                 
-                boolean active = (parts[2].equals("0"));
+                boolean active = (parts[2].equals("1"));
                 
                 boolean primative = (parts[4].equals("900000000000074008"));
 

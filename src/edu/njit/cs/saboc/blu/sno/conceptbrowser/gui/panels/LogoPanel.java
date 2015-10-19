@@ -39,7 +39,7 @@ public class LogoPanel extends BaseNavPanel implements ActionListener {
 
         JPanel centerPanel = new JPanel(new BorderLayout(0, 5));
 
-        ArrayList<String> versionNames = MiddlewareAccessorProxy.getProxy().getSupportedSnomedVersions();
+        ArrayList<String> versionNames = dataSource.getSupportedVersions();
 
         String [] versionList = new String[versionNames.size()];
 
