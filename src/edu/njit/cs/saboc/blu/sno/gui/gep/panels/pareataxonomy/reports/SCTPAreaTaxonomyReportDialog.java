@@ -13,7 +13,9 @@ import javax.swing.JTabbedPane;
  */
 public class SCTPAreaTaxonomyReportDialog extends JDialog {
 
-    private final SCTPAreaTaxonomyOverlappingConceptReportPanel overlappingClassPanel;
+    private final SCTPAreaTaxonomyOverlappingConceptReportPanel overlappingConceptPanel;
+    
+    private final SCTPAreaTaxonomyImportConceptReport importedConceptPanel;
     
     private final JTabbedPane tabbedPane;
     
@@ -23,11 +25,14 @@ public class SCTPAreaTaxonomyReportDialog extends JDialog {
         
         this.config = config;
 
-        overlappingClassPanel = new SCTPAreaTaxonomyOverlappingConceptReportPanel(config);
+        overlappingConceptPanel = new SCTPAreaTaxonomyOverlappingConceptReportPanel(config);
+        
+        importedConceptPanel = new SCTPAreaTaxonomyImportConceptReport(config);
         
         tabbedPane = new JTabbedPane();
 ;
-        tabbedPane.addTab("Overlapping Concepts", overlappingClassPanel);
+        tabbedPane.addTab("Overlapping Concepts", overlappingConceptPanel);
+        tabbedPane.addTab("Imported Concepts Report", importedConceptPanel);
         
         this.add(tabbedPane);
         
@@ -51,7 +56,7 @@ public class SCTPAreaTaxonomyReportDialog extends JDialog {
         }
         
         if(hasOverlapping) {
-            overlappingClassPanel.displayAbNReport(taxonomy);
+            overlappingConceptPanel.displayAbNReport(taxonomy);
         } else {
             tabbedPane.setEnabledAt(0, false);
         }
