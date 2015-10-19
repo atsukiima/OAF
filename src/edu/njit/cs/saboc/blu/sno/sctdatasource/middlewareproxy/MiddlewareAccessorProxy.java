@@ -425,12 +425,10 @@ public class MiddlewareAccessorProxy {
         {
             JOptionPane.showMessageDialog(null,
                     "You have lost connection to the SNOMED service.\nPlease check " +
-                    "your internet connection and restart the Snomed Tool.\nIf the problem " +
+                    "your internet connection and restart the Tool.\nIf the problem " +
                     "persists please contact cro3@njit.edu.",
-                    "ERROR: Connection Lost",
+                    "ERROR: Internet Connection Lost",
                     JOptionPane.ERROR_MESSAGE);
-
-            System.exit(-1);
         }
         catch(Exception e) {
             return null;

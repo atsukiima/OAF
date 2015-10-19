@@ -11,7 +11,6 @@ import edu.njit.cs.saboc.blu.sno.conceptbrowser.utils.filterablelist.SCTNavigabl
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
 import edu.njit.cs.saboc.blu.sno.utils.filterable.entry.FilterableConceptEntry;
 import edu.njit.cs.saboc.blu.sno.utils.filterable.entry.FilterableLateralRelationshipEntry;
-import edu.njit.cs.saboc.blu.sno.utils.filterable.list.SCTFilterableList;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -63,12 +62,12 @@ public class RelationshipPanel extends BaseNavPanel {
         conRelPanel = new BaseNavPanel(mainPanel, dataSource) {
             @Override
             public void dataPending() {
-                tabbedPane.setTitleAt(CON_REL_IDX, "INFERRED ATTRIBUTE RELATIONSHIPS");
+                tabbedPane.setTitleAt(CON_REL_IDX, "Inferred Relationships");
                 conRelList.showPleaseWait();
             }
 
             public void dataEmpty() {
-                tabbedPane.setTitleAt(CON_REL_IDX, "INFERRED ATTRIBUTE RELATIONSHIPS");
+                tabbedPane.setTitleAt(CON_REL_IDX, "Inferred Relationships");
                 conRelList.showDataEmpty();
             }
 
@@ -86,7 +85,7 @@ public class RelationshipPanel extends BaseNavPanel {
 
                 conRelList.setContents(entries);
                 int relCount = relationships.size();
-                tabbedPane.setTitleAt(CON_REL_IDX, "INFERRED ATTRIBUTE RELATIONSHIPS (" + relCount + ")");
+                tabbedPane.setTitleAt(CON_REL_IDX, "Inferred Relationships (" + relCount + ")");
             }
         };
         
@@ -96,12 +95,12 @@ public class RelationshipPanel extends BaseNavPanel {
         statedConRelPanel = new BaseNavPanel(mainPanel, dataSource) {
             @Override
             public void dataPending() {
-                tabbedPane.setTitleAt(STATED_CON_REL_IDX, "STATED ATTRIBUTE RELATIONSHIPS");
+                tabbedPane.setTitleAt(STATED_CON_REL_IDX, "Stated Relationships");
                 statedConRelList.showPleaseWait();
             }
 
             public void dataEmpty() {
-                tabbedPane.setTitleAt(STATED_CON_REL_IDX, "STATED ATTRIBUTE RELATIONSHIPS");
+                tabbedPane.setTitleAt(STATED_CON_REL_IDX, "Stated Relationships");
                 statedConRelList.showDataEmpty();
             }
 
@@ -120,7 +119,7 @@ public class RelationshipPanel extends BaseNavPanel {
                 statedConRelList.setContents(entries);
                 
                 int relCount = relationships.size();
-                tabbedPane.setTitleAt(STATED_CON_REL_IDX, "STATED ATTRIBUTE RELATIONSHIPS (" + relCount + ")");
+                tabbedPane.setTitleAt(STATED_CON_REL_IDX, "Stated Relationships (" + relCount + ")");
             }
         };
         
@@ -131,12 +130,12 @@ public class RelationshipPanel extends BaseNavPanel {
         siblingPanel = new BaseNavPanel(mainPanel, dataSource) {
             @Override
             public void dataPending() {
-                tabbedPane.setTitleAt(SIBLING_IDX, "INFERRED SIBLINGS");
+                tabbedPane.setTitleAt(SIBLING_IDX, "Inferred Siblings");
                 siblingList.showPleaseWait();
             }
 
             public void dataEmpty() {
-                tabbedPane.setTitleAt(SIBLING_IDX, "INFERRED SIBLINGS");
+                tabbedPane.setTitleAt(SIBLING_IDX, "Inferred Siblings");
                 siblingList.showDataEmpty();
             }
 
@@ -147,7 +146,7 @@ public class RelationshipPanel extends BaseNavPanel {
                 field = FocusConcept.Fields.SIBLINGS;
                 
                 int count = ((ArrayList<String>)focusConcept.getConceptList(field)).size();
-                tabbedPane.setTitleAt(SIBLING_IDX, "INFERRED SIBLINGS (" + count + ")");
+                tabbedPane.setTitleAt(SIBLING_IDX, "Inferred Siblings (" + count + ")");
 
                 ArrayList<Concept> siblings = (ArrayList<Concept>)focusConcept.getConceptList(field);
                 ArrayList<Filterable> conceptEntries = new ArrayList<Filterable>();
@@ -166,12 +165,12 @@ public class RelationshipPanel extends BaseNavPanel {
         statedSiblingsPanel = new BaseNavPanel(mainPanel, dataSource) {
             @Override
             public void dataPending() {
-                tabbedPane.setTitleAt(STATED_SIBLING_IDX, "STATED SIBLINGS");
+                tabbedPane.setTitleAt(STATED_SIBLING_IDX, "Stated Siblings");
                 statedSiblingsList.showPleaseWait();
             }
 
             public void dataEmpty() {
-                tabbedPane.setTitleAt(STATED_SIBLING_IDX, "STATED SIBLINGS");
+                tabbedPane.setTitleAt(STATED_SIBLING_IDX, "Stated Siblings");
                 statedSiblingsList.showDataEmpty();
             }
 
@@ -179,7 +178,7 @@ public class RelationshipPanel extends BaseNavPanel {
             public void dataReady() {
                 ArrayList<Concept> siblings = (ArrayList<Concept>)focusConcept.getConceptList(FocusConcept.Fields.STATEDSIBLINGS);
                 
-                 tabbedPane.setTitleAt(STATED_SIBLING_IDX, "STATED SIBLINGS (" + siblings.size() + ")");
+                 tabbedPane.setTitleAt(STATED_SIBLING_IDX, "Stated Siblings (" + siblings.size() + ")");
                 
                 ArrayList<Filterable> conceptEntries = new ArrayList<Filterable>();
 
@@ -243,17 +242,17 @@ public class RelationshipPanel extends BaseNavPanel {
             }
         });
 
-        tabbedPane.addTab("INFERRED ATTRIBUTE RELATIONSHIPS", conRelPanel);
-        tabbedPane.addTab("INFERRED SIBLINGS", siblingPanel);
+        tabbedPane.addTab("Inferred Relationships", conRelPanel);
+        tabbedPane.addTab("Inferred Siblings", siblingPanel);
         
         focusConcept.addDisplayPanel(FocusConcept.Fields.CONCEPTREL, conRelPanel);
         focusConcept.addDisplayPanel(FocusConcept.Fields.SIBLINGS, siblingPanel);
         
         if(dataSource.supportsStatedRelationships()) {
-            tabbedPane.addTab("STATED ATTRIBUTE RELATIONSHIPS", statedConRelPanel);
+            tabbedPane.addTab("Stated Relationships", statedConRelPanel);
             focusConcept.addDisplayPanel(FocusConcept.Fields.STATEDCONCEPTRELS, statedConRelPanel);
             
-            tabbedPane.addTab("STATED SIBLINGS", statedSiblingsList);
+            tabbedPane.addTab("Stated Siblings", statedSiblingsList);
             focusConcept.addDisplayPanel(FocusConcept.Fields.STATEDSIBLINGS, statedSiblingsPanel);
         }
 

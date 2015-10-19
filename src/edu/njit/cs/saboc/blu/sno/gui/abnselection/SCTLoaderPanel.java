@@ -144,6 +144,7 @@ public class SCTLoaderPanel extends JPanel {
         
         versionSelectPanel.add(localReleasePanel, "Local");
         
+        /*
         if(MiddlewareAccessorProxy.getProxy().getSupportedSnomedVersions() == null) {
             remoteSourceBtn.setEnabled(false);
             
@@ -156,6 +157,7 @@ public class SCTLoaderPanel extends JPanel {
             
             versionSelectPanel.add(remoteReleasePanel, "Remote");
         }
+        */
         
         JPanel dataSelectionPanel = new JPanel();
         dataSelectionPanel.setLayout(new BoxLayout(dataSelectionPanel, BoxLayout.X_AXIS));

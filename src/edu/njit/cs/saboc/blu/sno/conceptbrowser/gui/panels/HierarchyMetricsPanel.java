@@ -143,16 +143,17 @@ public class HierarchyMetricsPanel extends BaseNavPanel {
         
         inferredTabbedPane.addTab("Paths", createAllPathsPanel(HierarchyType.Inferred, inferredTabbedPane));
         
+        tabbedPane.add("Inferred Hierarchy", inferredTabbedPane);
+        
         if(dataSource.supportsStatedRelationships()) {
             statedTabbedPane.addTab("Metrics", createMetricsPanel(HierarchyType.Stated));
             
             statedTabbedPane.addTab("Ancestors", createAncestorsPanel(HierarchyType.Stated, statedTabbedPane));
             
             statedTabbedPane.addTab("Descendants", createDescendantsPanel(HierarchyType.Stated, statedTabbedPane));
+            
+            tabbedPane.add("Stated Hierarchy", statedTabbedPane);
         }
-        
-        tabbedPane.add("Inferred Hierarchy", inferredTabbedPane);
-        tabbedPane.add("Stated Hierarchy", statedTabbedPane);
 
         this.add(tabbedPane, BorderLayout.CENTER);
     }

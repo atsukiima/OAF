@@ -33,7 +33,7 @@ public class SynonymPanel extends BaseNavPanel {
         list = new SCTFilterableList(mainPanel.getFocusConcept(), mainPanel.getOptions(), false, false);
 
         focusConcept.addDisplayPanel(FocusConcept.Fields.SYNONYMS, this);
-        setBorder(BaseNavPanel.createConceptBorder("SYNONYMS"));
+        setBorder(BaseNavPanel.createConceptBorder("Descriptions"));
         
         setBackground(mainPanel.getNeighborhoodBGColor());
         setLayout(new BorderLayout());
@@ -53,6 +53,7 @@ public class SynonymPanel extends BaseNavPanel {
 
         FlowLayout buttonLayout = new FlowLayout(FlowLayout.TRAILING);
         buttonLayout.setHgap(0);
+        
         JPanel northPanel = new JPanel(buttonLayout);
         northPanel.setBackground(mainPanel.getNeighborhoodBGColor());
         northPanel.add(filterButton);
@@ -63,12 +64,12 @@ public class SynonymPanel extends BaseNavPanel {
 
     @Override
     public void dataPending() {
-        setBorder(BaseNavPanel.createConceptBorder("SYNONYMS"));
+        setBorder(BaseNavPanel.createConceptBorder("Descriptions"));
         list.showPleaseWait();
     }
 
     public void dataEmpty() {
-        setBorder(BaseNavPanel.createConceptBorder("SYNONYMS"));
+        setBorder(BaseNavPanel.createConceptBorder("Descriptions"));
         list.showDataEmpty();
     }
 
@@ -84,7 +85,7 @@ public class SynonymPanel extends BaseNavPanel {
 
         list.setContents(synonymEntries);
         
-        setBorder(BaseNavPanel.createConceptBorder("SYNONYMS  (" +
+        setBorder(BaseNavPanel.createConceptBorder("Descriptions (" +
                 synonyms.size() +")"));
     }
 }

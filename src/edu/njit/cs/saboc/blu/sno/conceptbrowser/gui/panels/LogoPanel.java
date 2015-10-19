@@ -4,7 +4,6 @@ import edu.njit.cs.saboc.blu.core.gui.iconmanager.IconManager;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.SnomedConceptBrowser;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.gui.dialogs.PrintSelectDialog;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.middlewareproxy.MiddlewareAccessorProxy;
 import edu.njit.cs.saboc.blu.sno.utils.UtilityMethods;
 import java.awt.BorderLayout;
 import java.awt.Color;

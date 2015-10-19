@@ -66,12 +66,15 @@ public class BaseNavPanel extends JPanel {
         return (new TitledBorder(new LineBorder(Color.black, 1), title) {
             public Insets getBorderInsets(Component c, Insets insets) {
                 super.getBorderInsets(c, insets);
-                insets.top -= 8;
-                insets.left += 4;
-                insets.right += 4;
+                
+                insets.top += 2;
+                insets.left += 2;
+                insets.right += 2;
+                
                 if(insets.top < 0) {
                     insets.top = 0;
                 }
+                
                 return insets;
             }
         });

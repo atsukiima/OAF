@@ -573,7 +573,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                 });
 
                 this.add(new JLabel(labelText));
-                this.add(btnSummary);
+                //this.add(btnSummary);
                 this.add(Box.createHorizontalStrut(2));
                 this.add(btnView);
             }

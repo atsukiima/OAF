@@ -64,14 +64,14 @@ public class ParentChildPanel extends BaseNavPanel implements ActionListener {
         if(this.panelType == PanelType.PARENT) {
             inferredField = FocusConcept.Fields.PARENTS;
             statedField = FocusConcept.Fields.STATEDPARENTS;
-            inferredTabName = "INFERRED PARENTS";
-            statedTabName = "STATED PARENTS";
+            inferredTabName = "Inferred Parents";
+            statedTabName = "Stated Parents";
         }
         else {
             inferredField = FocusConcept.Fields.CHILDREN;
             statedField = FocusConcept.Fields.STATEDCHILDREN;
-            inferredTabName = "INFERRED CHILDREN";
-            statedTabName = "STATED CHILDREN";
+            inferredTabName = "Inferred Children";
+            statedTabName = "Stated Children";
         }
         
         this.inferredPanel = new BaseNavPanel(mainPanel, dataSource) {
