@@ -155,7 +155,14 @@ public class SCTPAreaTaxonomyTextConfiguration extends BLUGenericPAreaTaxonomyTe
 
         int pareaCount = taxonomy.getPAreaCount();
         int areaCount = taxonomy.getAreaCount();
-        int conceptCount = taxonomy.getConceptHierarchy().getConceptsInHierarchy().size();
+        
+        HashSet<Concept> concepts = new HashSet<>();
+        
+        taxonomy.getGroupHierarchy().getNodesInHierarchy().forEach( (SCTPArea parea) -> {
+            concepts.addAll(parea.getConceptsInPArea());
+        });
+        
+        int conceptCount = concepts.size();
 
         String result = String.format("<html>The <b>%s</b> partial-area taxonomy summarizes a total of %d concept(s) in %d area(s) and %d partial-areas(s).",
                 rootName, conceptCount, areaCount, pareaCount);
@@ -167,8 +174,15 @@ public class SCTPAreaTaxonomyTextConfiguration extends BLUGenericPAreaTaxonomyTe
         String rootName = getGroupName(taxonomy.getRootGroup());
 
         int areaCount = taxonomy.getAreaCount();
-        int conceptCount = taxonomy.getConceptHierarchy().getConceptsInHierarchy().size();
+        
+        HashSet<Concept> concepts = new HashSet<>();
 
+        taxonomy.getGroupHierarchy().getNodesInHierarchy().forEach((SCTPArea parea) -> {
+            concepts.addAll(parea.getConceptsInPArea());
+        });
+
+        int conceptCount = concepts.size();
+        
         HashSet<SCTAggregatePArea> aggregatePAreas = new HashSet<>();
 
         HashSet<SCTAggregatePArea> regularPAreas = new HashSet<>();
