@@ -69,8 +69,16 @@ public class SCTCreateExpandedSubtaxonomyButton extends ExpandAggregateButton {
                             sourceTaxonomy.getConceptHierarchy(), 
                             new InferredRelationshipsRetriever());
 
-                    AggregatePAreaTaxonomyGenerator<SCTPAreaTaxonomy, SCTPArea, SCTArea, SCTRegion, 
-                            Concept, InheritedRelationship, SCTConceptHierarchy, SCTAggregatePArea> aggregateGenerator = new AggregatePAreaTaxonomyGenerator();
+                    AggregatePAreaTaxonomyGenerator<
+                            SCTPAreaTaxonomy, 
+                            SCTPArea, 
+                            SCTArea,
+                            SCTRegion, 
+                            Concept,
+                            InheritedRelationship,
+                            SCTConceptHierarchy,
+                            SCTPAreaTaxonomy,
+                            SCTAggregatePArea> aggregateGenerator = new AggregatePAreaTaxonomyGenerator<>();
 
                     SCTPAreaTaxonomy expandedSubtaxonomy = aggregateGenerator.createExpandedSubtaxonomy(parea, taxonomyGenerator);
                     

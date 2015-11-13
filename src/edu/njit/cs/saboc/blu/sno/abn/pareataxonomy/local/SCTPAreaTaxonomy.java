@@ -420,9 +420,15 @@ public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCT
         SCTPAreaTaxonomyGenerator taxonomyGenerator = new SCTPAreaTaxonomyGenerator(
             this.getSCTRootConcept(), this.getDataSource(), (SCTConceptHierarchy)this.getConceptHierarchy(), new InferredRelationshipsRetriever());
         
-        AggregatePAreaTaxonomyGenerator<SCTPAreaTaxonomy, SCTPArea, 
-                SCTArea, SCTRegion, Concept, 
-                InheritedRelationship, SCTConceptHierarchy, 
+        AggregatePAreaTaxonomyGenerator<
+                SCTPAreaTaxonomy, 
+                SCTPArea, 
+                SCTArea, 
+                SCTRegion, 
+                Concept, 
+                InheritedRelationship, 
+                SCTConceptHierarchy, 
+                SCTPAreaTaxonomy,
                 SCTAggregatePArea> aggregateGenerator = new AggregatePAreaTaxonomyGenerator();
         
         SCTPAreaTaxonomy aggregateTaxonomy = aggregateGenerator.createAggregatePAreaTaxonomy(this, 
