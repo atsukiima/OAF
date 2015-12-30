@@ -1,6 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.reports;
 
-import SnomedShared.overlapping.CommonOverlapSet;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import java.util.ArrayList;
@@ -38,11 +38,11 @@ public class SCTTANReportDialog extends JDialog {
     }
     
     public void showReports(SCTTribalAbstractionNetwork tan) {
-        ArrayList<CommonOverlapSet> bands = tan.getContainers();
+        ArrayList<SCTBand> bands = tan.getContainers();
         
         boolean hasOverlapping = false;
         
-        for(CommonOverlapSet band : bands) {
+        for(SCTBand band : bands) {
             if(!config.getDataConfiguration().getContainerOverlappingConcepts(band).isEmpty()) {
                 hasOverlapping = true;
                 break;

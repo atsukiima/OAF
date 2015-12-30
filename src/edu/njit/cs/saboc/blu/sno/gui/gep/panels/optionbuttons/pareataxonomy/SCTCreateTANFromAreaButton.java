@@ -6,7 +6,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTAN
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.tan.SCTTribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
@@ -80,12 +80,12 @@ public class SCTCreateTANFromAreaButton extends CreateTANButton {
                             hierarchy.addAllHierarchicalRelationships(parea.getHierarchy());
                         }
                     });
+                    
+                    SCTTribalAbstractionNetworkGenerator generator = new SCTTribalAbstractionNetworkGenerator(
+                            config.getTextConfiguration().getContainerName(area), 
+                            (SCTLocalDataSource)config.getDataConfiguration().getPAreaTaxonomy().getDataSource());
   
-                    SCTTribalAbstractionNetwork tan = TANGenerator.deriveTANFromMultiRootedHierarchy(
-                            config.getTextConfiguration().getContainerName(area),
-                            hierarchy, 
-                            (SCTLocalDataSource)config.getDataConfiguration().getPAreaTaxonomy().getDataSource(),  
-                            config.getDataConfiguration().getPAreaTaxonomy().getSCTVersion());
+                    SCTTribalAbstractionNetwork tan = generator.deriveTANFromMultiRootedHierarchy(hierarchy);
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {

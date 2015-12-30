@@ -4,6 +4,7 @@ import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan.SCTCreateTANFromBandButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan.SCTExportBandButton;
@@ -15,9 +16,9 @@ import java.util.Optional;
  *
  * @author Chris O
  */
-public class SCTBandOptionsPanel extends AbstractNodeOptionsPanel<CommonOverlapSet> {
+public class SCTBandOptionsPanel extends AbstractNodeOptionsPanel<SCTBand> {
     
-    private Optional<CommonOverlapSet> selectedArea = Optional.empty();
+    private Optional<SCTBand> selectedArea = Optional.empty();
     
     private final SCTTANConfiguration config;
     
@@ -25,7 +26,7 @@ public class SCTBandOptionsPanel extends AbstractNodeOptionsPanel<CommonOverlapS
     
     private final SCTExportBandButton exportBtn;
     
-    private final PopoutNodeDetailsButton popoutBtn;
+    //private final PopoutNodeDetailsButton popoutBtn;
 
     public SCTBandOptionsPanel(SCTTANConfiguration config) {
         this.config = config;
@@ -38,6 +39,7 @@ public class SCTBandOptionsPanel extends AbstractNodeOptionsPanel<CommonOverlapS
         
         super.addOptionButton(exportBtn);
         
+        /*
         popoutBtn = new PopoutNodeDetailsButton("band") {
 
             @Override
@@ -50,14 +52,16 @@ public class SCTBandOptionsPanel extends AbstractNodeOptionsPanel<CommonOverlapS
         };
         
         super.addOptionButton(popoutBtn);
+                
+                */
     }
     
     @Override
-    public void enableOptionsForGroup(CommonOverlapSet band) {
+    public void enableOptionsForGroup(SCTBand band) {
         if(band.getAllClusters().size() > 1) {
             boolean tanPossible = false;
             
-            ArrayList<SCTCluster> clusters = config.getDataConfiguration().convertClusterSummaryList(band.getAllClusters());
+            ArrayList<SCTCluster> clusters = band.getAllClusters();
             
             for(SCTCluster cluster : clusters) {
                 if(cluster.getConceptCount() > 1) {
@@ -73,7 +77,7 @@ public class SCTBandOptionsPanel extends AbstractNodeOptionsPanel<CommonOverlapS
     }
 
     @Override
-    public void setContents(CommonOverlapSet band) {
+    public void setContents(SCTBand band) {
         selectedArea = Optional.of(band);
         
         exportBtn.setCurrentBand(band);

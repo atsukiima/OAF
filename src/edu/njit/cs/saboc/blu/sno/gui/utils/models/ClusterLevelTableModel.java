@@ -1,6 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.utils.models;
 
 import SnomedShared.overlapping.CommonOverlapSet;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import java.util.ArrayList;
@@ -25,12 +26,12 @@ public class ClusterLevelTableModel extends AbstractTableModel {
     }
 
     public ClusterLevelTableModel(SCTTribalAbstractionNetwork tribalAbN) {
-        ArrayList<CommonOverlapSet> tribalBands = (ArrayList<CommonOverlapSet>)tribalAbN.getBands();
+        ArrayList<SCTBand> tribalBands = (ArrayList<SCTBand>)tribalAbN.getBands();
 
-        Collections.sort(tribalBands, new Comparator<CommonOverlapSet>() {
-            public int compare(CommonOverlapSet a, CommonOverlapSet b) {
-                Integer aCount = a.getSetEntryPoints().size();
-                Integer bCount = b.getSetEntryPoints().size();
+        Collections.sort(tribalBands, new Comparator<SCTBand>() {
+            public int compare(SCTBand a, SCTBand b) {
+                Integer aCount = a.getPatriarchs().size();
+                Integer bCount = b.getPatriarchs().size();
 
                 return aCount.compareTo(bCount);
             }
@@ -38,13 +39,13 @@ public class ClusterLevelTableModel extends AbstractTableModel {
 
         ArrayList<LevelData> levelData = new ArrayList<LevelData>();
 
-        CommonOverlapSet lastBand = tribalBands.get(0);
+        SCTBand lastBand = tribalBands.get(0);
         LevelData level = new LevelData();
         ArrayList<SCTCluster> levelClusters = new ArrayList<>();
 
-        for(CommonOverlapSet a : tribalBands) {
-            if(lastBand.getSetEntryPoints().size() != a.getSetEntryPoints().size()) {
-                level.tribeCount = lastBand.getSetEntryPoints().size();
+        for(SCTBand a : tribalBands) {
+            if(lastBand.getPatriarchs().size() != a.getPatriarchs().size()) {
+                level.tribeCount = lastBand.getPatriarchs().size();
                 
                 level.conceptCount = tribalAbN.getDataSource().getConceptCountInClusterHierarchy(
                                         tribalAbN, levelClusters);
@@ -57,12 +58,12 @@ public class ClusterLevelTableModel extends AbstractTableModel {
             level.bandCount += 1;
             level.clusterCount += a.getAllClusters().size();
 
-            levelClusters.addAll(tribalAbN.convertClusters(a.getAllClusters()));
+            levelClusters.addAll(a.getAllClusters());
 
             lastBand = a;
         }
 
-        level.tribeCount = lastBand.getSetEntryPoints().size();
+        level.tribeCount = lastBand.getPatriarchs().size();
         level.conceptCount = tribalAbN.getDataSource().getConceptCountInClusterHierarchy(
                                         tribalAbN, levelClusters);
 

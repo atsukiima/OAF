@@ -2,30 +2,34 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.band;
 
 import SnomedShared.Concept;
-import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractContainerPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.entry.ContainerConceptEntry;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.band.BandClusterListPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.band.BandDetailsPanel;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTClusterList;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTConceptList;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 
 /**
  *
  * @author Chris O
  */
-public class SCTBandPanel extends AbstractContainerPanel<CommonOverlapSet, SCTCluster, Concept, ContainerConceptEntry<Concept, SCTCluster>, SCTTANConfiguration> {
+public class SCTBandPanel extends AbstractContainerPanel<SCTBand, SCTCluster, Concept, ContainerConceptEntry<Concept, SCTCluster>, SCTTANConfiguration> {
     
     private final SCTTANConfiguration config;
 
     public SCTBandPanel(SCTTANConfiguration config) {
-        super(new SCTBandDetailsPanel(config), 
-                new SCTBandClusterListPanel(config), 
+        super(new BandDetailsPanel<SCTBand, SCTCluster, Concept>(new SCTBandOptionsPanel(config), config), 
+                new BandClusterListPanel<SCTBand, SCTCluster, Concept>(new SCTClusterList(config), new SCTConceptList(), config), 
                 config);
 
         this.config = config;
     }
 
     @Override
-    protected String getNodeTitle(CommonOverlapSet area) {
-        return config.getTextConfiguration().getContainerName(area);
+    protected String getNodeTitle(SCTBand band) {
+        return config.getTextConfiguration().getContainerName(band);
     }
 }

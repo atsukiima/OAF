@@ -1,14 +1,13 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
 import SnomedShared.Concept;
-import SnomedShared.overlapping.ClusterSummary;
-import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.GenericExportPartitionedAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.graph.ClusterBluGraph;
@@ -32,7 +31,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
     
     private SCTTANConfiguration currentConfiguration;
     
-    private GenericExportPartitionedAbNButton<Concept, SCTCluster, CommonOverlapSet> exportBtn;
+    private GenericExportPartitionedAbNButton<Concept, SCTCluster, SCTBand> exportBtn;
     
     private final JButton openReportsBtn;
 
@@ -47,7 +46,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         
         this.displayListener = displayListener;
 
-        String frameTitle = UtilityMethods.getPrintableVersionName(data.getSCTVersion());
+        String frameTitle = UtilityMethods.getPrintableVersionName(data.getDataSource().getSelectedVersion());
         this.setTitle(frameTitle);
 
         openReportsBtn = new JButton("Reports and Metrics");
@@ -68,31 +67,17 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         addToggleableButtonToMenu(searchButton);
     }
 
-    private void updateHierarchyInfoLabel(SCTTribalAbstractionNetwork data) {
-        ArrayList<SCTCluster> clusters = new ArrayList<>();
+    private void updateHierarchyInfoLabel(SCTTribalAbstractionNetwork tan) {
 
-        int clusterCount = 0;
-        int setCount = 0;
+        int setCount = tan.getBandCount();
 
-        ArrayList<SCTCluster> patriarchs = data.getHierarchyEntryPoints();
+        ArrayList<SCTCluster> clusters = new ArrayList<>(tan.getClusters().values());
 
-        for (SCTCluster s : patriarchs) {
-            clusters.add(s);
-        }
+        int clusterCount = tan.getClusterCount();
 
-        for (CommonOverlapSet a : data.getBands()) {
-            for (ClusterSummary cluster : a.getAllClusters()) {
-                clusters.add((SCTCluster)cluster);
-
-                clusterCount++;
-            }
-
-            setCount++;
-        }
-
-        int conceptCount = data.getDataSource().getConceptCountInClusterHierarchy(data, clusters);     
+        int conceptCount = tan.getDataSource().getConceptCountInClusterHierarchy(tan, clusters);     
         
-        setHierarchyInfoText(String.format("Common Overlap Sets: %d | Clusters: %d | Concepts: %d",
+        setHierarchyInfoText(String.format("Bands: %d | Clusters: %d | Concepts: %d",
                 setCount, clusterCount, conceptCount));
     }
 
@@ -102,20 +87,20 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         Thread loadThread = new Thread(() -> {
             gep.showLoading();
             
-            GroupEntryLabelCreator labelCreator = new GroupEntryLabelCreator<ClusterSummary>() {
-                public String getRootNameStr(ClusterSummary cluster) {
+            GroupEntryLabelCreator labelCreator = new GroupEntryLabelCreator<SCTCluster>() {
+                public String getRootNameStr(SCTCluster cluster) {
                     return cluster.getRoot().getName().substring(0, cluster.getRoot().getName().lastIndexOf("(") - 1);
                 }
             };
-
-            BluGraph graph = new ClusterBluGraph(parentFrame, data, displayListener, labelCreator);
-
-            searchButton.setGraph(graph);
-
+            
             SCTTANConfigurationFactory factory = new SCTTANConfigurationFactory();
 
             currentConfiguration = factory.createConfiguration(data, displayListener);
 
+            BluGraph graph = new ClusterBluGraph(parentFrame, data, displayListener, labelCreator, currentConfiguration);
+
+            searchButton.setGraph(graph);
+           
             SwingUtilities.invokeLater(() -> {
                 displayAbstractionNetwork(graph, new AbNPainter(), currentConfiguration);
 

@@ -3,7 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.dis
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANButton;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.tan.SCTTribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfiguration;
@@ -53,11 +53,11 @@ public class SCTCreateTANFromDisjointPAreaButton extends CreateTANButton {
                             }
                         });
                     
-                    SCTTribalAbstractionNetwork tan = 
-                            TANGenerator.createTANFromConceptHierarchy(
-                            config.getDataConfiguration().getDisjointPAreaTaxonomy().getSCTVersion(), 
-                            parea.getConceptHierarchy(),
-                            (SCTLocalDataSource)config.getDataConfiguration().getDisjointPAreaTaxonomy().getDataSource());
+                    SCTTribalAbstractionNetworkGenerator generator = new SCTTribalAbstractionNetworkGenerator(
+                        config.getTextConfiguration().getGroupName(parea),
+                        (SCTLocalDataSource)config.getDataConfiguration().getDisjointPAreaTaxonomy().getDataSource());
+                    
+                    SCTTribalAbstractionNetwork tan = generator.createTANFromConceptHierarchy(parea.getConceptHierarchy());
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {

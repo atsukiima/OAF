@@ -23,6 +23,6 @@ public class SCTGraphLayoutFactory {
     }
 
     public static ClusterNoPartitionLayout createClusterNoPartitionLayout(ClusterBluGraph graph) {
-        return new ClusterNoPartitionLayout(graph);
+        return new ClusterNoPartitionLayout(graph, graph.getClusterHierarchyData(), graph.getConfiguration());
     }
 }

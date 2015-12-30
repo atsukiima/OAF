@@ -5,6 +5,7 @@ import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportButton;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportAbNUtilities;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.io.File;
@@ -22,7 +23,7 @@ import javax.swing.JOptionPane;
  */
 public class SCTExportBandButton extends ExportButton {
     
-    private Optional<CommonOverlapSet> currentBand = Optional.empty();
+    private Optional<SCTBand> currentBand = Optional.empty();
     
     private final SCTTANConfiguration config;
 
@@ -32,7 +33,7 @@ public class SCTExportBandButton extends ExportButton {
         this.config = config;
     }
         
-    public void setCurrentBand(CommonOverlapSet band) {
+    public void setCurrentBand(SCTBand band) {
         currentBand = Optional.ofNullable(band);
     }
     
@@ -63,7 +64,7 @@ public class SCTExportBandButton extends ExportButton {
     
     private void exportBandConcepts(File file) {
         
-        ArrayList<SCTCluster> bandClusters = config.getDataConfiguration().convertClusterSummaryList(currentBand.get().getAllClusters());
+        ArrayList<SCTCluster> bandClusters = currentBand.get().getAllClusters();
         
         HashSet<Concept> allConcepts = new HashSet<>();
         
@@ -84,7 +85,7 @@ public class SCTExportBandButton extends ExportButton {
     }
     
     private void exportBandClusters(File file) {
-        ArrayList<SCTCluster> clusters = config.getDataConfiguration().convertClusterSummaryList(currentBand.get().getAllClusters());
+        ArrayList<SCTCluster> clusters = currentBand.get().getAllClusters();
         
         try (PrintWriter writer = new PrintWriter(file)) {
             clusters.forEach( (SCTCluster cluster) -> {

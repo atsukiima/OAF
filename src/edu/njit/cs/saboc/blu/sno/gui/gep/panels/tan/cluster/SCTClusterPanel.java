@@ -2,6 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.cluster;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractGroupPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.cluster.ClusterHierarchyPanel;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 
@@ -15,7 +16,7 @@ public class SCTClusterPanel extends AbstractGroupPanel<SCTCluster, Concept, SCT
     
     public SCTClusterPanel(SCTTANConfiguration config) {
         super(new SCTClusterDetailsPanel(config), 
-                new SCTClusterHierarchyPanel(config), 
+                new ClusterHierarchyPanel<Concept, SCTCluster, SCTTANConfiguration>(config), 
                 config);
         
          conceptHierarchyPanel = new SCTClusterConceptHierarchyPanel(config);

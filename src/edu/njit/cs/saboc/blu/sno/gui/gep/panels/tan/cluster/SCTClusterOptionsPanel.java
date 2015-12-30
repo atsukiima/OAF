@@ -26,7 +26,7 @@ public class SCTClusterOptionsPanel extends AbstractNodeOptionsPanel<SCTCluster>
     
     private final SCTExportClusterButton exportBtn;
     
-    private final PopoutNodeDetailsButton popoutBtn;
+    //private final PopoutNodeDetailsButton popoutBtn;
         
     public SCTClusterOptionsPanel(SCTTANConfiguration config) {
         this.config = config;
@@ -44,24 +44,31 @@ public class SCTClusterOptionsPanel extends AbstractNodeOptionsPanel<SCTCluster>
         
         super.addOptionButton(exportBtn);
         
+        /*
         popoutBtn = new PopoutNodeDetailsButton("cluster") {
 
             @Override
             public AbstractNodePanel getCurrentDetailsPanel() {
+                
                 AbstractNodePanel anp = config.getUIConfiguration().createGroupDetailsPanel();
                 anp.setContents(selectedCluster.get());
+                        
                 
-                return anp;
+                return null;
             }
+    
+    
         };
         
         super.addOptionButton(popoutBtn);
+
+        */
     }
     
     @Override
     public void enableOptionsForGroup(SCTCluster cluster) {
         if (cluster.getConceptCount() > 1) {
-            if (cluster.getConceptHierarchy().getChildren(cluster.getRoot()).size() > 1) {
+            if (cluster.getHierarchy().getChildren(cluster.getRoot()).size() > 1) {
                 tanBtn.setEnabled(true);
             } else {
                 tanBtn.setEnabled(false);

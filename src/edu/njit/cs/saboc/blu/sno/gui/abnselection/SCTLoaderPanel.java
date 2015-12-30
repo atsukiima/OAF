@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.tan.SCTTribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.ImportLocalData;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LoadLocalRelease;
@@ -424,7 +424,7 @@ public class SCTLoaderPanel extends JPanel {
         
         Thread loadThread = new Thread(new Runnable() {
             private LoadStatusDialog loadStatusDialog = null;
-            private boolean doLoad;
+            private boolean doLoad = true;
 
             public void run() {
 
@@ -452,7 +452,9 @@ public class SCTLoaderPanel extends JPanel {
                             hierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getId()));
                         }
                         
-                        tan = TANGenerator.createTANFromConceptHierarchy(dataSource.getSelectedVersion(), hierarchy, dataSource);
+                        SCTTribalAbstractionNetworkGenerator generator = new SCTTribalAbstractionNetworkGenerator(root.getName(), dataSource);
+                        
+                        tan = generator.createTANFromConceptHierarchy(hierarchy);
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {

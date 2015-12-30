@@ -11,7 +11,7 @@ import edu.njit.cs.saboc.blu.sno.graph.PAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.tan.SCTTribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.ConceptClusterInfo;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
@@ -399,7 +399,9 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
                     subhierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(root);
                 }
                 
-                SCTTribalAbstractionNetwork tan = TANGenerator.createTANFromConceptHierarchy(root.getName(), subhierarchy, dataSource);
+                SCTTribalAbstractionNetworkGenerator generator = new SCTTribalAbstractionNetworkGenerator(root.getName(), dataSource);
+                
+                SCTTribalAbstractionNetwork tan = generator.createTANFromConceptHierarchy(subhierarchy);
                 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
@@ -650,9 +652,8 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
             ArrayList<String> sortedPatriarchNames = new ArrayList<String>();
                 
-            for (EntryPoint patriarch : cluster.getEntryPointSet()) {
-                String patriarchName = tan.getPatriarchNames().get(patriarch.getEntryPointConceptId());
-                sortedPatriarchNames.add(patriarchName);
+            for (Concept patriarch : cluster.getPatriarchs()) {
+                sortedPatriarchNames.add(patriarch.getName());
             }
 
             Collections.sort(sortedPatriarchNames);

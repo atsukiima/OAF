@@ -7,7 +7,6 @@ import SnomedShared.PAreaDetailsForConcept;
 import SnomedShared.pareataxonomy.GroupParentInfo;
 import SnomedShared.pareataxonomy.PAreaSummary;
 import SnomedShared.SearchResult;
-import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.pareataxonomy.Area;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import SnomedShared.pareataxonomy.InheritedRelationship.InheritanceType;
@@ -18,7 +17,7 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.remote.RemoteSCTPArea;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.properties.AreaToolProperties;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRemoteDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.utils.ServletWriter;
@@ -95,13 +94,6 @@ public class MiddlewareAccessorProxy {
      */
     private HashMap<String, HashMap<Concept, HashMap<Long, String>>> uniqueLateralRels =
             new HashMap<String, HashMap<Concept, HashMap<Long, String>>>();
-
-
-    /**
-     * A mapping of releases to sets of SNOMED CT Tribal Abstraction Networks.
-     */
-    private HashMap<String, HashMap<Concept, TribalAbstractionNetwork>> clusterTaxonomies =
-            new HashMap<String, HashMap<Concept, TribalAbstractionNetwork>>();
 
     /**
      * Creates a new SnomedAccessorProxy object. Gets a sessionId from the middleware
@@ -709,7 +701,7 @@ public class MiddlewareAccessorProxy {
         return results;
     }
 
-    public ArrayList<GroupParentInfo> getClusterParentInfo(String version, Concept hierarchyRoot, ClusterSummary cluster) {
+    public ArrayList<GroupParentInfo> getClusterParentInfo(String version, Concept hierarchyRoot, SCTCluster cluster) {
         Serializable objs[] = {version, "getClusterParentInfo", hierarchyRoot, cluster.getRoot().getId()};
         ArrayList<GroupParentInfo> results = (ArrayList<GroupParentInfo>) sendCommand(objs, false);
 

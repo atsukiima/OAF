@@ -1,5 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search;
 
+import SnomedShared.Concept;
 import SnomedShared.SearchResult;
 import SnomedShared.generic.GenericConceptGroup;
 import SnomedShared.overlapping.ClusterSummary;
@@ -7,14 +8,13 @@ import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.BluGraphSearchAction;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.GenericInternalSearchButton;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.SearchButtonResult;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.ConceptClusterInfo;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.ClusterInternalGraphFrame;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import javax.swing.JFrame;
 
@@ -23,7 +23,6 @@ import javax.swing.JFrame;
  * @author Chris
  */
 public class TANInternalSearchButton extends GenericInternalSearchButton {
-
 
     public TANInternalSearchButton(JFrame parent, final ClusterInternalGraphFrame igf) {
         super(parent);
@@ -34,13 +33,9 @@ public class TANInternalSearchButton extends GenericInternalSearchButton {
                 ArrayList<SearchButtonResult> results = new ArrayList<SearchButtonResult>();
                 
                 if (query.length() >= 3) {
-                    ArrayList<SCTCluster> clusters = new ArrayList<SCTCluster>();
-                    
                     SCTTribalAbstractionNetwork tan = (SCTTribalAbstractionNetwork) graphFrame.getGraph().getAbstractionNetwork();
-
-                    for (CommonOverlapSet band : tan.getBands()) {
-                        clusters.addAll(tan.convertClusters(band.getAllClusters()));
-                    }
+                    
+                    ArrayList<SCTCluster> clusters = new ArrayList<>(tan.getClusters().values());
                     
                     ArrayList<SearchResult> conceptResults = tan.getDataSource().searchForConceptsWithinTAN(tan, clusters, query.toLowerCase());
                     
@@ -55,7 +50,7 @@ public class TANInternalSearchButton extends GenericInternalSearchButton {
             public void resultSelected(SearchButtonResult o) {
                 SearchResult result = (SearchResult) o.getResult();
 
-                TribalAbstractionNetwork tan = (TribalAbstractionNetwork) graphFrame.getGraph().getAbstractionNetwork();
+                SCTTribalAbstractionNetwork tan = (SCTTribalAbstractionNetwork) graphFrame.getGraph().getAbstractionNetwork();
 
                 ArrayList<ConceptClusterInfo> clusterInfo = tan.getDataSource().getConceptClusterInfo(tan,
                         tan.getDataSource().getConceptFromId(result.getConceptId()));
@@ -100,25 +95,23 @@ public class TANInternalSearchButton extends GenericInternalSearchButton {
                 
                 ArrayList<SearchButtonResult> results = new ArrayList<SearchButtonResult>();
                 
-                TribalAbstractionNetwork tan = (TribalAbstractionNetwork) graphFrame.getGraph().getAbstractionNetwork();
+                SCTTribalAbstractionNetwork tan = (SCTTribalAbstractionNetwork) graphFrame.getGraph().getAbstractionNetwork();
                 
-                ArrayList<CommonOverlapSet> bands = tan.searchBands(query.toLowerCase());
+                ArrayList<SCTBand> bands = tan.searchBands(query.toLowerCase());
 
-                HashMap<Long, String> patriarchs = tan.getPatriarchNames();
-
-                for (CommonOverlapSet band : bands) {
+                for (SCTBand band : bands) {
                     boolean first = true;
 
                     String name = "";
 
-                    for (long patriarchId : band.getSetEntryPoints()) {   // Otherwise derive the title from its relationships.
+                    for (Concept patriarch : band.getPatriarchs()) {   // Otherwise derive the title from its relationships.
                         if (!first) {
                             name += ", ";
                         } else {
                             first = false;
                         }
 
-                        name += patriarchs.get(patriarchId);
+                        name += patriarch.getName();
                     }
                     
                     results.add(new SearchButtonResult(name, band));

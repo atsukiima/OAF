@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan;
 
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANButton;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.tan.SCTTribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
@@ -53,10 +53,11 @@ public class SCTCreateTANFromClusterButton extends CreateTANButton {
                             }
                         });
                     
-                    SCTTribalAbstractionNetwork tan = TANGenerator.createTANFromConceptHierarchy(
-                            config.getDataConfiguration().getTribalAbstractionNetwork().getSCTVersion(),
-                            cluster.getConceptHierarchy(),
+                    SCTTribalAbstractionNetworkGenerator generator = new SCTTribalAbstractionNetworkGenerator(
+                            config.getTextConfiguration().getGroupName(cluster),
                             (SCTLocalDataSource)config.getDataConfiguration().getTribalAbstractionNetwork().getDataSource());
+                    
+                    SCTTribalAbstractionNetwork tan = generator.createTANFromConceptHierarchy(cluster.getHierarchy());
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {

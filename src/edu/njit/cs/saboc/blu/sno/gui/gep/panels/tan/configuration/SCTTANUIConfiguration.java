@@ -1,10 +1,10 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration;
 
 import SnomedShared.Concept;
-import SnomedShared.overlapping.CommonOverlapSet;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.ui.BLUPartitionedAbNUIConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.abn.AbstractAbNDetailsPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.BLUGenericTANUIConfiguration;
+import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
@@ -16,9 +16,8 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.cluster.SCTClusterPanel;
  *
  * @author Chris O
  */
-public class SCTTANUIConfiguration extends BLUPartitionedAbNUIConfiguration<SCTTribalAbstractionNetwork, CommonOverlapSet, SCTCluster, Concept, SCTTANConfiguration, SCTTANListenerConfiguration> {
-    
-    
+public class SCTTANUIConfiguration extends BLUGenericTANUIConfiguration<SCTTribalAbstractionNetwork, SCTBand, SCTCluster, Concept, SCTTANListenerConfiguration> {
+
     private final SCTTANConfiguration config;
     
     private final SCTDisplayFrameListener displayListener;
@@ -34,7 +33,6 @@ public class SCTTANUIConfiguration extends BLUPartitionedAbNUIConfiguration<SCTT
     public SCTDisplayFrameListener getDisplayFrameListener() {
         return displayListener;
     }
-    
     
     @Override
     public AbstractAbNDetailsPanel createAbNDetailsPanel() {

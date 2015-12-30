@@ -4,12 +4,11 @@ import SnomedShared.Concept;
 import SnomedShared.OutgoingLateralRelationship;
 import SnomedShared.PAreaDetailsForConcept;
 import SnomedShared.SearchResult;
-import SnomedShared.overlapping.ClusterSummary;
 import SnomedShared.pareataxonomy.ConceptPAreaInfo;
 import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
+import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.ConceptClusterInfo;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
@@ -19,7 +18,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalSnomedConcept;
 import edu.njit.cs.saboc.blu.sno.localdatasource.conceptdata.HierarchyMetrics;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.InferredRelationshipsRetriever;
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
-import edu.njit.cs.saboc.blu.sno.abn.tan.TANGenerator;
+import edu.njit.cs.saboc.blu.sno.abn.tan.SCTTribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.LocalLateralRelationship;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
@@ -258,7 +257,7 @@ public class SCTLocalDataSource implements SCTDataSource {
         } else if (hierarchies.size() == 1) {
             Concept root = hierarchies.get(0);
             
-            TribalAbstractionNetwork tan = this.getCompleteTAN(root);
+            SCTTribalAbstractionNetwork tan = this.getCompleteTAN(root);
 
             return this.getConceptClusterInfo(tan, c);
 
@@ -291,24 +290,17 @@ public class SCTLocalDataSource implements SCTDataSource {
         return pareaSetConcepts;
     }
 
-    public ArrayList<Concept> getConceptsInCluster(TribalAbstractionNetwork tan, ClusterSummary cluster) {
-        if (cluster instanceof SCTCluster) {
-            SCTCluster localCluster = (SCTCluster) cluster;
-
-            ArrayList<Concept> clusterConcepts = new ArrayList<Concept>(localCluster.getConcepts());
-
-            Collections.sort(clusterConcepts, new ConceptNameComparator());
-
-            return clusterConcepts;
-        } else {
-            throw new RuntimeException("Unsupported Cluster Type: " + cluster.getClass());
-        }
+    public ArrayList<Concept> getConceptsInCluster(SCTTribalAbstractionNetwork tan, SCTCluster cluster) {
+        ArrayList<Concept> sortedConcepts = new ArrayList<>(cluster.getHierarchy().getConceptsInHierarchy());
+        sortedConcepts.sort(new ConceptNameComparator());
+        
+        return sortedConcepts;
     }
 
-    public HashMap<Long, ArrayList<Concept>> getConceptsInClusterSet(TribalAbstractionNetwork tan, ArrayList<ClusterSummary> clusters) {
-        HashMap<Long, ArrayList<Concept>> clusterSetConcepts = new HashMap<Long, ArrayList<Concept>>();
+    public HashMap<Long, ArrayList<Concept>> getConceptsInClusterSet(SCTTribalAbstractionNetwork tan, ArrayList<SCTCluster> clusters) {
+        HashMap<Long, ArrayList<Concept>> clusterSetConcepts = new HashMap<>();
 
-        for (ClusterSummary cluster : clusters) {
+        for (SCTCluster cluster : clusters) {
             clusterSetConcepts.put(cluster.getRoot().getId(), getConceptsInCluster(tan, cluster));
         }
 
@@ -462,7 +454,7 @@ public class SCTLocalDataSource implements SCTDataSource {
         HashSet<Concept> concepts = new HashSet<Concept>();
 
         for (SCTCluster cluster : clusters) {
-            concepts.addAll(cluster.getConcepts());
+            concepts.addAll(cluster.getHierarchy().getNodesInHierarchy());
         }
 
         return concepts.size();
@@ -483,16 +475,14 @@ public class SCTLocalDataSource implements SCTDataSource {
         return pareasWithConcept;
     }
     
-    public ArrayList<ConceptClusterInfo> getConceptClusterInfo(TribalAbstractionNetwork tan, Concept c) {
-        ArrayList<ConceptClusterInfo> clustersWithConcept = new ArrayList<ConceptClusterInfo>();
+    public ArrayList<ConceptClusterInfo> getConceptClusterInfo(SCTTribalAbstractionNetwork tan, Concept c) {
+        ArrayList<ConceptClusterInfo> clustersWithConcept = new ArrayList<>();
         
-        Collection<ClusterSummary> clusters = tan.getClusters().values();
+        Collection<SCTCluster> clusters = tan.getClusters().values();
         
-        for(ClusterSummary cluster : clusters) {
-            SCTCluster localCluster = (SCTCluster)cluster;
-            
-            if(localCluster.getConcepts().contains(c)) {
-                clustersWithConcept.add(new ConceptClusterInfo(localCluster.getRoot().getId()));
+        for(SCTCluster cluster : clusters) {
+            if(cluster.getConcepts().contains(c)) {
+                clustersWithConcept.add(new ConceptClusterInfo(cluster.getRoot().getId()));
             }
         }
         
@@ -519,43 +509,32 @@ public class SCTLocalDataSource implements SCTDataSource {
         return parentGroupInfo;
     }
 
-    public ArrayList<GenericParentGroupInfo<Concept, SCTCluster>> getClusterParentInfo(TribalAbstractionNetwork tan, SCTCluster cluster) {
-        if (cluster instanceof SCTCluster) {
-            SCTCluster localCluster = (SCTCluster) cluster;
+    public ArrayList<GenericParentGroupInfo<Concept, SCTCluster>> getClusterParentInfo(SCTTribalAbstractionNetwork tan, SCTCluster cluster) {
 
-            ArrayList<GenericParentGroupInfo<Concept, SCTCluster>> parentInfo = localCluster.getParentGroupInformation();
+        ArrayList<GenericParentGroupInfo<Concept, SCTCluster>> parentInfo = new ArrayList<>(cluster.getParentClusterInfo());
 
-            Collections.sort(parentInfo, new Comparator<GenericParentGroupInfo<Concept, SCTCluster>>() {
-                public int compare(GenericParentGroupInfo<Concept, SCTCluster> a, GenericParentGroupInfo<Concept, SCTCluster> b) {
-                    if (a.getParentGroup().getRoot().getId() == b.getParentGroup().getRoot().getId()) {
-                        return a.getParentConcept().getName().compareToIgnoreCase(b.getParentConcept().getName());
-                    } else {
-                        Long aId = a.getParentGroup().getRoot().getId();
-                        Long bId = b.getParentGroup().getRoot().getId();
+        Collections.sort(parentInfo, new Comparator<GenericParentGroupInfo<Concept, SCTCluster>>() {
+            public int compare(GenericParentGroupInfo<Concept, SCTCluster> a, GenericParentGroupInfo<Concept, SCTCluster> b) {
+                if (a.getParentGroup().getRoot().getId() == b.getParentGroup().getRoot().getId()) {
+                    return a.getParentConcept().getName().compareToIgnoreCase(b.getParentConcept().getName());
+                } else {
+                    Long aId = a.getParentGroup().getRoot().getId();
+                    Long bId = b.getParentGroup().getRoot().getId();
 
-                        return aId.compareTo(bId);
-                    }
+                    return aId.compareTo(bId);
                 }
-            });
+            }
+        });
 
-            return parentInfo;
-        } else {
-            throw new RuntimeException("Unsupported Cluster Type: " + cluster.getClass());
-        }
+        return parentInfo;
     }
 
     public SCTConceptHierarchy getPAreaConceptHierarchy(SCTPAreaTaxonomy taxonomy, SCTPArea parea) {
         return (SCTConceptHierarchy)parea.getHierarchy();
     }
 
-    public SCTConceptHierarchy getClusterConceptHierarchy(TribalAbstractionNetwork tan, ClusterSummary cluster) {
-        if (cluster instanceof SCTCluster) {
-            SCTCluster localCluster = (SCTCluster) cluster;
-
-            return localCluster.getConceptHierarchy();
-        } else {
-            throw new RuntimeException("Unsupported Cluster Type: " + cluster.getClass());
-        }
+    public SCTConceptHierarchy getClusterConceptHierarchy(SCTTribalAbstractionNetwork tan, SCTCluster cluster) {
+        return cluster.getHierarchy();
     }
 
     public SCTMultiRootedConceptHierarchy getRegionConceptHierarchy(SCTPAreaTaxonomy taxonomy, 
@@ -946,8 +925,10 @@ public class SCTLocalDataSource implements SCTDataSource {
 
         if (!hierarchyTANs.containsKey(root)) {
             SCTConceptHierarchy hierarchy = (SCTConceptHierarchy)this.conceptHierarchy.getSubhierarchyRootedAt(root);
+            
+            SCTTribalAbstractionNetworkGenerator generator = new SCTTribalAbstractionNetworkGenerator(root.getName(), this);
 
-            hierarchyTANs.put(root, TANGenerator.createTANFromConceptHierarchy(version, hierarchy, this));
+            hierarchyTANs.put(root, generator.createTANFromConceptHierarchy(hierarchy));
         }
 
         tan = hierarchyTANs.get(root);
