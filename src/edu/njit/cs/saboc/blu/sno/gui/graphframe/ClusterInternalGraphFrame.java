@@ -4,8 +4,8 @@ import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.GenericExportPartitionedAbNButton;
-import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.tan.TANPainter;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
@@ -102,7 +102,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
             searchButton.setGraph(graph);
            
             SwingUtilities.invokeLater(() -> {
-                displayAbstractionNetwork(graph, new AbNPainter(), currentConfiguration);
+                displayAbstractionNetwork(graph, new TANPainter(), currentConfiguration);
 
                 if (exportBtn != null) {
                     removeReportButtonFromMenu(exportBtn);
