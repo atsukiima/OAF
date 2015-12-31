@@ -62,16 +62,12 @@ public class SCTAggregatePAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTA
         
         super.addOptionButton(rootSubtaxonomyBtn);
         
-        popoutBtn = new PopoutNodeDetailsButton("aggregate partial-area") {
+        popoutBtn = new PopoutNodeDetailsButton("aggregate partial-area", () -> {
+            AbstractNodePanel anp = config.getUIConfiguration().createGroupDetailsPanel();
+            anp.setContents(selectedPArea.get());
 
-            @Override
-            public AbstractNodePanel getCurrentDetailsPanel() {
-                AbstractNodePanel anp = config.getUIConfiguration().createGroupDetailsPanel();
-                anp.setContents(selectedPArea.get());
-                
-                return anp;
-            }
-        };
+            return anp;
+        });
         
         super.addOptionButton(popoutBtn);
         

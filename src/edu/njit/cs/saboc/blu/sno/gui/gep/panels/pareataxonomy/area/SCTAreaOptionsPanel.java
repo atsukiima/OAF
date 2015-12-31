@@ -42,17 +42,13 @@ public class SCTAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTArea> {
         
         super.addOptionButton(tanBtn);
                 
-        popoutBtn = new PopoutNodeDetailsButton("area") {
+        popoutBtn = new PopoutNodeDetailsButton("area", () -> {
+            AbstractNodePanel anp = config.getUIConfiguration().createContainerDetailsPanel();
+            anp.setContents(selectedArea.get());
 
-            @Override
-            public AbstractNodePanel getCurrentDetailsPanel() {
-                AbstractNodePanel anp = config.getUIConfiguration().createContainerDetailsPanel();
-                anp.setContents(selectedArea.get());
+            return anp;
+        });
 
-                return anp;
-            }
-        };
-        
         super.addOptionButton(popoutBtn);
         
         this.exportBtn = new SCTExportAreaButton(config);

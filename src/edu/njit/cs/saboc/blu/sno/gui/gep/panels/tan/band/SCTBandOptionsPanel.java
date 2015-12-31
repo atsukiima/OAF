@@ -26,7 +26,7 @@ public class SCTBandOptionsPanel extends AbstractNodeOptionsPanel<SCTBand> {
     
     private final SCTExportBandButton exportBtn;
     
-    //private final PopoutNodeDetailsButton popoutBtn;
+    private final PopoutNodeDetailsButton popoutBtn;
 
     public SCTBandOptionsPanel(SCTTANConfiguration config) {
         this.config = config;
@@ -39,21 +39,14 @@ public class SCTBandOptionsPanel extends AbstractNodeOptionsPanel<SCTBand> {
         
         super.addOptionButton(exportBtn);
         
-        /*
-        popoutBtn = new PopoutNodeDetailsButton("band") {
+        popoutBtn = new PopoutNodeDetailsButton("band", () -> {
+            AbstractNodePanel anp = config.getUIConfiguration().createContainerDetailsPanel();
+            anp.setContents(selectedArea.get());
 
-            @Override
-            public AbstractNodePanel getCurrentDetailsPanel() {
-                AbstractNodePanel anp = config.getUIConfiguration().createContainerDetailsPanel();
-                anp.setContents(selectedArea.get());
+            return anp;
+        });
 
-                return anp;
-            }
-        };
-        
         super.addOptionButton(popoutBtn);
-                
-                */
     }
     
     @Override

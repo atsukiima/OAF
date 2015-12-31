@@ -25,7 +25,7 @@ public class SCTPAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTPArea> {
 
     private final SCTOpenBrowserButton btnNAT;
     
-    //private final PopoutNodeDetailsButton popoutBtn;
+    private final PopoutNodeDetailsButton popoutBtn;
     
     private final SCTExportPAreaButton exportBtn;
     
@@ -55,21 +55,14 @@ public class SCTPAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTPArea> {
         
         super.addOptionButton(tanBtn);
         
-        /*
-        popoutBtn = new PopoutNodeDetailsButton("partial-area") {
+        popoutBtn = new PopoutNodeDetailsButton("partial-area", () -> {
+            AbstractNodePanel anp = config.getUIConfiguration().createGroupDetailsPanel();
+            anp.setContents(selectedPArea.get());
 
-            @Override
-            public AbstractNodePanel getCurrentDetailsPanel() {
-                AbstractNodePanel anp = config.getUIConfiguration().createGroupDetailsPanel();
-                anp.setContents(selectedPArea.get());
-                
-                return anp;
-            }
-        };
-        
+            return anp;
+        });
+
         super.addOptionButton(popoutBtn);
-                
-                */
         
         exportBtn = new SCTExportPAreaButton();
         

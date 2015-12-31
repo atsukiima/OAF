@@ -38,16 +38,12 @@ public class SCTAggregateAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTAr
         
         super.addOptionButton(tanBtn);
         
-        popoutBtn = new PopoutNodeDetailsButton("aggregate area") {
+        popoutBtn = new PopoutNodeDetailsButton("aggregate area", () -> {
+            AbstractNodePanel anp = config.getUIConfiguration().createContainerDetailsPanel();
+            anp.setContents(selectedArea.get());
 
-            @Override
-            public AbstractNodePanel getCurrentDetailsPanel() {
-                AbstractNodePanel anp = config.getUIConfiguration().createContainerDetailsPanel();
-                anp.setContents(selectedArea.get());
-                
-                return anp;
-            }
-        };
+            return anp;
+        });
         
         super.addOptionButton(popoutBtn);
     }

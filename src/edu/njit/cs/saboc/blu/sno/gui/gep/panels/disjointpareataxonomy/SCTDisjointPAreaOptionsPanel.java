@@ -4,6 +4,7 @@ import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton.NodeDetailsPanelGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfiguration;
@@ -40,16 +41,13 @@ public class SCTDisjointPAreaOptionsPanel extends AbstractNodeOptionsPanel<Disjo
         
         super.addOptionButton(tanBtn);
         
-        popoutBtn = new PopoutNodeDetailsButton("disjoint partial-area") {
+        popoutBtn = new PopoutNodeDetailsButton("disjoint partial-area", () -> {
+            AbstractNodePanel anp = config.getUIConfiguration().createGroupDetailsPanel();
+            anp.setContents(selectedPArea.get());
 
-            @Override
-            public AbstractNodePanel getCurrentDetailsPanel() {
-                AbstractNodePanel anp = config.getUIConfiguration().createGroupDetailsPanel();
-                anp.setContents(selectedPArea.get());
-                
-                return anp;
-            }
-        };
+            return anp;
+        });
+
         
         super.addOptionButton(popoutBtn);
     }

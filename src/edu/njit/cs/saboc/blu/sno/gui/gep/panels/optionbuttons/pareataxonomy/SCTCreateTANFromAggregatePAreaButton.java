@@ -61,7 +61,6 @@ public class SCTCreateTANFromAggregatePAreaButton extends CreateTANButton {
                     SCTTribalAbstractionNetwork tan = generator.createTANFromConceptHierarchy(
                             config.getDataConfiguration().getAggregatedPAreaHierarchy(parea));
                     
-
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             if (doLoad) {
