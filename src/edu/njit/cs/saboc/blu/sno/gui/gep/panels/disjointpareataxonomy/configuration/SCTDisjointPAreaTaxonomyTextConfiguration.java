@@ -78,6 +78,11 @@ public class SCTDisjointPAreaTaxonomyTextConfiguration implements BLUDisjointAbN
     public String getGroupName(DisjointPartialArea group) {
         return group.getRoot().getName();
     }
+    
+    @Override
+    public String getGroupRootUniqueIdentifier(DisjointPartialArea group) {
+        return Long.toString(group.getRoot().getId());
+    }
 
     @Override
     public String getGroupHelpDescriptions(DisjointPartialArea group) {

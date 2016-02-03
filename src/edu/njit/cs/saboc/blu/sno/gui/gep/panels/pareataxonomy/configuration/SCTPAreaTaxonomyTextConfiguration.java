@@ -91,6 +91,11 @@ public class SCTPAreaTaxonomyTextConfiguration extends BLUGenericPAreaTaxonomyTe
     public String getGroupName(SCTPArea group) {
         return group.getRoot().getName();
     }
+    
+    @Override
+    public String getGroupRootUniqueIdentifier(SCTPArea group) {
+        return Long.toString(group.getRoot().getId());
+    }
 
     @Override
     public String getContainerHelpDescription(SCTArea container) {

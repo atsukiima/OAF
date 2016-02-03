@@ -12,6 +12,7 @@ import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
  */
 public class SCTTANTextConfiguration extends BLUGenericTANTextConfiguration<SCTTribalAbstractionNetwork, SCTBand, SCTCluster, Concept> {
 
+
     public SCTTANTextConfiguration(SCTTribalAbstractionNetwork tan) {
         super(tan);
     }
@@ -33,5 +34,10 @@ public class SCTTANTextConfiguration extends BLUGenericTANTextConfiguration<SCTT
     @Override
     public String getConceptUniqueIdentifier(Concept concept) {
         return Long.toString(concept.getId());
+    }
+    
+    @Override
+    public String getGroupRootUniqueIdentifier(SCTCluster group) {
+        return getConceptUniqueIdentifier(group.getRoot());
     }
 }
