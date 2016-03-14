@@ -47,44 +47,47 @@ public class LoadLocalRelease {
 
         for (File dir : releaseDirectories) {
             String dirName = dir.getAbsolutePath();
-            
+
             String releaseName;
-            
-            if(dirName.contains("_RF2Release_")) {
-                releaseName = dirName.substring(dirName.lastIndexOf("_RF2Release_"), dirName.lastIndexOf("\\Snapshot\\Terminology"));
-                
-            } else if (dirName.contains("RF1")) {
-                if (dirName.contains("_RF1Release")) {
-                    releaseName = dirName.substring(dirName.lastIndexOf("RF1Release"), dirName.lastIndexOf("\\Terminology\\Content"));
-                } else {
-                    releaseName = dirName.substring(dirName.lastIndexOf("SnomedCT_"), dirName.lastIndexOf("\\RF1"));
-                }
-                
-            } else {
-                if(dirName.contains("Essential Resources")) {
-                    releaseName = dirName.substring(dirName.lastIndexOf("\\SNOMED_CT_Essential_") + 21, dirName.lastIndexOf("\\Essential Resources"));
-                } else {
-                    if(dirName.contains("RF2Release")) {
-                        releaseName = dirName.substring(dirName.lastIndexOf("SnomedCT_"), dirName.lastIndexOf("\\RF2Release"));
+            try {
+                if (dirName.contains("_RF2Release_")) {
+                    releaseName = dirName.substring(dirName.lastIndexOf("_RF2Release_"), dirName.lastIndexOf("\\Snapshot\\Terminology"));
+
+                } else if (dirName.contains("RF1")) {
+                    if (dirName.contains("_RF1Release")) {
+                        releaseName = dirName.substring(dirName.lastIndexOf("RF1Release"), dirName.lastIndexOf("\\Terminology\\Content"));
                     } else {
-                        releaseName = dirName.substring(dirName.lastIndexOf("SnomedCT_"), dirName.lastIndexOf("\\Terminology\\Content"));
+                        releaseName = dirName.substring(dirName.lastIndexOf("SnomedCT_"), dirName.lastIndexOf("\\RF1"));
+                    }
+
+                } else {
+                    if (dirName.contains("Essential Resources")) {
+                        releaseName = dirName.substring(dirName.lastIndexOf("\\SNOMED_CT_Essential_") + 21, dirName.lastIndexOf("\\Essential Resources"));
+                    } else {
+                        if (dirName.contains("RF2Release")) {
+                            releaseName = dirName.substring(dirName.lastIndexOf("SnomedCT_"), dirName.lastIndexOf("\\RF2Release"));
+                        } else {
+                            releaseName = dirName.substring(dirName.lastIndexOf("SnomedCT_"), dirName.lastIndexOf("\\Terminology\\Content"));
+                        }
                     }
                 }
-            }
 
-            if (releaseName.contains("Release_")) {
-                releaseName = releaseName.substring(releaseName.lastIndexOf("Release_") + 8);
-            } else if (releaseName.contains("SnomedCT_")) {
-                releaseName = releaseName.substring(releaseName.lastIndexOf("SnomedCT_") + 9);
+                if (releaseName.contains("Release_")) {
+                    releaseName = releaseName.substring(releaseName.lastIndexOf("Release_") + 8);
+                } else if (releaseName.contains("SnomedCT_")) {
+                    releaseName = releaseName.substring(releaseName.lastIndexOf("SnomedCT_") + 9);
+                }
+
+                if (dirName.contains("RF2")) {
+                    releaseName += (" (RF2)");
+                }
+
+                releaseName = releaseName.replace("_", " ");
+
+                releaseNames.add(releaseName);
+            } catch (StringIndexOutOfBoundsException e) {
+                System.err.println("Error getting release name for: " + dirName);
             }
-            
-            if(dirName.contains("RF2")) {
-                releaseName += (" (RF2)");
-            }
-            
-            releaseName = releaseName.replace("_", " ");
-            
-            releaseNames.add(releaseName);
         }
         
         return releaseNames;
