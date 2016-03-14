@@ -8,7 +8,6 @@ import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
-import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import java.util.ArrayList;
 import java.util.HashMap;

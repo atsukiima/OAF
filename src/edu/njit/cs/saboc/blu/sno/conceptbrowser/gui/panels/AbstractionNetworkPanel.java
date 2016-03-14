@@ -3,7 +3,6 @@ package edu.njit.cs.saboc.blu.sno.conceptbrowser.gui.panels;
 import SnomedShared.Concept;
 import SnomedShared.OutgoingLateralRelationship;
 import SnomedShared.PAreaDetailsForConcept;
-import SnomedShared.overlapping.EntryPoint;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.FocusConcept;
 import edu.njit.cs.saboc.blu.sno.conceptbrowser.SnomedConceptBrowser;

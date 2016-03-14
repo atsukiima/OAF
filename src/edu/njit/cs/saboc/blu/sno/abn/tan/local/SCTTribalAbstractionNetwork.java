@@ -5,6 +5,7 @@ import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
 import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.MultiRootedHierarchy;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.abn.tan.SCTTribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
@@ -16,7 +17,8 @@ import java.util.HashSet;
  *
  * @author Chris
  */
-public class SCTTribalAbstractionNetwork extends TribalAbstractionNetwork<Concept, SCTBand, SCTCluster> implements SCTAbstractionNetwork<SCTTribalAbstractionNetwork> {
+public class SCTTribalAbstractionNetwork extends TribalAbstractionNetwork<Concept, SCTTribalAbstractionNetwork, SCTBand, SCTCluster> 
+        implements SCTAbstractionNetwork<SCTTribalAbstractionNetwork> {
     
     private final SCTLocalDataSource dataSource;
   
@@ -109,5 +111,10 @@ public class SCTTribalAbstractionNetwork extends TribalAbstractionNetwork<Concep
         }
 
         return searchResults;
+    }
+        
+    public SCTTribalAbstractionNetwork createRootSubTAB(SCTCluster root) {
+        SCTTribalAbstractionNetworkGenerator generator = new SCTTribalAbstractionNetworkGenerator(root.getRoot().getName(), dataSource);
+        return super.createRootSubTAB(root, generator);
     }
 }
