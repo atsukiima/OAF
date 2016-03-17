@@ -10,7 +10,7 @@ import java.util.HashSet;
  *
  * @author Chris O
  */
-public class SCTTargetGroup extends TargetGroup<Concept, SCTConceptHierarchy> {
+public class SCTTargetGroup extends TargetGroup<Concept> {
     
     public SCTTargetGroup(int id, 
             Concept root, 

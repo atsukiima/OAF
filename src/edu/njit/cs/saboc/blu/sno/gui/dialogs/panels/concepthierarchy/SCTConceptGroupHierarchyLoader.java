@@ -15,7 +15,7 @@ import java.util.Comparator;
  */
 public abstract class SCTConceptGroupHierarchyLoader<T extends GenericConceptGroup> extends ConceptGroupHierarchyLoader<Concept, SCTConceptHierarchy, T> {
     
-    public SCTConceptGroupHierarchyLoader(T group, ConceptGroupHierarchicalViewPanel<Concept, SCTConceptHierarchy> panel) {
+    public SCTConceptGroupHierarchyLoader(T group, ConceptGroupHierarchicalViewPanel<Concept> panel) {
         super(group, panel);
     }
     

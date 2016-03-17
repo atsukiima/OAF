@@ -1,7 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy;
 
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.MultiRootedHierarchy;
-import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.SingleRootedHierarchy;
 import java.util.HashSet;
 
 /**
@@ -12,10 +11,6 @@ public class DisjointPAreaHierarchy extends MultiRootedHierarchy<DisjointPartial
 
     public DisjointPAreaHierarchy(HashSet<DisjointPartialArea> basisDPAreas) {
         super(basisDPAreas);
-    }
-    
-    public SingleRootedHierarchy<DisjointPartialArea, ? extends SingleRootedHierarchy> getSubhierarchyRootedAt(DisjointPartialArea dparea) {
-        return null;
     }
 }
 
