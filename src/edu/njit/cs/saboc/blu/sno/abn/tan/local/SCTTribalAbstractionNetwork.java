@@ -113,8 +113,14 @@ public class SCTTribalAbstractionNetwork extends TribalAbstractionNetwork<Concep
         return searchResults;
     }
         
-    public SCTTribalAbstractionNetwork createRootSubTAB(SCTCluster root) {
+    public SCTTribalAbstractionNetwork createRootSubTAN(SCTCluster root) {
         SCTTribalAbstractionNetworkGenerator generator = new SCTTribalAbstractionNetworkGenerator(root.getRoot().getName(), dataSource);
-        return super.createRootSubTAB(root, generator);
+        return super.createRootSubTAN(root, generator);
+    }
+    
+    public SCTTribalAbstractionNetwork createAncestorTAN(SCTCluster root) {
+        SCTTribalAbstractionNetworkGenerator generator = new SCTTribalAbstractionNetworkGenerator(root.getRoot().getName(), dataSource);
+        
+        return super.createAncestorTAN(root, generator);
     }
 }

@@ -7,6 +7,8 @@ import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan.SCTCreateTANFromClusterButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan.SCTExportClusterButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTOpenBrowserButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan.SCTCreateAncestorTANButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan.SCTCreateRootTANButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import java.util.Optional;
 
@@ -22,6 +24,10 @@ public class SCTClusterOptionsPanel extends AbstractNodeOptionsPanel<SCTCluster>
 
     private final SCTOpenBrowserButton btnNAT;
     
+    private final SCTCreateRootTANButton rootTANBtn;
+    
+    private final SCTCreateAncestorTANButton ancestorTANBtn;
+    
     private final SCTCreateTANFromClusterButton tanBtn;
     
     private final SCTExportClusterButton exportBtn;
@@ -35,6 +41,14 @@ public class SCTClusterOptionsPanel extends AbstractNodeOptionsPanel<SCTCluster>
             "cluster", config.getUIConfiguration().getDisplayFrameListener());
         
         super.addOptionButton(btnNAT);
+        
+        rootTANBtn = new SCTCreateRootTANButton(config);
+        
+        super.addOptionButton(rootTANBtn);
+        
+        ancestorTANBtn = new SCTCreateAncestorTANButton(config);
+        
+        super.addOptionButton(ancestorTANBtn);
         
         tanBtn = new SCTCreateTANFromClusterButton(config);
         
@@ -65,6 +79,18 @@ public class SCTClusterOptionsPanel extends AbstractNodeOptionsPanel<SCTCluster>
         } else {
             tanBtn.setEnabled(false);
         }
+        
+        if(config.getDataConfiguration().getTribalAbstractionNetwork().getDescendantGroups(cluster).isEmpty()) {
+            rootTANBtn.setEnabled(false);
+        } else {
+            rootTANBtn.setEnabled(true);
+        }
+        
+        if(cluster.getParentIds().isEmpty()) {
+            ancestorTANBtn.setEnabled(false);
+        } else {
+            ancestorTANBtn.setEnabled(true);
+        }
     }
 
     @Override
@@ -72,6 +98,10 @@ public class SCTClusterOptionsPanel extends AbstractNodeOptionsPanel<SCTCluster>
         selectedCluster = Optional.of(cluster);
         
         btnNAT.setCurrentRootConcept(cluster.getRoot());
+        
+        rootTANBtn.setCurrentCluster(cluster);
+        
+        ancestorTANBtn.setCurrentCluster(cluster);
         
         tanBtn.setCurrentCluster(cluster);
         
@@ -84,6 +114,8 @@ public class SCTClusterOptionsPanel extends AbstractNodeOptionsPanel<SCTCluster>
         selectedCluster = Optional.empty();
 
         btnNAT.setCurrentRootConcept(null);
+        rootTANBtn.setCurrentCluster(null);
+        ancestorTANBtn.setCurrentCluster(null);
         tanBtn.setCurrentCluster(null);
         exportBtn.setCurrentCluster(null);
     }
