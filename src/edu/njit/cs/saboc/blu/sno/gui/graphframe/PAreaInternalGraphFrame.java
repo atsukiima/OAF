@@ -69,6 +69,8 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         }
 
         this.setTitle(frameTitle);
+        
+        super.setContainerAbNCheckboxText("Show Area Taxonomy");
 
         openReportsBtn = new JButton("Taxonomy Reports and Metrics");
         openReportsBtn.addActionListener((ActionEvent ae) -> {

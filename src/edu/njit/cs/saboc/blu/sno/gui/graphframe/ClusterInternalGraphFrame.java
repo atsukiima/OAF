@@ -48,6 +48,8 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
 
         String frameTitle = UtilityMethods.getPrintableVersionName(data.getDataSource().getSelectedVersion());
         this.setTitle(frameTitle);
+        
+        super.setContainerAbNCheckboxText("Show Band TAN");
 
         openReportsBtn = new JButton("Reports and Metrics");
         openReportsBtn.addActionListener((ActionEvent ae) -> {
