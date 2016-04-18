@@ -1,8 +1,9 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.area;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractEntityList;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractAbNNodeEntityList;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.entry.ContainerConceptEntry;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -11,7 +12,7 @@ import java.util.Optional;
  *
  * @author Chris O
  */
-public class SCTAreaConceptList extends AbstractEntityList<ContainerConceptEntry<Concept, SCTPArea>> {
+public class SCTAreaConceptList extends AbstractAbNNodeEntityList<SCTArea, ContainerConceptEntry<Concept, SCTPArea>> {
     
     public SCTAreaConceptList() {
         super(new SCTAreaConceptTableModel());

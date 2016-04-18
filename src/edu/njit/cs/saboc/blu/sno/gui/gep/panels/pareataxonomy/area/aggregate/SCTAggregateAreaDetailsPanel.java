@@ -5,7 +5,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeDetailsPane
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTConceptList;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTAbNNodeConceptList;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class SCTAggregateAreaDetailsPanel extends AbstractNodeDetailsPanel<SCTAr
 
         super(new SCTAggregateAreaSummaryPanel(configuration), 
                 new SCTAggregateAreaOptionsPanel(configuration), 
-                new SCTConceptList());
+                new SCTAbNNodeConceptList<>());
         
         this.configuration = configuration;
     }

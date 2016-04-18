@@ -1,15 +1,16 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.area;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.BLUAbstractConceptTableModel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.entry.ContainerConceptEntry;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.BLUAbstractAbNNodeTableModel;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 
 /**
  *
  * @author Chris O
  */
-public class SCTAreaConceptTableModel extends BLUAbstractConceptTableModel<ContainerConceptEntry<Concept, SCTPArea>> {
+public class SCTAreaConceptTableModel extends BLUAbstractAbNNodeTableModel<SCTArea, ContainerConceptEntry<Concept, SCTPArea>> {
 
     public SCTAreaConceptTableModel() {
         super(new String[]{"Concept Name", "Concept ID", "Overlapping Concept"});

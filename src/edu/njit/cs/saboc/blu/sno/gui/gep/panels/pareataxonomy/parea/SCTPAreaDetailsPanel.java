@@ -4,7 +4,7 @@ import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeDetailsPanel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTConceptList;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTAbNNodeConceptList;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class SCTPAreaDetailsPanel extends AbstractNodeDetailsPanel<SCTPArea, Con
         
         super(new SCTPAreaSummaryPanel(config), 
                new SCTPAreaOptionsPanel(config),
-              new SCTConceptList());
+              new SCTAbNNodeConceptList<>());
         
         this.taxonomy = config.getDataConfiguration().getPAreaTaxonomy();
         
