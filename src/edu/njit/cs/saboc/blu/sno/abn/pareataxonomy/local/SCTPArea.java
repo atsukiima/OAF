@@ -3,7 +3,7 @@ package edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local;
 import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import SnomedShared.pareataxonomy.InheritedRelationship.InheritanceType;
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.GenericPArea;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.sno.abn.generator.InheritedRelWithHash;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import java.util.HashSet;
@@ -14,7 +14,7 @@ import java.util.HashSet;
  * information about its parents.
  * @author 
  */
-public class SCTPArea extends GenericPArea<Concept, InheritedRelationship, SCTConceptHierarchy, SCTPArea>  {
+public class SCTPArea extends PArea<Concept, InheritedRelationship, SCTConceptHierarchy, SCTPArea>  {
         
     public SCTPArea(int id, 
             SCTConceptHierarchy conceptHierarchy, 
