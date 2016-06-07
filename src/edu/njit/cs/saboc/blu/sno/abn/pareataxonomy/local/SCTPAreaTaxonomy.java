@@ -4,7 +4,7 @@ import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.AggregatePAreaTaxonomyGenerator;
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.GenericPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.generator.SCTPAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
@@ -23,7 +23,7 @@ import java.util.Map;
  *
  * @author Chris O
  */
-public class SCTPAreaTaxonomy extends GenericPAreaTaxonomy<SCTPAreaTaxonomy, SCTPArea, 
+public class SCTPAreaTaxonomy extends PAreaTaxonomy<SCTPAreaTaxonomy, SCTPArea, 
         SCTArea, SCTRegion, Concept, InheritedRelationship, SCTConceptHierarchy> 
 
     implements SCTAbstractionNetwork<SCTPAreaTaxonomy> {
