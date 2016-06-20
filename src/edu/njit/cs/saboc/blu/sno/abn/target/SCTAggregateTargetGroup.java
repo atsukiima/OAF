@@ -3,7 +3,7 @@ package edu.njit.cs.saboc.blu.sno.abn.target;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
-import edu.njit.cs.saboc.blu.core.abn.aggregate.AggregateableConceptGroup;
+import edu.njit.cs.saboc.blu.core.abn.aggregate.AggregateNode;
 
 import java.util.HashSet;
 
@@ -11,7 +11,7 @@ import java.util.HashSet;
  *
  * @author Chris O
  */
-public class SCTAggregateTargetGroup extends SCTTargetGroup implements AggregateableConceptGroup<Concept, SCTTargetGroup> {
+public class SCTAggregateTargetGroup extends SCTTargetGroup implements AggregateNode<Concept, SCTTargetGroup> {
 
 
     private GroupHierarchy<SCTTargetGroup> reducedGroupHierarchy;

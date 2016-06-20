@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.abn.disjoint.nodes.DisjointGenericConceptGroup;
+import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointNode;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
@@ -12,7 +12,7 @@ import java.util.HashSet;
  *
  * @author Chris
  */
-public class DisjointPartialArea extends DisjointGenericConceptGroup<SCTPArea, Concept, SCTConceptHierarchy, DisjointPartialArea> {
+public class DisjointPartialArea extends DisjointNode<SCTPArea, Concept, SCTConceptHierarchy, DisjointPartialArea> {
     
     public DisjointPartialArea(int id, 
             Concept root, 

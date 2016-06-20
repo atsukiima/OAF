@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
-import edu.njit.cs.saboc.blu.core.abn.aggregate.AggregateableConceptGroup;
+import edu.njit.cs.saboc.blu.core.abn.aggregate.AggregateNode;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,7 +11,7 @@ import java.util.HashSet;
  *
  * @author Chris O
  */
-public class SCTAggregatePArea extends SCTPArea implements AggregateableConceptGroup<Concept, SCTPArea> {
+public class SCTAggregatePArea extends SCTPArea implements AggregateNode<Concept, SCTPArea> {
 
     private GroupHierarchy<SCTPArea> reducedPAreaHierarchy;
     

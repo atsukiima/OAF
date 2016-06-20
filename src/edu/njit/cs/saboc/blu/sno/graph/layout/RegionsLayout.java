@@ -6,7 +6,7 @@ import edu.njit.cs.saboc.blu.core.graph.edges.GraphGroupLevel;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphLane;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphLevel;
 import edu.njit.cs.saboc.blu.core.graph.layout.GraphLayoutConstants;
-import edu.njit.cs.saboc.blu.core.graph.nodes.GenericGroupEntry;
+import edu.njit.cs.saboc.blu.core.graph.nodes.SinglyRootedNodeEntry;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
@@ -111,7 +111,7 @@ public class RegionsLayout extends GenericPAreaLayout {
                 // find the minimum width required for a square that could hold all the pAreas.
                 int pareasWide = (int) Math.ceil(Math.sqrt(pareaCount)); 
 
-                int regionWidth = pareasWide * (GenericGroupEntry.ENTRY_WIDTH + GraphLayoutConstants.GROUP_CHANNEL_WIDTH);
+                int regionWidth = pareasWide * (SinglyRootedNodeEntry.ENTRY_WIDTH + GraphLayoutConstants.GROUP_CHANNEL_WIDTH);
                 
                 ArrayList<InheritedRelationship> relationships = new ArrayList<InheritedRelationship>(region.getRelationships());
 
@@ -153,7 +153,7 @@ public class RegionsLayout extends GenericPAreaLayout {
                 // Set the height to the greater of (a) the current height or (b) the number of regions in a column times the height of each pArea and the space between them.
                 areaHeight = Math.max(areaHeight, 
                         regionLabel.getHeight() + (int) (Math.ceil((double) pareaCount / pareasWide))
-                        * (GenericGroupEntry.ENTRY_HEIGHT + GraphLayoutConstants.GROUP_ROW_HEIGHT));  
+                        * (SinglyRootedNodeEntry.ENTRY_HEIGHT + GraphLayoutConstants.GROUP_ROW_HEIGHT));  
 
                 maxRows = Math.max(maxRows, (int) Math.ceil(Math.sqrt(pareaCount))); // Update the maxRows variable.
             }
@@ -205,7 +205,7 @@ public class RegionsLayout extends GenericPAreaLayout {
                 pAreaY = 0;
 
                 int horizontalPAreas = (int) Math.ceil(Math.sqrt(pareaCount));
-                int regionWidth = horizontalPAreas * (GenericGroupEntry.ENTRY_WIDTH + GraphLayoutConstants.GROUP_CHANNEL_WIDTH);
+                int regionWidth = horizontalPAreas * (SinglyRootedNodeEntry.ENTRY_WIDTH + GraphLayoutConstants.GROUP_CHANNEL_WIDTH);
                 
                 regionWidth = Math.max(regionWidth, regionLabel.getWidth() + 4);
                 
@@ -240,7 +240,7 @@ public class RegionsLayout extends GenericPAreaLayout {
                     currentPAreaLevel.addGroupEntry(pAreaPanel);
 
                     if ((i + 1) % horizontalPAreas == 0 && i < pareaCount - 1) {
-                        y2 += GenericGroupEntry.ENTRY_HEIGHT + GraphLayoutConstants.GROUP_ROW_HEIGHT;
+                        y2 += SinglyRootedNodeEntry.ENTRY_HEIGHT + GraphLayoutConstants.GROUP_ROW_HEIGHT;
                         x2 = (int) (1.5 * GraphLayoutConstants.GROUP_CHANNEL_WIDTH);
                         pAreaX = 0;
                         areaPAreaX[pAreaY]++;
@@ -252,7 +252,7 @@ public class RegionsLayout extends GenericPAreaLayout {
                                     GraphLayoutConstants.GROUP_ROW_HEIGHT - 5, 3, currentArea));
                         }
                     } else {
-                        x2 += (GenericGroupEntry.ENTRY_WIDTH + GraphLayoutConstants.GROUP_CHANNEL_WIDTH);
+                        x2 += (SinglyRootedNodeEntry.ENTRY_WIDTH + GraphLayoutConstants.GROUP_CHANNEL_WIDTH);
                         pAreaX++;
                         areaPAreaX[pAreaY]++;
                     }

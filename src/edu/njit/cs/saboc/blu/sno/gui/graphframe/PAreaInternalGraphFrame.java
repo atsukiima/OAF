@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.abn.aggregate.AggregateableConceptGroup;
+import edu.njit.cs.saboc.blu.core.abn.aggregate.AggregateNode;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.BLUConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.GenericExportPartitionedAbNButton;
@@ -161,7 +161,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
                     }
 
                     public String getCountStr(SCTPArea parea) {
-                        AggregateableConceptGroup reduced = (AggregateableConceptGroup) parea;
+                        AggregateNode reduced = (AggregateNode) parea;
 
                         if (reduced.getAggregatedGroups().isEmpty()) {
                             return super.getCountStr(parea);

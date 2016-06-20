@@ -49,7 +49,7 @@ public class GraphOptionsButton extends PopupToggleButton {
                 igf.replaceInternalFrameDataWith(data, false);
 
                 for (GraphEdge edge : edges) {
-                    graph.drawRoutedEdge(edge.getSourceID(), edge.getTargetID());
+                    graph.drawRoutedEdge(edge.getSource(), edge.getTarget());
                 }
             }
         });
@@ -65,7 +65,7 @@ public class GraphOptionsButton extends PopupToggleButton {
                 igf.replaceInternalFrameDataWith(data, true);
 
                 for (GraphEdge edge : edges) {
-                    graph.drawRoutedEdge(edge.getSourceID(), edge.getTargetID());
+                    graph.drawRoutedEdge(edge.getSource(), edge.getTarget());
                 }
             }
         });
