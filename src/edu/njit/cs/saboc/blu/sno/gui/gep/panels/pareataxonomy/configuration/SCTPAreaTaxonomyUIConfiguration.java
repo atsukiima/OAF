@@ -3,7 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration;
 
 import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.InheritedRelationship;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeInformationPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.abn.AbstractAbNDetailsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configuration.BLUGenericPAreaTaxonomyUIConfiguration;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
@@ -49,7 +49,7 @@ public class SCTPAreaTaxonomyUIConfiguration extends BLUGenericPAreaTaxonomyUICo
     }
 
     @Override
-    public AbstractNodePanel createGroupDetailsPanel() {
+    public NodeInformationPanel createGroupDetailsPanel() {
         if(config.getDataConfiguration().getPAreaTaxonomy().isReduced()) {
             return new SCTAggregatePAreaPanel(config);
         } else {
@@ -63,7 +63,7 @@ public class SCTPAreaTaxonomyUIConfiguration extends BLUGenericPAreaTaxonomyUICo
     }
 
     @Override
-    public AbstractNodePanel createContainerDetailsPanel() {
+    public NodeInformationPanel createContainerDetailsPanel() {
         
         if(config.getDataConfiguration().getPAreaTaxonomy().isReduced()) {
             return new SCTAggregateAreaPanel(config);

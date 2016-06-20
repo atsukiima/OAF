@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.area;
 
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeInformationPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
@@ -43,7 +43,7 @@ public class SCTAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTArea> {
         super.addOptionButton(tanBtn);
                 
         popoutBtn = new PopoutNodeDetailsButton("area", () -> {
-            AbstractNodePanel anp = config.getUIConfiguration().createContainerDetailsPanel();
+            NodeInformationPanel anp = config.getUIConfiguration().createContainerDetailsPanel();
             anp.setContents(selectedArea.get());
 
             return anp;

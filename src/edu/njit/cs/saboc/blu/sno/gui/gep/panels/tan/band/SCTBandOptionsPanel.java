@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.band;
 
 import SnomedShared.overlapping.CommonOverlapSet;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeInformationPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
@@ -40,7 +40,7 @@ public class SCTBandOptionsPanel extends AbstractNodeOptionsPanel<SCTBand> {
         super.addOptionButton(exportBtn);
         
         popoutBtn = new PopoutNodeDetailsButton("band", () -> {
-            AbstractNodePanel anp = config.getUIConfiguration().createContainerDetailsPanel();
+            NodeInformationPanel anp = config.getUIConfiguration().createContainerDetailsPanel();
             anp.setContents(selectedArea.get());
 
             return anp;

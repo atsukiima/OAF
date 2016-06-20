@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeInformationPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.abn.AbstractAbNDetailsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.BLUGenericTANUIConfiguration;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
@@ -45,7 +45,7 @@ public class SCTTANUIConfiguration extends BLUGenericTANUIConfiguration<SCTTriba
     }
 
     @Override
-    public AbstractNodePanel createGroupDetailsPanel() {
+    public NodeInformationPanel createGroupDetailsPanel() {
         return new SCTClusterPanel(config);
     }
     
@@ -55,7 +55,7 @@ public class SCTTANUIConfiguration extends BLUGenericTANUIConfiguration<SCTTriba
     }
 
     @Override
-    public AbstractNodePanel createContainerDetailsPanel() {
+    public NodeInformationPanel createContainerDetailsPanel() {
         return new SCTBandPanel(config);
     }
 }

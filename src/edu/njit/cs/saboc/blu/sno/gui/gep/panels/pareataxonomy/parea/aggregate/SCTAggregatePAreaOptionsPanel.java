@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea.aggregate;
 
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeInformationPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
@@ -63,7 +63,7 @@ public class SCTAggregatePAreaOptionsPanel extends AbstractNodeOptionsPanel<SCTA
         super.addOptionButton(rootSubtaxonomyBtn);
         
         popoutBtn = new PopoutNodeDetailsButton("aggregate partial-area", () -> {
-            AbstractNodePanel anp = config.getUIConfiguration().createGroupDetailsPanel();
+            NodeInformationPanel anp = config.getUIConfiguration().createGroupDetailsPanel();
             anp.setContents(selectedPArea.get());
 
             return anp;

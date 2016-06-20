@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configura
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.ui.BLUAbNUIConfiguration;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodePanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeInformationPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.abn.AbstractAbNDetailsPanel;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
@@ -43,7 +43,7 @@ public class SCTDisjointPAreaTaxonomyUIConfiguration extends BLUAbNUIConfigurati
     }
 
     @Override
-    public AbstractNodePanel createGroupDetailsPanel() {
+    public NodeInformationPanel createGroupDetailsPanel() {
         return new SCTDisjointPAreaPanel(config);
     }
 }
