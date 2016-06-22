@@ -3,7 +3,7 @@ package edu.njit.cs.saboc.blu.sno.abn.tan.local;
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.GroupHierarchy;
 import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
-import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.MultiRootedHierarchy;
+import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.tan.SCTTribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
@@ -28,7 +28,7 @@ public class SCTTribalAbstractionNetwork extends TribalAbstractionNetwork<Concep
             HashMap<Integer, SCTCluster> clusters,
             GroupHierarchy<SCTCluster> clusterHierarchy,
             ArrayList<SCTCluster> patriarchClusters,
-            MultiRootedHierarchy<Concept> sourceHierarchy,
+            Hierarchy<Concept> sourceHierarchy,
             SCTLocalDataSource dataSource) {
         
         super(tanName, bands, clusters, clusterHierarchy, patriarchClusters, sourceHierarchy);

@@ -6,7 +6,7 @@ import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.BLUConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.GenericExportPartitionedAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
-import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.core.gui.hierarchypainter.HierarchyPainterPanel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
@@ -142,14 +142,14 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         Thread loadThread = new Thread(() -> {
             gep.showLoading();
             
-            GroupEntryLabelCreator labelCreator;
+            SinglyRootedNodeLabelCreator labelCreator;
 
             AbNPainter abnPainter;
 
             if (taxonomy.isReduced()) {
                 abnPainter = new SCTAggregateTaxonomyPainter();
 
-                labelCreator = new GroupEntryLabelCreator<SCTPArea>() {
+                labelCreator = new SinglyRootedNodeLabelCreator<SCTPArea>() {
                     public String getRootNameStr(SCTPArea parea) {
                         int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
 
@@ -173,7 +173,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
             } else {
                 abnPainter = new SCTTaxonomyPainter();
 
-                labelCreator = new GroupEntryLabelCreator<SCTPArea>() {
+                labelCreator = new SinglyRootedNodeLabelCreator<SCTPArea>() {
                     public String getRootNameStr(SCTPArea parea) {
                         int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
 

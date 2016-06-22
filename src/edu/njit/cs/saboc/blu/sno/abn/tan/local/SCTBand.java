@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.abn.tan.local;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.abn.tan.nodes.Band;
+import edu.njit.cs.saboc.blu.core.abn.tan.Band;
 import java.util.HashSet;
 
 /**

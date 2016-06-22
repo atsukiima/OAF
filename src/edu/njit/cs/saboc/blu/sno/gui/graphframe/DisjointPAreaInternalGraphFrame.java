@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.DisjointAbNPainter;
-import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
@@ -50,7 +50,7 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
         Thread loadThread = new Thread(() -> {
             gep.showLoading();
             
-            GroupEntryLabelCreator labelCreator = new GroupEntryLabelCreator<DisjointPartialArea>() {
+            SinglyRootedNodeLabelCreator labelCreator = new SinglyRootedNodeLabelCreator<DisjointPartialArea>() {
                 public String getRootNameStr(DisjointPartialArea parea) {
                     int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
 

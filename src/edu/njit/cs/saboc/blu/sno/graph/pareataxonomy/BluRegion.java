@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.graph.pareataxonomy;
 
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
-import edu.njit.cs.saboc.blu.core.graph.pareataxonomy.GenericBluRegion;
+import edu.njit.cs.saboc.blu.core.graph.pareataxonomy.RegionEntry;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTRegion;
 import java.awt.Color;
 import javax.swing.JLabel;
@@ -11,7 +11,7 @@ import javax.swing.JLabel;
  *
  * @author Chris
  */
-public class BluRegion extends GenericBluRegion<SCTRegion, BluArea> {
+public class BluRegion extends RegionEntry<SCTRegion, BluArea> {
 
     public BluRegion(SCTRegion region, String regionName,
             int width, int height, BluGraph g, BluArea p, Color c, boolean treatAsArea) {

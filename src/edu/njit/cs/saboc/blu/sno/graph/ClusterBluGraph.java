@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.graph;
 
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
-import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.graph.layout.ClusterNoPartitionLayout;
@@ -26,7 +26,7 @@ public class ClusterBluGraph extends BluGraph {
     public ClusterBluGraph(final JFrame parentFrame, 
             final SCTTribalAbstractionNetwork hierarchyData, 
             final SCTDisplayFrameListener displayListener,
-            GroupEntryLabelCreator<SCTCluster> labelCreator,
+            SinglyRootedNodeLabelCreator<SCTCluster> labelCreator,
             SCTTANConfiguration config) {
         
         super(hierarchyData, true, true, labelCreator);

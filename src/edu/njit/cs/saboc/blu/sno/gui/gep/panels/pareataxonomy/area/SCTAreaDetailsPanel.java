@@ -2,8 +2,8 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.area;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.OverlappingConceptResult;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeDetailsPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.entry.ContainerConceptEntry;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDetailsPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.entry.PartitionedNodeConceptEntry;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
@@ -19,7 +19,7 @@ import java.util.HashSet;
  *
  * @author Chris O
  */
-public class SCTAreaDetailsPanel extends AbstractNodeDetailsPanel<SCTArea, ContainerConceptEntry<Concept, SCTPArea>> {
+public class SCTAreaDetailsPanel extends NodeDetailsPanel<SCTArea, PartitionedNodeConceptEntry<Concept, SCTPArea>> {
     
     private final SCTPAreaTaxonomyConfiguration configuration;
 
@@ -33,7 +33,7 @@ public class SCTAreaDetailsPanel extends AbstractNodeDetailsPanel<SCTArea, Conta
     }
 
     @Override
-    protected ArrayList<ContainerConceptEntry<Concept, SCTPArea>> getSortedConceptList(SCTArea area) {
+    protected ArrayList<PartitionedNodeConceptEntry<Concept, SCTPArea>> getSortedConceptList(SCTArea area) {
         
         HashSet<OverlappingConceptResult<Concept,SCTPArea>> overlappingConcepts = configuration.getDataConfiguration().getContainerOverlappingResults(area);
         
@@ -55,16 +55,16 @@ public class SCTAreaDetailsPanel extends AbstractNodeDetailsPanel<SCTArea, Conta
             });
         });
         
-        ArrayList<ContainerConceptEntry<Concept, SCTPArea>> areaEntries = new ArrayList<>();
+        ArrayList<PartitionedNodeConceptEntry<Concept, SCTPArea>> areaEntries = new ArrayList<>();
         
         conceptPAreas.forEach((Concept c, HashSet<SCTPArea> conceptsPAreas) -> {
-            areaEntries.add(new ContainerConceptEntry<>(c, conceptsPAreas));
+            areaEntries.add(new PartitionedNodeConceptEntry<>(c, conceptsPAreas));
         });
         
         final ConceptNameComparator comparator = new ConceptNameComparator();
         
-        Collections.sort(areaEntries, new Comparator<ContainerConceptEntry<Concept, SCTPArea>>() {
-            public int compare(ContainerConceptEntry<Concept, SCTPArea> a, ContainerConceptEntry<Concept, SCTPArea> b) {
+        Collections.sort(areaEntries, new Comparator<PartitionedNodeConceptEntry<Concept, SCTPArea>>() {
+            public int compare(PartitionedNodeConceptEntry<Concept, SCTPArea> a, PartitionedNodeConceptEntry<Concept, SCTPArea> b) {
                 return comparator.compare(a.getConcept(), b.getConcept());
             }
         });

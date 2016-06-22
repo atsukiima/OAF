@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.graph;
 
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
-import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.graph.layout.DisjointPAreaTaxonomyLayout;
@@ -19,7 +19,7 @@ public class DisjointPAreaBluGraph extends BluGraph {
     public DisjointPAreaBluGraph(final JFrame parentFrame, 
             final DisjointPAreaTaxonomy disjointTaxonomy, 
             final SCTDisplayFrameListener displayListener, 
-            GroupEntryLabelCreator<SCTPArea> labelCreator) {
+            SinglyRootedNodeLabelCreator<SCTPArea> labelCreator) {
         
         super(disjointTaxonomy, true, false, labelCreator);
         

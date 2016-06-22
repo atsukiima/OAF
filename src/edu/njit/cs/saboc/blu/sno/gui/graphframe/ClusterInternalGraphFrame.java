@@ -4,7 +4,7 @@ import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.GenericExportPartitionedAbNButton;
-import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.tan.TANPainter;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
@@ -89,7 +89,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         Thread loadThread = new Thread(() -> {
             gep.showLoading();
             
-            GroupEntryLabelCreator labelCreator = new GroupEntryLabelCreator<SCTCluster>() {
+            SinglyRootedNodeLabelCreator labelCreator = new SinglyRootedNodeLabelCreator<SCTCluster>() {
                 public String getRootNameStr(SCTCluster cluster) {
                     return cluster.getRoot().getName().substring(0, cluster.getRoot().getName().lastIndexOf("(") - 1);
                 }

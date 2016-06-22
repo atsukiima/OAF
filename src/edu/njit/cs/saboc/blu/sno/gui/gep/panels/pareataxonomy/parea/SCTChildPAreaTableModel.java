@@ -1,6 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea;
 
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.BLUAbstractChildGroupTableModel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.ChildNodeTableModel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 
@@ -8,7 +8,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTP
  *
  * @author Chris O
  */
-public class SCTChildPAreaTableModel extends BLUAbstractChildGroupTableModel<SCTPArea> {
+public class SCTChildPAreaTableModel extends ChildNodeTableModel<SCTPArea> {
 
     private final SCTPAreaTaxonomyConfiguration config;
     

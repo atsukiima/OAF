@@ -1,14 +1,14 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.area;
 
 import SnomedShared.pareataxonomy.InheritedRelationship;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.BLUAbstractConceptTableModel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.ConceptTableModel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 
 /**
  *
  * @author Chris O
  */
-public class SCTAreaRelationshipTableModel extends BLUAbstractConceptTableModel<InheritedRelationship> {
+public class SCTAreaRelationshipTableModel extends ConceptTableModel<InheritedRelationship> {
 
     private final SCTPAreaTaxonomyConfiguration config;
     

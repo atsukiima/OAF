@@ -1,14 +1,14 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea;
 
 import SnomedShared.pareataxonomy.InheritedRelationship;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.BLUAbstractTableModel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.OAFAbstractTableModel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 
 /**
  *
  * @author Chris O
  */
-public class SCTPAreaRelationshipsTableModel extends BLUAbstractTableModel<InheritedRelationship> {
+public class SCTPAreaRelationshipsTableModel extends OAFAbstractTableModel<InheritedRelationship> {
 
     private final SCTPAreaTaxonomy taxonomy;
     

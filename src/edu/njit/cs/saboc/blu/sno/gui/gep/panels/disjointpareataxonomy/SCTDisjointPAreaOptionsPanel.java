@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeInformationPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton.NodeDetailsPanelGenerator;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
@@ -42,7 +42,7 @@ public class SCTDisjointPAreaOptionsPanel extends AbstractNodeOptionsPanel<Disjo
         super.addOptionButton(tanBtn);
         
         popoutBtn = new PopoutNodeDetailsButton("disjoint partial-area", () -> {
-            NodeInformationPanel anp = config.getUIConfiguration().createGroupDetailsPanel();
+            NodeDashboardPanel anp = config.getUIConfiguration().createGroupDetailsPanel();
             anp.setContents(selectedPArea.get());
 
             return anp;

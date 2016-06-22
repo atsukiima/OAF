@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.cluster;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.HierarchyPanelClickListener;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbNNodeInformationPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.BaseNodeInformationPanel;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptHierarchyViewPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
@@ -13,7 +13,7 @@ import javax.swing.JScrollPane;
  *
  * @author Chris O
  */
-public class SCTClusterConceptHierarchyPanel extends AbNNodeInformationPanel<SCTCluster> {
+public class SCTClusterConceptHierarchyPanel extends BaseNodeInformationPanel<SCTCluster> {
 
     private final SCTConceptHierarchyViewPanel hierarchyPanel;
     

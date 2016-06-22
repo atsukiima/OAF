@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.graph;
 
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
-import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.GroupEntryLabelCreator;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.graph.layout.NoRegionsLayout;
@@ -26,7 +26,7 @@ public class PAreaBluGraph extends BluGraph {
             SCTPAreaTaxonomy hierarchyData, 
             boolean areaGraph,
             SCTDisplayFrameListener displayListener, 
-            GroupEntryLabelCreator<SCTPArea> labelCreator,
+            SinglyRootedNodeLabelCreator<SCTPArea> labelCreator,
             SCTPAreaTaxonomyConfiguration config) {
         
         super(hierarchyData, areaGraph, hierarchyData.getDataSource().isLocalDataSource(), labelCreator);

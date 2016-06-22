@@ -3,7 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea.aggregate;
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.BLUAbstractParentGroupTableModel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.ParentNodeTableModel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 
@@ -12,7 +12,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTP
  * @author Chris O
  */
 public class SCTAggregateParentPAreaTableModel extends 
-        BLUAbstractParentGroupTableModel<Concept, SCTAggregatePArea, GenericParentGroupInfo<Concept, SCTAggregatePArea>> {
+        ParentNodeTableModel<Concept, SCTAggregatePArea, GenericParentGroupInfo<Concept, SCTAggregatePArea>> {
     
     private final SCTPAreaTaxonomyConfiguration config;
             

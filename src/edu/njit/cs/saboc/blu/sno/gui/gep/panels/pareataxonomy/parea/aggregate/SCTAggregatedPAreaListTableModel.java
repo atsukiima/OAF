@@ -1,7 +1,7 @@
 
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.parea.aggregate;
 
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.BLUAbstractTableModel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.OAFAbstractTableModel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 
@@ -9,7 +9,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTP
  *
  * @author Chris O
  */
-public class SCTAggregatedPAreaListTableModel extends BLUAbstractTableModel<SCTPArea> {
+public class SCTAggregatedPAreaListTableModel extends OAFAbstractTableModel<SCTPArea> {
     
     protected final SCTPAreaTaxonomyConfiguration configuration;
     

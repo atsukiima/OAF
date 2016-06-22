@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeDetailsPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDetailsPanel;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTAbNNodeConceptList;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfiguration;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author Chris O
  */
-public class SCTDisjointPAreaDetailsPanel extends AbstractNodeDetailsPanel<DisjointPartialArea, Concept> {
+public class SCTDisjointPAreaDetailsPanel extends NodeDetailsPanel<DisjointPartialArea, Concept> {
 
     public SCTDisjointPAreaDetailsPanel(SCTDisjointPAreaTaxonomyConfiguration config) {
         super(new SCTDisjointPAreaSummaryPanel(config), 

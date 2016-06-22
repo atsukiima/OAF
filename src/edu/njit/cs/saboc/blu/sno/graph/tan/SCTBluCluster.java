@@ -5,7 +5,7 @@ import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphEdge;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphGroupLevel;
 import edu.njit.cs.saboc.blu.core.graph.tan.GenericBluBandPartition;
-import edu.njit.cs.saboc.blu.core.graph.tan.GenericBluCluster;
+import edu.njit.cs.saboc.blu.core.graph.tan.ClusterEntry;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import java.util.ArrayList;
 
@@ -13,7 +13,7 @@ import java.util.ArrayList;
  *
  * @author Chris
  */
-public class SCTBluCluster extends GenericBluCluster<SCTCluster> {
+public class SCTBluCluster extends ClusterEntry<SCTCluster> {
 
     public SCTBluCluster(SCTCluster cluster, 
             BluGraph graph, 

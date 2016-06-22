@@ -2,7 +2,7 @@
 package edu.njit.cs.saboc.blu.sno.abn.tan.local;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.abn.tan.nodes.Cluster;
+import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import java.util.HashSet;
 

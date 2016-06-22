@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.cluster;
 
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeInformationPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan.SCTCreateTANFromClusterButton;
@@ -59,7 +59,7 @@ public class SCTClusterOptionsPanel extends AbstractNodeOptionsPanel<SCTCluster>
         super.addOptionButton(exportBtn);
         
         popoutBtn = new PopoutNodeDetailsButton("cluster", () -> {
-            NodeInformationPanel anp = config.getUIConfiguration().createGroupDetailsPanel();
+            NodeDashboardPanel anp = config.getUIConfiguration().createGroupDetailsPanel();
             anp.setContents(selectedCluster.get());
 
             return anp;

@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.datastructure.hierarchy;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.MultiRootedHierarchy;
+import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -9,7 +9,7 @@ import java.util.HashSet;
  *
  * @author Chris
  */
-public class SCTMultiRootedConceptHierarchy extends MultiRootedHierarchy<Concept> {
+public class SCTMultiRootedConceptHierarchy extends Hierarchy<Concept> {
     public SCTMultiRootedConceptHierarchy(HashSet<Concept> roots) {
         super(roots);
     }
