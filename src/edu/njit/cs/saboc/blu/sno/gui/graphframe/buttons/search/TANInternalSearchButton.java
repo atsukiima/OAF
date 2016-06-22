@@ -63,7 +63,7 @@ public class TANInternalSearchButton extends GenericInternalSearchButton {
                 
                 graphFrame.getEnhancedGraphExplorationPanel().highlightEntriesForSearch(conceptGroups);
                 
-                graphFrame.focusOnComponent(graphFrame.getGraph().getGroupEntries().get(conceptGroups.get(0).getId()));
+                graphFrame.focusOnComponent(graphFrame.getGraph().getNodeEntries().get(conceptGroups.get(0).getId()));
             }
         });
         
@@ -84,7 +84,7 @@ public class TANInternalSearchButton extends GenericInternalSearchButton {
             public void resultSelected(SearchButtonResult o) {
                 ClusterSummary result = ((ClusterSummary)o.getResult());
 
-                graphFrame.focusOnComponent(graphFrame.getGraph().getGroupEntries().get(result.getId()));
+                graphFrame.focusOnComponent(graphFrame.getGraph().getNodeEntries().get(result.getId()));
                 
                 graphFrame.getEnhancedGraphExplorationPanel().highlightEntriesForSearch(new ArrayList<GenericConceptGroup>(Arrays.asList(result)));
             }

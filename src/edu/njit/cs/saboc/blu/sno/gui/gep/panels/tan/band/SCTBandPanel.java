@@ -2,7 +2,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.band;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractContainerPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.PartitionedNodePanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.entry.PartitionedNodeConceptEntry;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.band.BandClusterListPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.band.BandDetailsPanel;
@@ -16,7 +16,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfigur
  *
  * @author Chris O
  */
-public class SCTBandPanel extends AbstractContainerPanel<SCTBand, SCTCluster, Concept, PartitionedNodeConceptEntry<Concept, SCTCluster>, SCTTANConfiguration> {
+public class SCTBandPanel extends PartitionedNodePanel<SCTBand, SCTCluster, Concept, PartitionedNodeConceptEntry<Concept, SCTCluster>, SCTTANConfiguration> {
     
     private final SCTTANConfiguration config;
 

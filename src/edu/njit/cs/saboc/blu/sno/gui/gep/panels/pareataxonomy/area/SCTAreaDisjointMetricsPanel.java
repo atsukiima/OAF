@@ -1,8 +1,8 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.area;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractDisjointAbNMetricsPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.BLUAbstractOverlappingCombinationsTableModel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.DisjointAbNMetricsPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.OverlappingCombinationsTableModel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.OverlappingDetailsTableModel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.OverlappingNodeTableModel;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
@@ -15,7 +15,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTP
  *
  * @author Chris O
  */
-public class SCTAreaDisjointMetricsPanel extends AbstractDisjointAbNMetricsPanel<
+public class SCTAreaDisjointMetricsPanel extends DisjointAbNMetricsPanel<
         SCTArea,
         DisjointPAreaTaxonomy, 
         SCTPArea,

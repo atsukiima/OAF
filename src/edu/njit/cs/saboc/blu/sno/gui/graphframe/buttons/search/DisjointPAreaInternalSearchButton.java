@@ -88,7 +88,7 @@ public class DisjointPAreaInternalSearchButton extends GenericInternalSearchButt
                     }
                 }
                 
-                graphFrame.focusOnComponent(graphFrame.getGraph().getGroupEntries().get(result.iterator().next().getId()));
+                graphFrame.focusOnComponent(graphFrame.getGraph().getNodeEntries().get(result.iterator().next().getId()));
                 
                 graphFrame.getEnhancedGraphExplorationPanel().highlightEntriesForSearch(new ArrayList<>(result));
             }
@@ -112,7 +112,7 @@ public class DisjointPAreaInternalSearchButton extends GenericInternalSearchButt
                 DisjointPartialArea parea = (DisjointPartialArea)o.getResult();
                 
                 graphFrame.getEnhancedGraphExplorationPanel().highlightEntriesForSearch(new ArrayList<>(Arrays.asList(parea)));
-                graphFrame.focusOnComponent(graphFrame.getGraph().getGroupEntries().get(parea.getId()));
+                graphFrame.focusOnComponent(graphFrame.getGraph().getNodeEntries().get(parea.getId()));
             }
         });
     }

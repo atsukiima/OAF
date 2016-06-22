@@ -594,7 +594,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
                 PAreaBluGraph graph = (PAreaBluGraph) igf.getGraph();
 
-                igf.focusOnComponent(graph.getGroupEntries().get(graph.getPAreaTaxonomy().getPAreaFromRootConceptId(
+                igf.focusOnComponent(graph.getNodeEntries().get(graph.getPAreaTaxonomy().getPAreaFromRootConceptId(
                         details.getHierarchyRoot().getId()).getId()));
             }
         }
@@ -762,7 +762,7 @@ public class AbstractionNetworkPanel extends BaseNavPanel {
 
                 ClusterBluGraph graph = (ClusterBluGraph) igf.getGraph();
 
-                igf.focusOnComponent(graph.getGroupEntries().get(cluster.getId()));
+                igf.focusOnComponent(graph.getNodeEntries().get(cluster.getId()));
             }
         }
     }
