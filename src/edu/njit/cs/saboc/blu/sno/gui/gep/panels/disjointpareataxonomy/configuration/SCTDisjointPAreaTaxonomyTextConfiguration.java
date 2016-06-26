@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configura
 
 import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.InheritedRelationship;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.text.BLUDisjointAbNTextConfiguration;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.DisjointAbNTextConfiguration;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
@@ -15,7 +15,7 @@ import java.util.HashSet;
  *
  * @author Chris O
  */
-public class SCTDisjointPAreaTaxonomyTextConfiguration implements BLUDisjointAbNTextConfiguration<DisjointPAreaTaxonomy, DisjointPartialArea, SCTPArea, Concept> {
+public class SCTDisjointPAreaTaxonomyTextConfiguration implements DisjointAbNTextConfiguration<DisjointPAreaTaxonomy, DisjointPartialArea, SCTPArea, Concept> {
 
     private final DisjointPAreaTaxonomy disjointTaxonomy;
 

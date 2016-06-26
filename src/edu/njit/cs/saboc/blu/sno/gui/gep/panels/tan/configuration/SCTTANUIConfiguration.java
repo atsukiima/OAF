@@ -3,7 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration;
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.abn.AbstractAbNDetailsPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.BLUGenericTANUIConfiguration;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.TANUIConfiguration;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
@@ -16,7 +16,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.cluster.SCTClusterPanel;
  *
  * @author Chris O
  */
-public class SCTTANUIConfiguration extends BLUGenericTANUIConfiguration<SCTTribalAbstractionNetwork, SCTBand, SCTCluster, Concept, SCTTANListenerConfiguration> {
+public class SCTTANUIConfiguration extends TANUIConfiguration<SCTTribalAbstractionNetwork, SCTBand, SCTCluster, Concept, SCTTANListenerConfiguration> {
 
     private final SCTTANConfiguration config;
     

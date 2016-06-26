@@ -3,7 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration;
 import SnomedShared.Concept;
 import SnomedShared.pareataxonomy.InheritedRelationship;
 import edu.njit.cs.saboc.blu.core.abn.OverlappingConceptResult;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configuration.BLUGenericPAreaTaxonomyDataConfiguration;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configuration.PAreaTaxonomyDataConfiguration;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.SCTDisjointPAreaTaxonomyGenerator;
@@ -28,7 +28,7 @@ import java.util.Queue;
  *
  * @author Chris O
  */
-public class SCTPAreaTaxonomyDataConfiguration extends BLUGenericPAreaTaxonomyDataConfiguration<
+public class SCTPAreaTaxonomyDataConfiguration extends PAreaTaxonomyDataConfiguration<
         SCTPAreaTaxonomy, 
         DisjointPAreaTaxonomy, 
         SCTArea, 

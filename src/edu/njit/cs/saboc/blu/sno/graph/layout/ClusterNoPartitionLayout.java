@@ -6,7 +6,7 @@ import edu.njit.cs.saboc.blu.core.graph.edges.GraphEdge;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphGroupLevel;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphLevel;
 import edu.njit.cs.saboc.blu.core.graph.tan.GenericBluBandPartition;
-import edu.njit.cs.saboc.blu.core.graph.tan.GenericTANNoPartitionLayout;
+import edu.njit.cs.saboc.blu.core.graph.tan.TANLayout;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
  *
  * @author Chris
  */
-public class ClusterNoPartitionLayout extends GenericTANNoPartitionLayout<Concept, SCTBand, SCTCluster, SCTBluBand, SCTBluCluster> {
+public class ClusterNoPartitionLayout extends TANLayout<Concept, SCTBand, SCTCluster, SCTBluBand, SCTBluCluster> {
 
     public ClusterNoPartitionLayout(BluGraph graph, SCTTribalAbstractionNetwork tan, SCTTANConfiguration config) {
         super(graph, tan, config);

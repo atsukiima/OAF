@@ -3,7 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy;
 import SnomedShared.Concept;
 import SnomedShared.generic.GenericConceptGroup;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.ConceptEntry;
-import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.ConceptGroupHierarchicalViewPanel;
+import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.NodeConceptHierarchicalViewPanel;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.NodeConceptHierarchyLoader;
 import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
@@ -15,7 +15,7 @@ import java.util.Comparator;
  */
 public abstract class SCTConceptGroupHierarchyLoader<T extends GenericConceptGroup> extends NodeConceptHierarchyLoader<Concept, SCTConceptHierarchy, T> {
     
-    public SCTConceptGroupHierarchyLoader(T group, ConceptGroupHierarchicalViewPanel<Concept> panel) {
+    public SCTConceptGroupHierarchyLoader(T group, NodeConceptHierarchicalViewPanel<Concept> panel) {
         super(group, panel);
     }
     

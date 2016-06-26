@@ -3,7 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.options.GraphOptions;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.GenericExportPartitionedAbNButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportPartitionedAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.tan.TANPainter;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
@@ -31,7 +31,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
     
     private SCTTANConfiguration currentConfiguration;
     
-    private GenericExportPartitionedAbNButton<Concept, SCTCluster, SCTBand> exportBtn;
+    private ExportPartitionedAbNButton<Concept, SCTCluster, SCTBand> exportBtn;
     
     private final JButton openReportsBtn;
 
@@ -110,7 +110,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
                     removeReportButtonFromMenu(exportBtn);
                 }
 
-                exportBtn = new GenericExportPartitionedAbNButton<>(data, currentConfiguration);
+                exportBtn = new ExportPartitionedAbNButton<>(data, currentConfiguration);
 
                 addReportButtonToMenu(exportBtn);
 

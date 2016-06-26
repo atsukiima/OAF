@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.ui.BLUAbNUIConfiguration;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.AbNUIConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.abn.AbstractAbNDetailsPanel;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
@@ -14,7 +14,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.SCTDisjoin
  *
  * @author Chris O
  */
-public class SCTDisjointPAreaTaxonomyUIConfiguration extends BLUAbNUIConfiguration<DisjointPAreaTaxonomy, DisjointPartialArea, Concept,
+public class SCTDisjointPAreaTaxonomyUIConfiguration extends AbNUIConfiguration<DisjointPAreaTaxonomy, DisjointPartialArea, Concept,
         SCTDisjointPAreaTaxonomyConfiguration, SCTDisjointPAreaTaxonomyListenerConfiguration> {
     
     private final SCTDisjointPAreaTaxonomyConfiguration config;

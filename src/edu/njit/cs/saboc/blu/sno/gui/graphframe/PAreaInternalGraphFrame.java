@@ -3,8 +3,8 @@ package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.aggregate.AggregateNode;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.BLUConfiguration;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.GenericExportPartitionedAbNButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.AbNConfiguration;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportPartitionedAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
@@ -38,7 +38,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
     
     private final JButton openReportsBtn;
     
-    private GenericExportPartitionedAbNButton<Concept, SCTPArea, SCTArea> exportBtn;
+    private ExportPartitionedAbNButton<Concept, SCTPArea, SCTArea> exportBtn;
     
     private final PAreaInternalSearchButton searchButton;
     
@@ -197,7 +197,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
                     removeReportButtonFromMenu(exportBtn);
                 }
 
-                exportBtn = new GenericExportPartitionedAbNButton<>(taxonomy, currentConfiguration);
+                exportBtn = new ExportPartitionedAbNButton<>(taxonomy, currentConfiguration);
 
                 if (taxonomy.isReduced()) {
                     exportBtn.setEnabled(false);
@@ -224,7 +224,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
     }
     
     
-    protected void initializeTabs(BluGraph graph, BLUConfiguration gepConfiguration) {
+    protected void initializeTabs(BluGraph graph, AbNConfiguration gepConfiguration) {
         super.initializeTabs(graph, gepConfiguration);
 
         if(tabbedPane.getTabCount() == 3) {

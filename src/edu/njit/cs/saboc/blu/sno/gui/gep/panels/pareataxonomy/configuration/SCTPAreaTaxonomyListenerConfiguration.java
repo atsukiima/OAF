@@ -7,9 +7,9 @@ import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.EntitySelectionAdapter;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.EntitySelectionListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.NavigateToContainerReportListener;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.NavigateToGroupListener;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.NavigateToNodeListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.ParentGroupSelectedListener;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configuration.BLUGenericPAreaTaxonomyListenerConfiguration;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configuration.PAreaTaxonomyListenerConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.reports.entry.ContainerReport;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
@@ -20,7 +20,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayConceptBr
  *
  * @author Chris O
  */
-public class SCTPAreaTaxonomyListenerConfiguration implements BLUGenericPAreaTaxonomyListenerConfiguration<SCTPAreaTaxonomy, SCTArea, SCTPArea, Concept, InheritedRelationship> {
+public class SCTPAreaTaxonomyListenerConfiguration implements PAreaTaxonomyListenerConfiguration<SCTPAreaTaxonomy, SCTArea, SCTPArea, Concept, InheritedRelationship> {
 
 
     private final SCTPAreaTaxonomyConfiguration config;
@@ -37,7 +37,7 @@ public class SCTPAreaTaxonomyListenerConfiguration implements BLUGenericPAreaTax
 
     @Override
     public EntitySelectionListener<SCTPArea> getChildGroupListener() {
-        return new NavigateToGroupListener<>(config.getUIConfiguration().getGEP());
+        return new NavigateToNodeListener<>(config.getUIConfiguration().getGEP());
     }
     
     @Override

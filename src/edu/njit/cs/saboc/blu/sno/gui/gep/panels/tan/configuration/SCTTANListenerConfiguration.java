@@ -5,9 +5,9 @@ import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.EntitySelectionListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.NavigateToContainerReportListener;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.NavigateToGroupListener;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.NavigateToNodeListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.ParentGroupSelectedListener;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.BLUGenericTANListenerConfiguration;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.TANListenerConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.reports.entry.ContainerReport;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
@@ -18,7 +18,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayConceptBr
  *
  * @author Chris O
  */
-public class SCTTANListenerConfiguration implements BLUGenericTANListenerConfiguration<SCTTribalAbstractionNetwork, SCTBand, SCTCluster, Concept>{
+public class SCTTANListenerConfiguration implements TANListenerConfiguration<SCTTribalAbstractionNetwork, SCTBand, SCTCluster, Concept>{
 
     private final SCTTANConfiguration config;
     
@@ -34,7 +34,7 @@ public class SCTTANListenerConfiguration implements BLUGenericTANListenerConfigu
 
     @Override
     public EntitySelectionListener<SCTCluster> getChildGroupListener() {
-        return new NavigateToGroupListener<>(config.getUIConfiguration().getGEP());
+        return new NavigateToNodeListener<>(config.getUIConfiguration().getGEP());
     }
     
     @Override

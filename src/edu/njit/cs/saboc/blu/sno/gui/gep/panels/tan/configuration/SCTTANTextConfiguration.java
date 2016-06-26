@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.BLUGenericTANTextConfiguration;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.TANTextConfiguration;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
@@ -10,7 +10,7 @@ import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
  *
  * @author Chris O
  */
-public class SCTTANTextConfiguration extends BLUGenericTANTextConfiguration<SCTTribalAbstractionNetwork, SCTBand, SCTCluster, Concept> {
+public class SCTTANTextConfiguration extends TANTextConfiguration<SCTTribalAbstractionNetwork, SCTBand, SCTCluster, Concept> {
 
 
     public SCTTANTextConfiguration(SCTTribalAbstractionNetwork tan) {

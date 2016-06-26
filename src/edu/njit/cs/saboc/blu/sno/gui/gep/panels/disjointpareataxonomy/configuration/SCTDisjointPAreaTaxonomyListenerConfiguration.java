@@ -2,9 +2,9 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configura
 
 import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.ui.listener.BLUAbNListenerConfiguration;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.AbNListenerConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.EntitySelectionListener;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.NavigateToGroupListener;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.NavigateToNodeListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.ParentGroupSelectedListener;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
@@ -14,7 +14,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayConceptBr
  *
  * @author Chris O
  */
-public class SCTDisjointPAreaTaxonomyListenerConfiguration implements BLUAbNListenerConfiguration<DisjointPAreaTaxonomy, DisjointPartialArea, Concept> {
+public class SCTDisjointPAreaTaxonomyListenerConfiguration implements AbNListenerConfiguration<DisjointPAreaTaxonomy, DisjointPartialArea, Concept> {
     
     private final SCTDisjointPAreaTaxonomyConfiguration config;
     
@@ -30,7 +30,7 @@ public class SCTDisjointPAreaTaxonomyListenerConfiguration implements BLUAbNList
 
     @Override
     public EntitySelectionListener<DisjointPartialArea> getChildGroupListener() {
-        return new NavigateToGroupListener<>(config.getUIConfiguration().getGEP());
+        return new NavigateToNodeListener<>(config.getUIConfiguration().getGEP());
     }
     
     @Override

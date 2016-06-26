@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.ConceptGroupHierarchicalViewPanel;
+import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.NodeConceptHierarchicalViewPanel;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.HierarchyPanelClickListener;
 import edu.njit.cs.saboc.blu.sno.abn.SCTAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
@@ -17,7 +17,7 @@ import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
  *
  * @author Chris
  */
-public class SCTConceptHierarchyViewPanel extends ConceptGroupHierarchicalViewPanel<Concept> {
+public class SCTConceptHierarchyViewPanel extends NodeConceptHierarchicalViewPanel<Concept> {
         
     public SCTConceptHierarchyViewPanel(
             final SCTAbstractionNetwork abn, 
