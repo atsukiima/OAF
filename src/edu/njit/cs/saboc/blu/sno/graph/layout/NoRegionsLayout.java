@@ -6,7 +6,7 @@ import SnomedShared.pareataxonomy.InheritedRelationship;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphGroupLevel;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphLevel;
-import edu.njit.cs.saboc.blu.core.graph.pareataxonomy.GenericNoRegionsPAreaGraphLayout;
+import edu.njit.cs.saboc.blu.core.graph.pareataxonomy.NoRegionsPAreaTaxonomyLayout;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
@@ -32,7 +32,7 @@ import javax.swing.JLabel;
  *
  * @author Chris
  */
-public class NoRegionsLayout extends GenericNoRegionsPAreaGraphLayout<
+public class NoRegionsLayout extends NoRegionsPAreaTaxonomyLayout<
         SCTPAreaTaxonomy,
         SCTArea,
         SCTPArea,

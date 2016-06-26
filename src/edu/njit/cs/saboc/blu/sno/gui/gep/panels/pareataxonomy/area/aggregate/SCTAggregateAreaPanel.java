@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.area.aggregate;
 
 import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.GenericAggregateAreaPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.AggregateAreaPanel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
@@ -11,7 +11,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTP
  *
  * @author Chris O
  */
-public class SCTAggregateAreaPanel extends GenericAggregateAreaPanel<SCTArea, SCTPArea, SCTAggregatePArea, Concept, Concept, SCTPAreaTaxonomyConfiguration> {
+public class SCTAggregateAreaPanel extends AggregateAreaPanel<SCTArea, SCTPArea, SCTAggregatePArea, Concept, Concept, SCTPAreaTaxonomyConfiguration> {
     
     private final SCTPAreaTaxonomyConfiguration config;
     
