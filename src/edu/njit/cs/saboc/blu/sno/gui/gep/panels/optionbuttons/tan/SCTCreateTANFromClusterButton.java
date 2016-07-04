@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan;
 
 import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
-import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANButton;
@@ -54,7 +54,7 @@ public class SCTCreateTANFromClusterButton extends CreateTANButton {
                     
                     TribalAbstractionNetworkGenerator generator = new TribalAbstractionNetworkGenerator();
                     
-                    TribalAbstractionNetwork tan = generator.deriveTANFrom(cluster.getHierarchy());
+                    ClusterTribalAbstractionNetwork tan = generator.deriveTANFromSingleRootedHierarchy(cluster.getHierarchy());
 
                     SwingUtilities.invokeLater(() -> {
                         if (doLoad) {

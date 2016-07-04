@@ -4,7 +4,7 @@ import edu.njit.cs.saboc.blu.core.abn.ConceptNodeDetails;
 import edu.njit.cs.saboc.blu.core.abn.node.Node;
 import edu.njit.cs.saboc.blu.core.abn.tan.Band;
 import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
-import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.BluGraphSearchAction;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.GenericInternalSearchButton;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.SearchButtonResult;
@@ -29,7 +29,7 @@ public class TANInternalSearchButton extends GenericInternalSearchButton {
                 ArrayList<SearchButtonResult<ConceptNodeDetails<Cluster>>> results = new ArrayList<>();
                 
                 if (query.length() >= 3) {
-                    TribalAbstractionNetwork tan = (TribalAbstractionNetwork) getGraphFrame().getGraph().getAbstractionNetwork();
+                    ClusterTribalAbstractionNetwork tan = (ClusterTribalAbstractionNetwork) getGraphFrame().getGraph().getAbstractionNetwork();
                     
                     Set<ConceptNodeDetails<Cluster>> queryResult = tan.searchConcepts(query);
                     
@@ -58,7 +58,7 @@ public class TANInternalSearchButton extends GenericInternalSearchButton {
                 
                 ArrayList<SearchButtonResult<Cluster>> results = new ArrayList<>();
                 
-                TribalAbstractionNetwork tan = (TribalAbstractionNetwork) getGraphFrame().getGraph().getAbstractionNetwork();
+                ClusterTribalAbstractionNetwork tan = (ClusterTribalAbstractionNetwork) getGraphFrame().getGraph().getAbstractionNetwork();
                 
                 Set<Node> clusters = tan.searchNodes(query);
                 
@@ -89,7 +89,7 @@ public class TANInternalSearchButton extends GenericInternalSearchButton {
                 
                 ArrayList<SearchButtonResult<Band>> results = new ArrayList<>();
                 
-                TribalAbstractionNetwork tan = (TribalAbstractionNetwork) getGraphFrame().getGraph().getAbstractionNetwork();
+                ClusterTribalAbstractionNetwork tan = (ClusterTribalAbstractionNetwork) getGraphFrame().getGraph().getAbstractionNetwork();
                 
                 Set<Band> queryResult = tan.getBandTAN().searchBands(query);
 

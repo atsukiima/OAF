@@ -46,7 +46,19 @@ public class SCTConcept extends Concept<Long> {
         
         for(Description d : descList) {
             if(d.getDescriptionType() == 3) {
-                this.fullySpecifiedName = d.getTerm();
+                String fsn;
+                
+                if(d.getTerm().contains(" (")) {
+                    String noTagFSN = d.getTerm().substring(0, d.getTerm().lastIndexOf(" ("));
+                    
+                    fsn = noTagFSN;
+                    
+                } else {
+                    fsn = d.getTerm();
+                }
+                
+                this.fullySpecifiedName = fsn;
+                
                 break;
             }
         }

@@ -2,13 +2,14 @@ package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomyGenerator;
-import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import edu.njit.cs.saboc.blu.core.ontology.ConceptHierarchy;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInferredPAreaTaxonomyFactory;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.RF1ReleaseLoader;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LoadLocalRelease;
@@ -116,6 +117,7 @@ public class SCTLoaderPanel extends JPanel {
         tanSelectionPanel = new SCTHierarchySelectionPanel(rootConcepts, rootConcepts, "Tribal Abstraction Network (TAN)",
                 new SCTHierarchySelectionPanel.HierarchySelectionAction() {
                     public void performHierarchySelectionAction(DummyConcept root, boolean useStated) {
+
                         loadTAN(root, useStated);
                     }
                 });
@@ -275,18 +277,18 @@ public class SCTLoaderPanel extends JPanel {
                         hierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(localConcept);
                     }
 
-                    PAreaTaxonomyGenerator generator;
+                    PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
 
-                    PAreaTaxonomy taxonomy = null;
+                    PAreaTaxonomy taxonomy = generator.derivePAreaTaxonomy(
+                        new SCTInferredPAreaTaxonomyFactory(hierarchy), 
+                            hierarchy);
                     
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            if (doLoad) {
-                                displayFrameListener.addNewPAreaGraphFrame(taxonomy, true);
-
-                                loadStatusDialog.setVisible(false);
-                                loadStatusDialog.dispose();
-                            }
+                    SwingUtilities.invokeLater(() -> {
+                        if (doLoad) {
+                            displayFrameListener.addNewPAreaGraphFrame(taxonomy, true);
+                            
+                            loadStatusDialog.setVisible(false);
+                            loadStatusDialog.dispose();
                         }
                     });
 
@@ -335,7 +337,7 @@ public class SCTLoaderPanel extends JPanel {
 
                     TribalAbstractionNetworkGenerator generator = new TribalAbstractionNetworkGenerator();
 
-                    TribalAbstractionNetwork tan = generator.deriveTANFrom(hierarchy);
+                    ClusterTribalAbstractionNetwork tan = generator.deriveTANFromSingleRootedHierarchy(hierarchy);
 
                     SwingUtilities.invokeLater( () -> {
                         if (doLoad) {

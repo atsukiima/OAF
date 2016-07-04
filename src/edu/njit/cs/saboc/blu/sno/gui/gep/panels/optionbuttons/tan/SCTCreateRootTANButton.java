@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan;
 
 import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
-import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.buttons.CreateRootTANButton;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
@@ -50,7 +50,7 @@ public class SCTCreateRootTANButton extends CreateRootTANButton {
                             }
                         });
                     
-                    TribalAbstractionNetwork subTAN = config.getTribalAbstractionNetwork().createRootSubTAN(cluster);
+                    ClusterTribalAbstractionNetwork subTAN = config.getTribalAbstractionNetwork().createRootSubTAN(cluster);
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {

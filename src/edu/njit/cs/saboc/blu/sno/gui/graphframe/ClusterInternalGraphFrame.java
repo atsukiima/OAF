@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
 import edu.njit.cs.saboc.blu.core.abn.node.Node;
-import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.tan.ClusterBluGraph;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
@@ -24,7 +24,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
 
     public ClusterInternalGraphFrame(
             JFrame parentFrame, 
-            TribalAbstractionNetwork data, 
+            ClusterTribalAbstractionNetwork data, 
             SCTDisplayFrameListener displayListener) {
         
         super(parentFrame, "SNOMED Tribal Abstraction Network");
@@ -40,7 +40,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         addToggleableButtonToMenu(searchButton);
     }
 
-    private void updateHierarchyInfoLabel(TribalAbstractionNetwork tan) {
+    private void updateHierarchyInfoLabel(ClusterTribalAbstractionNetwork tan) {
         int setCount = tan.getBands().size();
         int clusterCount = tan.getClusters().size();
         int conceptCount = tan.getSourceHierarchy().size();
@@ -49,7 +49,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
                 setCount, clusterCount, conceptCount));
     }
 
-    public final void replaceInternalFrameDataWith(TribalAbstractionNetwork tan) {
+    public final void replaceInternalFrameDataWith(ClusterTribalAbstractionNetwork tan) {
         
         Thread loadThread = new Thread(() -> {
             gep.showLoading();
@@ -64,7 +64,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
 
             currentConfiguration = factory.createConfiguration(tan, displayListener);
 
-            BluGraph graph = new ClusterBluGraph(tan, labelCreator);
+            BluGraph graph = new ClusterBluGraph(tan, labelCreator, currentConfiguration);
 
             searchButton.setGraph(graph);
            

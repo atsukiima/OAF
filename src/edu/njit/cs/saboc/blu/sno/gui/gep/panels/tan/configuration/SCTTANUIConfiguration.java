@@ -5,6 +5,8 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPane
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.TANUIConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptPainter;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.SCTBandOptionsPanel;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.SCTClusterOptionsPanel;
 /**
  *
  * @author Chris O
@@ -12,10 +14,13 @@ import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptP
 public class SCTTANUIConfiguration extends TANUIConfiguration {
 
     private final SCTDisplayFrameListener displayListener;
+    private final SCTTANConfiguration config;
+    
             
     public SCTTANUIConfiguration(SCTTANConfiguration config, SCTDisplayFrameListener displayListener) {
         super(config, new SCTTANListenerConfiguration(config));
 
+        this.config = config;
         this.displayListener = displayListener;
     }
     
@@ -24,13 +29,13 @@ public class SCTTANUIConfiguration extends TANUIConfiguration {
     }
 
     @Override
-    public AbstractNodeOptionsPanel getPartitionedNodeOptionsPanel() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public AbstractNodeOptionsPanel getPartitionedNodeOptionsPanel() {        
+        return new SCTBandOptionsPanel(config);
     }
 
     @Override
     public AbstractNodeOptionsPanel getNodeOptionsPanel() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new SCTClusterOptionsPanel(config);
     }
 
     @Override

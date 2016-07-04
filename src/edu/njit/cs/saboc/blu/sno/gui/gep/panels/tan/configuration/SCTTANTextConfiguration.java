@@ -1,6 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration;
 
-import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.TANTextConfiguration;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTEntityNameUtils;
 
@@ -10,7 +10,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTEntityNameUtils;
  */
 public class SCTTANTextConfiguration extends TANTextConfiguration {
 
-    public SCTTANTextConfiguration(TribalAbstractionNetwork tan) {
+    public SCTTANTextConfiguration(ClusterTribalAbstractionNetwork tan) {
         super(tan);
     }
 

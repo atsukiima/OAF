@@ -6,6 +6,10 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPane
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configuration.PAreaTaxonomyUIConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptPainter;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.SCTAggregateAreaOptionsPanel;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.SCTAggregatePAreaOptionsPanel;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.SCTAreaOptionsPanel;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.SCTPAreaOptionsPanel;
 
 /**
  *
@@ -30,12 +34,21 @@ public class SCTPAreaTaxonomyUIConfiguration extends PAreaTaxonomyUIConfiguratio
 
     @Override
     public AbstractNodeOptionsPanel getPartitionedNodeOptionsPanel() {
-        return null;
+        
+        if(config.getPAreaTaxonomy().isAggregated()) {
+            return new SCTAggregateAreaOptionsPanel(config);
+        } else {
+            return new SCTAreaOptionsPanel(config);
+        }
     }
 
     @Override
     public AbstractNodeOptionsPanel getNodeOptionsPanel() {
-        return null;
+        if(config.getPAreaTaxonomy().isAggregated()) {
+            return new SCTAggregatePAreaOptionsPanel(config);
+        } else {
+            return new SCTPAreaOptionsPanel(config);
+        }
     }
 
     @Override

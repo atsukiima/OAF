@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan;
 
 import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
-import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.buttons.CreateAncestorTANButton;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
@@ -50,7 +50,7 @@ public class SCTCreateAncestorTANButton extends CreateAncestorTANButton {
                             }
                         });
                     
-                    TribalAbstractionNetwork tan = config.getTribalAbstractionNetwork();
+                    ClusterTribalAbstractionNetwork tan = config.getTribalAbstractionNetwork().createAncestorTAN(cluster);
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {

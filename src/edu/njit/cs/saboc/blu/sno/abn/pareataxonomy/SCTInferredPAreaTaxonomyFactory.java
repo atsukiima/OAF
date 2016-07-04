@@ -3,9 +3,9 @@ package edu.njit.cs.saboc.blu.sno.abn.pareataxonomy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.InheritableProperty;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomyFactory;
 import edu.njit.cs.saboc.blu.core.ontology.Concept;
+import edu.njit.cs.saboc.blu.core.ontology.ConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTConceptHierarchy;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class SCTInferredPAreaTaxonomyFactory implements PAreaTaxonomyFactory {
     
     private final Map<SCTConcept, Set<InheritableProperty>> properties = new HashMap<>();
     
-    public SCTInferredPAreaTaxonomyFactory(SCTConceptHierarchy hierarchy) {
+    public SCTInferredPAreaTaxonomyFactory(ConceptHierarchy<SCTConcept> hierarchy) {
         
         Map<SCTConcept, Set<SCTConcept>> uniqueRels = new HashMap<>();
         
