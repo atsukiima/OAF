@@ -1,16 +1,17 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
+import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.node.Node;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
+import edu.njit.cs.saboc.blu.core.graph.disjointabn.DisjointBluGraph;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.DisjointAbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
-import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
-import edu.njit.cs.saboc.blu.sno.graph.DisjointPAreaBluGraph;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.DisjointPAreaInternalSearchButton;
-import edu.njit.cs.saboc.blu.sno.utils.UtilityMethods;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -24,7 +25,10 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
     
     private final DisjointPAreaInternalSearchButton searchBtn;
 
-    public DisjointPAreaInternalGraphFrame(final JFrame parentFrame, final DisjointPAreaTaxonomy data, SCTDisplayFrameListener displayListener) {
+    public DisjointPAreaInternalGraphFrame(
+            JFrame parentFrame, 
+            DisjointAbstractionNetwork<PAreaTaxonomy, PArea> data, 
+            SCTDisplayFrameListener displayListener) {
         
         super(parentFrame, "SNOMED CT Disjoint Partial-area Taxonomy");
         
@@ -34,35 +38,22 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
         
         super.addToggleableButtonToMenu(searchBtn);
 
-        String frameTitle = UtilityMethods.getPrintableVersionName(data.getParentAbstractionNetwork().getSCTVersion()) + " | Hierarchy: " + data.getParentAbstractionNetwork().getSCTRootConcept().getName();
-
-        this.setTitle(frameTitle);
-
         replaceInternalFrameDataWith(data);
     }
 
-    public DisjointPAreaBluGraph getGraph() {
-        return (DisjointPAreaBluGraph)super.getGraph();
-    }
-
-    public void replaceInternalFrameDataWith(final DisjointPAreaTaxonomy data) {
+    public final void replaceInternalFrameDataWith(
+            DisjointAbstractionNetwork<PAreaTaxonomy, PArea> data) {
         
         Thread loadThread = new Thread(() -> {
             gep.showLoading();
             
-            SinglyRootedNodeLabelCreator labelCreator = new SinglyRootedNodeLabelCreator<DisjointPartialArea>() {
-                public String getRootNameStr(DisjointPartialArea parea) {
-                    int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
-
-                    if (lastIndex == -1) {
-                        return parea.getRoot().getName();
-                    } else {
-                        return parea.getRoot().getName().substring(0, lastIndex);
-                    }
+            SinglyRootedNodeLabelCreator labelCreator = new SinglyRootedNodeLabelCreator() {
+                public String getRootNameStr(Node node) {
+                    return node.getName();
                 }
             };
 
-            BluGraph graph = new DisjointPAreaBluGraph(parentFrame, data, displayListener, labelCreator);
+            BluGraph graph = new DisjointBluGraph(parentFrame, data, labelCreator);
 
             searchBtn.setGraph(graph);
 

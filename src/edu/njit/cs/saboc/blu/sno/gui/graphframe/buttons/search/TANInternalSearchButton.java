@@ -1,21 +1,17 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search;
 
-import SnomedShared.Concept;
-import SnomedShared.SearchResult;
-import SnomedShared.generic.GenericConceptGroup;
-import SnomedShared.overlapping.ClusterSummary;
-import SnomedShared.overlapping.CommonOverlapSet;
+import edu.njit.cs.saboc.blu.core.abn.ConceptNodeDetails;
+import edu.njit.cs.saboc.blu.core.abn.node.Node;
+import edu.njit.cs.saboc.blu.core.abn.tan.Band;
+import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
+import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.BluGraphSearchAction;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.GenericInternalSearchButton;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.SearchButtonResult;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.ConceptClusterInfo;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.ClusterInternalGraphFrame;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 import javax.swing.JFrame;
 
 /**
@@ -27,103 +23,91 @@ public class TANInternalSearchButton extends GenericInternalSearchButton {
     public TANInternalSearchButton(JFrame parent, final ClusterInternalGraphFrame igf) {
         super(parent);
         
-        this.addSearchAction(new BluGraphSearchAction("Concepts", igf) {
-            public ArrayList<SearchButtonResult> doSearch(String query) {
+        this.addSearchAction(new BluGraphSearchAction<ConceptNodeDetails<Cluster>>("Concepts", igf) {
+            public ArrayList<SearchButtonResult<ConceptNodeDetails<Cluster>>> doSearch(String query) {
                 
-                ArrayList<SearchButtonResult> results = new ArrayList<SearchButtonResult>();
+                ArrayList<SearchButtonResult<ConceptNodeDetails<Cluster>>> results = new ArrayList<>();
                 
                 if (query.length() >= 3) {
-                    SCTTribalAbstractionNetwork tan = (SCTTribalAbstractionNetwork) graphFrame.getGraph().getAbstractionNetwork();
+                    TribalAbstractionNetwork tan = (TribalAbstractionNetwork) getGraphFrame().getGraph().getAbstractionNetwork();
                     
-                    ArrayList<SCTCluster> clusters = new ArrayList<>(tan.getClusters().values());
+                    Set<ConceptNodeDetails<Cluster>> queryResult = tan.searchConcepts(query);
                     
-                    ArrayList<SearchResult> conceptResults = tan.getDataSource().searchForConceptsWithinTAN(tan, clusters, query.toLowerCase());
+                    queryResult.forEach( (result) -> {
+                        results.add(new SearchButtonResult<>(result.getConcept().getName(), result));
+                    });
                     
-                    for(SearchResult sr : conceptResults) {
-                        results.add(new SearchButtonResult(sr.toString(), sr));
-                    }
+                    results.sort((a,b) -> {
+                        return a.getResult().getConcept().getName().compareTo(b.getResult().getConcept().getName());
+                    });
                 }
 
                 return results;
             }
             
-            public void resultSelected(SearchButtonResult o) {
-                SearchResult result = (SearchResult) o.getResult();
+            public void resultSelected(SearchButtonResult<ConceptNodeDetails<Cluster>> o) {
+                ConceptNodeDetails<Cluster> result = o.getResult();
 
-                SCTTribalAbstractionNetwork tan = (SCTTribalAbstractionNetwork) graphFrame.getGraph().getAbstractionNetwork();
-
-                ArrayList<ConceptClusterInfo> clusterInfo = tan.getDataSource().getConceptClusterInfo(tan,
-                        tan.getDataSource().getConceptFromId(result.getConceptId()));
-
-                ArrayList<GenericConceptGroup> conceptGroups = new ArrayList<GenericConceptGroup>();
-                
-                for(ConceptClusterInfo cluster : clusterInfo) {
-                    conceptGroups.add(graphFrame.getGraph().getAbstractionNetwork().getGroupFromRootConceptId(cluster.getClusterRootId()));
-                }
-                
-                graphFrame.getEnhancedGraphExplorationPanel().highlightEntriesForSearch(conceptGroups);
-                
-                graphFrame.focusOnComponent(graphFrame.getGraph().getNodeEntries().get(conceptGroups.get(0).getId()));
+                getGraphFrame().getEnhancedGraphExplorationPanel().highlightEntriesForSearch(new ArrayList<>(result.getNodes()));
+                getGraphFrame().focusOnComponent(getGraphFrame().getGraph().getNodeEntries().get(result.getNodes().iterator().next()));
             }
         });
         
-        this.addSearchAction(new BluGraphSearchAction("Clusters", igf) {
-            public ArrayList<SearchButtonResult> doSearch(String query) {
+        this.addSearchAction(new BluGraphSearchAction<Cluster>("Clusters", igf) {
+            public ArrayList<SearchButtonResult<Cluster>> doSearch(String query) {
                 
-                ArrayList<SearchButtonResult> results = new ArrayList<SearchButtonResult>();
+                ArrayList<SearchButtonResult<Cluster>> results = new ArrayList<>();
                 
-                List<GenericConceptGroup> clusters = graphFrame.getGraph().getAbstractionNetwork().searchAnywhereInGroupRoots(query.toLowerCase());
+                TribalAbstractionNetwork tan = (TribalAbstractionNetwork) getGraphFrame().getGraph().getAbstractionNetwork();
                 
-                for(GenericConceptGroup cluster : clusters) {
-                    results.add(new SearchButtonResult(String.format("%s (%d concepts)", cluster.getRoot().getName(), cluster.getConceptCount()), cluster));
-                }
+                Set<Node> clusters = tan.searchNodes(query);
+                
+                clusters.forEach((node) -> {
+                    Cluster cluster = (Cluster)node;
+                    
+                    results.add(new SearchButtonResult<>(String.format("%s (%d concepts)", cluster.getName(), cluster.getConceptCount()), cluster));
+                });
+                
+                results.sort( (a, b) -> {
+                    return a.getResult().getName().compareToIgnoreCase(b.getResult().getName());
+                });
                
                 return results;
             }
             
-            public void resultSelected(SearchButtonResult o) {
-                ClusterSummary result = ((ClusterSummary)o.getResult());
+            public void resultSelected(SearchButtonResult<Cluster> o) {
+                Cluster result = o.getResult();
 
-                graphFrame.focusOnComponent(graphFrame.getGraph().getNodeEntries().get(result.getId()));
+                getGraphFrame().focusOnComponent(getGraphFrame().getGraph().getNodeEntries().get(result));
                 
-                graphFrame.getEnhancedGraphExplorationPanel().highlightEntriesForSearch(new ArrayList<GenericConceptGroup>(Arrays.asList(result)));
+                getGraphFrame().getEnhancedGraphExplorationPanel().highlightEntriesForSearch(new ArrayList<>(Arrays.asList(result)));
             }
         });
         
-        this.addSearchAction(new BluGraphSearchAction("Bands", igf) {
-            public ArrayList<SearchButtonResult> doSearch(String query) {
+        this.addSearchAction(new BluGraphSearchAction<Band>("Bands", igf) {
+            public ArrayList<SearchButtonResult<Band>> doSearch(String query) {
                 
-                ArrayList<SearchButtonResult> results = new ArrayList<SearchButtonResult>();
+                ArrayList<SearchButtonResult<Band>> results = new ArrayList<>();
                 
-                SCTTribalAbstractionNetwork tan = (SCTTribalAbstractionNetwork) graphFrame.getGraph().getAbstractionNetwork();
+                TribalAbstractionNetwork tan = (TribalAbstractionNetwork) getGraphFrame().getGraph().getAbstractionNetwork();
                 
-                ArrayList<SCTBand> bands = tan.searchBands(query.toLowerCase());
+                Set<Band> queryResult = tan.getBandTAN().searchBands(query);
 
-                for (SCTBand band : bands) {
-                    boolean first = true;
-
-                    String name = "";
-
-                    for (Concept patriarch : band.getPatriarchs()) {   // Otherwise derive the title from its relationships.
-                        if (!first) {
-                            name += ", ";
-                        } else {
-                            first = false;
-                        }
-
-                        name += patriarch.getName();
-                    }
-                    
-                    results.add(new SearchButtonResult(name, band));
-                }
+                queryResult.stream().forEach((band) -> {
+                    results.add(new SearchButtonResult<>(band.getName(), band));
+                });
+                
+                results.sort((a,b) -> {
+                    return a.getResult().getName().compareToIgnoreCase(b.getResult().getName());
+                });
 
                 return results;
             }
             
-            public void resultSelected(SearchButtonResult o) {
-                CommonOverlapSet band = ((CommonOverlapSet)o.getResult());
+            public void resultSelected(SearchButtonResult<Band> o) {
+                Band band = o.getResult();
 
-                graphFrame.focusOnComponent(graph.getContainerEntries().get(band.getId()));
+                getGraphFrame().focusOnComponent(graph.getContainerEntries().get(band));
                 
                 // TODO: Highlight area for search
             }

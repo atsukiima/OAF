@@ -1,9 +1,9 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan;
 
+import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
+import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.buttons.CreateAncestorTANButton;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import java.util.Optional;
@@ -15,7 +15,7 @@ import javax.swing.SwingUtilities;
  */
 public class SCTCreateAncestorTANButton extends CreateAncestorTANButton {
 
-    private Optional<SCTCluster> currentCluster = Optional.empty();
+    private Optional<Cluster> currentCluster = Optional.empty();
     
     private final SCTTANConfiguration config;
     
@@ -23,8 +23,8 @@ public class SCTCreateAncestorTANButton extends CreateAncestorTANButton {
         this.config = config;
     }
     
-    public void setCurrentCluster(SCTCluster parea) {
-        currentCluster = Optional.ofNullable(parea);
+    public void setCurrentCluster(Cluster cluster) {
+        currentCluster = Optional.ofNullable(cluster);
     }
     
     @Override
@@ -38,10 +38,10 @@ public class SCTCreateAncestorTANButton extends CreateAncestorTANButton {
                 public void run() {
                     SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
                     
-                    SCTCluster cluster = currentCluster.get();
+                    Cluster cluster = currentCluster.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s ancestor TAN", config.getTextConfiguration().getGroupName(cluster)),
+                            String.format("Creating %s ancestor TAN", cluster.getName()),
                             new LoadStatusDialog.LoadingDialogClosedListener() {
 
                             @Override
@@ -50,7 +50,7 @@ public class SCTCreateAncestorTANButton extends CreateAncestorTANButton {
                             }
                         });
                     
-                    SCTTribalAbstractionNetwork tan = config.getDataConfiguration().getTribalAbstractionNetwork().createAncestorTAN(cluster);
+                    TribalAbstractionNetwork tan = config.getTribalAbstractionNetwork();
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {

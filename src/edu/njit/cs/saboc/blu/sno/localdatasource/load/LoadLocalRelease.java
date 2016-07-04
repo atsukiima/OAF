@@ -14,7 +14,7 @@ import java.util.HashSet;
 public class LoadLocalRelease {
 
     public static ArrayList<File> findReleaseFolders(File parentFile) { //parentFile is the snomed directory, not checked at the moment
-        ArrayList<File> dirList = findSub(parentFile, new ArrayList<File>(), 0);//finds all subdirectories, disincludes files
+        ArrayList<File> dirList = findSub(parentFile, new ArrayList<>(), 0);//finds all subdirectories, disincludes files
         
         return dirList;
     }
@@ -43,7 +43,7 @@ public class LoadLocalRelease {
 
     public static ArrayList<String> getReleaseFileNames(ArrayList<File> releaseDirectories) {
         
-        ArrayList<String> releaseNames = new ArrayList<String>();
+        ArrayList<String> releaseNames = new ArrayList<>();
 
         for (File dir : releaseDirectories) {
             String dirName = dir.getAbsolutePath();

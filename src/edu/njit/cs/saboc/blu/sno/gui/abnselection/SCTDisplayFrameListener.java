@@ -1,17 +1,13 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
-import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.FrameCreationListener;
-import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
-import edu.njit.cs.saboc.blu.sno.conceptbrowser.InternalConceptBrowserFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.ClusterInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.DisjointPAreaInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTDataSource;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRemoteDataSource;
 import javax.swing.JFrame;
 
 /**
@@ -35,9 +31,9 @@ public abstract class SCTDisplayFrameListener implements FrameCreationListener {
      * True if only areas are used.
      * @return The newly created internal graph frame.
      */
-    public PAreaInternalGraphFrame addNewPAreaGraphFrame(SCTPAreaTaxonomy data, boolean areaGraph) {
+    public PAreaInternalGraphFrame addNewPAreaGraphFrame(PAreaTaxonomy data, boolean areaGraph) {
         
-        PAreaInternalGraphFrame igf = new PAreaInternalGraphFrame(mainFrame, data, areaGraph, this);
+        PAreaInternalGraphFrame igf = new PAreaInternalGraphFrame(mainFrame, data, this);
 
         this.displayFrame(igf);
 
@@ -55,74 +51,20 @@ public abstract class SCTDisplayFrameListener implements FrameCreationListener {
      * number of concepts. False for displaying total number of clusters.
      * @return The newly created internal graph frame.
      */
-    public ClusterInternalGraphFrame addNewClusterGraphFrame(SCTTribalAbstractionNetwork data, boolean setGraph, boolean conceptCount) {
+    public ClusterInternalGraphFrame addNewClusterGraphFrame(TribalAbstractionNetwork data, boolean setGraph, boolean conceptCount) {
         
-        ClusterInternalGraphFrame cigf = new ClusterInternalGraphFrame(mainFrame, data, true, false, this);
+        ClusterInternalGraphFrame cigf = new ClusterInternalGraphFrame(mainFrame, data, this);
 
         this.displayFrame(cigf);
 
         return cigf;
     }
     
-    public DisjointPAreaInternalGraphFrame addNewDisjointPAreaTaxonomyGraphFrame(DisjointPAreaTaxonomy taxonomy) {
+    public DisjointPAreaInternalGraphFrame addNewDisjointPAreaTaxonomyGraphFrame(DisjointAbstractionNetwork<PAreaTaxonomy, PArea> taxonomy) {
         DisjointPAreaInternalGraphFrame frame = new DisjointPAreaInternalGraphFrame(mainFrame, taxonomy, this);
         
         this.displayFrame(frame);
         
         return frame;
-    }
-
-    /**
-     * *
-     * Displays a new concept-centric browser internal frame.
-     *
-     * @return The newly created browser frame.
-     */
-    public InternalConceptBrowserFrame addNewBrowserFrame(SCTDataSource dataSource) {
-        
-        SCTDataSource browserDataSource; 
-        
-        if(dataSource instanceof SCTLocalDataSource) {
-            browserDataSource = dataSource;
-        } else { 
-            // Need to make a copy so the version can be changed in the browser frame without 
-            // changing the original data source
-            browserDataSource = new SCTRemoteDataSource(dataSource.getSelectedVersion());
-        }
-
-        InternalConceptBrowserFrame ibf = new InternalConceptBrowserFrame(mainFrame, browserDataSource, this);
-
-        this.displayFrame(ibf);
-
-        ibf.setBounds(ibf.getX(), 50, ibf.getWidth(), ibf.getHeight());
-
-        return ibf;
-    }
-
-    /**
-     * Displays a new concept-centric browser internal frame and focuses it on
-     * the specified concept.
-     *
-     * @param c The concept which will become the focus concept of the browser
-     * frame.
-     * @return The newly created browser frame.
-     */
-    public InternalConceptBrowserFrame addNewBrowserFrame(Concept c, SCTDataSource dataSource) {
-        return addNewBrowserFrame(c.getId(), dataSource);
-    }
-
-    /**
-     * Displays a new concept-centric browser internal frame and focuses it on
-     * the concept with the specified conceptid.
-     *
-     * @param conceptId The id of the concept which will become the focus
-     * concept of the browser frame.
-     * @return The newly created browser frame.
-     */
-    public InternalConceptBrowserFrame addNewBrowserFrame(long conceptId, SCTDataSource dataSource) {
-        InternalConceptBrowserFrame ibf = addNewBrowserFrame(dataSource);
-        ibf.navigateTo(conceptId);
-
-        return ibf;
     }
 }

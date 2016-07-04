@@ -1,41 +1,36 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration;
 
-import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.AbNListenerConfiguration;
+import edu.njit.cs.saboc.blu.core.abn.node.Node;
+import edu.njit.cs.saboc.blu.core.abn.ParentNodeDetails;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.DisjointAbNListenerConfiguration;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.EntitySelectionAdapter;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.EntitySelectionListener;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.NavigateToNodeListener;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.ParentGroupSelectedListener;
-import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
-import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayConceptBrowserListener;
+import edu.njit.cs.saboc.blu.core.ontology.Concept;
 
 /**
  *
  * @author Chris O
  */
-public class SCTDisjointPAreaTaxonomyListenerConfiguration implements AbNListenerConfiguration<DisjointPAreaTaxonomy, DisjointPartialArea, Concept> {
+public class SCTDisjointPAreaTaxonomyListenerConfiguration extends DisjointAbNListenerConfiguration {
     
     private final SCTDisjointPAreaTaxonomyConfiguration config;
     
     public SCTDisjointPAreaTaxonomyListenerConfiguration(SCTDisjointPAreaTaxonomyConfiguration config) {
         this.config = config;
     }
-    
+
     @Override
     public EntitySelectionListener<Concept> getGroupConceptListListener() {
-        return new DisplayConceptBrowserListener(config.getUIConfiguration().getDisplayListener(), 
-                config.getDataConfiguration().getDisjointPAreaTaxonomy().getSourcePAreaTaxonomy().getDataSource());
+        return new EntitySelectionAdapter<>();
     }
 
     @Override
-    public EntitySelectionListener<DisjointPartialArea> getChildGroupListener() {
-        return new NavigateToNodeListener<>(config.getUIConfiguration().getGEP());
+    public EntitySelectionListener<Node> getChildGroupListener() {
+        return new EntitySelectionAdapter<>();
     }
-    
+
     @Override
-    public EntitySelectionListener<GenericParentGroupInfo<Concept, DisjointPartialArea>> getParentGroupListener() {
-        return new ParentGroupSelectedListener<>(config.getUIConfiguration().getGEP());
+    public EntitySelectionListener<ParentNodeDetails> getParentGroupListener() {
+        return new EntitySelectionAdapter<>();
     }
-   
 }

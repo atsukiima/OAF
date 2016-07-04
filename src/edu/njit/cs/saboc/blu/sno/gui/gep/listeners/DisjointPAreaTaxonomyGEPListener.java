@@ -1,8 +1,8 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.listeners;
 
-import SnomedShared.generic.GenericConceptGroup;
-import SnomedShared.generic.GenericContainerPartition;
 import edu.njit.cs.saboc.blu.core.abn.AbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.node.PartitionedNode;
+import edu.njit.cs.saboc.blu.core.abn.node.SinglyRootedNode;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.GEPActionListener;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import javax.swing.JFrame;
@@ -21,11 +21,11 @@ public class DisjointPAreaTaxonomyGEPListener implements GEPActionListener {
         this.displayListener = displayListener;
     }
     
-    public void containerPartitionSelected(GenericContainerPartition partition, boolean treatedAsContainer, AbstractionNetwork abn) {
+    public void containerPartitionSelected(PartitionedNode partition, boolean treatedAsContainer, AbstractionNetwork abn) {
         System.out.println("HEREEEEEEEEEE.........");
     }
 
-    public void groupSelected(GenericConceptGroup group, AbstractionNetwork abn) {
+    public void groupSelected(SinglyRootedNode group, AbstractionNetwork abn) {
 
     }
 }

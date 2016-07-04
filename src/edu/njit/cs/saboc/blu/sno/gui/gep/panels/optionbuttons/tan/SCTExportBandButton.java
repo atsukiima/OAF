@@ -1,13 +1,11 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan;
 
-import SnomedShared.Concept;
-import SnomedShared.overlapping.CommonOverlapSet;
+import edu.njit.cs.saboc.blu.core.abn.tan.Band;
+import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportButton;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportAbNUtilities;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
+import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
-import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -15,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import javax.swing.JOptionPane;
 
 /**
@@ -23,7 +22,7 @@ import javax.swing.JOptionPane;
  */
 public class SCTExportBandButton extends ExportButton {
     
-    private Optional<SCTBand> currentBand = Optional.empty();
+    private Optional<Band> currentBand = Optional.empty();
     
     private final SCTTANConfiguration config;
 
@@ -33,7 +32,7 @@ public class SCTExportBandButton extends ExportButton {
         this.config = config;
     }
         
-    public void setCurrentBand(SCTBand band) {
+    public void setCurrentBand(Band band) {
         currentBand = Optional.ofNullable(band);
     }
     
@@ -63,21 +62,14 @@ public class SCTExportBandButton extends ExportButton {
     }
     
     private void exportBandConcepts(File file) {
-        
-        ArrayList<SCTCluster> bandClusters = currentBand.get().getAllClusters();
-        
-        HashSet<Concept> allConcepts = new HashSet<>();
-        
-        bandClusters.forEach((SCTCluster cluster) -> {
-            allConcepts.addAll(cluster.getConcepts());
+        ArrayList<Concept> concepts = new ArrayList<>(currentBand.get().getConcepts());
+        concepts.sort( (a, b) -> {
+            return a.getName().compareToIgnoreCase(b.getName());
         });
-        
-        ArrayList<Concept> concepts = new ArrayList<>(allConcepts);
-        Collections.sort(concepts, new ConceptNameComparator());
 
         try (PrintWriter writer = new PrintWriter(file)) {
             concepts.forEach((Concept c) -> {
-                writer.println(String.format("%d\t%s", c.getId(), c.getName()));
+                writer.println(String.format("%d\t%s", c.getID(), c.getName()));
             });
         } catch (FileNotFoundException fnfe) {
             
@@ -85,17 +77,17 @@ public class SCTExportBandButton extends ExportButton {
     }
     
     private void exportBandClusters(File file) {
-        ArrayList<SCTCluster> clusters = currentBand.get().getAllClusters();
+        Set<Cluster> clusters = currentBand.get().getClusters();
         
         try (PrintWriter writer = new PrintWriter(file)) {
-            clusters.forEach( (SCTCluster cluster) -> {
-                HashSet<Concept> concepts = cluster.getConcepts();
+            clusters.forEach( (cluster) -> {
+                Set<Concept> concepts = cluster.getConcepts();
                 
                 concepts.forEach( (Concept c) -> {
                     writer.println(String.format("%d\t%s\t%s",
-                            c.getId(),
+                            c.getID(),
                             c.getName(),
-                            String.format("%s (%d)", config.getTextConfiguration().getGroupName(cluster), cluster.getConceptCount())));
+                            String.format("%s (%d)", cluster.getName(), cluster.getConceptCount())));
                 });
             });
 

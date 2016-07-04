@@ -1,28 +1,23 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration;
 
-import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.AbNUIConfiguration;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.abn.AbstractAbNDetailsPanel;
-import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
+import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.ConceptPainter;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.DisjointAbNUIConfiguration;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPanel;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.SCTDisjointPAreaPanel;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.SCTDisjointPAreaTaxonomyDetailsPanel;
 
 /**
  *
  * @author Chris O
  */
-public class SCTDisjointPAreaTaxonomyUIConfiguration extends AbNUIConfiguration<DisjointPAreaTaxonomy, DisjointPartialArea, Concept,
-        SCTDisjointPAreaTaxonomyConfiguration, SCTDisjointPAreaTaxonomyListenerConfiguration> {
+public class SCTDisjointPAreaTaxonomyUIConfiguration extends DisjointAbNUIConfiguration {
     
     private final SCTDisjointPAreaTaxonomyConfiguration config;
     
     private final SCTDisplayFrameListener displayListener;
     
     public SCTDisjointPAreaTaxonomyUIConfiguration(SCTDisjointPAreaTaxonomyConfiguration config, SCTDisplayFrameListener displayListener) {
-        super(new SCTDisjointPAreaTaxonomyListenerConfiguration(config));
+        
+        super(config, new SCTDisjointPAreaTaxonomyListenerConfiguration(config));
         
         this.config = config;
         this.displayListener = displayListener;
@@ -33,17 +28,12 @@ public class SCTDisjointPAreaTaxonomyUIConfiguration extends AbNUIConfiguration<
     }
 
     @Override
-    public AbstractAbNDetailsPanel createAbNDetailsPanel() {
-        return new SCTDisjointPAreaTaxonomyDetailsPanel(config);
+    public AbstractNodeOptionsPanel getNodeOptionsPanel() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean hasGroupDetailsPanel() {
-        return true;
-    }
-
-    @Override
-    public NodeDashboardPanel createGroupDetailsPanel() {
-        return new SCTDisjointPAreaPanel(config);
+    public ConceptPainter getConceptHierarchyPainter() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

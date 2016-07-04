@@ -1,9 +1,9 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan;
 
+import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
+import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.buttons.CreateRootTANButton;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import java.util.Optional;
@@ -15,7 +15,7 @@ import javax.swing.SwingUtilities;
  */
 public class SCTCreateRootTANButton extends CreateRootTANButton {
 
-    private Optional<SCTCluster> currentCluster = Optional.empty();
+    private Optional<Cluster> currentCluster = Optional.empty();
     
     private final SCTTANConfiguration config;
     
@@ -23,7 +23,7 @@ public class SCTCreateRootTANButton extends CreateRootTANButton {
         this.config = config;
     }
     
-    public void setCurrentCluster(SCTCluster cluster) {
+    public void setCurrentCluster(Cluster cluster) {
         currentCluster = Optional.ofNullable(cluster);
     }
     
@@ -38,10 +38,10 @@ public class SCTCreateRootTANButton extends CreateRootTANButton {
                 public void run() {
                     SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
                     
-                    SCTCluster cluster = currentCluster.get();
+                    Cluster cluster = currentCluster.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s descendant TAN", config.getTextConfiguration().getGroupName(cluster)),
+                            String.format("Creating %s descendant TAN", cluster.getName()),
                             new LoadStatusDialog.LoadingDialogClosedListener() {
 
                             @Override
@@ -50,7 +50,7 @@ public class SCTCreateRootTANButton extends CreateRootTANButton {
                             }
                         });
                     
-                    SCTTribalAbstractionNetwork subTAN = config.getDataConfiguration().getTribalAbstractionNetwork().createRootSubTAN(cluster);
+                    TribalAbstractionNetwork subTAN = config.getTribalAbstractionNetwork().createRootSubTAN(cluster);
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {

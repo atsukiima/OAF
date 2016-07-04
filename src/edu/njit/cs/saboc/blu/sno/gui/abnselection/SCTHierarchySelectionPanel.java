@@ -1,6 +1,5 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
-import SnomedShared.Concept;
 import edu.njit.cs.saboc.blu.core.gui.iconmanager.IconManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -22,12 +21,12 @@ import javax.swing.border.BevelBorder;
 public class SCTHierarchySelectionPanel extends JPanel {
     
     public interface HierarchySelectionAction {
-        public void performHierarchySelectionAction(Concept hierarchyRoot, boolean useStated);
+        public void performHierarchySelectionAction(DummyConcept hierarchyRoot, boolean useStated);
     } 
     
-    private final HashMap<Concept, JButton> hierarchyBtns = new HashMap<>();
+    private final HashMap<DummyConcept, JButton> hierarchyBtns = new HashMap<>();
     
-    private final ArrayList<Concept> enabledRoots;
+    private final ArrayList<DummyConcept> enabledRoots;
     
     private boolean statedReleaseAvailable = false;
     private final JCheckBox chkUseStatedRelationships;
@@ -35,8 +34,8 @@ public class SCTHierarchySelectionPanel extends JPanel {
     private final String type;
     
     public SCTHierarchySelectionPanel(
-            ArrayList<Concept> hierarchyRoots, 
-            ArrayList<Concept> enabledRoots, 
+            ArrayList<DummyConcept> hierarchyRoots, 
+            ArrayList<DummyConcept> enabledRoots, 
             String type, 
             HierarchySelectionAction selectionAction) {
         
@@ -52,7 +51,7 @@ public class SCTHierarchySelectionPanel extends JPanel {
 
         this.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         
-        hierarchyRoots.forEach((Concept root) -> {
+        hierarchyRoots.forEach((root) -> {
             String hierarchyName = root.getName().substring(0, root.getName().lastIndexOf("(") - 1);
             
             JButton btn = new JButton(String.format("<html><div align=\"center\">%s", hierarchyName));
@@ -98,7 +97,7 @@ public class SCTHierarchySelectionPanel extends JPanel {
             chkUseStatedRelationships.setEnabled(value);
         }
 
-        enabledRoots.forEach((Concept enabledRoot) -> {
+        enabledRoots.forEach((enabledRoot) -> {
             hierarchyBtns.get(enabledRoot).setEnabled(value);
         });
     }
@@ -109,7 +108,7 @@ public class SCTHierarchySelectionPanel extends JPanel {
      * @param root The root concept of the hierarchy.
      * @return Icon, if one exists, for the given root's hierarchy.
      */
-    private ImageIcon getImageIconFor(Concept root) {
+    private ImageIcon getImageIconFor(DummyConcept root) {
 
         String rootName = root.getName();
         String iconName = "";

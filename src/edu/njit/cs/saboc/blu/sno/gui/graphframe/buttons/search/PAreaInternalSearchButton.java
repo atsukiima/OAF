@@ -1,22 +1,17 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search;
 
-import SnomedShared.SearchResult;
-import SnomedShared.generic.GenericConceptGroup;
-import SnomedShared.pareataxonomy.Area;
-import SnomedShared.pareataxonomy.ConceptPAreaInfo;
-import SnomedShared.pareataxonomy.InheritedRelationship;
-import SnomedShared.pareataxonomy.PAreaSummary;
+import edu.njit.cs.saboc.blu.core.abn.ConceptNodeDetails;
+import edu.njit.cs.saboc.blu.core.abn.node.Node;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.Area;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.BluGraphSearchAction;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.GenericInternalSearchButton;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.SearchButtonResult;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Set;
 import javax.swing.JFrame;
 
 /**
@@ -28,112 +23,92 @@ public class PAreaInternalSearchButton extends GenericInternalSearchButton {
     public PAreaInternalSearchButton(JFrame parent, final PAreaInternalGraphFrame igf) {
         super(parent);
         
-        this.addSearchAction(new BluGraphSearchAction("Concepts", igf) {
-            public ArrayList<SearchButtonResult> doSearch(String query) {
+        this.addSearchAction(new BluGraphSearchAction<ConceptNodeDetails<PArea>>("Concepts", igf) {
+            public ArrayList<SearchButtonResult<ConceptNodeDetails<PArea>>> doSearch(String query) {
                 
-                ArrayList<SearchButtonResult> results = new ArrayList<SearchButtonResult>();
+                ArrayList<SearchButtonResult<ConceptNodeDetails<PArea>>> results = new ArrayList<>();
                 
                 if (query.length() >= 3) {
+                    PAreaTaxonomy taxonomy = (PAreaTaxonomy)getGraphFrame().getGraph().getAbstractionNetwork();
+
+                    Set<ConceptNodeDetails<PArea>> searchResults = taxonomy.searchConcepts(query);
+
+                    searchResults.stream().forEach((sr) -> {
+                        results.add(new SearchButtonResult(sr.getConcept().getName(), sr));
+                    });
                     
-                    SCTPAreaTaxonomy taxonomy = (SCTPAreaTaxonomy)graphFrame.getGraph().getAbstractionNetwork();
-
-                    ArrayList<SCTPArea> pareas = new ArrayList<SCTPArea>();
-
-                    for (SCTArea a : taxonomy.getHierarchyAreas()) {
-                        pareas.addAll(a.getAllPAreas());
-                    }
-                    
-                    ArrayList<SearchResult> searchResults = taxonomy.getDataSource().searchForConceptsWithinTaxonomy(taxonomy, pareas, query.toLowerCase());
-
-                    for(SearchResult sr : searchResults) {
-                        results.add(new SearchButtonResult(sr.toString(), sr));
-                    }
+                    results.sort( (a,b) -> {
+                        return a.getResult().getConcept().getName().compareToIgnoreCase(b.getResult().getConcept().getName());
+                    });
                 }
                 
                 return results;
             }
             
-            public void resultSelected(SearchButtonResult o) {
-                SearchResult result = (SearchResult)o.getResult();
-                
-                SCTPAreaTaxonomy taxonomy = (SCTPAreaTaxonomy)graphFrame.getGraph().getAbstractionNetwork();
+            public void resultSelected(SearchButtonResult<ConceptNodeDetails<PArea>> o) {
+                ConceptNodeDetails<PArea> result = o.getResult();
 
-                ArrayList<ConceptPAreaInfo> pareaInfo = taxonomy.getDataSource().getConceptPAreaInfo(taxonomy,
-                        taxonomy.getDataSource().getConceptFromId(result.getConceptId()));
+                getGraphFrame().focusOnComponent(getGraphFrame().getGraph().getNodeEntries().get(result.getNodes().iterator().next()));
                 
-                ArrayList<GenericConceptGroup> conceptGroups = new ArrayList<GenericConceptGroup>();
-                
-                for(ConceptPAreaInfo parea : pareaInfo) {
-                    conceptGroups.add(graphFrame.getGraph().getAbstractionNetwork().getGroupFromRootConceptId(parea.getPAreaRootId()));
-                }
-                
-                graphFrame.focusOnComponent(graphFrame.getGraph().getNodeEntries().get(conceptGroups.get(0).getId()));
-                
-                graphFrame.getEnhancedGraphExplorationPanel().highlightEntriesForSearch(conceptGroups);
+                getGraphFrame().getEnhancedGraphExplorationPanel().highlightEntriesForSearch(new ArrayList<>(result.getNodes()));
             }
         });
         
-        this.addSearchAction(new BluGraphSearchAction("Partial-areas", igf) {
-            public ArrayList<SearchButtonResult> doSearch(String query) {
+        this.addSearchAction(new BluGraphSearchAction<PArea>("Partial-areas", igf) {
+            public ArrayList<SearchButtonResult<PArea>> doSearch(String query) {
                 
-                ArrayList<SearchButtonResult> results = new ArrayList<SearchButtonResult>();
+                PAreaTaxonomy taxonomy = (PAreaTaxonomy)getGraphFrame().getGraph().getAbstractionNetwork();
+                
+                ArrayList<SearchButtonResult<PArea>> results = new ArrayList<>();
 
-                List<GenericConceptGroup> pareas = graphFrame.getGraph().getAbstractionNetwork().searchAnywhereInGroupRoots(query.toLowerCase());
+                Set<Node> pareas = taxonomy.searchNodes(query);
                 
-                for(GenericConceptGroup parea : pareas) {
-                    results.add(new SearchButtonResult(String.format("%s (%d concepts)", parea.getRoot().getName(), parea.getConceptCount()), parea));
-                }
+                pareas.forEach((node) -> {
+                    PArea parea = (PArea)node;
+                    
+                    results.add(new SearchButtonResult<>(String.format("%s (%d concepts)", parea.getName(), parea.getConceptCount()), parea));
+                });
+                
+                results.sort( (a, b) -> {
+                    return a.getResult().getName().compareToIgnoreCase(b.getResult().getName());
+                });
 
                 return results;
             }
             
-            public void resultSelected(SearchButtonResult o) {
-                SCTPArea result = (SCTPArea)o.getResult();
+            public void resultSelected(SearchButtonResult<PArea> o) {
+                PArea result = o.getResult();
 
-                graphFrame.focusOnComponent(graphFrame.getGraph().getNodeEntries().get(result.getId()));
+                getGraphFrame().focusOnComponent(getGraphFrame().getGraph().getNodeEntries().get(result));
                 
-                graphFrame.getEnhancedGraphExplorationPanel().highlightEntriesForSearch(new ArrayList<GenericConceptGroup>(Arrays.asList(result)));
+                getGraphFrame().getEnhancedGraphExplorationPanel().highlightEntriesForSearch(new ArrayList<>(Arrays.asList(result)));
             }
         });
         
-        this.addSearchAction(new BluGraphSearchAction("Areas", igf) {
-            public ArrayList<SearchButtonResult> doSearch(String query) {
+        this.addSearchAction(new BluGraphSearchAction<Area>("Areas", igf) {
+            public ArrayList<SearchButtonResult<Area>> doSearch(String query) {
                 
-                SCTPAreaTaxonomy taxonomy = (SCTPAreaTaxonomy)graphFrame.getGraph().getAbstractionNetwork();
+                PAreaTaxonomy taxonomy = (PAreaTaxonomy)getGraphFrame().getGraph().getAbstractionNetwork();
                 
-                ArrayList<SCTArea> areas = taxonomy.searchAreas(query.toLowerCase());
+                Set<Area> areas = taxonomy.getAreaTaxonomy().findAreas(query);
                 
-                ArrayList<SearchButtonResult> results = new ArrayList<SearchButtonResult>();
+                ArrayList<SearchButtonResult<Area>> results = new ArrayList<>();
 
-                HashMap<Long, String> lateralRels = taxonomy.getLateralRelsInHierarchy();
-
-                for (SCTArea a : areas) {
-                    boolean first = true;
-
-                    String name = "";
-
-                    for (InheritedRelationship rel : a.getRelationships()) {   // Otherwise derive the title from its relationships.
-                        if (!first) {
-                            name += ", ";
-                        } else {
-                            first = false;
-                        }
-
-                        name += lateralRels.get(rel.getRelationshipTypeId());
-                    }
-
-                    results.add(new SearchButtonResult(name, a));
+                for (Area area : areas) {
+                    results.add(new SearchButtonResult<>(area.getName(), area));
                 }
+                
+                results.sort( (a, b) -> {
+                    return a.getResult().getName().compareTo(b.getResult().getName());
+                });
 
                 return results;
             }
             
-            public void resultSelected(SearchButtonResult o) {
-                SCTArea a = ((SCTArea) o.getResult());
+            public void resultSelected(SearchButtonResult<Area> o) {
+                Area area = o.getResult();
 
-                graphFrame.focusOnComponent(graph.getContainerEntries().get(a.getId()));
-                
-                // TODO: Highlight area for search
+                getGraphFrame().focusOnComponent(graph.getContainerEntries().get(area));
             }
         });
         

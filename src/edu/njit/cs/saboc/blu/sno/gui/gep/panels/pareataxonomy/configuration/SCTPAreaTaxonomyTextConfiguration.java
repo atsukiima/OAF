@@ -1,107 +1,32 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration;
 
-import SnomedShared.Concept;
-import SnomedShared.pareataxonomy.InheritedRelationship;
+import edu.njit.cs.saboc.blu.core.abn.node.Node;
+import edu.njit.cs.saboc.blu.core.abn.node.PartitionedNode;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.AggregatePArea;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configuration.PAreaTaxonomyTextConfiguration;
-import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTConceptHierarchy;
-import java.util.ArrayList;
-import java.util.Collections;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTEntityNameUtils;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
  * @author Chris O
  */
-public class SCTPAreaTaxonomyTextConfiguration extends PAreaTaxonomyTextConfiguration<
-        SCTPAreaTaxonomy, DisjointPAreaTaxonomy, SCTArea, SCTPArea, SCTAggregatePArea, DisjointPartialArea, SCTConceptHierarchy, InheritedRelationship, Concept> {
+public class SCTPAreaTaxonomyTextConfiguration extends PAreaTaxonomyTextConfiguration {
 
-    private final SCTPAreaTaxonomy taxonomy;
-
-    public SCTPAreaTaxonomyTextConfiguration(SCTPAreaTaxonomy taxonomy) {
-        this.taxonomy = taxonomy;
-    }
-
-    public SCTPAreaTaxonomy getPAreaTaxonomy() {
-        return taxonomy;
+    public SCTPAreaTaxonomyTextConfiguration(PAreaTaxonomy taxonomy) {
+        super(taxonomy);
     }
 
     @Override
-    public String getDisjointGroupName(DisjointPartialArea group) {
-        return group.getRoot().getName();
-    }
-
-    private String getRelationshipNamesCommaSeparated(HashSet<InheritedRelationship> rels) {
-
-        if (rels.isEmpty()) {
-            return "";
-        }
-
-        ArrayList<String> relNames = new ArrayList<>();
-
-        rels.forEach((InheritedRelationship rel) -> {
-            relNames.add(taxonomy.getLateralRelsInHierarchy().get(rel.getRelationshipTypeId()));
-        });
-
-        Collections.sort(relNames);
-
-        String areaName = relNames.get(0);
-
-        for (int c = 1; c < relNames.size(); c++) {
-            areaName += ", " + relNames.get(c);
-        }
-
-        return areaName;
-    }
-
-    @Override
-    public String getContainerName(SCTArea container) {
-        if (container.getRelationships().isEmpty()) {
-            return "root area (no attribute relationships)";
-        } else {
-            return getRelationshipNamesCommaSeparated(container.getRelationships());
-        }
-    }
-    
-    @Override
-    public String getConceptTypeName(boolean plural) {
-        if (plural) {
-            return "Concepts";
-        } else {
-            return "Concept";
-        }
-    }
-
-    @Override
-    public String getConceptName(Concept concept) {
-        return concept.getName();
-    }
-    
-    @Override
-    public String getConceptUniqueIdentifier(Concept concept) {
-        return Long.toString(concept.getId());
-    }
-
-    @Override
-    public String getGroupName(SCTPArea group) {
-        return group.getRoot().getName();
-    }
-    
-    @Override
-    public String getGroupRootUniqueIdentifier(SCTPArea group) {
-        return Long.toString(group.getRoot().getId());
-    }
-
-    @Override
-    public String getContainerHelpDescription(SCTArea container) {
+    public String getContainerHelpDescription(PartitionedNode node) {
+        PAreaTaxonomy taxonomy = super.getPAreaTaxonomy();
+        
         StringBuilder helpDesc = new StringBuilder();
 
-        if (taxonomy.isReduced()) {
+        if (taxonomy.isAggregated()) {
             helpDesc.append("An <b>aggregate area</b> represents a set of concepts (shown below) which are defined using the "
                     + " exact same set of attribute relationships types."
                     + "<p><p>"
@@ -117,10 +42,15 @@ public class SCTPAreaTaxonomyTextConfiguration extends PAreaTaxonomyTextConfigur
     }
 
     @Override
-    public String getGroupHelpDescriptions(SCTPArea group) {
+    public String getNodeHelpDescription(Node node) {
+        
+        PArea parea = (PArea)node;
+        
+        PAreaTaxonomy taxonomy = super.getPAreaTaxonomy();
+        
         StringBuilder helpDesc = new StringBuilder();
 
-        if (taxonomy.isReduced()) {
+        if (taxonomy.isAggregated()) {
             helpDesc.append("A <b>regular partial-area</b> summarizes a subhierarchy of structurally and semantically similar concepts in an ontology. "
                     + "All of the concepts in a regular partial-area are defined using the same types of attribute relationships."
                     + "All of the concepts summarized by a regular partial-area are descendants of the same concepts, called the root, "
@@ -147,58 +77,54 @@ public class SCTPAreaTaxonomyTextConfiguration extends PAreaTaxonomyTextConfigur
 
     @Override
     public String getAbNName() {
-        if (taxonomy.isReduced()) {
-            return String.format("%s Aggregate Partial-area Taxonomy", getGroupName(taxonomy.getRootGroup()));
+        PAreaTaxonomy taxonomy = super.getPAreaTaxonomy();
+        
+        if (taxonomy.isAggregated()) {
+            return String.format("%s Aggregate Partial-area Taxonomy", 
+                    taxonomy.getRootPArea().getName());
         } else {
-            return String.format("%s Partial-area Taxonomy", getGroupName(taxonomy.getRootGroup()));
+            return String.format("%s Partial-area Taxonomy", 
+                     taxonomy.getRootPArea().getName());
         }
     }
 
     private String getRegularPAreaTaxonomySummary() {
+        PAreaTaxonomy taxonomy = super.getPAreaTaxonomy();
 
-        String rootName = getGroupName(taxonomy.getRootGroup());
+        String rootName = taxonomy.getRootPArea().getName();
 
-        int pareaCount = taxonomy.getPAreaCount();
-        int areaCount = taxonomy.getAreaCount();
-        
-        HashSet<Concept> concepts = new HashSet<>();
-        
-        taxonomy.getGroupHierarchy().getNodesInHierarchy().forEach( (SCTPArea parea) -> {
-            concepts.addAll(parea.getConceptsInPArea());
-        });
-        
-        int conceptCount = concepts.size();
+        int pareaCount = taxonomy.getNodeCount();
+        int areaCount = taxonomy.getAreaTaxonomy().getNodeCount();
 
-        String result = String.format("<html>The <b>%s</b> partial-area taxonomy summarizes a total of %d concept(s) in %d area(s) and %d partial-areas(s).",
+        int conceptCount = taxonomy.getSourceHierarchy().size();
+
+        String result = String.format("<html>The <b>%s</b> partial-area taxonomy "
+                + "summarizes a total of %d concept(s) in %d area(s) and %d partial-areas(s).",
+                
                 rootName, conceptCount, areaCount, pareaCount);
 
         return result;
     }
 
     private String getAggregatePAreaTaxonomySummary() {
-        String rootName = getGroupName(taxonomy.getRootGroup());
-
-        int areaCount = taxonomy.getAreaCount();
+        PAreaTaxonomy taxonomy = super.getPAreaTaxonomy();
         
-        HashSet<Concept> concepts = new HashSet<>();
+        String rootName = taxonomy.getRootPArea().getName();
 
-        taxonomy.getGroupHierarchy().getNodesInHierarchy().forEach((SCTPArea parea) -> {
-            concepts.addAll(parea.getConceptsInPArea());
-        });
-
-        int conceptCount = concepts.size();
+        int areaCount = taxonomy.getAreaTaxonomy().getNodeCount();
+        int conceptCount = taxonomy.getSourceHierarchy().size();
         
-        HashSet<SCTAggregatePArea> aggregatePAreas = new HashSet<>();
+        HashSet<AggregatePArea> aggregatePAreas = new HashSet<>();
 
-        HashSet<SCTAggregatePArea> regularPAreas = new HashSet<>();
+        HashSet<AggregatePArea> regularPAreas = new HashSet<>();
 
-        taxonomy.getAreas().forEach((SCTArea area) -> {
-            ArrayList<SCTPArea> pareas = area.getAllPAreas();
+        taxonomy.getAreas().forEach((area) -> {
+            Set<PArea> pareas = area.getPAreas();
 
-            pareas.forEach((SCTPArea parea) -> {
-                SCTAggregatePArea aggregatePArea = (SCTAggregatePArea) parea;
+            pareas.forEach((parea) -> {
+                AggregatePArea aggregatePArea = (AggregatePArea) parea;
 
-                if (aggregatePArea.getAggregatedGroups().isEmpty()) {
+                if (aggregatePArea.getAggregatedNodes().isEmpty()) {
                     regularPAreas.add(aggregatePArea);
                 } else {
                     aggregatePAreas.add(aggregatePArea);
@@ -206,10 +132,10 @@ public class SCTPAreaTaxonomyTextConfiguration extends PAreaTaxonomyTextConfigur
             });
         });
 
-        HashSet<SCTPArea> removedPAreas = new HashSet<>();
+        HashSet<PArea> removedPAreas = new HashSet<>();
 
-        aggregatePAreas.forEach((SCTAggregatePArea parea) -> {
-            removedPAreas.addAll(parea.getAggregatedGroups());
+        aggregatePAreas.forEach((parea) -> {
+            removedPAreas.addAll(parea.getAggregatedNodes());
         });
 
         String result = String.format("<html>The <b>%s</b> aggregate partial-area "
@@ -227,9 +153,11 @@ public class SCTPAreaTaxonomyTextConfiguration extends PAreaTaxonomyTextConfigur
 
     @Override
     public String getAbNSummary() {
+        PAreaTaxonomy taxonomy = super.getPAreaTaxonomy();
+        
         String summary;
 
-        if (taxonomy.isReduced()) {
+        if (taxonomy.isAggregated()) {
             summary = getAggregatePAreaTaxonomySummary();
         } else {
             summary = getRegularPAreaTaxonomySummary();
@@ -243,6 +171,8 @@ public class SCTPAreaTaxonomyTextConfiguration extends PAreaTaxonomyTextConfigur
 
     @Override
     public String getAbNHelpDescription() {
+        
+        PAreaTaxonomy taxonomy = super.getPAreaTaxonomy();
 
         String pareaTaxonomyDesc = "A partial-area taxonomy is a type of abstraction network that summarizes structurally similar "
                 + "and semantically similar concepts. The partial-area taxonomy reveals and highlights "
@@ -263,7 +193,7 @@ public class SCTPAreaTaxonomyTextConfiguration extends PAreaTaxonomyTextConfigur
                 + "The <i>Is a</i> hierarchy between concepts is also summarized by the partial-area taxonomy. When a given partial-area is selected then its "
                 + "parent partial-areas are shown in blue and its child partial-areas are shown in purple.";
 
-        if (taxonomy.isReduced()) {
+        if (taxonomy.isAggregated()) {
             String aggregateTaxonomyDesc = "An <b>aggregate partial-area taxonomy</b> is a partial-area taxonomy where the small partial-areas, which summarize "
                     + "a number of concepts below a chosen threshold, are not shown. The small removed partial-areas are aggregated into and summarized by"
                     + "their closest ancestor partial-area(s) which are above the chosen threshold. "
@@ -275,9 +205,24 @@ public class SCTPAreaTaxonomyTextConfiguration extends PAreaTaxonomyTextConfigur
             return pareaTaxonomyDesc;
         }
     }
-    
+
     @Override
-    public String getGroupsContainerName(SCTPArea parea) {
-        return this.getRelationshipNamesCommaSeparated(parea.getRelationships());
+    public String getConceptTypeName(boolean plural) {
+        return SCTEntityNameUtils.getConceptTypeName(plural);
+    }
+
+    @Override
+    public String getPropertyTypeName(boolean plural) {
+        return SCTEntityNameUtils.getPropertyTypeName(plural);
+    }
+
+    @Override
+    public String getParentConceptTypeName(boolean plural) {
+        return SCTEntityNameUtils.getParentConceptTypeName(plural);
+    }
+
+    @Override
+    public String getChildConceptTypeName(boolean plural) {
+        return SCTEntityNameUtils.getChildConceptTypeName(plural);
     }
 }

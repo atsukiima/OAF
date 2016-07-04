@@ -1,24 +1,18 @@
 
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration;
 
-import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.abn.GenericParentGroupInfo;
+import edu.njit.cs.saboc.blu.core.abn.node.Node;
+import edu.njit.cs.saboc.blu.core.abn.ParentNodeDetails;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.EntitySelectionListener;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.NavigateToContainerReportListener;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.NavigateToNodeListener;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.ParentGroupSelectedListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.TANListenerConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.reports.entry.ContainerReport;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
-import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayConceptBrowserListener;
+import edu.njit.cs.saboc.blu.core.ontology.Concept;
 
 /**
  *
  * @author Chris O
  */
-public class SCTTANListenerConfiguration implements TANListenerConfiguration<SCTTribalAbstractionNetwork, SCTBand, SCTCluster, Concept>{
+public class SCTTANListenerConfiguration implements TANListenerConfiguration {
 
     private final SCTTANConfiguration config;
     
@@ -26,28 +20,7 @@ public class SCTTANListenerConfiguration implements TANListenerConfiguration<SCT
         this.config = config;
     }
     
-    @Override
-    public EntitySelectionListener<Concept> getGroupConceptListListener() {
-        return new DisplayConceptBrowserListener(config.getUIConfiguration().getDisplayFrameListener(), 
-                config.getDataConfiguration().getTribalAbstractionNetwork().getDataSource());
-    }
 
-    @Override
-    public EntitySelectionListener<SCTCluster> getChildGroupListener() {
-        return new NavigateToNodeListener<>(config.getUIConfiguration().getGEP());
-    }
-    
-    @Override
-    public EntitySelectionListener<GenericParentGroupInfo<Concept, SCTCluster>> getParentGroupListener() {
-        return new ParentGroupSelectedListener<>(config.getUIConfiguration().getGEP());
-    }
-    
-    
-    @Override
-    public EntitySelectionListener<ContainerReport<SCTBand, SCTCluster, Concept>> getContainerReportSelectedListener() {
-        return new NavigateToContainerReportListener<>(config.getUIConfiguration().getGEP());
-    }
-    
     @Override
     public EntitySelectionListener<Concept> getClusterPatriarchSelectedListener() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -57,5 +30,28 @@ public class SCTTANListenerConfiguration implements TANListenerConfiguration<SCT
     public EntitySelectionListener<Concept> getBandPatriarchSelectedListener() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    
 
+    @Override
+    public EntitySelectionListener<ContainerReport> getContainerReportSelectedListener() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public EntitySelectionListener<Concept> getGroupConceptListListener() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
+
+    @Override
+    public EntitySelectionListener<Node> getChildGroupListener() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public EntitySelectionListener<ParentNodeDetails> getParentGroupListener() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

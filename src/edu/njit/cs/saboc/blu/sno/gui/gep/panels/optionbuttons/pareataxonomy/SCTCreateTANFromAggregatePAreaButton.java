@@ -1,13 +1,12 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy;
 
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.AggregatePArea;
+import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANButton;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
-import edu.njit.cs.saboc.blu.sno.abn.tan.SCTTribalAbstractionNetworkGenerator;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import java.util.Optional;
 import javax.swing.SwingUtilities;
 
@@ -17,7 +16,7 @@ import javax.swing.SwingUtilities;
  */
 public class SCTCreateTANFromAggregatePAreaButton extends CreateTANButton {
     
-    private Optional<SCTAggregatePArea> currentPArea = Optional.empty();
+    private Optional<AggregatePArea> currentPArea = Optional.empty();
     
     private final SCTPAreaTaxonomyConfiguration config;
     
@@ -27,7 +26,7 @@ public class SCTCreateTANFromAggregatePAreaButton extends CreateTANButton {
         this.config = config;
     }
     
-    public void setCurrentPArea(SCTAggregatePArea parea) {
+    public void setCurrentPArea(AggregatePArea parea) {
         currentPArea = Optional.ofNullable(parea);
     }
     
@@ -42,10 +41,10 @@ public class SCTCreateTANFromAggregatePAreaButton extends CreateTANButton {
                 public void run() {
                     SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
                     
-                    SCTAggregatePArea parea = currentPArea.get();
+                    AggregatePArea parea = currentPArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getTextConfiguration().getGroupName(parea)),
+                            String.format("Creating %s Tribal Abstraction Network (TAN)", parea.getName()),
                             new LoadStatusDialog.LoadingDialogClosedListener() {
 
                             @Override
@@ -54,21 +53,16 @@ public class SCTCreateTANFromAggregatePAreaButton extends CreateTANButton {
                             }
                         });
                     
-                    SCTTribalAbstractionNetworkGenerator generator = new SCTTribalAbstractionNetworkGenerator(
-                            config.getTextConfiguration().getGroupName(parea),
-                            (SCTLocalDataSource)config.getDataConfiguration().getPAreaTaxonomy().getDataSource());
+                    TribalAbstractionNetworkGenerator generator = new TribalAbstractionNetworkGenerator();
                     
-                    SCTTribalAbstractionNetwork tan = generator.createTANFromConceptHierarchy(
-                            config.getDataConfiguration().getAggregatedPAreaHierarchy(parea));
+                    TribalAbstractionNetwork tan = generator.deriveTANFrom(parea.getHierarchy());
                     
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            if (doLoad) {
-                                displayListener.addNewClusterGraphFrame(tan, true, true);
-
-                                loadStatusDialog.setVisible(false);
-                                loadStatusDialog.dispose();
-                            }
+                    SwingUtilities.invokeLater(() -> {
+                        if (doLoad) {
+                            displayListener.addNewClusterGraphFrame(tan, true, true);
+                            
+                            loadStatusDialog.setVisible(false);
+                            loadStatusDialog.dispose();
                         }
                     });
                 }

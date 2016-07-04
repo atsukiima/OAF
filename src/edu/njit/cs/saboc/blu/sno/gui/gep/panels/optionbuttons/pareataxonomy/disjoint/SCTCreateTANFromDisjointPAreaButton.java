@@ -1,13 +1,12 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.disjoint;
 
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.DisjointPArea;
+import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANButton;
-import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
-import edu.njit.cs.saboc.blu.sno.abn.tan.SCTTribalAbstractionNetworkGenerator;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfiguration;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
 import java.util.Optional;
 import javax.swing.SwingUtilities;
 
@@ -16,7 +15,7 @@ import javax.swing.SwingUtilities;
  * @author Chris O
  */
 public class SCTCreateTANFromDisjointPAreaButton extends CreateTANButton {
-    private Optional<DisjointPartialArea> currentPArea = Optional.empty();
+    private Optional<DisjointPArea> currentPArea = Optional.empty();
     
     private final SCTDisjointPAreaTaxonomyConfiguration config;
     
@@ -26,7 +25,7 @@ public class SCTCreateTANFromDisjointPAreaButton extends CreateTANButton {
         this.config = config;
     }
     
-    public void setCurrentPArea(DisjointPartialArea parea) {
+    public void setCurrentPArea(DisjointPArea parea) {
         currentPArea = Optional.ofNullable(parea);
     }
     
@@ -41,10 +40,10 @@ public class SCTCreateTANFromDisjointPAreaButton extends CreateTANButton {
                 public void run() {
                     SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayListener();
                     
-                    DisjointPartialArea parea = currentPArea.get();
+                    DisjointPArea parea = currentPArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getTextConfiguration().getGroupName(parea)),
+                            String.format("Creating %s Tribal Abstraction Network (TAN)", parea.getName()),
                             new LoadStatusDialog.LoadingDialogClosedListener() {
 
                             @Override
@@ -53,12 +52,11 @@ public class SCTCreateTANFromDisjointPAreaButton extends CreateTANButton {
                             }
                         });
                     
-                    SCTTribalAbstractionNetworkGenerator generator = new SCTTribalAbstractionNetworkGenerator(
-                        config.getTextConfiguration().getGroupName(parea),
-                        (SCTLocalDataSource)config.getDataConfiguration().getDisjointPAreaTaxonomy().getDataSource());
+                    TribalAbstractionNetworkGenerator generator = new TribalAbstractionNetworkGenerator();
                     
-                    SCTTribalAbstractionNetwork tan = generator.createTANFromConceptHierarchy(parea.getConceptHierarchy());
+                    TribalAbstractionNetwork tan = generator.deriveTANFrom(parea.getHierarchy());
 
+                    
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             if (doLoad) {

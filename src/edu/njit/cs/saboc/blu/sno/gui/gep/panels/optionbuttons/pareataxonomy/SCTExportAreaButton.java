@@ -1,19 +1,19 @@
 
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy;
 
-import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.Area;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportButton;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportAbNUtilities;
+import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
-import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 import javax.swing.JOptionPane;
 
 /**
@@ -22,7 +22,7 @@ import javax.swing.JOptionPane;
  */
 public class SCTExportAreaButton extends ExportButton {
     
-    private Optional<SCTArea> currentArea = Optional.empty();
+    private Optional<Area> currentArea = Optional.empty();
     
     private final SCTPAreaTaxonomyConfiguration config;
 
@@ -32,7 +32,7 @@ public class SCTExportAreaButton extends ExportButton {
         this.config = config;
     }
         
-    public void setCurrentArea(SCTArea area) {
+    public void setCurrentArea(Area area) {
         currentArea = Optional.ofNullable(area);
     }
     
@@ -64,11 +64,13 @@ public class SCTExportAreaButton extends ExportButton {
     private void exportAreaConcepts(File file) {
         
         ArrayList<Concept> concepts = new ArrayList<>(currentArea.get().getConcepts());
-        Collections.sort(concepts, new ConceptNameComparator());
+        concepts.sort((a,b) -> {
+            return a.getName().compareToIgnoreCase(b.getName());
+        });
 
         try (PrintWriter writer = new PrintWriter(file)) {
-            concepts.forEach((Concept c) -> {
-                writer.println(String.format("%d\t%s", c.getId(), c.getName()));
+            concepts.forEach((c) -> {
+                writer.println(String.format("%d\t%s", c.getID(), c.getName()));
             });
         } catch (FileNotFoundException fnfe) {
             
@@ -76,17 +78,20 @@ public class SCTExportAreaButton extends ExportButton {
     }
     
     private void exportAreaPartialAreas(File file) {
-        ArrayList<SCTPArea> pareas = currentArea.get().getAllPAreas();
+        Set<PArea> pareas = currentArea.get().getPAreas();
         
         try (PrintWriter writer = new PrintWriter(file)) {
-            pareas.forEach( (SCTPArea parea) -> {
-                ArrayList<Concept> concepts = parea.getConceptsInPArea();
+            pareas.forEach( (parea) -> {
+                ArrayList<Concept> concepts = new ArrayList<>(parea.getConcepts());
+                concepts.sort((a,b) -> {
+                    return a.getName().compareToIgnoreCase(b.getName());
+                });
                 
-                concepts.forEach( (Concept c) -> {
+                concepts.forEach( (c) -> {
                     writer.println(String.format("%d\t%s\t%s",
-                            c.getId(),
+                            c.getID(),
                             c.getName(),
-                            String.format("%s (%d)", config.getTextConfiguration().getGroupName(parea), parea.getConceptCount())));
+                            String.format("%s (%d)", parea.getName(), parea.getConceptCount())));
                 });
             });
 

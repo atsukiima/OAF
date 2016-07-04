@@ -1,22 +1,19 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons;
 
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphEdge;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.PopupToggleButton;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -27,7 +24,10 @@ import javax.swing.JTextField;
  */
 public class GraphOptionsButton extends PopupToggleButton {
 
-    public GraphOptionsButton(JFrame parent, final PAreaInternalGraphFrame igf, final SCTPAreaTaxonomy data) {
+    public GraphOptionsButton(JFrame parent, 
+            PAreaInternalGraphFrame igf, 
+            PAreaTaxonomy taxonomy) {
+        
         super(parent, "Options");
         
         JPanel popupPanel  = new JPanel();
@@ -46,7 +46,7 @@ public class GraphOptionsButton extends PopupToggleButton {
             public void actionPerformed(ActionEvent ae) {
                 ArrayList<GraphEdge> edges = graph.getEdges();
 
-                igf.replaceInternalFrameDataWith(data, false);
+                igf.replaceInternalFrameDataWith(taxonomy);
 
                 for (GraphEdge edge : edges) {
                     graph.drawRoutedEdge(edge.getSource(), edge.getTarget());
@@ -62,7 +62,7 @@ public class GraphOptionsButton extends PopupToggleButton {
             public void actionPerformed(ActionEvent ae) {
                 ArrayList<GraphEdge> edges = graph.getEdges();
 
-                igf.replaceInternalFrameDataWith(data, true);
+                igf.replaceInternalFrameDataWith(taxonomy);
 
                 for (GraphEdge edge : edges) {
                     graph.drawRoutedEdge(edge.getSource(), edge.getTarget());
@@ -87,7 +87,7 @@ public class GraphOptionsButton extends PopupToggleButton {
 
         JButton drawEdges = new JButton("Draw All Edges");
 
-        if (data.getPAreaCount() > 200) {
+        if (taxonomy.getNodeCount() > 200) {
             drawEdges.setEnabled(false);
             drawEdges.setToolTipText("The current graph is too large. To draw all edges you need a graph with at most 200 PAreas.");
         } else {
@@ -140,9 +140,9 @@ public class GraphOptionsButton extends PopupToggleButton {
                     return;
                 }
                 
-                SCTPAreaTaxonomy aggregateTaxonomy = data.getReduced(minThresh);
+                PAreaTaxonomy aggregateTaxonomy = taxonomy.getAggregated(minThresh);
 
-                igf.replaceInternalFrameDataWith(aggregateTaxonomy, graph.getIsAreaGraph());
+                igf.replaceInternalFrameDataWith(aggregateTaxonomy);
             }
         });
 

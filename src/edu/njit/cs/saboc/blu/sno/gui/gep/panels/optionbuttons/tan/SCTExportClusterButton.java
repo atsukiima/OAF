@@ -1,10 +1,9 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.tan;
 
-import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportButton;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportAbNUtilities;
-import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
+import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -19,13 +18,13 @@ import javax.swing.JOptionPane;
  */
 public class SCTExportClusterButton extends ExportButton {
     
-    private Optional<SCTCluster> currentCluster = Optional.empty();
+    private Optional<Cluster> currentCluster = Optional.empty();
 
     public SCTExportClusterButton() {
         super("Export Cluster's Concepts");
     }
         
-    public void setCurrentCluster(SCTCluster cluster) {
+    public void setCurrentCluster(Cluster cluster) {
         currentCluster = Optional.ofNullable(cluster);
     }
     
@@ -46,20 +45,22 @@ public class SCTExportClusterButton extends ExportButton {
                         choices[0]);
 
                 ArrayList<Concept> concepts = new ArrayList<>(currentCluster.get().getConcepts());
-                Collections.sort(concepts, new ConceptNameComparator());
+                concepts.sort((a,b) -> { 
+                    return a.getName().compareToIgnoreCase(b.getName());
+                });
 
                 try(PrintWriter writer = new PrintWriter(exportFile.get())) {
                     
-                    concepts.forEach((Concept c) -> {
+                    concepts.forEach((c) -> {
                         if (input.equals(choices[0])) {
                             writer.println(String.format("%d\t%s", 
-                                    c.getId(), 
+                                    c.getID(), 
                                     c.getName()));
                             
                         } else if (input.equals(choices[1])) {
                             writer.println(c.getName());
                         } else if(input.equals(choices[2])){
-                            writer.println(c.getId());
+                            writer.println(c.getID());
                         } else {
                             
                         }

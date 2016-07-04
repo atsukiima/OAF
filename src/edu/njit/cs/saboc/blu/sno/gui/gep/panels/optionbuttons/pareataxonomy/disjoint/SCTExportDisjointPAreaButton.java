@@ -1,11 +1,11 @@
 
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.disjoint;
 
-import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.DisjointPArea;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportButton;
-import edu.njit.cs.saboc.blu.sno.abn.disjointpareataxonomy.DisjointPartialArea;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportAbNUtilities;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.core.ontology.Concept;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfiguration;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -19,17 +19,17 @@ import javax.swing.JOptionPane;
  */
 public class SCTExportDisjointPAreaButton extends ExportButton {
     
-    private Optional<DisjointPartialArea> currentDisjointPArea = Optional.empty();
+    private Optional<DisjointPArea> currentDisjointPArea = Optional.empty();
     
-    private final SCTPAreaTaxonomyConfiguration config;
+    private final SCTDisjointPAreaTaxonomyConfiguration config;
 
-    public SCTExportDisjointPAreaButton(SCTPAreaTaxonomyConfiguration config) {
+    public SCTExportDisjointPAreaButton(SCTDisjointPAreaTaxonomyConfiguration config) {
         super("Export Disjoint Partial-area's Classes");
         
         this.config = config;
     }
         
-    public void setCurrentPArea(DisjointPartialArea parea) {
+    public void setCurrentPArea(DisjointPArea parea) {
         currentDisjointPArea = Optional.ofNullable(parea);
     }
     
@@ -49,20 +49,20 @@ public class SCTExportDisjointPAreaButton extends ExportButton {
                         choices, 
                         choices[0]);
 
-                ArrayList<Concept> concepts = currentDisjointPArea.get().getConceptsAsList();
+                ArrayList<Concept> concepts = new ArrayList<>(currentDisjointPArea.get().getConcepts());
 
                 try(PrintWriter writer = new PrintWriter(exportFile.get())) {
                     
                     concepts.forEach((Concept c) -> {
                         if (input.equals(choices[0])) {
                             writer.println(String.format("%d\t%s", 
-                                    c.getId(), 
+                                    c.getID(), 
                                     c.getName()));
                             
                         } else if (input.equals(choices[1])) {
                             writer.println(c.getName());
                         } else if(input.equals(choices[2])){
-                            writer.println(c.getId());
+                            writer.println(c.getID());
                         } else {
                             
                         }

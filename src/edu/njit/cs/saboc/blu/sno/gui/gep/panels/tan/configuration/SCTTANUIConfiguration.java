@@ -1,61 +1,40 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration;
 
-import SnomedShared.Concept;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.abn.AbstractAbNDetailsPanel;
+import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.ConceptPainter;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.TANUIConfiguration;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.SCTTANDetailsPanel;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.band.SCTBandPanel;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.cluster.SCTClusterPanel;
-
+import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptPainter;
 /**
  *
  * @author Chris O
  */
-public class SCTTANUIConfiguration extends TANUIConfiguration<SCTTribalAbstractionNetwork, SCTBand, SCTCluster, Concept, SCTTANListenerConfiguration> {
+public class SCTTANUIConfiguration extends TANUIConfiguration {
 
-    private final SCTTANConfiguration config;
-    
     private final SCTDisplayFrameListener displayListener;
             
     public SCTTANUIConfiguration(SCTTANConfiguration config, SCTDisplayFrameListener displayListener) {
-        super(new SCTTANListenerConfiguration(config));
-        
-        this.config = config;
-        
+        super(config, new SCTTANListenerConfiguration(config));
+
         this.displayListener = displayListener;
     }
     
     public SCTDisplayFrameListener getDisplayFrameListener() {
         return displayListener;
     }
-    
+
     @Override
-    public AbstractAbNDetailsPanel createAbNDetailsPanel() {
-        return new SCTTANDetailsPanel(config);
-    }
-    
-    @Override
-    public boolean hasGroupDetailsPanel() {
-        return true;
+    public AbstractNodeOptionsPanel getPartitionedNodeOptionsPanel() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public NodeDashboardPanel createGroupDetailsPanel() {
-        return new SCTClusterPanel(config);
-    }
-    
-    @Override
-    public boolean hasContainerDetailsPanel() {
-        return true;
+    public AbstractNodeOptionsPanel getNodeOptionsPanel() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public NodeDashboardPanel createContainerDetailsPanel() {
-        return new SCTBandPanel(config);
+    public ConceptPainter getConceptHierarchyPainter() {
+        return new SCTConceptPainter();
     }
 }

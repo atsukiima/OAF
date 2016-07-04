@@ -1,43 +1,41 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration;
 
-import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.TANTextConfiguration;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTBand;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTCluster;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTEntityNameUtils;
 
 /**
  *
  * @author Chris O
  */
-public class SCTTANTextConfiguration extends TANTextConfiguration<SCTTribalAbstractionNetwork, SCTBand, SCTCluster, Concept> {
+public class SCTTANTextConfiguration extends TANTextConfiguration {
 
-
-    public SCTTANTextConfiguration(SCTTribalAbstractionNetwork tan) {
+    public SCTTANTextConfiguration(TribalAbstractionNetwork tan) {
         super(tan);
     }
-    
+
     @Override
-    public String getConceptTypeName(boolean plural) {
-        if (plural) {
-            return "Concepts";
-        } else {
-            return "Concept";
-        }
+    public String getAbNName() {
+        return "[TAN_NAME]";
     }
 
     @Override
-    public String getConceptName(Concept concept) {
-        return concept.getName();
+    public String getConceptTypeName(boolean plural) {
+        return SCTEntityNameUtils.getConceptTypeName(plural);
     }
-    
+
     @Override
-    public String getConceptUniqueIdentifier(Concept concept) {
-        return Long.toString(concept.getId());
+    public String getPropertyTypeName(boolean plural) {
+        return SCTEntityNameUtils.getPropertyTypeName(plural);
     }
-    
+
     @Override
-    public String getGroupRootUniqueIdentifier(SCTCluster group) {
-        return getConceptUniqueIdentifier(group.getRoot());
+    public String getParentConceptTypeName(boolean plural) {
+        return SCTEntityNameUtils.getParentConceptTypeName(plural);
+    }
+
+    @Override
+    public String getChildConceptTypeName(boolean plural) {
+        return SCTEntityNameUtils.getChildConceptTypeName(plural);
     }
 }

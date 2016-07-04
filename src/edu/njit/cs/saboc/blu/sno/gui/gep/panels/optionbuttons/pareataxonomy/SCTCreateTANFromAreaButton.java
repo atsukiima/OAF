@@ -1,19 +1,13 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy;
 
-import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.Area;
+import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANButton;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTArea;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
-import edu.njit.cs.saboc.blu.sno.abn.tan.SCTTribalAbstractionNetworkGenerator;
-import edu.njit.cs.saboc.blu.sno.abn.tan.local.SCTTribalAbstractionNetwork;
-import edu.njit.cs.saboc.blu.sno.datastructure.hierarchy.SCTMultiRootedConceptHierarchy;
+import edu.njit.cs.saboc.blu.core.ontology.ConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTLocalDataSource;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Optional;
 import javax.swing.SwingUtilities;
 
@@ -23,7 +17,7 @@ import javax.swing.SwingUtilities;
  */
 public class SCTCreateTANFromAreaButton extends CreateTANButton {
 
-    private Optional<SCTArea> currentArea = Optional.empty();
+    private Optional<Area> currentArea = Optional.empty();
     
     private final SCTPAreaTaxonomyConfiguration config;
 
@@ -33,7 +27,7 @@ public class SCTCreateTANFromAreaButton extends CreateTANButton {
         this.config = config;
     }
         
-    public void setCurrentArea(SCTArea area) {
+    public void setCurrentArea(Area area) {
         currentArea = Optional.ofNullable(area);
     }
     
@@ -49,10 +43,10 @@ public class SCTCreateTANFromAreaButton extends CreateTANButton {
                 public void run() {
                     SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
 
-                    SCTArea area = currentArea.get();
+                    Area area = currentArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s Tribal Abstraction Network (TAN)", config.getTextConfiguration().getContainerName(area)),
+                            String.format("Creating %s Tribal Abstraction Network (TAN)", area.getName()),
                             new LoadStatusDialog.LoadingDialogClosedListener() {
 
                             @Override
@@ -61,40 +55,18 @@ public class SCTCreateTANFromAreaButton extends CreateTANButton {
                             }
                         });
                     
-                    HashSet<Concept> patriarchs = new HashSet<>();
-                    
-                    ArrayList<SCTPArea> pareas = area.getAllPAreas();
-                    
-                    pareas.forEach((SCTPArea parea) -> {
-                        patriarchs.add(parea.getRoot());
-                    });
-                    
-                    SCTMultiRootedConceptHierarchy hierarchy = new SCTMultiRootedConceptHierarchy(patriarchs);
-                    
-                    pareas.forEach((SCTPArea parea) -> {
-                        if(config.getDataConfiguration().getPAreaTaxonomy().isReduced()) {
-                            SCTAggregatePArea aggregatePArea = (SCTAggregatePArea)parea;
-                            
-                            hierarchy.addAllHierarchicalRelationships(config.getDataConfiguration().getAggregatedPAreaHierarchy(aggregatePArea));
-                        } else {
-                            hierarchy.addAllHierarchicalRelationships(parea.getHierarchy());
-                        }
-                    });
-                    
-                    SCTTribalAbstractionNetworkGenerator generator = new SCTTribalAbstractionNetworkGenerator(
-                            config.getTextConfiguration().getContainerName(area), 
-                            (SCTLocalDataSource)config.getDataConfiguration().getPAreaTaxonomy().getDataSource());
+                    ConceptHierarchy hierarchy = area.getHierarchy();
   
-                    SCTTribalAbstractionNetwork tan = generator.deriveTANFromMultiRootedHierarchy(hierarchy);
+                    TribalAbstractionNetworkGenerator generator = new TribalAbstractionNetworkGenerator();
+  
+                    TribalAbstractionNetwork tan = generator.deriveTANFrom(hierarchy);
 
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            if (doLoad) {
-                                displayListener.addNewClusterGraphFrame(tan, true, true);
-
-                                loadStatusDialog.setVisible(false);
-                                loadStatusDialog.dispose();
-                            }
+                    SwingUtilities.invokeLater(() -> {
+                        if (doLoad) {
+                            displayListener.addNewClusterGraphFrame(tan, true, true);
+                            
+                            loadStatusDialog.setVisible(false);
+                            loadStatusDialog.dispose();
                         }
                     });
                 }

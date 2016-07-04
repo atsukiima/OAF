@@ -1,9 +1,9 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy;
 
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.CreateAncestorSubtaxonomyButton;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import java.util.Optional;
@@ -15,7 +15,7 @@ import javax.swing.SwingUtilities;
  */
 public class SCTCreateAncestorSubtaxonomyButton extends CreateAncestorSubtaxonomyButton {
 
-    private Optional<SCTPArea> currentPArea = Optional.empty();
+    private Optional<PArea> currentPArea = Optional.empty();
     
     private final SCTPAreaTaxonomyConfiguration config;
     
@@ -23,7 +23,7 @@ public class SCTCreateAncestorSubtaxonomyButton extends CreateAncestorSubtaxonom
         this.config = config;
     }
     
-    public void setCurrentPArea(SCTPArea parea) {
+    public void setCurrentPArea(PArea parea) {
         currentPArea = Optional.ofNullable(parea);
     }
     
@@ -38,10 +38,10 @@ public class SCTCreateAncestorSubtaxonomyButton extends CreateAncestorSubtaxonom
                 public void run() {
                     SCTDisplayFrameListener displayListener = config.getUIConfiguration().getDisplayFrameListener();
                     
-                    SCTPArea parea = currentPArea.get();
+                    PArea parea = currentPArea.get();
 
                     loadStatusDialog = LoadStatusDialog.display(null,
-                            String.format("Creating %s ancestor subtaxonomy", config.getTextConfiguration().getGroupName(parea)),
+                            String.format("Creating %s ancestor subtaxonomy", parea.getName()),
                             new LoadStatusDialog.LoadingDialogClosedListener() {
 
                             @Override
@@ -50,7 +50,7 @@ public class SCTCreateAncestorSubtaxonomyButton extends CreateAncestorSubtaxonom
                             }
                         });
                     
-                    SCTPAreaTaxonomy subtaxonomy = config.getDataConfiguration().getPAreaTaxonomy().getAncestorSubtaxonomy(parea);
+                    PAreaTaxonomy subtaxonomy = config.getPAreaTaxonomy().createAncestorSubtaxonomy(parea);
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {

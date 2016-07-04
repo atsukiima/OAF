@@ -1,19 +1,17 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy;
 
-import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.AggregatePArea;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportButton;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTAggregatePArea;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportAbNUtilities;
+import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
-import edu.njit.cs.saboc.blu.sno.utils.comparators.ConceptNameComparator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import javax.swing.JOptionPane;
 
 /**
@@ -22,7 +20,7 @@ import javax.swing.JOptionPane;
  */
 public class SCTExportAggregatePAreaButton extends ExportButton {
     
-    private Optional<SCTAggregatePArea> currentPArea = Optional.empty();
+    private Optional<AggregatePArea> currentPArea = Optional.empty();
     
     private final SCTPAreaTaxonomyConfiguration config;
 
@@ -32,7 +30,7 @@ public class SCTExportAggregatePAreaButton extends ExportButton {
         this.config = config;
     }
         
-    public void setCurrentPArea(SCTAggregatePArea parea) {
+    public void setCurrentPArea(AggregatePArea parea) {
         currentPArea = Optional.ofNullable(parea);
     }
     
@@ -54,9 +52,9 @@ public class SCTExportAggregatePAreaButton extends ExportButton {
                         choices[0]);
 
                 if(input.equals(choices[0])) {
-                    exportClassesOnly(exportFile.get());
+                    exportConceptsOnly(exportFile.get());
                 } else if(input.equals(choices[1])) {
-                    exportReducedPartialAreas(exportFile.get());
+                    exportAggregatedPartialAreas(exportFile.get());
                 } else {
                     
                 }
@@ -64,14 +62,16 @@ public class SCTExportAggregatePAreaButton extends ExportButton {
         }
     }
     
-    private void exportClassesOnly(File file) {
-        ArrayList<Concept> concepts = new ArrayList<>(currentPArea.get().getAllGroupsConcepts());
-        Collections.sort(concepts, new ConceptNameComparator());
+    private void exportConceptsOnly(File file) {
+        ArrayList<Concept> concepts = new ArrayList<>(currentPArea.get().getConcepts());
+        concepts.sort( (a, b) -> {
+            return a.getName().compareToIgnoreCase(b.getName());
+        });
         
         try (PrintWriter writer = new PrintWriter(file)) {
             concepts.forEach((Concept c) -> {
                     writer.println(String.format("%d\t%s",
-                            c.getId(),
+                            c.getID(),
                             c.getName()));
             });
 
@@ -80,20 +80,23 @@ public class SCTExportAggregatePAreaButton extends ExportButton {
         }
     }
     
-    private void exportReducedPartialAreas(File file) {
-        HashSet<SCTPArea> pareas = currentPArea.get().getAggregatedGroupHierarchy().getNodesInHierarchy();
+    private void exportAggregatedPartialAreas(File file) {
+        Set<PArea> pareas = currentPArea.get().getAggregatedNodes();
         
         try (PrintWriter writer = new PrintWriter(file)) {
-            pareas.forEach((SCTPArea parea) -> {
-                String areaName = config.getTextConfiguration().getGroupsContainerName(parea);
+            pareas.forEach((parea) -> {
+                String areaName = parea.getName();
                 
-                ArrayList<Concept> pareaConcepts = parea.getConceptsInPArea();
+                ArrayList<Concept> pareaConcepts = new ArrayList<>(parea.getConcepts());
+                pareaConcepts.sort((a, b) -> { 
+                    return a.getName().compareToIgnoreCase(b.getName());
+                });
                 
                 pareaConcepts.forEach( (Concept c) -> {
                     writer.println(String.format("%d\t%s\t%s\t%s",
-                            c.getId(),
+                            c.getID(),
                             c.getName(),
-                            String.format("%s (%d)", config.getTextConfiguration().getGroupName(parea), parea.getConceptCount()),
+                            String.format("%s (%d)", parea.getName(), parea.getConceptCount()),
                             areaName));
                 });
             });

@@ -1,14 +1,14 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy;
 
-import SnomedShared.Concept;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportButton;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.local.SCTPArea;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportAbNUtilities;
+import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Set;
 import javax.swing.JOptionPane;
 
 /**
@@ -17,13 +17,13 @@ import javax.swing.JOptionPane;
  */
 public class SCTExportPAreaButton extends ExportButton {
     
-    private Optional<SCTPArea> currentPArea = Optional.empty();
+    private Optional<PArea> currentPArea = Optional.empty();
 
     public SCTExportPAreaButton() {
         super("Export Partial-area's Concepts");
     }
         
-    public void setCurrentPArea(SCTPArea parea) {
+    public void setCurrentPArea(PArea parea) {
         currentPArea = Optional.ofNullable(parea);
     }
     
@@ -43,20 +43,20 @@ public class SCTExportPAreaButton extends ExportButton {
                         choices, 
                         choices[0]);
 
-                ArrayList<Concept> concepts = currentPArea.get().getConceptsInPArea();
+                Set<Concept> concepts = currentPArea.get().getConcepts();
 
                 try(PrintWriter writer = new PrintWriter(exportFile.get())) {
                     
                     concepts.forEach((Concept c) -> {
                         if (input.equals(choices[0])) {
                             writer.println(String.format("%d\t%s", 
-                                    c.getId(), 
+                                    c.getID(), 
                                     c.getName()));
                             
                         } else if (input.equals(choices[1])) {
                             writer.println(c.getName());
                         } else if(input.equals(choices[2])){
-                            writer.println(c.getId());
+                            writer.println(c.getID());
                         } else {
                             
                         }
