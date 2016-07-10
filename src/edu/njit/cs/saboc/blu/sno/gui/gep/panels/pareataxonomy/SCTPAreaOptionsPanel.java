@@ -1,128 +1,57 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy;
 
-import edu.njit.cs.saboc.blu.core.abn.node.Node;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANFromSinglyRootedNodeButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportSinglyRootedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateRootSubtaxonomyButton;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateTANFromPAreaButton;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTExportPAreaButton;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateAncestorSubtaxonomyButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.CreateAncestorSubtaxonomyButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.CreateRootSubtaxonomyButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayPAreaTaxonomyListener;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
-import java.util.Optional;
 
 /**
  *
  * @author Chris O
  */
-public class SCTPAreaOptionsPanel extends AbstractNodeOptionsPanel {
-    
-    private Optional<PArea> selectedPArea = Optional.empty();
-    
-    private final SCTPAreaTaxonomyConfiguration config;
+public class SCTPAreaOptionsPanel extends NodeOptionsPanel {
 
-//    private final SCTOpenBrowserButton btnNAT;
-    
-    private final PopoutNodeDetailsButton popoutBtn;
-    
-    private final SCTExportPAreaButton exportBtn;
-    
-    private final SCTCreateRootSubtaxonomyButton rootSubtaxonomyBtn;
-    
-    private final SCTCreateAncestorSubtaxonomyButton ancestorSubtaxonomyBtn;
-    
-    private final SCTCreateTANFromPAreaButton tanBtn;
-        
     public SCTPAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config) {
-        this.config = config;
-       
-//        btnNAT = new SCTOpenBrowserButton(config.getDataConfiguration().getPAreaTaxonomy().getDataSource(),
-//            "partial-area", config.getUIConfiguration().getDisplayFrameListener());
-//        
-//        super.addOptionButton(btnNAT);
-        
-        rootSubtaxonomyBtn = new SCTCreateRootSubtaxonomyButton(config);
+
+        CreateRootSubtaxonomyButton rootSubtaxonomyBtn = new CreateRootSubtaxonomyButton(config,
+            new DisplayPAreaTaxonomyListener(config.getUIConfiguration().getDisplayFrameListener()));
         
         super.addOptionButton(rootSubtaxonomyBtn);
         
-        ancestorSubtaxonomyBtn = new SCTCreateAncestorSubtaxonomyButton(config);
+        
+        CreateAncestorSubtaxonomyButton ancestorSubtaxonomyBtn = new CreateAncestorSubtaxonomyButton(config, 
+            new DisplayPAreaTaxonomyListener(config.getUIConfiguration().getDisplayFrameListener()));
         
         super.addOptionButton(ancestorSubtaxonomyBtn);
         
-        tanBtn = new SCTCreateTANFromPAreaButton(config);
+        
+        CreateTANFromSinglyRootedNodeButton tanBtn = new CreateTANFromSinglyRootedNodeButton(config, 
+            new DisplayTANListener(config.getUIConfiguration().getDisplayFrameListener()));
         
         super.addOptionButton(tanBtn);
         
-        popoutBtn = new PopoutNodeDetailsButton("partial-area", () -> {
+        
+        PopoutNodeDetailsButton popoutBtn = new PopoutNodeDetailsButton("partial-area", () -> {
+            PArea parea = (PArea)super.getCurrentNode().get();
+            
             NodeDashboardPanel anp = config.getUIConfiguration().createGroupDetailsPanel();
-            anp.setContents(selectedPArea.get());
+            anp.setContents(parea);
 
             return anp;
         });
 
         super.addOptionButton(popoutBtn);
         
-        exportBtn = new SCTExportPAreaButton();
+        
+        ExportSinglyRootedNodeButton exportBtn = new ExportSinglyRootedNodeButton(config);
         
         super.addOptionButton(exportBtn);
-    }
-    
-    @Override
-    public void enableOptionsForNode(Node node) {
-        
-        PArea parea = (PArea)node;
-        
-        PAreaTaxonomy taxonomy = config.getPAreaTaxonomy();
-        
-        if(taxonomy.getPAreaHierarchy().getDescendants(parea).isEmpty()) {
-            rootSubtaxonomyBtn.setEnabled(false);
-        } else {
-            rootSubtaxonomyBtn.setEnabled(true);
-        }
-        
-        if(parea.getConceptCount() > 1) {
-            if(parea.getHierarchy().getChildren(parea.getRoot()).size() > 1) {
-                tanBtn.setEnabled(true);
-            } else {
-                tanBtn.setEnabled(false);
-            }
-        } else {
-            tanBtn.setEnabled(false);
-        }
-        
-        if(taxonomy.getPAreaHierarchy().getParents(parea).isEmpty()) {
-            ancestorSubtaxonomyBtn.setEnabled(false);
-        } else {
-            ancestorSubtaxonomyBtn.setEnabled(true);
-        }
-    }
-
-    @Override
-    public void setContents(Node node) {
-        PArea parea = (PArea)node;
-        
-        selectedPArea = Optional.of(parea);
-        
-//        btnNAT.setCurrentRootConcept((SCTConcept)parea.getRoot());
-        
-        exportBtn.setCurrentPArea(parea);
-        rootSubtaxonomyBtn.setCurrentPArea(parea);
-        tanBtn.setCurrentPArea(parea);
-        
-        ancestorSubtaxonomyBtn.setCurrentPArea(parea);
-        
-        this.enableOptionsForNode(parea);
-    }
-    
-    public void clearContents() {
-        selectedPArea = Optional.empty();
-
-//        btnNAT.setCurrentRootConcept(null);
-        exportBtn.setCurrentPArea(null);
-        rootSubtaxonomyBtn.setCurrentPArea(null);
-        tanBtn.setCurrentPArea(null);
-        ancestorSubtaxonomyBtn.setCurrentPArea(null);
     }
 }

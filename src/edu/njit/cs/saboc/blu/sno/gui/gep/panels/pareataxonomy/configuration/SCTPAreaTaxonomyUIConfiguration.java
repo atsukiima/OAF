@@ -2,7 +2,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration;
 
 import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.ConceptPainter;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configuration.PAreaTaxonomyUIConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptPainter;
@@ -33,7 +33,7 @@ public class SCTPAreaTaxonomyUIConfiguration extends PAreaTaxonomyUIConfiguratio
     }
 
     @Override
-    public AbstractNodeOptionsPanel getPartitionedNodeOptionsPanel() {
+    public NodeOptionsPanel getPartitionedNodeOptionsPanel() {
         
         if(config.getPAreaTaxonomy().isAggregated()) {
             return new SCTAggregateAreaOptionsPanel(config);
@@ -43,7 +43,7 @@ public class SCTPAreaTaxonomyUIConfiguration extends PAreaTaxonomyUIConfiguratio
     }
 
     @Override
-    public AbstractNodeOptionsPanel getNodeOptionsPanel() {
+    public NodeOptionsPanel getNodeOptionsPanel() {
         if(config.getPAreaTaxonomy().isAggregated()) {
             return new SCTAggregatePAreaOptionsPanel(config);
         } else {

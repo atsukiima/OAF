@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configura
 
 import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.ConceptPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.DisjointAbNUIConfiguration;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbstractNodeOptionsPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 
 /**
@@ -28,7 +28,7 @@ public class SCTDisjointPAreaTaxonomyUIConfiguration extends DisjointAbNUIConfig
     }
 
     @Override
-    public AbstractNodeOptionsPanel getNodeOptionsPanel() {
+    public NodeOptionsPanel getNodeOptionsPanel() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -1,17 +1,16 @@
 package edu.njit.cs.saboc.blu.sno.localdatasource.load;
 
+import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTStatedConcept;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,11 +59,11 @@ public class RF2ReleaseLoader {
 
         loadMonitor.setCurrentProcess("Loading Relationships", 50);
 
-        SCTConceptHierarchy hierarchy = loadRelationships(relFile, concepts);
+        Hierarchy<SCTConcept>  hierarchy = loadRelationships(relFile, concepts);
 
         loadMonitor.setCurrentProcess("Loading Stated Relationships", 75);
 
-        SCTConceptHierarchy statedHierarchy = loadStatedRelationships(statedRelFile, concepts);
+        Hierarchy<SCTConcept>  statedHierarchy = loadStatedRelationships(statedRelFile, concepts);
 
         loadMonitor.setCurrentProcess("Building Search Index", 85);
         
@@ -82,9 +81,9 @@ public class RF2ReleaseLoader {
      * @return
      * @throws IOException 
      */
-    private SCTConceptHierarchy loadStatedRelationships(File relationshipsFile, HashMap<Long, SCTConcept> concepts) throws IOException {
+    private Hierarchy<SCTConcept>  loadStatedRelationships(File relationshipsFile, HashMap<Long, SCTConcept> concepts) throws IOException {
 
-        SCTConceptHierarchy hierarchy = new SCTConceptHierarchy(concepts.get(138875005l));
+        Hierarchy<SCTConcept>  hierarchy = new Hierarchy<>(concepts.get(138875005l));
 
         Map<Long, Set<AttributeRelationship>> statedAttributeRelationships = new HashMap<>();
 
@@ -160,9 +159,9 @@ public class RF2ReleaseLoader {
         return hierarchy;
     }
 
-    private SCTConceptHierarchy loadRelationships(File relationshipsFile, HashMap<Long, SCTConcept> concepts) throws IOException {
+    private Hierarchy<SCTConcept> loadRelationships(File relationshipsFile, HashMap<Long, SCTConcept> concepts) throws IOException {
 
-        SCTConceptHierarchy hierarchy = new SCTConceptHierarchy(concepts.get(138875005l));
+        Hierarchy<SCTConcept> hierarchy = new Hierarchy<>(concepts.get(138875005l));
 
         Map<Long, Set<AttributeRelationship>> attributeRels = new HashMap<>();
 

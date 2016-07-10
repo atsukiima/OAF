@@ -1,23 +1,26 @@
 package edu.njit.cs.saboc.blu.sno.sctdatasource;
 
+import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
+
 /**
  *
  * @author Chris
  */
 public class SCTReleaseWithStated extends SCTRelease {
     
-    private final SCTConceptHierarchy statedHierarchy;
+    private final Hierarchy<SCTConcept> statedHierarchy;
     
     public SCTReleaseWithStated(
-            SCTConceptHierarchy conceptHierarchy,
-           SCTConceptHierarchy statedHierarchy) {
+            Hierarchy<SCTConcept> conceptHierarchy,
+           Hierarchy<SCTConcept> statedHierarchy) {
         
         super(conceptHierarchy);
         
         this.statedHierarchy = statedHierarchy;
     }
     
-    public SCTConceptHierarchy getStatedHierarchy() {
+    public Hierarchy<SCTConcept> getStatedHierarchy() {
         return statedHierarchy;
     }
     

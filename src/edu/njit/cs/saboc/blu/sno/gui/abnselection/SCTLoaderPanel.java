@@ -6,9 +6,9 @@ import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetAbstractionNetworkGenerator;
+import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.ontology.Concept;
-import edu.njit.cs.saboc.blu.core.ontology.ConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInferredPAreaTaxonomyFactory;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.RF1ReleaseLoader;
@@ -267,7 +267,7 @@ public class SCTLoaderPanel extends JPanel {
 
                     SCTConcept localConcept = dataSource.getConceptFromId(root.getID());
 
-                    ConceptHierarchy hierarchy;
+                    Hierarchy<SCTConcept> hierarchy;
 
                     if (useStatedRelationships) {
                         SCTReleaseWithStated statedDataSource = (SCTReleaseWithStated) dataSource;
@@ -285,7 +285,7 @@ public class SCTLoaderPanel extends JPanel {
                     
                     SwingUtilities.invokeLater(() -> {
                         if (doLoad) {
-                            displayFrameListener.addNewPAreaGraphFrame(taxonomy, true);
+                            displayFrameListener.addNewPAreaGraphFrame(taxonomy);
                             
                             loadStatusDialog.setVisible(false);
                             loadStatusDialog.dispose();
@@ -326,7 +326,7 @@ public class SCTLoaderPanel extends JPanel {
                 try {
                     SCTRelease dataSource = localReleasePanel.getLoadedDataSource();
 
-                    ConceptHierarchy hierarchy;
+                    Hierarchy<SCTConcept> hierarchy;
 
                     if (useStated) {
                         SCTReleaseWithStated statedDataSource = (SCTReleaseWithStated) dataSource;
@@ -341,7 +341,7 @@ public class SCTLoaderPanel extends JPanel {
 
                     SwingUtilities.invokeLater( () -> {
                         if (doLoad) {
-                            displayFrameListener.addNewClusterGraphFrame(tan, true, false);
+                            displayFrameListener.addNewClusterGraphFrame(tan);
                             
                             loadStatusDialog.setVisible(false);
                             loadStatusDialog.dispose();

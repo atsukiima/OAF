@@ -1,6 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy;
 
 import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.node.Node;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.Area;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
@@ -26,9 +27,12 @@ public class SCTCreateDisjointTaxonomyButton extends CreateDisjointAbNButton {
         
         this.config = config;
     }
+
+    @Override
+    public void setEnabledFor(Node node) {
+        Area area = (Area)node;
         
-    public void setCurrentArea(Area area) {
-        currentArea = Optional.ofNullable(area);
+        this.setEnabled(area.hasOverlappingConcepts());
     }
     
     @Override

@@ -27,11 +27,9 @@ public abstract class SCTDisplayFrameListener implements FrameCreationListener {
      * Creates and displays a new SNOMED CT partial-area taxonomy graph frame.
      *
      * @param data The taxonomy data used to create the graph.
-     * @param areaGraph False if taxonomy should be partitioned into regions.
-     * True if only areas are used.
      * @return The newly created internal graph frame.
      */
-    public PAreaInternalGraphFrame addNewPAreaGraphFrame(PAreaTaxonomy data, boolean areaGraph) {
+    public PAreaInternalGraphFrame addNewPAreaGraphFrame(PAreaTaxonomy data) {
         
         PAreaInternalGraphFrame igf = new PAreaInternalGraphFrame(mainFrame, data, this);
 
@@ -44,14 +42,10 @@ public abstract class SCTDisplayFrameListener implements FrameCreationListener {
      * Creates and displays a new SNOMED CT Tribal Abstraction Network graph
      * frame.
      *
-     * @param data The tribal abstraction network data used to create the graph.
-     * @param setGraph False if tribal bands should be partitioned based on
-     * inheritance. True otherwise.
-     * @param conceptCount True if tribal bands labels should indicate total
-     * number of concepts. False for displaying total number of clusters.
+     * @param data
      * @return The newly created internal graph frame.
      */
-    public ClusterInternalGraphFrame addNewClusterGraphFrame(ClusterTribalAbstractionNetwork data, boolean setGraph, boolean conceptCount) {
+    public ClusterInternalGraphFrame addNewClusterGraphFrame(ClusterTribalAbstractionNetwork data) {
         
         ClusterInternalGraphFrame cigf = new ClusterInternalGraphFrame(mainFrame, data, this);
 

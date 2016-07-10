@@ -2,8 +2,8 @@ package edu.njit.cs.saboc.blu.sno.abn.pareataxonomy;
 
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.InheritableProperty;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomyFactory;
+import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.core.ontology.Concept;
-import edu.njit.cs.saboc.blu.core.ontology.ConceptHierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import java.util.HashMap;
@@ -16,15 +16,15 @@ import java.util.stream.Collectors;
  *
  * @author Chris O
  */
-public class SCTInferredPAreaTaxonomyFactory implements PAreaTaxonomyFactory {
+public class SCTInferredPAreaTaxonomyFactory extends PAreaTaxonomyFactory {
     
     private final Map<SCTConcept, Set<InheritableProperty>> properties = new HashMap<>();
     
-    public SCTInferredPAreaTaxonomyFactory(ConceptHierarchy<SCTConcept> hierarchy) {
+    public SCTInferredPAreaTaxonomyFactory(Hierarchy<SCTConcept> hierarchy) {
         
         Map<SCTConcept, Set<SCTConcept>> uniqueRels = new HashMap<>();
         
-        hierarchy.getConceptsInHierarchy().forEach((concept) -> {
+        hierarchy.getNodesInHierarchy().forEach((concept) -> {
             Set<AttributeRelationship> rels = concept.getAttributeRelationships().stream().filter(
                 (rel) -> { 
                     return rel.getCharacteristicType() == 0; // Use defining relationships

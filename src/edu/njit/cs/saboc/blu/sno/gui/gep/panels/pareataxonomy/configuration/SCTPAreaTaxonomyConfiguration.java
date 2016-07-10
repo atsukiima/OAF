@@ -14,8 +14,20 @@ public class SCTPAreaTaxonomyConfiguration extends PAreaTaxonomyConfiguration {
         super(taxonomy);
     }
     
+    public void setUIConfiguration(SCTPAreaTaxonomyUIConfiguration config) {
+        super.setUIConfiguration(config);
+    }
+    
+    public void setTextConfiguration(SCTPAreaTaxonomyTextConfiguration config) {
+        super.setTextConfiguration(config);
+    }
+    
     public SCTPAreaTaxonomyUIConfiguration getUIConfiguration() {
         return (SCTPAreaTaxonomyUIConfiguration)super.getUIConfiguration();
+    }
+    
+    public SCTPAreaTaxonomyTextConfiguration getTextConfiguration() {
+        return (SCTPAreaTaxonomyTextConfiguration)super.getTextConfiguration();
     }
     
 }

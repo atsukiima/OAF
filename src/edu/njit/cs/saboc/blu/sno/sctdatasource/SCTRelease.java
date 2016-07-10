@@ -1,5 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.sctdatasource;
 
+import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.core.ontology.Ontology;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
@@ -32,13 +33,13 @@ public class SCTRelease extends Ontology {
 
     private final ArrayList<DescriptionEntry> descriptions;
     
-    public SCTRelease(SCTConceptHierarchy conceptHierarchy) {
+    public SCTRelease(Hierarchy<SCTConcept> conceptHierarchy) {
         
         super(conceptHierarchy);
                 
         descriptions = new ArrayList<>();
         
-        conceptHierarchy.getConceptsInHierarchy().forEach( (concept) -> {
+        conceptHierarchy.getNodesInHierarchy().forEach( (concept) -> {
             concepts.put(concept.getID(), concept);
             
             concept.getDescriptions().forEach((d) -> {
@@ -65,8 +66,8 @@ public class SCTRelease extends Ontology {
         }
     }
     
-    public SCTConceptHierarchy getConceptHierarchy() {
-        return (SCTConceptHierarchy)super.getConceptHierarchy();
+    public Hierarchy<SCTConcept> getConceptHierarchy() {
+        return super.getConceptHierarchy();
     }
 
     public SCTConcept getConceptFromId(long id) {
