@@ -6,7 +6,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANFromPartitionedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportPartitionedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
-import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANListener;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 
 /**
@@ -18,7 +18,7 @@ public class SCTBandOptionsPanel extends NodeOptionsPanel {
     public SCTBandOptionsPanel(SCTTANConfiguration config) {
 
         CreateTANFromPartitionedNodeButton tanBtn = new CreateTANFromPartitionedNodeButton(config,
-            new DisplayTANListener(config.getUIConfiguration().getDisplayFrameListener()));
+            new DisplayTANAction(config.getUIConfiguration().getDisplayFrameListener()));
         
         super.addOptionButton(tanBtn);
         

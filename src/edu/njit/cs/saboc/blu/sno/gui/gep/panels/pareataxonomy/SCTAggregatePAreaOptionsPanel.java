@@ -11,8 +11,8 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNod
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.CreateAncestorSubtaxonomyButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.CreateExpandedSubtaxonomyButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.CreateRootSubtaxonomyButton;
-import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayPAreaTaxonomyListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANListener;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayPAreaTaxonomyAction;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import java.util.Optional;
 
@@ -25,25 +25,25 @@ public class SCTAggregatePAreaOptionsPanel extends NodeOptionsPanel {
     public SCTAggregatePAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config) {
 
         CreateExpandedSubtaxonomyButton expandedSubtaxonomyBtn = new CreateExpandedSubtaxonomyButton(
-                config, new DisplayPAreaTaxonomyListener(config.getUIConfiguration().getDisplayFrameListener()));
+                config, new DisplayPAreaTaxonomyAction(config.getUIConfiguration().getDisplayFrameListener()));
         
         super.addOptionButton(expandedSubtaxonomyBtn);
         
         
         CreateAncestorSubtaxonomyButton ancestorSubtaxonomyBtn = new CreateAncestorSubtaxonomyButton(config,
-            new DisplayPAreaTaxonomyListener(config.getUIConfiguration().getDisplayFrameListener()));
+            new DisplayPAreaTaxonomyAction(config.getUIConfiguration().getDisplayFrameListener()));
         
         super.addOptionButton(ancestorSubtaxonomyBtn);
         
         
         CreateTANFromSinglyRootedNodeButton tanBtn = new CreateTANFromSinglyRootedNodeButton(config, 
-            new DisplayTANListener(config.getUIConfiguration().getDisplayFrameListener()));
+            new DisplayTANAction(config.getUIConfiguration().getDisplayFrameListener()));
         
         super.addOptionButton(tanBtn);
         
         
         CreateRootSubtaxonomyButton rootSubtaxonomyBtn = new CreateRootSubtaxonomyButton(config, 
-            new DisplayPAreaTaxonomyListener(config.getUIConfiguration().getDisplayFrameListener()));
+            new DisplayPAreaTaxonomyAction(config.getUIConfiguration().getDisplayFrameListener()));
         
         super.addOptionButton(rootSubtaxonomyBtn);
         

@@ -39,7 +39,7 @@ public class SCTRelease extends Ontology {
                 
         descriptions = new ArrayList<>();
         
-        conceptHierarchy.getNodesInHierarchy().forEach( (concept) -> {
+        conceptHierarchy.getNodes().forEach( (concept) -> {
             concepts.put(concept.getID(), concept);
             
             concept.getDescriptions().forEach((d) -> {

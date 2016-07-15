@@ -113,7 +113,7 @@ public class RF2ReleaseLoader {
                     SCTConcept child = concepts.get(sourceId);
                     SCTConcept parent = concepts.get(targetId);
 
-                    hierarchy.addIsA(child, parent);
+                    hierarchy.addEdge(child, parent);
                 } else {
 
                     if (!statedAttributeRelationships.containsKey(sourceId)) {
@@ -191,7 +191,7 @@ public class RF2ReleaseLoader {
                     SCTConcept child = concepts.get(sourceId);
                     SCTConcept parent = concepts.get(targetId);
 
-                    hierarchy.addIsA(child, parent);
+                    hierarchy.addEdge(child, parent);
                 } else {
 
                     if (!attributeRels.containsKey(sourceId)) {

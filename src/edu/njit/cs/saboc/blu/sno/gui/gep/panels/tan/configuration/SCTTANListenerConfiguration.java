@@ -1,8 +1,8 @@
 
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration;
 
-import edu.njit.cs.saboc.blu.core.abn.node.Node;
 import edu.njit.cs.saboc.blu.core.abn.ParentNodeDetails;
+import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.EntitySelectionAdapter;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.EntitySelectionListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.TANListenerConfiguration;
@@ -47,12 +47,12 @@ public class SCTTANListenerConfiguration implements TANListenerConfiguration {
     
 
     @Override
-    public EntitySelectionListener<Node> getChildGroupListener() {
+    public EntitySelectionListener<Cluster> getChildGroupListener() {
         return new EntitySelectionAdapter<>();
     }
 
     @Override
-    public EntitySelectionListener<ParentNodeDetails> getParentGroupListener() {
+    public EntitySelectionListener<ParentNodeDetails<Cluster>> getParentGroupListener() {
         return new EntitySelectionAdapter<>();
     }
 }

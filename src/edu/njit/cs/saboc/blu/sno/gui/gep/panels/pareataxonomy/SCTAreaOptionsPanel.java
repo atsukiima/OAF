@@ -3,11 +3,12 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.Area;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateDisjointAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANFromPartitionedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportPartitionedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
-import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANListener;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.pareataxonomy.SCTCreateDisjointTaxonomyButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayDisjointTaxonomyAction;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 
 /**
@@ -18,13 +19,12 @@ public class SCTAreaOptionsPanel extends NodeOptionsPanel {
     
     public SCTAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config) {
         
-        SCTCreateDisjointTaxonomyButton disjointTaxonomyBtn = new SCTCreateDisjointTaxonomyButton(config);
-        
-        super.addOptionButton(disjointTaxonomyBtn);
-        
+        super.addOptionButton(new CreateDisjointAbNButton(
+                config,
+                new DisplayDisjointTaxonomyAction(config.getUIConfiguration().getDisplayFrameListener())));
 
         CreateTANFromPartitionedNodeButton tanBtn = new CreateTANFromPartitionedNodeButton(config,
-                new DisplayTANListener(config.getUIConfiguration().getDisplayFrameListener()));
+                new DisplayTANAction(config.getUIConfiguration().getDisplayFrameListener()));
         
         super.addOptionButton(tanBtn);
                 

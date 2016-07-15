@@ -12,7 +12,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTEntityNameUtils;
  */
 public class SCTDisjointPAreaTaxonomyTextConfiguration extends DisjointPAreaTaxonomyTextConfiguration {
 
-    public SCTDisjointPAreaTaxonomyTextConfiguration(DisjointAbstractionNetwork<PAreaTaxonomy, PArea> disjointTaxonomy) {
+    public SCTDisjointPAreaTaxonomyTextConfiguration(DisjointAbstractionNetwork<PAreaTaxonomy<PArea>, PArea> disjointTaxonomy) {
         super(disjointTaxonomy);
     }
 

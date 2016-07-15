@@ -9,9 +9,10 @@ import edu.njit.cs.saboc.blu.core.graph.disjointabn.DisjointBluGraph;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.DisjointAbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
+import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.AbNSearchButton;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfigurationFactory;
-import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.DisjointPAreaInternalSearchButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyTextConfiguration;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -23,18 +24,18 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
     private final SCTDisplayFrameListener displayListener;
     
-    private final DisjointPAreaInternalSearchButton searchBtn;
+    private final AbNSearchButton searchBtn;
 
     public DisjointPAreaInternalGraphFrame(
             JFrame parentFrame, 
-            DisjointAbstractionNetwork<PAreaTaxonomy, PArea> data, 
+            DisjointAbstractionNetwork<PAreaTaxonomy<PArea>, PArea> data, 
             SCTDisplayFrameListener displayListener) {
         
         super(parentFrame, "SNOMED CT Disjoint Partial-area Taxonomy");
         
         this.displayListener = displayListener;
         
-        this.searchBtn = new DisjointPAreaInternalSearchButton(parentFrame, this);
+        this.searchBtn = new AbNSearchButton(parentFrame, this, new SCTDisjointPAreaTaxonomyTextConfiguration(null));
         
         super.addToggleableButtonToMenu(searchBtn);
 
@@ -42,7 +43,7 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
     }
 
     public final void replaceInternalFrameDataWith(
-            DisjointAbstractionNetwork<PAreaTaxonomy, PArea> data) {
+            DisjointAbstractionNetwork<PAreaTaxonomy<PArea>, PArea> data) {
         
         Thread loadThread = new Thread(() -> {
             gep.showLoading();

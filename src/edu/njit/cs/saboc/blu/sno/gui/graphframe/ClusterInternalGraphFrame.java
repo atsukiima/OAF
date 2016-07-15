@@ -7,16 +7,17 @@ import edu.njit.cs.saboc.blu.core.graph.tan.ClusterBluGraph;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.tan.TANPainter;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
+import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.PartitionedAbNSearchButton;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfigurationFactory;
-import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.TANInternalSearchButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANTextConfiguration;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
     
-    private final TANInternalSearchButton searchButton;
+    private final PartitionedAbNSearchButton searchButton;
     
     private final SCTDisplayFrameListener displayListener;
     
@@ -33,7 +34,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
 
         super.setContainerAbNCheckboxText("Show Band TAN");
 
-        searchButton = new TANInternalSearchButton(parentFrame, this);
+        searchButton = new PartitionedAbNSearchButton(parentFrame, this, new SCTTANTextConfiguration(null));
         
         replaceInternalFrameDataWith(data);
         

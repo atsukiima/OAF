@@ -54,7 +54,7 @@ public abstract class SCTDisplayFrameListener implements FrameCreationListener {
         return cigf;
     }
     
-    public DisjointPAreaInternalGraphFrame addNewDisjointPAreaTaxonomyGraphFrame(DisjointAbstractionNetwork<PAreaTaxonomy, PArea> taxonomy) {
+    public DisjointPAreaInternalGraphFrame addNewDisjointPAreaTaxonomyGraphFrame(DisjointAbstractionNetwork<PAreaTaxonomy<PArea>, PArea> taxonomy) {
         DisjointPAreaInternalGraphFrame frame = new DisjointPAreaInternalGraphFrame(mainFrame, taxonomy, this);
         
         this.displayFrame(frame);

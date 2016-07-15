@@ -1,8 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration;
 
-import edu.njit.cs.saboc.blu.core.abn.node.Node;
-import edu.njit.cs.saboc.blu.core.abn.node.PartitionedNode;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.AggregatePArea;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.Area;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configuration.PAreaTaxonomyTextConfiguration;
@@ -21,7 +20,7 @@ public class SCTPAreaTaxonomyTextConfiguration extends PAreaTaxonomyTextConfigur
     }
 
     @Override
-    public String getContainerHelpDescription(PartitionedNode node) {
+    public String getContainerHelpDescription(Area node) {
         PAreaTaxonomy taxonomy = super.getPAreaTaxonomy();
         
         StringBuilder helpDesc = new StringBuilder();
@@ -42,9 +41,7 @@ public class SCTPAreaTaxonomyTextConfiguration extends PAreaTaxonomyTextConfigur
     }
 
     @Override
-    public String getNodeHelpDescription(Node node) {
-        
-        PArea parea = (PArea)node;
+    public String getNodeHelpDescription(PArea parea) {
         
         PAreaTaxonomy taxonomy = super.getPAreaTaxonomy();
         
@@ -117,8 +114,11 @@ public class SCTPAreaTaxonomyTextConfiguration extends PAreaTaxonomyTextConfigur
         HashSet<AggregatePArea> aggregatePAreas = new HashSet<>();
 
         HashSet<AggregatePArea> regularPAreas = new HashSet<>();
+        
+        Set<Area> areas = taxonomy.getAreas();
 
-        taxonomy.getAreas().forEach((area) -> {
+        areas.forEach((area) -> {
+            
             Set<PArea> pareas = area.getPAreas();
 
             pareas.forEach((parea) -> {

@@ -125,7 +125,7 @@ public class RF1ReleaseLoader {
                     SCTConcept child = concepts.get(concept1);
                     SCTConcept parent = concepts.get(concept2);
 
-                    hierarchy.addIsA(child, parent);
+                    hierarchy.addEdge(child, parent);
                 } else {
                     long sourceId = Long.parseLong(parts[1]);
                     long targetId = Long.parseLong(parts[3]);
@@ -204,7 +204,7 @@ public class RF1ReleaseLoader {
                     SCTConcept child = concepts.get(concept1);
                     SCTConcept parent = concepts.get(concept2);
 
-                    hierarchy.addIsA(child, parent);
+                    hierarchy.addEdge(child, parent);
                 } else {
                     long sourceId = Long.parseLong(parts[1]);
                     long targetId = Long.parseLong(parts[3]);

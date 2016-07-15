@@ -12,7 +12,7 @@ import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
  */
 public class SCTDisjointPAreaTaxonomyConfigurationFactory {
     public SCTDisjointPAreaTaxonomyConfiguration createConfiguration(
-            DisjointAbstractionNetwork<PAreaTaxonomy, PArea> disjointTaxonomy, 
+            DisjointAbstractionNetwork<PAreaTaxonomy<PArea>, PArea> disjointTaxonomy, 
             SCTDisplayFrameListener displayListener) {
         
         SCTDisjointPAreaTaxonomyConfiguration disjointConfiguration = new SCTDisjointPAreaTaxonomyConfiguration(disjointTaxonomy);

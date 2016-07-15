@@ -8,7 +8,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportSin
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.buttons.CreateAncestorTANButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.buttons.CreateRootTANButton;
-import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANListener;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 
 /**
@@ -20,17 +20,17 @@ public class SCTClusterOptionsPanel extends NodeOptionsPanel {
     public SCTClusterOptionsPanel(SCTTANConfiguration config) {
         
         CreateRootTANButton rootTANBtn = new CreateRootTANButton(config, 
-            new DisplayTANListener(config.getUIConfiguration().getDisplayFrameListener()));
+            new DisplayTANAction(config.getUIConfiguration().getDisplayFrameListener()));
         
         super.addOptionButton(rootTANBtn);
         
         CreateAncestorTANButton ancestorTANBtn = new CreateAncestorTANButton(config, 
-            new DisplayTANListener(config.getUIConfiguration().getDisplayFrameListener()));
+            new DisplayTANAction(config.getUIConfiguration().getDisplayFrameListener()));
         
         super.addOptionButton(ancestorTANBtn);
         
         CreateTANFromSinglyRootedNodeButton tanBtn = new CreateTANFromSinglyRootedNodeButton(config,
-            new DisplayTANListener(config.getUIConfiguration().getDisplayFrameListener()));
+            new DisplayTANAction(config.getUIConfiguration().getDisplayFrameListener()));
         
         super.addOptionButton(tanBtn);
         

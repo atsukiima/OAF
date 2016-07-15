@@ -24,7 +24,7 @@ public class SCTInferredPAreaTaxonomyFactory extends PAreaTaxonomyFactory {
         
         Map<SCTConcept, Set<SCTConcept>> uniqueRels = new HashMap<>();
         
-        hierarchy.getNodesInHierarchy().forEach((concept) -> {
+        hierarchy.getNodes().forEach((concept) -> {
             Set<AttributeRelationship> rels = concept.getAttributeRelationships().stream().filter(
                 (rel) -> { 
                     return rel.getCharacteristicType() == 0; // Use defining relationships

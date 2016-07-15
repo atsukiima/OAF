@@ -6,17 +6,17 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.pareataxonomy.PAreaBluGraph;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.AbNConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
+import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.PartitionedAbNSearchButton;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTAggregateTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfigurationFactory;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyTextConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.GraphOptionsButton;
-import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.search.PAreaInternalSearchButton;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -25,7 +25,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
     
     private final JButton openReportsBtn;
     
-    private final PAreaInternalSearchButton searchButton;
+    private final PartitionedAbNSearchButton searchButton;
     
     private final GraphOptionsButton optionsButton;
     
@@ -62,7 +62,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         
         optionsButton = new GraphOptionsButton(parentFrame, this, taxonomy);
 
-        searchButton = new PAreaInternalSearchButton(parentFrame, this);
+        searchButton = new PartitionedAbNSearchButton(parentFrame, this, new SCTPAreaTaxonomyTextConfiguration(null));
 
         replaceInternalFrameDataWith(taxonomy);
 
@@ -159,11 +159,5 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         });
 
         loadThread.start();
-    }
-    
-    
-    protected void initializeTabs(BluGraph graph, AbNConfiguration gepConfiguration) {
-        super.initializeTabs(graph, gepConfiguration);
-
     }
 }
