@@ -16,6 +16,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyTextConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.reports.SCTPAreaTaxonomyReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.GraphOptionsButton;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -49,12 +50,16 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         super.setContainerAbNCheckboxText("Show Area Taxonomy");
 
         openReportsBtn = new JButton("Taxonomy Reports and Metrics");
-        openReportsBtn.addActionListener((ae) -> {
+        openReportsBtn.addActionListener( (ae) -> {
             
             if (currentTaxonomy.isAggregated()) {
 
             } else {
+                SCTPAreaTaxonomyReportDialog reportDialog = new SCTPAreaTaxonomyReportDialog(currentConfiguration);
+                reportDialog.showReports(taxonomy);
 
+                reportDialog.setModal(true);
+                reportDialog.setVisible(true);
             }
         });
 

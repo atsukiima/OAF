@@ -12,6 +12,8 @@ import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANTextConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.reports.SCTTANReportDialog;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -20,6 +22,8 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
     private final PartitionedAbNSearchButton searchButton;
     
     private final SCTDisplayFrameListener displayListener;
+    
+    private final JButton openReportsBtn;
     
     private SCTTANConfiguration currentConfiguration;
 
@@ -33,6 +37,17 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         this.displayListener = displayListener;
 
         super.setContainerAbNCheckboxText("Show Band TAN");
+        
+        openReportsBtn = new JButton("Reports and Metrics");
+        openReportsBtn.addActionListener( (ae) -> {
+            SCTTANReportDialog reportDialog = new SCTTANReportDialog(currentConfiguration);
+            reportDialog.showReports(currentConfiguration.getAbstractionNetwork());
+            reportDialog.setModal(true);
+
+            reportDialog.setVisible(true);
+        });
+
+        addReportButtonToMenu(openReportsBtn);
 
         searchButton = new PartitionedAbNSearchButton(parentFrame, this, new SCTTANTextConfiguration(null));
         
