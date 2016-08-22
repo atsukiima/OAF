@@ -45,9 +45,13 @@ public class DiffTaxonomyPanel extends JPanel {
                 SCTRelease theToRelease = toRelease.get();
                 SCTRelease fromRelease = dataSource;
 
-                SCTConcept specimen = theToRelease.getConceptFromId(123038009); // Specimen
+                //SCTConcept specimen = theToRelease.getConceptFromId(123038009); // Specimen
+                
+                SCTConcept bid = theToRelease.getConceptFromId(87628006); // Bacterial infectious disease
+                
+                //SCTConcept infectiousDisease = theToRelease.getConceptFromId(40733004); // Bacterial infectious disease
 
-                Hierarchy<SCTConcept> fromHierarchy = fromRelease.getConceptHierarchy().getSubhierarchyRootedAt(specimen);
+                Hierarchy<SCTConcept> fromHierarchy = fromRelease.getConceptHierarchy().getSubhierarchyRootedAt(bid);
 
                 PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
 
@@ -56,7 +60,7 @@ public class DiffTaxonomyPanel extends JPanel {
                         fromHierarchy);
                 
                 
-                Hierarchy<SCTConcept> toHierarchy = theToRelease.getConceptHierarchy().getSubhierarchyRootedAt(specimen);
+                Hierarchy<SCTConcept> toHierarchy = theToRelease.getConceptHierarchy().getSubhierarchyRootedAt(bid);
                 
                 PAreaTaxonomy toTaxonomy = generator.derivePAreaTaxonomy(
                         new SCTInferredPAreaTaxonomyFactory(toHierarchy),
