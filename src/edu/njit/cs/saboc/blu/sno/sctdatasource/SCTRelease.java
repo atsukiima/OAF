@@ -1,6 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.sctdatasource;
 
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
+import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import edu.njit.cs.saboc.blu.core.ontology.Ontology;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
@@ -8,7 +9,9 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 
@@ -64,6 +67,7 @@ public class SCTRelease extends Ontology {
                 lastChar = curChar;
             }
         }
+        
     }
     
     public Hierarchy<SCTConcept> getConceptHierarchy() {
@@ -72,6 +76,123 @@ public class SCTRelease extends Ontology {
 
     public SCTConcept getConceptFromId(long id) {
         return concepts.get(id);
+    }
+    
+    public Set<Concept> searchExact(String term) {
+        
+        term = term.toLowerCase();
+        
+        if (term.length() < 3) {
+            return Collections.emptySet();
+        }
+
+        char firstChar = Character.toLowerCase(term.charAt(0));
+
+        Set<Concept> results = new HashSet<>();
+
+        int startIndex;
+
+        if (firstChar < 'a') {
+            startIndex = 0;
+        } else if (firstChar > 'z') {
+            startIndex = startingIndex.get('z');
+        } else {
+            startIndex = startingIndex.get(firstChar);
+        }
+                
+        // TODO: Replace with binary search...
+        
+        boolean withinIndexBounds = (firstChar >= 'a' && firstChar <= 'z');
+
+        for (int c = startIndex; c < descriptions.size(); c++) {
+            DescriptionEntry entry = descriptions.get(c);
+            
+            char descFirstChar = Character.toLowerCase(entry.description.getTerm().charAt(0));
+
+            if (withinIndexBounds) {
+                if (descFirstChar == firstChar) {
+                    if (entry.description.getTerm().equalsIgnoreCase(term)) {
+
+                        if (entry.concept.isActive()) {
+                            results.add(entry.concept);
+                        }
+                    }
+                }
+            } else {
+                if (firstChar < 'a') {
+                    if (descFirstChar == 'a') {
+                        break;
+                    }
+                }
+            }
+        }
+
+        return results;
+    }
+
+    public Set<Concept> searchStarting(String term) {
+        term = term.toLowerCase();
+        
+        if (term.length() < 3) {
+            return Collections.emptySet();
+        }
+
+        char firstChar = Character.toLowerCase(term.charAt(0));
+
+        Set<Concept> results = new HashSet<>();
+
+        int startIndex;
+
+        if (firstChar < 'a') {
+            startIndex = 0;
+        } else if (firstChar > 'z') {
+            startIndex = startingIndex.get('z');
+        } else {
+            startIndex = startingIndex.get(firstChar);
+        }
+
+        for (int c = startIndex; c < descriptions.size(); c++) {
+            DescriptionEntry entry = descriptions.get(c);
+            
+            char descFirstChar = Character.toLowerCase(entry.description.getTerm().charAt(0));
+
+            if (firstChar >= 'a' && firstChar <= 'z') {
+                if (descFirstChar == firstChar) {
+                    if (entry.description.getTerm().toLowerCase().startsWith(term)) {
+                        if (entry.concept.isActive()) {
+                            results.add(entry.concept);
+                        }
+                    }
+                } else {
+                    break;
+                }
+            } else {
+                if(firstChar < 'a') {
+                    if(descFirstChar == 'a') {
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return results;
+    }
+
+    public Set<Concept> searchAnywhere(String term) {
+
+        term = term.toLowerCase();
+
+        Set<Concept> results = new HashSet<>();
+
+        for (DescriptionEntry entry : descriptions) {
+            if (entry.description.getTerm().toLowerCase().contains(term)) {
+                if (entry.concept.isActive()) {
+                    results.add(entry.concept);
+                }
+            }
+        }
+
+        return results;
     }
 
     public boolean supportsStatedRelationships() {

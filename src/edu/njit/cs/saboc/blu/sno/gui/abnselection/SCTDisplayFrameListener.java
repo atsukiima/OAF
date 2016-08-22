@@ -3,11 +3,13 @@ package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.FrameCreationListener;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.ClusterInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.DisjointPAreaInternalGraphFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
+import edu.njit.cs.saboc.blu.sno.gui.graphframe.SCTDiffPAreaTaxonomyGraphFrame;
 import javax.swing.JFrame;
 
 /**
@@ -54,8 +56,18 @@ public abstract class SCTDisplayFrameListener implements FrameCreationListener {
         return cigf;
     }
     
+    
     public DisjointPAreaInternalGraphFrame addNewDisjointPAreaTaxonomyGraphFrame(DisjointAbstractionNetwork<PAreaTaxonomy<PArea>, PArea> taxonomy) {
         DisjointPAreaInternalGraphFrame frame = new DisjointPAreaInternalGraphFrame(mainFrame, taxonomy, this);
+        
+        this.displayFrame(frame);
+        
+        return frame;
+    }
+    
+    public SCTDiffPAreaTaxonomyGraphFrame addNewDiffPAreaTaxonomyGraphFrame(DiffPAreaTaxonomy diffTaxonomy) {
+        SCTDiffPAreaTaxonomyGraphFrame frame = new SCTDiffPAreaTaxonomyGraphFrame(mainFrame, this);
+        frame.replaceInternalFrameDataWith(diffTaxonomy);
         
         this.displayFrame(frame);
         

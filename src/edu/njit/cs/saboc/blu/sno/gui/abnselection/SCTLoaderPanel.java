@@ -11,10 +11,6 @@ import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInferredPAreaTaxonomyFactory;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
-import edu.njit.cs.saboc.blu.sno.localdatasource.load.RF1ReleaseLoader;
-import edu.njit.cs.saboc.blu.sno.localdatasource.load.LoadLocalRelease;
-import edu.njit.cs.saboc.blu.sno.localdatasource.load.LocalLoadStateMonitor;
-import edu.njit.cs.saboc.blu.sno.localdatasource.load.RF2ReleaseLoader;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
 import java.awt.BorderLayout;
@@ -23,27 +19,18 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
-import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 
 /**
  *
@@ -53,10 +40,12 @@ public class SCTLoaderPanel extends JPanel {
 
     private final JTabbedPane blusnoTabbedPane = new JTabbedPane();
 
-    private final LocalReleaseSelectionPanel localReleasePanel;
+    private final LoadReleasePanel localReleasePanel;
 
     private final SCTHierarchySelectionPanel pareaTaxonomySelectionPanel;
     private final SCTHierarchySelectionPanel tanSelectionPanel;
+    
+    private final DiffTaxonomyPanel diffTaxonomyPanel;
 
     private JButton openBrowserBtn;
 
@@ -72,16 +61,28 @@ public class SCTLoaderPanel extends JPanel {
 
         final JPanel versionSelectPanel = new JPanel(new CardLayout());
 
-        localReleasePanel = new LocalReleaseSelectionPanel(this);
-        localReleasePanel.addLocalDataSourceLoadedListener(new LocalReleaseSelectionPanel.LocalDataSourceListener() {
+        localReleasePanel = new LoadReleasePanel();
+        localReleasePanel.addLocalDataSourceLoadedListener(new LoadReleasePanel.LocalDataSourceListener() {
             public void localDataSourceLoaded(SCTRelease dataSource) {
+                                
+                setEnabled(true);
+                
                 enableLocalDataSourceOptions(dataSource);
             }
 
             public void localDataSourceUnloaded() {
+                setEnabled(false);
+                
                 disableLocalDataSourceOptions();
             }
+
+            @Override
+            public void dataSourceLoading() {
+                setTabsEnabled(false);
+            }
         });
+        
+        localReleasePanel.setBorder(BorderFactory.createTitledBorder("1: Select a Folder Containing SNOMED CT Release(s)"));
 
         versionSelectPanel.add(localReleasePanel, "Local");
 
@@ -121,20 +122,25 @@ public class SCTLoaderPanel extends JPanel {
                         loadTAN(root, useStated);
                     }
                 });
+        
         tanSelectionPanel.setEnabled(false);
 
-
-        tanSelectionPanel.setEnabled(false);
+        diffTaxonomyPanel = new DiffTaxonomyPanel(displayFrameListener);
+        diffTaxonomyPanel.setEnabled(false);
+        
+        
 
         blusnoTabbedPane.addTab("Partial-area Taxonomy", pareaTaxonomySelectionPanel);
+        blusnoTabbedPane.addTab("Diff Partial-area Taxonomy", diffTaxonomyPanel);
+        
         blusnoTabbedPane.addTab("Tribal Abstraction Network", tanSelectionPanel);
-
+        
         blusnoTabbedPane.setEnabled(false);
 
         JPanel blusnoTabPanel = new JPanel(new BorderLayout());
 
         blusnoTabPanel.add(blusnoTabbedPane, BorderLayout.CENTER);
-        blusnoTabPanel.setBorder(BorderFactory.createTitledBorder("3: Select Abstraction Network and Hierarchy"));
+        blusnoTabPanel.setBorder(BorderFactory.createTitledBorder("2: Select Abstraction Network and Hierarchy"));
 
         this.add(blusnoTabPanel, BorderLayout.CENTER);
         this.add(createConceptBrowserPanel(), BorderLayout.SOUTH);
@@ -154,8 +160,13 @@ public class SCTLoaderPanel extends JPanel {
             tanSelectionPanel.setStatedReleaseAvailable(false);
         }
 
+        pareaTaxonomySelectionPanel.setCurrentRelease(dataSource);
+        tanSelectionPanel.setCurrentRelease(dataSource);
+        diffTaxonomyPanel.setCurrentRelease(dataSource);
+        
         pareaTaxonomySelectionPanel.setEnabled(true);
         tanSelectionPanel.setEnabled(true);
+        
         openBrowserBtn.setEnabled(true);
     }
 
@@ -164,6 +175,10 @@ public class SCTLoaderPanel extends JPanel {
         pareaTaxonomySelectionPanel.setEnabled(false);
         tanSelectionPanel.setEnabled(false);
         openBrowserBtn.setEnabled(false);
+        
+        pareaTaxonomySelectionPanel.clearCurrentRelease();
+        tanSelectionPanel.clearCurrentRelease();
+        diffTaxonomyPanel.clearCurrentRelease();
     }
 
     private ArrayList<DummyConcept> getRootConcepts() {
@@ -445,256 +460,5 @@ class NoSCTDataSourceLoadedException extends Exception {
 
     public NoSCTDataSourceLoadedException() {
         super("No SCT Data Source Loaded");
-    }
-}
-
-/**
- * Panel which contains all of the options for a SCT release that is stored
- * locally
- */
-class LocalReleaseSelectionPanel extends JPanel {
-
-    public interface LocalDataSourceListener {
-        public void localDataSourceLoaded(SCTRelease dataSource);
-
-        public void localDataSourceUnloaded();
-    }
-
-    private class LoadMonitorTask extends SwingWorker {
-
-        private LocalLoadStateMonitor stateMonitor;
-
-        public LoadMonitorTask(LocalLoadStateMonitor stateMonitor) {
-            this.stateMonitor = stateMonitor;
-        }
-
-        public Void doInBackground() {
-
-            setProgress(0);
-
-            while (stateMonitor.getOverallProgress() < 100) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ignore) {
-
-                }
-
-                setProgress(stateMonitor.getOverallProgress());
-            }
-
-            return null;
-        }
-    }
-
-    private SCTLoaderPanel sctLoaderPanel;
-
-    private JComboBox localVersionBox;
-
-    private ArrayList<File> availableReleases = new ArrayList<>();
-
-    private final JButton chooserBtn;
-
-    private SCTRelease loadedDataSource = null;
-
-    private JToggleButton loadButton = new JToggleButton("Load");
-
-    private JProgressBar loadProgressBar;
-
-    private final ArrayList<LocalDataSourceListener> dataSourceLoadedListeners = new ArrayList<>();
-
-    public LocalReleaseSelectionPanel(final SCTLoaderPanel sctLoaderPanel) {
-        this.sctLoaderPanel = sctLoaderPanel;
-
-        localVersionBox = new JComboBox();
-        localVersionBox.setBackground(Color.WHITE);
-        localVersionBox.addItem("Choose a directory");
-
-        chooserBtn = new JButton("Open Folder");
-
-        chooserBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                localVersionBox.removeAllItems();
-
-                showReleaseFolderSelectionDialog();
-            }
-        });
-
-        loadButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                if (loadButton.isSelected()) {
-                    if (availableReleases.isEmpty()) {
-                        loadButton.setSelected(false);
-                        return;
-                    }
-
-                    sctLoaderPanel.setTabsEnabled(false);
-
-                    loadProgressBar.setValue(0);
-                    loadProgressBar.setString("Detecting Files...");
-                    loadProgressBar.setStringPainted(true);
-                    loadProgressBar.setVisible(true);
-
-                    loadButton.setEnabled(false);
-                    localVersionBox.setEnabled(false);
-                    chooserBtn.setEnabled(false);
-
-                    startLocalReleaseThread();
-                } else {
-                    dataSourceUnloaded();
-                }
-            }
-        });
-
-        loadProgressBar = new JProgressBar(0, 100);
-        loadProgressBar.setVisible(false);
-
-        JPanel localReleasePanel = new JPanel();
-
-        localReleasePanel.add(chooserBtn);
-        localReleasePanel.add(localVersionBox);
-        localReleasePanel.add(loadButton);
-        localReleasePanel.add(loadProgressBar);
-        localReleasePanel.setBorder(BorderFactory.createTitledBorder("2: Select a Folder Containing SNOMED CT Release(s)"));
-
-        this.setLayout(new BorderLayout());
-        this.add(localReleasePanel);
-    }
-
-    public void addLocalDataSourceLoadedListener(LocalDataSourceListener listener) {
-        dataSourceLoadedListeners.add(listener);
-    }
-
-    private void loadComplete() {
-        loadButton.setText("Unload");
-        loadButton.setEnabled(true);
-
-        loadProgressBar.setVisible(false);
-
-        dataSourceLoadedListeners.forEach((LocalDataSourceListener listener) -> {
-            listener.localDataSourceLoaded(loadedDataSource);
-        });
-
-        sctLoaderPanel.setEnabled(true);
-    }
-
-    private void dataSourceUnloaded() {
-        loadButton.setText("Load");
-        localVersionBox.setEnabled(true);
-        chooserBtn.setEnabled(true);
-
-        this.loadedDataSource = null;
-
-        dataSourceLoadedListeners.forEach((LocalDataSourceListener listener) -> {
-            listener.localDataSourceUnloaded();
-        });
-    }
-
-    private void startLocalReleaseThread() {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    File selectedFile = getSelectedVersion();
-
-                    final LocalLoadStateMonitor loadMonitor;
-                    final SCTRelease dataSource;
-
-                    if (selectedFile.getAbsolutePath().contains("RF2Release")) {
-                        RF2ReleaseLoader rf2Importer = new RF2ReleaseLoader();
-
-                        loadMonitor = rf2Importer.getLoadStateMonitor();
-
-                        LoadMonitorTask task = new LoadMonitorTask(loadMonitor);
-
-                        task.addPropertyChangeListener(new PropertyChangeListener() {
-                            public void propertyChange(PropertyChangeEvent pce) {
-                                loadProgressBar.setValue(loadMonitor.getOverallProgress());
-                                loadProgressBar.setString(loadMonitor.getProcessName());
-                            }
-                        });
-
-                        task.execute();
-
-                        dataSource = rf2Importer.loadLocalSnomedRelease(getSelectedVersion(), getSelectedVersionName(), loadMonitor);
-
-                    } else {
-                        RF1ReleaseLoader importer = new RF1ReleaseLoader();
-
-                        loadMonitor = importer.getLoadStateMonitor();
-
-                        LoadMonitorTask task = new LoadMonitorTask(loadMonitor);
-
-                        task.addPropertyChangeListener(new PropertyChangeListener() {
-                            public void propertyChange(PropertyChangeEvent pce) {
-                                loadProgressBar.setValue(loadMonitor.getOverallProgress());
-                                loadProgressBar.setString(loadMonitor.getProcessName());
-                            }
-                        });
-
-                        task.execute();
-
-                        dataSource = importer.loadLocalSnomedRelease(getSelectedVersion(), getSelectedVersionName(), loadMonitor);
-                    }
-
-                    loadedDataSource = dataSource;
-
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            loadComplete();
-                        }
-                    });
-
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    private void showReleaseFolderSelectionDialog() {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-        int returnVal = chooser.showOpenDialog(null);
-
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            try {
-                File file = chooser.getSelectedFile();
-                this.availableReleases = LoadLocalRelease.findReleaseFolders(file);
-
-                if (availableReleases.isEmpty()) {
-                    localVersionBox.removeAllItems();
-                    localVersionBox.addItem("Choose a directory");
-                } else {
-                    ArrayList<String> releaseNames = LoadLocalRelease.getReleaseFileNames(this.availableReleases);
-
-                    for (String releaseName : releaseNames) {
-                        localVersionBox.addItem(releaseName);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            if (availableReleases.isEmpty()) {
-                localVersionBox.removeAllItems();
-                localVersionBox.addItem("Choose a directory");
-            }
-        }
-    }
-
-    public File getSelectedVersion() {
-        return availableReleases.get(localVersionBox.getSelectedIndex());
-    }
-
-    public String getSelectedVersionName() {
-        return (String) localVersionBox.getItemAt(localVersionBox.getSelectedIndex());
-    }
-
-    public SCTRelease getLoadedDataSource() throws NoSCTDataSourceLoadedException {
-        if (loadedDataSource == null) {
-            throw new NoSCTDataSourceLoadedException();
-        }
-
-        return loadedDataSource;
     }
 }

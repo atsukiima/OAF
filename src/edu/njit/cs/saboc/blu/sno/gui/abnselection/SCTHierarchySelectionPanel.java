@@ -1,12 +1,14 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
 import edu.njit.cs.saboc.blu.core.gui.iconmanager.IconManager;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -33,6 +35,12 @@ public class SCTHierarchySelectionPanel extends JPanel {
     
     private final String type;
     
+    private final JPanel hierarchyPanel;
+    
+    private final SubjectAbstractionNetworkPanel subjectSelectionPanel;
+    
+    private Optional<SCTRelease> currentRelease = Optional.empty();
+    
     public SCTHierarchySelectionPanel(
             ArrayList<DummyConcept> hierarchyRoots, 
             ArrayList<DummyConcept> enabledRoots, 
@@ -47,7 +55,20 @@ public class SCTHierarchySelectionPanel extends JPanel {
         this.chkUseStatedRelationships = new JCheckBox(String.format("Use Stated Relationships to Derive %s", type));
         this.chkUseStatedRelationships.setEnabled(false);
         
-        JPanel hierarchyPanel = new JPanel(new GridLayout(4, 5, 2, 2));
+        this.subjectSelectionPanel = new SubjectAbstractionNetworkPanel(selectionAction);
+        this.subjectSelectionPanel.setEnabled(false);
+        
+        Dimension fixedSize = new Dimension(500, - 1);
+        
+        this.subjectSelectionPanel.setMinimumSize(fixedSize);
+        this.subjectSelectionPanel.setMaximumSize(fixedSize);
+        this.subjectSelectionPanel.setPreferredSize(fixedSize);
+        
+        hierarchyPanel = new JPanel(new GridLayout(4, 5, 2, 2));
+        
+        hierarchyPanel.setBorder(BorderFactory.createTitledBorder("Select a top-level hierarchy"));
+        
+        this.subjectSelectionPanel.setBorder(BorderFactory.createTitledBorder("Select a specific concept"));
 
         this.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         
@@ -56,7 +77,7 @@ public class SCTHierarchySelectionPanel extends JPanel {
             
             JButton btn = new JButton(String.format("<html><div align=\"center\">%s", hierarchyName));
             btn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            btn.addActionListener((ActionEvent ae) -> {
+            btn.addActionListener( (ae) -> {
                 selectionAction.performHierarchySelectionAction(root, chkUseStatedRelationships.isSelected());
             });
             
@@ -75,6 +96,19 @@ public class SCTHierarchySelectionPanel extends JPanel {
         
         this.add(chkUseStatedRelationships, BorderLayout.NORTH);
         this.add(hierarchyPanel, BorderLayout.CENTER);
+        this.add(subjectSelectionPanel, BorderLayout.EAST);
+    }
+    
+    public void setCurrentRelease(SCTRelease release) {
+        this.currentRelease = Optional.of(release);
+        
+        subjectSelectionPanel.setCurrentRelease(release);
+    }
+    
+    public void clearCurrentRelease() {
+        this.currentRelease = Optional.empty();
+        
+        subjectSelectionPanel.clearCurrentRelease();
     }
     
     public void setStatedReleaseAvailable(boolean value) {
@@ -92,6 +126,10 @@ public class SCTHierarchySelectionPanel extends JPanel {
     
     public void setEnabled(boolean value) {
         super.setEnabled(value);
+        
+        hierarchyPanel.setEnabled(value);
+        
+        subjectSelectionPanel.setEnabled(value);
         
         if(statedReleaseAvailable) {
             chkUseStatedRelationships.setEnabled(value);
