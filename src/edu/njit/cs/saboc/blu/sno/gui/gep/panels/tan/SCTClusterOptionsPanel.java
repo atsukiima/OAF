@@ -29,7 +29,9 @@ public class SCTClusterOptionsPanel extends NodeOptionsPanel {
         
         super.addOptionButton(ancestorTANBtn);
         
-        CreateTANFromSinglyRootedNodeButton tanBtn = new CreateTANFromSinglyRootedNodeButton(config,
+        CreateTANFromSinglyRootedNodeButton tanBtn = new CreateTANFromSinglyRootedNodeButton(
+                config.getTribalAbstractionNetwork().getSourceFactory(),
+                config,
             new DisplayTANAction(config.getUIConfiguration().getDisplayFrameListener()));
         
         super.addOptionButton(tanBtn);

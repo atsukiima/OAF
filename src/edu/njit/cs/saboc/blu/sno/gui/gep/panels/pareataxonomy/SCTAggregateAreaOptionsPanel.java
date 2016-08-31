@@ -1,6 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy;
 
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.Area;
+import edu.njit.cs.saboc.blu.core.abn.tan.TANFactory;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateDisjointAbNButton;
@@ -22,7 +23,9 @@ public class SCTAggregateAreaOptionsPanel extends NodeOptionsPanel {
                 config,
                 new DisplayDisjointTaxonomyAction(config.getUIConfiguration().getDisplayFrameListener())));
 
-         CreateTANFromPartitionedNodeButton tanBtn = new CreateTANFromPartitionedNodeButton(config, new DisplayTANAction(
+         CreateTANFromPartitionedNodeButton tanBtn = new CreateTANFromPartitionedNodeButton(
+                 new TANFactory(),
+                 config, new DisplayTANAction(
             config.getUIConfiguration().getDisplayFrameListener()));
         
         super.addOptionButton(tanBtn);

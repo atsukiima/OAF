@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.tan.TANFactory;
 import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetAbstractionNetworkGenerator;
@@ -352,7 +353,7 @@ public class SCTLoaderPanel extends JPanel {
 
                     TribalAbstractionNetworkGenerator generator = new TribalAbstractionNetworkGenerator();
 
-                    ClusterTribalAbstractionNetwork tan = generator.deriveTANFromSingleRootedHierarchy(hierarchy);
+                    ClusterTribalAbstractionNetwork tan = generator.deriveTANFromSingleRootedHierarchy(hierarchy, new TANFactory());
 
                     SwingUtilities.invokeLater( () -> {
                         if (doLoad) {

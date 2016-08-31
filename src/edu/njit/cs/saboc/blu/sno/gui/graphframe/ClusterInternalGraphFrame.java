@@ -51,6 +51,8 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
 
         searchButton = new PartitionedAbNSearchButton(parentFrame, this, new SCTTANTextConfiguration(null));
         
+        addToggleableButtonToMenu(searchButton);
+        
         replaceInternalFrameDataWith(data);
         
         addToggleableButtonToMenu(searchButton);
