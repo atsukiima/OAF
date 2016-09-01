@@ -5,7 +5,6 @@ import edu.njit.cs.saboc.blu.core.gui.panels.ConceptSearchConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.panels.ConceptSearchPanel;
 import edu.njit.cs.saboc.blu.core.gui.panels.ConceptSearchPanel.SearchType;
 import edu.njit.cs.saboc.blu.core.ontology.Concept;
-import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTHierarchySelectionPanel.HierarchySelectionAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import java.awt.BorderLayout;

@@ -107,22 +107,19 @@ public class SCTLoaderPanel extends JPanel {
             }
         });
 
-        pareaTaxonomySelectionPanel = new SCTHierarchySelectionPanel(rootConcepts, pareaEabledHierarchies, "Partial-area Taxonomy",
-                new SCTHierarchySelectionPanel.HierarchySelectionAction() {
-                    public void performHierarchySelectionAction(DummyConcept root, boolean useStated) {
-                        loadPAreaTaxonomy(root, useStated);
-                    }
-                });
+        pareaTaxonomySelectionPanel = new SCTHierarchySelectionPanel(rootConcepts, pareaEabledHierarchies, "Partial-area Taxonomy", 
+                (root, useStated) -> {
+                    
+            loadPAreaTaxonomy(root, useStated);
+        });
 
         pareaTaxonomySelectionPanel.setEnabled(false);
 
-        tanSelectionPanel = new SCTHierarchySelectionPanel(rootConcepts, rootConcepts, "Tribal Abstraction Network (TAN)",
-                new SCTHierarchySelectionPanel.HierarchySelectionAction() {
-                    public void performHierarchySelectionAction(DummyConcept root, boolean useStated) {
-
-                        loadTAN(root, useStated);
-                    }
-                });
+        tanSelectionPanel = new SCTHierarchySelectionPanel(rootConcepts, rootConcepts, "Tribal Abstraction Network (TAN)", 
+                (root, useStated) -> {
+                    
+            loadTAN(root, useStated);
+        });
         
         tanSelectionPanel.setEnabled(false);
 

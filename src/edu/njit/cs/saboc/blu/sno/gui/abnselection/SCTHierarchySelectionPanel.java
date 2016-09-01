@@ -21,11 +21,7 @@ import javax.swing.border.BevelBorder;
  * @author Chris O
  */
 public class SCTHierarchySelectionPanel extends JPanel {
-    
-    public interface HierarchySelectionAction {
-        public void performHierarchySelectionAction(DummyConcept hierarchyRoot, boolean useStated);
-    } 
-    
+
     private final HashMap<DummyConcept, JButton> hierarchyBtns = new HashMap<>();
     
     private final ArrayList<DummyConcept> enabledRoots;
