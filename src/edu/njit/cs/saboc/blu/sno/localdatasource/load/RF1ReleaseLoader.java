@@ -1,7 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.localdatasource.load;
 
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
-import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTStatedConcept;
@@ -76,11 +75,10 @@ public class RF1ReleaseLoader {
             
             loadMonitor.setCurrentProcess("Building Search Index", 85);
             
-            localDS = new SCTReleaseWithStated(hierarchy, statedHierarchy);
+            localDS = new SCTReleaseWithStated(hierarchy, new HashSet<>(concepts.values()), statedHierarchy);
         } else {
-            
             loadMonitor.setCurrentProcess("Building Search Index", 75);
-            localDS = new SCTRelease(hierarchy);
+            localDS = new SCTRelease(hierarchy, new HashSet<>(concepts.values()));
         }
         
         loadMonitor.setCurrentProcess("Complete", 100);

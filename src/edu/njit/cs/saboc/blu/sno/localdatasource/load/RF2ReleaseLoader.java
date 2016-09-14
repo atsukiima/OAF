@@ -67,7 +67,7 @@ public class RF2ReleaseLoader {
 
         loadMonitor.setCurrentProcess("Building Search Index", 85);
         
-        SCTReleaseWithStated localDS = new SCTReleaseWithStated(hierarchy, statedHierarchy);
+        SCTReleaseWithStated localDS = new SCTReleaseWithStated(hierarchy, new HashSet<>(concepts.values()), statedHierarchy);
 
         loadMonitor.setCurrentProcess("Complete", 100);
 

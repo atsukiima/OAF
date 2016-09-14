@@ -2,7 +2,6 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.diff.configuratio
 
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.Area;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.diff.configuration.DiffPAreaTaxonomyTextConfiguration;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTEntityNameUtils;
@@ -54,15 +53,15 @@ public class SCTDiffPAreaTaxonomyTextConfiguration extends DiffPAreaTaxonomyText
     @Override
     public String getAbNSummary() {
         
-        PAreaTaxonomy taxonomy = super.getPAreaTaxonomy();
+//        PAreaTaxonomy taxonomy = super.getPAreaTaxonomy();
+//        
+//        String summary = "";
+//        
+//
+//        summary += "<p><b>Help / Description:</b><br>";
+//        summary += getAbNHelpDescription();
         
-        String summary = "";
-        
-
-        summary += "<p><b>Help / Description:</b><br>";
-        summary += getAbNHelpDescription();
-        
-        return summary;
+        return super.getAbNSummary();
     }
     
     @Override

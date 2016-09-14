@@ -2,6 +2,7 @@ package edu.njit.cs.saboc.blu.sno.sctdatasource;
 
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
+import java.util.Set;
 
 /**
  *
@@ -12,10 +13,11 @@ public class SCTReleaseWithStated extends SCTRelease {
     private final Hierarchy<SCTConcept> statedHierarchy;
     
     public SCTReleaseWithStated(
-            Hierarchy<SCTConcept> conceptHierarchy,
+           Hierarchy<SCTConcept> activeConceptHierarchy,
+           Set<SCTConcept> allConcepts,
            Hierarchy<SCTConcept> statedHierarchy) {
         
-        super(conceptHierarchy);
+        super(activeConceptHierarchy, allConcepts);
         
         this.statedHierarchy = statedHierarchy;
     }
