@@ -6,6 +6,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTStatedConcept;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseInfo;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,7 +34,11 @@ public class RF1ReleaseLoader {
     }
         
     //Constructs a series of data structures to hold raw taxonomy data    
-    public SCTRelease loadLocalSnomedRelease(final File directory, final String version, final LocalLoadStateMonitor loadMonitor) throws IOException {
+    public SCTRelease loadLocalSnomedRelease(
+            final File directory, 
+            final SCTReleaseInfo releaseInfo, 
+            final LocalLoadStateMonitor loadMonitor) throws IOException {
+        
         File releaseDirectory = directory;
         
         File conceptsFile = null;
@@ -75,10 +80,10 @@ public class RF1ReleaseLoader {
             
             loadMonitor.setCurrentProcess("Building Search Index", 85);
             
-            localDS = new SCTReleaseWithStated(hierarchy, new HashSet<>(concepts.values()), statedHierarchy);
+            localDS = new SCTReleaseWithStated(releaseInfo, hierarchy, new HashSet<>(concepts.values()), statedHierarchy);
         } else {
             loadMonitor.setCurrentProcess("Building Search Index", 75);
-            localDS = new SCTRelease(hierarchy, new HashSet<>(concepts.values()));
+            localDS = new SCTRelease(releaseInfo, hierarchy, new HashSet<>(concepts.values()));
         }
         
         loadMonitor.setCurrentProcess("Complete", 100);

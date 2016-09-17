@@ -12,17 +12,20 @@ public class AttributeRelationship {
     
     private final int relationshipGroup;
     
-    private final int characteristicType;
+    private final long characteristicType;
 
-    public AttributeRelationship(SCTConcept relationshipType, SCTConcept target, int relationshipGroup, int characteristicType) {
-        
+    public AttributeRelationship(SCTConcept relationshipType, SCTConcept target, int relationshipGroup, long characteristicType) {
         this.relationshipType = relationshipType;
         this.target = target;
         this.relationshipGroup = relationshipGroup;
         this.characteristicType = characteristicType;
     }
     
-    public SCTConcept getRelationshipType() {
+    public boolean isDefining() {
+        return characteristicType == 900000000000011006l || characteristicType == 900000000000010007l;
+    }
+    
+    public SCTConcept getType() {
         return relationshipType;
     }
     
@@ -30,11 +33,11 @@ public class AttributeRelationship {
         return target;
     }
     
-    public int getRelationshipGroup() {
+    public int getGroup() {
         return relationshipGroup;
     }
 
-    public int getCharacteristicType() {
+    public long getCharacteristicType() {
         return characteristicType;
     }
 }

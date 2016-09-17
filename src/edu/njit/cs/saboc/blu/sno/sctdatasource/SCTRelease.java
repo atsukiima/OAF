@@ -38,11 +38,18 @@ public class SCTRelease extends Ontology {
 
     private final ArrayList<DescriptionEntry> descriptions;
     
-    public SCTRelease(Hierarchy<SCTConcept> activeConceptHierarchy, Set<SCTConcept> allConcepts) {
+    private final SCTReleaseInfo releaseInfo;
+    
+    public SCTRelease(
+            SCTReleaseInfo releaseInfo,
+            Hierarchy<SCTConcept> activeConceptHierarchy, 
+            Set<SCTConcept> allConcepts) {
         
         super(activeConceptHierarchy);
+        
+        this.releaseInfo = releaseInfo;
                 
-        descriptions = new ArrayList<>();
+        this.descriptions = new ArrayList<>();
         
         allConcepts.forEach( (concept) -> {
             concepts.put(concept.getID(), concept);
@@ -70,6 +77,10 @@ public class SCTRelease extends Ontology {
             }
         }
         
+    }
+    
+    public SCTReleaseInfo getReleaseInfo() {
+        return releaseInfo;
     }
     
     public Hierarchy<SCTConcept> getConceptHierarchy() {

@@ -34,7 +34,7 @@ public class SCTInferredPAreaTaxonomyFactory extends PAreaTaxonomyFactory {
             uniqueRels.put(concept, new HashSet<>());
             
             rels.forEach((rel) -> {
-                uniqueRels.get(concept).add(rel.getRelationshipType());
+                uniqueRels.get(concept).add(rel.getType());
             });
         });
         
