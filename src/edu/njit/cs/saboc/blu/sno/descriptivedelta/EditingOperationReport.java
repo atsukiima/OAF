@@ -28,7 +28,47 @@ public class EditingOperationReport {
         ChangedAttributeRelationship,
         AttributeRelationshipMoreRefined,
         AttributeRelationshipLessRefined,
-        RelationshipGroupChanged
+        RelationshipGroupChanged;
+        
+        public String toString() {
+            switch (this) {
+                case AddedParent:
+                    return "Added parent";
+
+                case RemovedParent:
+                    return "Removed parent";
+
+                case ChangedParent:
+                    return "Changed parent";
+
+                case ParentLessRefined:
+                    return "Parent less refined";
+
+                case ParentMoreRefined:
+                    return "Parent more refined";
+
+                case AddedAttributeRelationship:
+                    return "Added attribute relationship";
+
+                case RemovedAttributeRelationship:
+                    return "Removed attribute relationship";
+
+                case ChangedAttributeRelationship:
+                    return "Changed attribute relationship target";
+
+                case AttributeRelationshipMoreRefined:
+                    return "Attribute relationship target more refined";
+
+                case AttributeRelationshipLessRefined:
+                    return "Attribute relationship target less refined";
+
+                case RelationshipGroupChanged:
+                    return "Relationship group changed";
+                    
+                default:
+                    return "[UNKNOWN EDITING OPERATION TYPE]";
+            }
+        }
     }
     
     private final Set<SCTConcept> addedParents = new HashSet<>();

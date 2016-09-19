@@ -48,7 +48,7 @@ public class DescriptiveDeltaConceptList extends BaseNodeInformationPanel<DiffPA
             @Override
             public void entityClicked(SCTConcept entity) {
                  reportPanel.setCurrentEditingOperationReport(
-                        descriptiveDiffTaxonomy.getDescriptiveDelta().getStatedEditingOperations().getOrDefault(entity, new EditingOperationReport(entity)));
+                        descriptiveDiffTaxonomy.getDescriptiveDelta().getInferredChanges().getOrDefault(entity, new EditingOperationReport(entity)));
             }
         });
         

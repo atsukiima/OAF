@@ -1,6 +1,5 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.diff;
 
-import edu.njit.cs.saboc.blu.core.gui.iconmanager.IconManager;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.EditingOperationReport;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.EditingOperationReport.EditingOperationType;
 import java.awt.Component;
