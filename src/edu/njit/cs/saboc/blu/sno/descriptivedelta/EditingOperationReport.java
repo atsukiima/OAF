@@ -6,6 +6,7 @@ import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.editingoperations.R
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.editingoperations.SimpleParentChange;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.editingoperations.SimpleRelationshipChange;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,6 +16,20 @@ import java.util.Set;
  * @author Chris O
  */
 public class EditingOperationReport {
+    
+    public static enum EditingOperationType {
+        AddedParent,
+        RemovedParent,
+        ChangedParent,
+        ParentLessRefined,
+        ParentMoreRefined,
+        AddedAttributeRelationship,
+        RemovedAttributeRelationship,
+        ChangedAttributeRelationship,
+        AttributeRelationshipMoreRefined,
+        AttributeRelationshipLessRefined,
+        RelationshipGroupChanged
+    }
     
     private final Set<SCTConcept> addedParents = new HashSet<>();
     private final Set<SCTConcept> removedParents = new HashSet<>();
@@ -36,9 +51,97 @@ public class EditingOperationReport {
     
     private final SCTConcept concept;
     
-    
     public EditingOperationReport(SCTConcept concept) {
         this.concept = concept;
+    }
+    
+    public ArrayList<EditingOperationType> getAppliedEditingOperationTypes() {
+        ArrayList<EditingOperationType> result = new ArrayList<>();
+        
+        if(!addedParents.isEmpty()) {
+            result.add(EditingOperationType.AddedParent);
+        }
+        
+        if(!removedParents.isEmpty()) {
+            result.add(EditingOperationType.RemovedParent);
+        }
+        
+        if(!changedParents.isEmpty()) {
+            result.add(EditingOperationType.ChangedParent);
+        }
+        
+        if(!moreRefinedParents.isEmpty()) {
+            result.add(EditingOperationType.ParentMoreRefined);
+        }
+        
+        if(!lessRefinedParents.isEmpty()) {
+            result.add(EditingOperationType.ParentLessRefined);
+        }
+        
+        if(!addedRelationships.isEmpty()) {
+            result.add(EditingOperationType.AddedAttributeRelationship);
+        }
+        
+        if(!removedRelationships.isEmpty()) {
+            result.add(EditingOperationType.RemovedAttributeRelationship);
+        }
+        
+        if(!changedRelationships.isEmpty()) {
+            result.add(EditingOperationType.ChangedAttributeRelationship);
+        }
+        
+        if(!moreRefinedRelationships.isEmpty()) {
+            result.add(EditingOperationType.AttributeRelationshipMoreRefined);
+        }
+        
+        if(!lessRefinedRelationships.isEmpty()) {
+            result.add(EditingOperationType.AttributeRelationshipLessRefined);
+        }
+        
+        if(!relGroupChangedRelationships.isEmpty()) {
+            result.add(EditingOperationType.RelationshipGroupChanged);
+        }
+        
+        return result;
+    }
+    
+    public int getNumberOfOperationsForType(EditingOperationType type) {
+        switch(type) {
+            case AddedParent:
+                return addedParents.size();
+                
+            case RemovedParent:
+                return removedParents.size();
+                
+            case ChangedParent:
+                return changedParents.size();
+                
+            case ParentLessRefined:
+                return lessRefinedParents.size();
+                
+            case ParentMoreRefined:
+                return moreRefinedParents.size();
+                
+            case AddedAttributeRelationship:
+                return addedRelationships.size();
+                
+            case RemovedAttributeRelationship:
+                return removedRelationships.size();
+                
+            case ChangedAttributeRelationship:
+                return changedRelationships.size();
+                
+            case AttributeRelationshipMoreRefined:
+                return moreRefinedRelationships.size();
+                
+            case AttributeRelationshipLessRefined:
+                return lessRefinedRelationships.size();
+                
+            case RelationshipGroupChanged:
+                return relGroupChangedRelationships.size();
+        }
+        
+        return 0;
     }
     
     public void addNewParent(SCTConcept parent) {

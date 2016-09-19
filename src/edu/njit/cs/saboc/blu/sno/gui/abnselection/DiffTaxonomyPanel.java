@@ -8,6 +8,7 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomyGenera
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInferredPAreaTaxonomyFactory;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.diffpareataxonomy.SCTDescriptiveDiffPAreaTaxonomyFactory;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.DescriptiveDelta;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.DeltaRelationshipLoader;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.DeltaRelationships;
@@ -106,12 +107,9 @@ public class DiffTaxonomyPanel extends JPanel {
                                     root, 
                                     deltaRelationships);
                             
-                            
-                            
-                            
                             diffTaxonomy
                                     = diffTaxonomyGenerator.createDiffPAreaTaxonomy(
-                                            new DiffPAreaTaxonomyFactory(),
+                                            new SCTDescriptiveDiffPAreaTaxonomyFactory(descriptiveDelta),
                                             fromRelease,
                                             fromTaxonomy,
                                             theToRelease,

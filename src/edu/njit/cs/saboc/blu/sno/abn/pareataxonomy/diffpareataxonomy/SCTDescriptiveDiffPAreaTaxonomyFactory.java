@@ -26,8 +26,8 @@ public class SCTDescriptiveDiffPAreaTaxonomyFactory extends DiffPAreaTaxonomyFac
     @Override
     public DiffPAreaTaxonomy createDiffPAreaTaxonomy(
             DiffAreaTaxonomy areaTaxonomy, 
-            PAreaTaxonomy fromSourceTaxonomy, 
             PAreaTaxonomy toSourceTaxonomy, 
+            PAreaTaxonomy fromSourceTaxonomy, 
             Hierarchy<DiffPArea> pareaHierarchy) {
         
         return new SCTDescriptiveDiffPAreaTaxonomy(
