@@ -9,13 +9,13 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.diff.configuration
  */
 public class SCTDescriptiveDiffPAreaPanel extends DiffPAreaPanel {
     
-    private final DescriptiveDeltaConceptList descriptiveDeltaConceptList;
+    private final SCTDiffPAreaDeltaConceptPanel descriptiveDeltaConceptPanel;
     
     public SCTDescriptiveDiffPAreaPanel(SCTDiffPAreaTaxonomyConfiguration configuration) {
         super(configuration);
         
-        this.descriptiveDeltaConceptList = new DescriptiveDeltaConceptList(configuration);
+        this.descriptiveDeltaConceptPanel = new SCTDiffPAreaDeltaConceptPanel(configuration);
 
-        super.addInformationTab(descriptiveDeltaConceptList, "Descriptive Delta Details");
+        super.addInformationTab(descriptiveDeltaConceptPanel, "Descriptive Delta Details");
     }
 }

@@ -6,6 +6,7 @@ import edu.njit.cs.saboc.blu.sno.descriptivedelta.DeltaRelationship;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.DescriptiveDelta;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.EditingOperationReport.EditingOperationType;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.editingoperations.FuzzyParentChange;
+import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.editingoperations.FuzzyRelationshipChange;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.editingoperations.RelationshipGroupChange;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.editingoperations.SimpleParentChange;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.editingoperations.SimpleRelationshipChange;
@@ -176,7 +177,7 @@ public class DescriptiveDeltaGUIUtils {
             potentialParents = potentialParents.substring(1, potentialParents.length() - 1);
             
             return String.format("Parent <b>%s</b>%s was changed to: %s", 
-                    parentChange.getOriginalParent().toString(), 
+                    parentChange.getOriginalParent().getName(), 
                     oldParentState, 
                     potentialParents);
         }
@@ -238,8 +239,39 @@ public class DescriptiveDeltaGUIUtils {
                 group);
     }
     
-    
-    
+    public static String getAttributeRelTargetChangedText(FuzzyRelationshipChange relChange) {
+        SCTConcept relType = relChange.getRelType();
+        SCTConcept originalTarget = relChange.getOriginalTarget();
+        
+        if(relChange.getPotentialNewTargets().size() == 1) {
+            SCTConcept newTarget = relChange.getPotentialNewTargets().iterator().next();
+            
+            return String.format("The <b>%s</b> attribute relationship with a target of <b>%s</b> now has a different target: <b>%s</b>", 
+                relType.getName(), 
+                originalTarget.getName(),
+                newTarget.getName());
+        } else {
+            ArrayList<String> potentialTargets = new ArrayList<>();
+            
+            relChange.getPotentialNewTargets().forEach( (concept) -> {
+                potentialTargets.add(concept.getName());
+            });
+            
+            potentialTargets.sort( (a,b) -> {
+                return a.compareToIgnoreCase(b);
+            });
+            
+            String potentialTargetsStr = potentialTargets.toString();
+            potentialTargetsStr = potentialTargetsStr.substring(1, potentialTargetsStr.length() - 1);
+            
+            return String.format("The <b>%s</b> attribute relationship with a target of <b>%s</b> change "
+                    + "to one or more different targets: <b>%s</b>", 
+                relType.getName(), 
+                originalTarget.getName(),
+                potentialTargetsStr);
+        }
+    }
+
     public static String getAttributeRelLessRefinedText(SimpleRelationshipChange relChange) {
         SCTConcept relType = relChange.getRelType();
         

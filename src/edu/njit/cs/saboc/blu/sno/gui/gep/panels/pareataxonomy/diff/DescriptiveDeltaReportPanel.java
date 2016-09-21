@@ -27,9 +27,7 @@ import javax.swing.border.EmptyBorder;
 public class DescriptiveDeltaReportPanel extends JPanel {
     
     private class DescriptiveDeltaEntry extends JPanel {
-        
-        private static final int MAX_HEIGHT = 48;
-        
+                
         private final JLabel iconLabel;
         
         private final JEditorPane descriptionPane;
@@ -69,6 +67,9 @@ public class DescriptiveDeltaReportPanel extends JPanel {
         }
     }
     
+    /**
+     * A JPanel that will maintain its width within a JSCrollPane
+     */
     private class EntryContentPanel extends JPanel implements Scrollable {
         
         public EntryContentPanel() {
@@ -100,13 +101,14 @@ public class DescriptiveDeltaReportPanel extends JPanel {
             Container parent = getParent();
 
             if (parent instanceof JViewport) {
-                return (((JViewport) parent).getHeight() > getPreferredSize().height);
+                JViewport viewport = (JViewport)parent;
+                
+                return viewport.getHeight() > getPreferredSize().height;
             }
 
             return false;
         }
     }
-    
     
     private final EntryContentPanel contentPanel;
     
@@ -192,7 +194,7 @@ public class DescriptiveDeltaReportPanel extends JPanel {
             report.getMoreRefinedParents().forEach( (moreRefinedParent) -> {
                 addEntry(
                         new DescriptiveDeltaEntry(EditingOperationType.ParentMoreRefined, 
-                            DescriptiveDeltaGUIUtils.getParentLessRefinedText(descriptiveDelta, moreRefinedParent)));
+                            DescriptiveDeltaGUIUtils.getParentMoreRefinedText(descriptiveDelta, moreRefinedParent)));
             });
         }
         
@@ -208,7 +210,7 @@ public class DescriptiveDeltaReportPanel extends JPanel {
         if(!report.getRemovedRelationships().isEmpty()) {
             report.getRemovedRelationships().forEach( (removedRel) -> {
                 addEntry(new DescriptiveDeltaEntry(EditingOperationType.RemovedAttributeRelationship, 
-                        DescriptiveDeltaGUIUtils.getAttributeRelAddedText(removedRel)));
+                        DescriptiveDeltaGUIUtils.getAttributeRelRemovedText(removedRel)));
             });
         }
         
