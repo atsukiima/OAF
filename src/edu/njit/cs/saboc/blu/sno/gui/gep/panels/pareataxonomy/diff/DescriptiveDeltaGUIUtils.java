@@ -2,10 +2,13 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.diff;
 
 import edu.njit.cs.saboc.blu.core.gui.iconmanager.IconManager;
+import edu.njit.cs.saboc.blu.sno.descriptivedelta.DeltaRelationship;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.DescriptiveDelta;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.EditingOperationReport.EditingOperationType;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.editingoperations.FuzzyParentChange;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.editingoperations.RelationshipGroupChange;
+import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.editingoperations.SimpleParentChange;
+import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.editingoperations.SimpleRelationshipChange;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -145,9 +148,9 @@ public class DescriptiveDeltaGUIUtils {
                     newParent.getName());
             
             if(delta.getActivatedConcepts().contains(newParent)) {
-                return " (a newly activated concept).";
+                return desc + " (a newly activated concept).";
             } else if(delta.getConceptsAddedToSubhierarchy().contains(newParent)) {
-                return " (a concept added to the subhierarchy)";
+                return desc + " (a concept added to the subhierarchy).";
             }
             
             return desc + ".";
@@ -156,12 +159,111 @@ public class DescriptiveDeltaGUIUtils {
             ArrayList<String> possibleParentChanges = new ArrayList<>();
 
             parentChange.getPotentialNewParents().forEach((parent) -> {
-
+                if (delta.getActivatedConcepts().contains(parent)) {
+                     possibleParentChanges.add(String.format("<b>%s</b> (a newly activated concept)", parent.getName()));
+                } else if (delta.getConceptsAddedToSubhierarchy().contains(parent)) {
+                     possibleParentChanges.add(String.format("<b>%s</b> (a concept added to the subhierarchy)", parent.getName()));
+                } else {
+                    possibleParentChanges.add(String.format("<b>%s</b>", parent.getName()));
+                }
             });
+            
+            possibleParentChanges.sort( (a, b) -> {
+                return a.compareTo(b);
+            });
+            
+            String potentialParents = possibleParentChanges.toString();
+            potentialParents = potentialParents.substring(1, potentialParents.length() - 1);
+            
+            return String.format("Parent <b>%s</b>%s was changed to: %s", 
+                    parentChange.getOriginalParent().toString(), 
+                    oldParentState, 
+                    potentialParents);
         }
-        
-        return "[EDITING OPERATION TEXT NOT SET]";
     }
+    
+    public static String getParentLessRefinedText(DescriptiveDelta delta, SimpleParentChange parentChange) {
+        SCTConcept newParent = parentChange.getNewParent();
+
+        String desc = String.format("Parent <b>%s</b> was changed to a less refined concept <b>%s</b>",
+                parentChange.getOriginalParent().getName(),
+                newParent.getName());
+
+        if (delta.getActivatedConcepts().contains(newParent)) {
+            return desc + " (a newly activated concept).";
+        } else if (delta.getConceptsAddedToSubhierarchy().contains(newParent)) {
+            return desc + " (a concept added to the subhierarchy).";
+        }
+
+        return desc + ".";
+    }
+
+    public static String getParentMoreRefinedText(DescriptiveDelta delta, SimpleParentChange parentChange) {
+        SCTConcept newParent = parentChange.getNewParent();
+
+        String desc = String.format("Parent <b>%s</b> was changed to a more refined concept <b>%s</b>",
+                parentChange.getOriginalParent().getName(),
+                newParent.getName());
+
+        if (delta.getActivatedConcepts().contains(newParent)) {
+            return desc + " (a newly activated concept).";
+        } else if (delta.getConceptsAddedToSubhierarchy().contains(newParent)) {
+            return desc + " (a concept added to the subhierarchy).";
+        }
+
+        return desc + ".";
+    }
+    
+    public static String getAttributeRelAddedText(DeltaRelationship rel) {
+        SCTConcept relType = rel.getType();
+        SCTConcept relTarget = rel.getTarget();
+        
+        int group = rel.getGroup();
+        
+        return String.format("Added <b>%s</b> attribute relationship with a target of <b>%s</b> (Group %d)", 
+                relType.getName(), 
+                relTarget.getName(),
+                group);
+    }
+    
+    public static String getAttributeRelRemovedText(DeltaRelationship rel) {
+        SCTConcept relType = rel.getType();
+        SCTConcept relTarget = rel.getTarget();
+        
+        int group = rel.getGroup();
+        
+        return String.format("Removed <b>%s</b> attribute relationship with a target of <b>%s</b> (Group %d)", 
+                relType.getName(), 
+                relTarget.getName(),
+                group);
+    }
+    
+    
+    
+    public static String getAttributeRelLessRefinedText(SimpleRelationshipChange relChange) {
+        SCTConcept relType = relChange.getRelType();
+        
+        SCTConcept originalTarget = relChange.getOriginalTarget();
+        SCTConcept newTarget = relChange.getNewTarget();
+
+        return String.format("The <b>%s</b> attribute relationship with a target of <b>%s</b> now has a less refined target: <b>%s</b>", 
+                relType.getName(), 
+                originalTarget.getName(),
+                newTarget.getName());
+    }
+    
+    public static String getAttributeRelMoreRefinedText(SimpleRelationshipChange relChange) {
+        SCTConcept relType = relChange.getRelType();
+        
+        SCTConcept originalTarget = relChange.getOriginalTarget();
+        SCTConcept newTarget = relChange.getNewTarget();
+
+        return String.format("The <b>%s</b> attribute relationship with a target of <b>%s</b> now has a more refined target: <b>%s</b>", 
+                relType.getName(), 
+                originalTarget.getName(),
+                newTarget.getName());
+    }
+    
     
     public static String getGroupChangeText(RelationshipGroupChange groupChange) {
         String originalGroupDescription = "";

@@ -5,14 +5,18 @@ import edu.njit.cs.saboc.blu.sno.descriptivedelta.EditingOperationReport;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.EditingOperationReport.EditingOperationType;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.Optional;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
+import javax.swing.Scrollable;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
@@ -23,6 +27,8 @@ import javax.swing.border.EmptyBorder;
 public class DescriptiveDeltaReportPanel extends JPanel {
     
     private class DescriptiveDeltaEntry extends JPanel {
+        
+        private static final int MAX_HEIGHT = 48;
         
         private final JLabel iconLabel;
         
@@ -42,8 +48,8 @@ public class DescriptiveDeltaReportPanel extends JPanel {
             this.descriptionPane.setEditable(false);
             this.descriptionPane.setContentType("text/html");
  
-
-            this.descriptionPane.setText("<html>" + text);
+            this.descriptionPane.setText(String.format("<html><table><tr><td>%s</td></tr></table>", text));
+            
             
             JLabel typeLabel = new JLabel(type.toString());
             typeLabel.setOpaque(true);
@@ -60,18 +66,55 @@ public class DescriptiveDeltaReportPanel extends JPanel {
             contentPanel.add(descriptionPanel, BorderLayout.CENTER);
             
             this.add(contentPanel, BorderLayout.CENTER);
-            
-            this.setMinimumSize(new Dimension(Integer.MAX_VALUE, 100));
-            this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+        }
+    }
+    
+    private class EntryContentPanel extends JPanel implements Scrollable {
+        
+        public EntryContentPanel() {
+            super(new BorderLayout());
+        }
+
+        @Override
+        public Dimension getPreferredScrollableViewportSize() {
+            return getPreferredSize();
+        }
+
+        @Override
+        public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+            return 10;
+        }
+
+        @Override
+        public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+            return 50;
+        }
+
+        @Override
+        public boolean getScrollableTracksViewportWidth() {
+            return true;
+        }
+
+        @Override
+        public boolean getScrollableTracksViewportHeight() {
+            Container parent = getParent();
+
+            if (parent instanceof JViewport) {
+                return (((JViewport) parent).getHeight() > getPreferredSize().height);
+            }
+
+            return false;
         }
     }
     
     
-    private final JPanel contentPanel;
+    private final EntryContentPanel contentPanel;
     
     private final JScrollPane scroller;
     
     private final DescriptiveDelta descriptiveDelta;
+    
+    private final ArrayList<DescriptiveDeltaEntry> entries = new ArrayList<>();
     
     private Optional<EditingOperationReport> currentEditingOperations = Optional.empty();
     
@@ -80,18 +123,17 @@ public class DescriptiveDeltaReportPanel extends JPanel {
         
         this.setLayout(new BorderLayout());
         
-        contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel = new EntryContentPanel();
+        
         contentPanel.setBackground(Color.WHITE);
         
         scroller = new JScrollPane(contentPanel);
-        
-        
+                
         this.add(scroller, BorderLayout.CENTER);
     }
     
     public void setCurrentEditingOperationReport(EditingOperationReport report) {
-        this.clearEntries();
+        this.clearContent();
         
         this.currentEditingOperations = Optional.of(report);
         
@@ -106,7 +148,7 @@ public class DescriptiveDeltaReportPanel extends JPanel {
         
         if(!report.getAddedParents().isEmpty()) {
             report.getAddedParents().forEach( (addedParent) -> {
-                contentPanel.add(
+                addEntry(
                         new DescriptiveDeltaEntry(
                                 EditingOperationType.AddedParent, 
                                 DescriptiveDeltaGUIUtils.getParentAddedText(descriptiveDelta, addedParent)
@@ -117,7 +159,7 @@ public class DescriptiveDeltaReportPanel extends JPanel {
         
         if (!report.getRemovedParents().isEmpty()) {
             report.getRemovedParents().forEach((removedParent) -> {
-                contentPanel.add(
+                addEntry(
                         new DescriptiveDeltaEntry(
                                 EditingOperationType.RemovedParent, 
                                 DescriptiveDeltaGUIUtils.getParentRemovedText(descriptiveDelta, removedParent)
@@ -128,7 +170,7 @@ public class DescriptiveDeltaReportPanel extends JPanel {
         
         if(!report.getChangedParents().isEmpty()) {
             report.getChangedParents().forEach( (changedParent) -> {
-                contentPanel.add(
+                addEntry(
                         new DescriptiveDeltaEntry(
                                 EditingOperationType.ChangedParent, 
                                 DescriptiveDeltaGUIUtils.getParentChangedText(descriptiveDelta, changedParent)
@@ -139,51 +181,63 @@ public class DescriptiveDeltaReportPanel extends JPanel {
         
         if(!report.getLessRefinedParents().isEmpty()) {
             report.getLessRefinedParents().forEach( (lessRefinedParent) -> {
-                contentPanel.add(new DescriptiveDeltaEntry(EditingOperationType.ParentLessRefined, "Less refined parent"));
+                addEntry(
+                        new DescriptiveDeltaEntry(
+                        EditingOperationType.ParentLessRefined, 
+                        DescriptiveDeltaGUIUtils.getParentLessRefinedText(descriptiveDelta, lessRefinedParent)));
             });
         }
         
         if(!report.getMoreRefinedParents().isEmpty()) {
             report.getMoreRefinedParents().forEach( (moreRefinedParent) -> {
-                contentPanel.add(new DescriptiveDeltaEntry(EditingOperationType.ParentMoreRefined, "More refined parent"));
+                addEntry(
+                        new DescriptiveDeltaEntry(EditingOperationType.ParentMoreRefined, 
+                            DescriptiveDeltaGUIUtils.getParentLessRefinedText(descriptiveDelta, moreRefinedParent)));
             });
         }
         
         if(!report.getAddedRelationships().isEmpty()) {
             report.getAddedRelationships().forEach( (addedRel) -> {
-                contentPanel.add(new DescriptiveDeltaEntry(EditingOperationType.AddedAttributeRelationship, "Added attribute relationship"));
+                addEntry(
+                        new DescriptiveDeltaEntry(
+                                EditingOperationType.AddedAttributeRelationship, 
+                                DescriptiveDeltaGUIUtils.getAttributeRelAddedText(addedRel)));
             });
         }
         
         if(!report.getRemovedRelationships().isEmpty()) {
             report.getRemovedRelationships().forEach( (removedRel) -> {
-                contentPanel.add(new DescriptiveDeltaEntry(EditingOperationType.RemovedAttributeRelationship, "Removed attribute relationship"));
+                addEntry(new DescriptiveDeltaEntry(EditingOperationType.RemovedAttributeRelationship, 
+                        DescriptiveDeltaGUIUtils.getAttributeRelAddedText(removedRel)));
             });
         }
         
         if(!report.getChangedRelationships().isEmpty()) {
             report.getChangedRelationships().forEach((changedRel) -> {
-                contentPanel.add(new DescriptiveDeltaEntry(EditingOperationType.ChangedAttributeRelationship, "Changed attribute relationship target"));
+                addEntry(new DescriptiveDeltaEntry(EditingOperationType.ChangedAttributeRelationship, "Changed attribute relationship target"));
             });
         }
         
+        
+        
+        
         if(!report.getLessRefinedRelationships().isEmpty()) {
             report.getLessRefinedRelationships().forEach((lessRefinedRel) -> {
-                contentPanel.add(new DescriptiveDeltaEntry(EditingOperationType.AttributeRelationshipLessRefined,
-                        "Attribute relationship target less refined"));
+                addEntry(new DescriptiveDeltaEntry(EditingOperationType.AttributeRelationshipLessRefined,
+                        DescriptiveDeltaGUIUtils.getAttributeRelLessRefinedText(lessRefinedRel)));
             });
         }
         
         if (!report.getMoreRefinedRelationships().isEmpty()) {
             report.getMoreRefinedRelationships().forEach((moreRefinedRel) -> {
-                contentPanel.add(new DescriptiveDeltaEntry(EditingOperationType.AttributeRelationshipMoreRefined,
-                        "Attribute relationship target more refined"));
+                addEntry(new DescriptiveDeltaEntry(EditingOperationType.AttributeRelationshipMoreRefined,
+                        DescriptiveDeltaGUIUtils.getAttributeRelMoreRefinedText(moreRefinedRel)));
             });
         }
         
         if (!report.getRelGroupChangedRelationships().isEmpty()) {
             report.getRelGroupChangedRelationships().forEach((relGroupChange) -> {
-                contentPanel.add(new DescriptiveDeltaEntry(EditingOperationType.RelationshipGroupChanged,
+                addEntry(new DescriptiveDeltaEntry(EditingOperationType.RelationshipGroupChanged,
                         DescriptiveDeltaGUIUtils.getGroupChangeText(relGroupChange)));
             });
         }
@@ -192,10 +246,28 @@ public class DescriptiveDeltaReportPanel extends JPanel {
         contentPanel.repaint();
     }
     
-    public void clearEntries() {
+    private void addEntry(DescriptiveDeltaEntry entry) {
+        JPanel internalPanel = new JPanel(new BorderLayout());
+        
+        if(contentPanel.getComponentCount() > 0) {
+            internalPanel.add(contentPanel.getComponent(0), BorderLayout.NORTH);
+        }
+        
+        
+        internalPanel.add(entry, BorderLayout.CENTER);
+        
+        entries.add(entry);
+
+        contentPanel.add(internalPanel, BorderLayout.CENTER);
+    }
+    
+    
+    public void clearContent() {
         currentEditingOperations = Optional.empty();
         
         contentPanel.removeAll();
+        
+        entries.clear();
     }
 
     
