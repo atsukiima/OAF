@@ -67,7 +67,7 @@ public class DescriptiveDeltaGUIUtils {
                 break;
                 
             case RelationshipGroupChanged:
-                iconName = "dd_group_change.png";
+                iconName = "dd_rel_groupchange.png";
                 break;
                 
             default:

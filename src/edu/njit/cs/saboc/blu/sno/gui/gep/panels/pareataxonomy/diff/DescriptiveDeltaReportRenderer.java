@@ -42,22 +42,26 @@ public class DescriptiveDeltaReportRenderer extends JPanel implements TableCellR
             ArrayList<EditingOperationType> appliedEditingOperations = eor.getAppliedEditingOperationTypes();
 
             if (!appliedEditingOperations.isEmpty()) {
-                final int MAX_COLUMNS = 3;
+                final int MAX_COLUMNS = 4;
 
                 int cols = Math.min(appliedEditingOperations.size(), MAX_COLUMNS);
                 
                 int rows = (appliedEditingOperations.size() / cols) + 1;
 
-                this.setLayout(new GridLayout(0, cols, 1, 1));
+                final int GRID_SPACING = 4;
+                
+                this.setLayout(new GridLayout(0, cols, GRID_SPACING, GRID_SPACING));
 
                 appliedEditingOperations.forEach((operation) -> {
                     this.add(getEditingOperationLabel(eor, operation));
                 });
 
                 int currentHeight = table.getRowHeight(row);
+                
+                int iconHeight = DescriptiveDeltaGUIUtils.getIconForEditingOperation(EditingOperationType.AddedParent).getIconHeight();
 
                 if (row >= 0 && row < table.getRowCount()) {
-                    table.setRowHeight(row, Math.max(rows * 32, currentHeight));
+                    table.setRowHeight(row, Math.max(rows * (iconHeight + GRID_SPACING), currentHeight));
                 }
             } else {
                 

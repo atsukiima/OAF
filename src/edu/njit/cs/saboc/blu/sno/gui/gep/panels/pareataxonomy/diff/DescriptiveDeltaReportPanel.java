@@ -216,7 +216,8 @@ public class DescriptiveDeltaReportPanel extends JPanel {
         
         if(!report.getChangedRelationships().isEmpty()) {
             report.getChangedRelationships().forEach((changedRel) -> {
-                addEntry(new DescriptiveDeltaEntry(EditingOperationType.ChangedAttributeRelationship, "Changed attribute relationship target"));
+                addEntry(new DescriptiveDeltaEntry(EditingOperationType.ChangedAttributeRelationship, 
+                        DescriptiveDeltaGUIUtils.getAttributeRelTargetChangedText(changedRel)));
             });
         }
         

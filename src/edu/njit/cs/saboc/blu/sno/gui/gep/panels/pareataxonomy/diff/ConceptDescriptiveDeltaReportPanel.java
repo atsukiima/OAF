@@ -30,7 +30,7 @@ public class ConceptDescriptiveDeltaReportPanel extends JPanel {
         
         this.editReportTabs = new JTabbedPane();
         
-        this.editReportTabs.addTab("Stated Editing Operaitons", statedReportPanel);
+        this.editReportTabs.addTab("Stated Editing Operations", statedReportPanel);
         this.editReportTabs.addTab("Inferred Relationship Changes", inferredReportPanel);
         
         this.add(editReportTabs, BorderLayout.CENTER);
