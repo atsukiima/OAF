@@ -184,6 +184,16 @@ public class EditingOperationReport {
         return 0;
     }
     
+    public int getNumberOfOperationsApplied() {
+        int result = 0;
+        
+        for(EditingOperationType type : EditingOperationType.values()) {
+            result += getNumberOfOperationsForType(type);
+        }
+        
+        return result;
+    }
+    
     public void addNewParent(SCTConcept parent) {
         addedParents.add(parent);
     }

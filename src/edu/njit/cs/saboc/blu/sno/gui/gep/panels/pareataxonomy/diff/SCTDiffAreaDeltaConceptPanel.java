@@ -14,6 +14,7 @@ import java.util.Set;
  * @author Chris O
  */
 public class SCTDiffAreaDeltaConceptPanel extends BaseNodeInformationPanel<DiffArea> {
+    
     private final DescriptiveDeltaConceptList ddConceptList;
     
     public SCTDiffAreaDeltaConceptPanel(SCTDiffPAreaTaxonomyConfiguration config) {

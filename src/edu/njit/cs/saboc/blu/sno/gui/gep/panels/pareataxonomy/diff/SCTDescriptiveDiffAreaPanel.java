@@ -12,7 +12,7 @@ public class SCTDescriptiveDiffAreaPanel extends DiffAreaPanel {
     private final SCTDiffAreaDeltaConceptPanel descriptiveDeltaConceptPanel;
     
     public SCTDescriptiveDiffAreaPanel(SCTDiffPAreaTaxonomyConfiguration config) {
-        super(config);        
+        super(config, new DescriptiveDiffAreaSummaryTextFactory(config));        
         
         this.descriptiveDeltaConceptPanel = new SCTDiffAreaDeltaConceptPanel(config);
 

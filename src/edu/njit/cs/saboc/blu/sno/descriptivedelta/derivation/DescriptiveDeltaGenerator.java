@@ -47,6 +47,8 @@ public class DescriptiveDeltaGenerator {
         final Hierarchy<SCTConcept> afterSubhierarchy = toRelease.getConceptHierarchy().getSubhierarchyRootedAt(subhierarchyRoot);
         Set<SCTConcept> afterConcepts = afterSubhierarchy.getNodes();
         
+        Set<SCTConcept> allSubhierarchyConcepts = SetUtilities.getSetUnion(beforeConcepts, afterConcepts);
+        
         Set<SCTConcept> returningConcepts = new HashSet<>(afterConcepts);
         returningConcepts.retainAll(beforeConcepts);
         
@@ -56,7 +58,7 @@ public class DescriptiveDeltaGenerator {
         Set<SCTConcept> editedConcepts = new HashSet<>();
         
         statedDeltaRelationships.keySet().forEach( (editedConcept) -> {            
-            if (returningConcepts.contains(editedConcept)) {
+            if (allSubhierarchyConcepts.contains(editedConcept)) {
                 editedConcepts.add(editedConcept);
             }
         });
@@ -64,13 +66,13 @@ public class DescriptiveDeltaGenerator {
         Set<SCTConcept> changedConcepts = new HashSet<>();
         
         inferredDeltaRelationships.keySet().forEach( (changedConcept) -> {
-            if(returningConcepts.contains(changedConcept)) {
+            if(allSubhierarchyConcepts.contains(changedConcept)) {
                 changedConcepts.add(changedConcept);
             }
         });
     
-        Set<SCTConcept> editedConceptSet = new HashSet<>(returningConcepts);
-        editedConceptSet.retainAll(editedConcepts);
+        Set<SCTConcept> editedConceptSet = SetUtilities.getSetIntersection(allSubhierarchyConcepts, editedConcepts);
+        Set<SCTConcept> changedConceptSet = SetUtilities.getSetIntersection(allSubhierarchyConcepts, changedConcepts);
         
         int statedDeltaEntries = 0;
         int inferredDeltaEntries = 0;
@@ -80,8 +82,8 @@ public class DescriptiveDeltaGenerator {
                 statedDeltaEntries += statedDeltaRelationships.get(editedConcept).size();
             }
             
-            if(statedDeltaRelationships.containsKey(editedConcept)) {
-                inferredDeltaEntries += statedDeltaRelationships.get(editedConcept).size();
+            if(inferredDeltaRelationships.containsKey(editedConcept)) {
+                inferredDeltaEntries += inferredDeltaRelationships.get(editedConcept).size();
             }
         }
         
@@ -94,8 +96,8 @@ public class DescriptiveDeltaGenerator {
         Set<SCTConcept> subhierarchyRemovedConcepts = SetUtilities.getSetDifference(beforeConcepts, afterConcepts);
         subhierarchyRemovedConcepts = SetUtilities.getSetDifference(subhierarchyRemovedConcepts, subhierarchyRetiredConcepts);
         
-        Map<SCTConcept, EditingOperationReport> statedEditingOperations = identifyEditingOperations(toRelease, editedConcepts, statedDeltaRelationships);
-        Map<SCTConcept, EditingOperationReport> inferredChanges = identifyEditingOperations(toRelease, editedConcepts, inferredDeltaRelationships);
+        Map<SCTConcept, EditingOperationReport> statedEditingOperations = identifyEditingOperations(toRelease, editedConceptSet, statedDeltaRelationships);
+        Map<SCTConcept, EditingOperationReport> inferredChanges = identifyEditingOperations(toRelease, changedConceptSet, inferredDeltaRelationships);
         
         return new DescriptiveDelta(
                 fromRelease, 
@@ -123,9 +125,8 @@ public class DescriptiveDeltaGenerator {
 
         relChanges.forEach((sourceConcept, changes) -> {
 
-            EditingOperationReport report = new EditingOperationReport(sourceConcept);
-
             if (subhierarchyConcepts.contains(sourceConcept)) {
+                EditingOperationReport report = new EditingOperationReport(sourceConcept);
                 
                 Set<DeltaRelationship> activatedRelationships = new HashSet<>();
                 Set<DeltaRelationship> retiredRelationships = new HashSet<>();
@@ -272,7 +273,6 @@ public class DescriptiveDeltaGenerator {
                     }
                 });
                 
-                
                 activatedRelationships.stream().filter( (rel) -> {
                     return !matchedActiveRels.contains(rel);
                 }).forEach((rel) -> {
@@ -282,9 +282,9 @@ public class DescriptiveDeltaGenerator {
                         report.addNewRelationships(rel);
                     }
                 });
+                
+                reports.put(sourceConcept, report);
             }
-
-            reports.put(sourceConcept, report);
         });
         
         return reports;
