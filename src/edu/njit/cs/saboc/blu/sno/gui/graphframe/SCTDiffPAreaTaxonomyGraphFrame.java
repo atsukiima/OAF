@@ -1,5 +1,8 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
+import edu.njit.cs.saboc.blu.core.abn.diff.ModifiedNode;
+import edu.njit.cs.saboc.blu.core.abn.diff.change.ChangeState;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
@@ -46,9 +49,25 @@ public class SCTDiffPAreaTaxonomyGraphFrame extends GenericInternalGraphFrame {
             gep.showLoading();
             
             SinglyRootedNodeLabelCreator<DiffPArea> labelCreator = new SinglyRootedNodeLabelCreator<DiffPArea>() {
-                public String getRootNameStr(DiffPArea parea) {
-                    return parea.getRoot().getName().replaceAll("_", " ");
+
+                public String getCountStr(DiffPArea parea) {
+                    
+                    int num;
+                    
+                    if(parea.getPAreaState() == ChangeState.Removed) {
+                        num =  0;
+                    } else if(parea.getPAreaState() == ChangeState.Modified) {
+                        PArea after = (PArea)((ModifiedNode)parea.getDiffNode()).getToNode();
+                        
+                        num = after.getConceptCount();
+                    } else {
+                        num = parea.getConceptCount();
+                    }
+                    
+                    return String.format("(%d)", num);
                 }
+                
+                
             };
             
             SCTDiffPAreaTaxonomyConfigurationFactory configFactory = new SCTDiffPAreaTaxonomyConfigurationFactory();

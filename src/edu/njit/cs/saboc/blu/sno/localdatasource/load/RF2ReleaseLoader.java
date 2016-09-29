@@ -5,6 +5,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTStatedConcept;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseInfo;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,7 +30,11 @@ public class RF2ReleaseLoader {
         return loadMonitor;
     }
 
-    public SCTReleaseWithStated loadLocalSnomedRelease(final File directory, final String version, final LocalLoadStateMonitor loadMonitor) throws IOException {
+    public SCTReleaseWithStated loadLocalSnomedRelease(
+            final File directory, 
+            final SCTReleaseInfo releaseInfo, 
+            final LocalLoadStateMonitor loadMonitor) throws IOException {
+        
         File releaseDirectory = directory;
         
         File conceptsFile = null;
@@ -67,7 +72,7 @@ public class RF2ReleaseLoader {
 
         loadMonitor.setCurrentProcess("Building Search Index", 85);
         
-        SCTReleaseWithStated localDS = new SCTReleaseWithStated(hierarchy, statedHierarchy);
+        SCTReleaseWithStated localDS = new SCTReleaseWithStated(releaseInfo, hierarchy, new HashSet<>(concepts.values()), statedHierarchy);
 
         loadMonitor.setCurrentProcess("Complete", 100);
 

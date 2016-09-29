@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -32,17 +33,25 @@ public class SCTRelease extends Ontology {
 
     private final Map<Long, SCTConcept> concepts = new HashMap<>();
 
+    // TODO: This needs to go away and be replaced by something better.
     private final HashMap<Character, Integer> startingIndex = new HashMap<>();
 
     private final ArrayList<DescriptionEntry> descriptions;
     
-    public SCTRelease(Hierarchy<SCTConcept> conceptHierarchy) {
+    private final SCTReleaseInfo releaseInfo;
+    
+    public SCTRelease(
+            SCTReleaseInfo releaseInfo,
+            Hierarchy<SCTConcept> activeConceptHierarchy, 
+            Set<SCTConcept> allConcepts) {
         
-        super(conceptHierarchy);
+        super(activeConceptHierarchy);
+        
+        this.releaseInfo = releaseInfo;
                 
-        descriptions = new ArrayList<>();
+        this.descriptions = new ArrayList<>();
         
-        conceptHierarchy.getNodes().forEach( (concept) -> {
+        allConcepts.forEach( (concept) -> {
             concepts.put(concept.getID(), concept);
             
             concept.getDescriptions().forEach((d) -> {
@@ -70,6 +79,10 @@ public class SCTRelease extends Ontology {
         
     }
     
+    public SCTReleaseInfo getReleaseInfo() {
+        return releaseInfo;
+    }
+    
     public Hierarchy<SCTConcept> getConceptHierarchy() {
         return super.getConceptHierarchy();
     }
@@ -78,6 +91,34 @@ public class SCTRelease extends Ontology {
         return concepts.get(id);
     }
     
+    public Set<SCTConcept> getAllConcepts() {
+        return concepts.values().stream().collect(Collectors.toSet());
+    }
+    
+    public Set<SCTConcept> getActiveConcepts() {
+        return concepts.values().stream().filter((concept) -> {
+           return concept.isActive();
+        }).collect(Collectors.toSet());
+    }
+    
+    public Set<SCTConcept> getInactiveConcepts() {
+        return concepts.values().stream().filter((concept) -> {
+            return !concept.isActive();
+        }).collect(Collectors.toSet());
+    }
+    
+    public Set<SCTConcept> getPrimitiveConcepts() {
+        return concepts.values().stream().filter((concept) -> {
+            return concept.isPrimitive();
+        }).collect(Collectors.toSet());
+    }
+    
+    public Set<SCTConcept> getFullyDefinedConcepts() {
+        return concepts.values().stream().filter((concept) -> {
+            return !concept.isPrimitive();
+        }).collect(Collectors.toSet());
+    }
+
     public Set<Concept> searchExact(String term) {
         
         term = term.toLowerCase();

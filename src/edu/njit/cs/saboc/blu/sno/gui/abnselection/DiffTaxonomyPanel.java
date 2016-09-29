@@ -5,19 +5,23 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomyFactory;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomyGenerator;
-import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
-import edu.njit.cs.saboc.blu.core.abn.tan.TANFactory;
-import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInferredPAreaTaxonomyFactory;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.diffpareataxonomy.SCTDescriptiveDiffPAreaTaxonomyFactory;
+import edu.njit.cs.saboc.blu.sno.descriptivedelta.DescriptiveDelta;
+import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.DeltaRelationshipLoader;
+import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.DeltaRelationships;
+import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.DescriptiveDeltaGenerator;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.LoadReleasePanel.LocalDataSourceListener;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseInfo;
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.util.Optional;
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -34,6 +38,8 @@ public class DiffTaxonomyPanel extends JPanel {
     private final SCTDisplayFrameListener displayListener;
     
     private final SubjectAbstractionNetworkPanel subjectSelectionPanel;
+    
+    private final JCheckBox createDescriptiveDeltaBox;
     
     public DiffTaxonomyPanel(SCTDisplayFrameListener displayListener) {
         this.displayListener = displayListener;
@@ -67,8 +73,9 @@ public class DiffTaxonomyPanel extends JPanel {
 
                         SCTRelease fromRelease = loadFromPanel.getLoadedDataSource();
 
-                        SCTConcept root = theToRelease.getConceptFromId(dummyRoot.getID());
-
+                        // TODO: What if the concept doesn't exist in FROM?
+                        SCTConcept root = theToRelease.getConceptFromId(dummyRoot.getID()); 
+     
                         Hierarchy<SCTConcept> fromHierarchy = fromRelease.getConceptHierarchy().getSubhierarchyRootedAt(root);
 
                         PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
@@ -84,18 +91,45 @@ public class DiffTaxonomyPanel extends JPanel {
                                 toHierarchy);
 
                         DiffPAreaTaxonomyGenerator diffTaxonomyGenerator = new DiffPAreaTaxonomyGenerator();
-
-                        DiffPAreaTaxonomy diffTaxonomy
-                                = diffTaxonomyGenerator.createDiffPAreaTaxonomy(
-                                        new DiffPAreaTaxonomyFactory(),
-                                        fromRelease,
-                                        fromTaxonomy,
-                                        theToRelease,
-                                        toTaxonomy);
+                        
+                        DiffPAreaTaxonomy diffTaxonomy;
+                        
+                        if (createDescriptiveDeltaBox.isSelected()) {
+                            DeltaRelationshipLoader deltaRelLoader = new DeltaRelationshipLoader();
+                            
+                            DeltaRelationships deltaRelationships = deltaRelLoader.loadDeltaRelationships(theToRelease);
+                            
+                            DescriptiveDeltaGenerator descriptiveDeltaGenerator = new DescriptiveDeltaGenerator();
+                            
+                            DescriptiveDelta descriptiveDelta = descriptiveDeltaGenerator.createDescriptiveDelta(
+                                    fromRelease, 
+                                    theToRelease, 
+                                    root, 
+                                    deltaRelationships);
+                            
+                            diffTaxonomy
+                                    = diffTaxonomyGenerator.createDiffPAreaTaxonomy(
+                                            new SCTDescriptiveDiffPAreaTaxonomyFactory(descriptiveDelta),
+                                            fromRelease,
+                                            fromTaxonomy,
+                                            theToRelease,
+                                            toTaxonomy);
+                            
+                        } else {
+                            diffTaxonomy
+                                    = diffTaxonomyGenerator.createDiffPAreaTaxonomy(
+                                            new DiffPAreaTaxonomyFactory(),
+                                            fromRelease,
+                                            fromTaxonomy,
+                                            theToRelease,
+                                            toTaxonomy);
+                        }
 
                         if (doLoad) {
                             SwingUtilities.invokeLater(() -> {
                                 displayListener.addNewDiffPAreaTaxonomyGraphFrame(diffTaxonomy);
+                                
+                                loadStatusDialog.setVisible(false);
                             });
                         }
 
@@ -117,6 +151,10 @@ public class DiffTaxonomyPanel extends JPanel {
             public void localDataSourceLoaded(SCTRelease dataSource) {
                 subjectSelectionPanel.setCurrentRelease(toRelease.get());
                 subjectSelectionPanel.setEnabled(true);
+                
+                createDescriptiveDeltaBox.setSelected(false);
+                
+                createDescriptiveDeltaBox.setEnabled(canDeriveDescriptiveDelta(dataSource, toRelease.get()));
             }
 
             @Override
@@ -128,11 +166,22 @@ public class DiffTaxonomyPanel extends JPanel {
             public void localDataSourceUnloaded() {
                 subjectSelectionPanel.clearCurrentRelease();
                 subjectSelectionPanel.setEnabled(false);
+                createDescriptiveDeltaBox.setEnabled(false);
+                createDescriptiveDeltaBox.setSelected(false);
             }
             
         });
         
-        this.add(loadFromPanel);
+        createDescriptiveDeltaBox = new JCheckBox("Integrate Descriptive Delta (requires subsequent international releases)");
+        createDescriptiveDeltaBox.setEnabled(false);
+        
+        JPanel releaseSelectionPanel = new JPanel(new BorderLayout()); 
+        
+        releaseSelectionPanel.add(loadFromPanel, BorderLayout.CENTER);
+        releaseSelectionPanel.add(createDescriptiveDeltaBox, BorderLayout.SOUTH);
+        
+        
+        this.add(releaseSelectionPanel);
         
         this.add(subjectSelectionPanel);
     }
@@ -143,5 +192,30 @@ public class DiffTaxonomyPanel extends JPanel {
     
     public void clearCurrentRelease() {
         this.toRelease = Optional.empty();
+    }
+    
+    /**
+     * Both releases must be international releases and the releases have to be subsequence to each other
+     * 
+     * @param fromRelease
+     * @param toRelease
+     * @return 
+     */
+    private boolean canDeriveDescriptiveDelta(SCTRelease fromRelease, SCTRelease toRelease) {
+        
+        if (toRelease.getReleaseInfo().getReleaseFormat() == SCTReleaseInfo.ReleaseFormat.RF2 && 
+                fromRelease.getReleaseInfo().getReleaseType() == SCTReleaseInfo.ReleaseType.International && 
+                toRelease.getReleaseInfo().getReleaseType() == SCTReleaseInfo.ReleaseType.International) {
+            
+            if (fromRelease.getReleaseInfo().getReleaseYear() == toRelease.getReleaseInfo().getReleaseYear()) {
+                return fromRelease.getReleaseInfo().getReleaseMonth() == 1 && toRelease.getReleaseInfo().getReleaseMonth() == 7;
+            } else {
+                if (fromRelease.getReleaseInfo().getReleaseYear() == toRelease.getReleaseInfo().getReleaseYear() - 1) {
+                    return fromRelease.getReleaseInfo().getReleaseMonth() == 7 && toRelease.getReleaseInfo().getReleaseMonth() == 1;
+                }
+            }
+        }
+
+        return false;
     }
 }

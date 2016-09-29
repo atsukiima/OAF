@@ -1,14 +1,14 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
+import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.DeltaRelationshipLoader;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LoadLocalRelease;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LocalLoadStateMonitor;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.RF1ReleaseLoader;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.RF2ReleaseLoader;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseInfo;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -84,7 +84,7 @@ public class LoadReleasePanel extends JPanel {
 
         chooserBtn = new JButton("Open Folder");
 
-        chooserBtn.addActionListener((ActionEvent ae) -> {
+        chooserBtn.addActionListener((ae) -> {
             localVersionBox.removeAllItems();
             
             showReleaseFolderSelectionDialog();
@@ -182,7 +182,12 @@ public class LoadReleasePanel extends JPanel {
                     
                     task.execute();
                     
-                    dataSource = rf2Importer.loadLocalSnomedRelease(getSelectedVersion(), getSelectedVersionName(), loadMonitor);
+                    dataSource = rf2Importer.loadLocalSnomedRelease(selectedFile, 
+                            new SCTReleaseInfo(selectedFile, getSelectedVersionName()), 
+                            loadMonitor);
+                    
+                    
+                    new DeltaRelationshipLoader().loadDeltaRelationships(dataSource);
                     
                 } else {
                     RF1ReleaseLoader importer = new RF1ReleaseLoader();
@@ -200,7 +205,9 @@ public class LoadReleasePanel extends JPanel {
                     
                     task.execute();
                     
-                    dataSource = importer.loadLocalSnomedRelease(getSelectedVersion(), getSelectedVersionName(), loadMonitor);
+                    dataSource = importer.loadLocalSnomedRelease(selectedFile, 
+                            new SCTReleaseInfo(selectedFile, getSelectedVersionName()), 
+                            loadMonitor);
                 }
                 
                 loadedDataSource = dataSource;
@@ -227,6 +234,10 @@ public class LoadReleasePanel extends JPanel {
             try {
                 File file = chooser.getSelectedFile();
                 this.availableReleases = LoadLocalRelease.findReleaseFolders(file);
+                
+                availableReleases.forEach( (releaseDir) -> {
+                    System.out.println(releaseDir.getAbsoluteFile());
+                });
 
                 if (availableReleases.isEmpty()) {
                     localVersionBox.removeAllItems();
@@ -237,6 +248,7 @@ public class LoadReleasePanel extends JPanel {
                     for (String releaseName : releaseNames) {
                         localVersionBox.addItem(releaseName);
                     }
+                    
                 }
             } catch (Exception e) {
                 e.printStackTrace();
