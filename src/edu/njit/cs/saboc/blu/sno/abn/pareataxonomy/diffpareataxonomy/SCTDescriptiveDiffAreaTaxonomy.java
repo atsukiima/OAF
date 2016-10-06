@@ -4,7 +4,6 @@ import edu.njit.cs.saboc.blu.core.abn.diff.OntologyDifferences;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.AreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffAreaTaxonomy;
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomyFactory;
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.DescriptiveDelta;
 
@@ -37,5 +36,4 @@ public class SCTDescriptiveDiffAreaTaxonomy extends DiffAreaTaxonomy {
     public SCTDescriptiveDiffPAreaTaxonomyFactory getDiffFactory() {
         return (SCTDescriptiveDiffPAreaTaxonomyFactory)super.getDiffFactory();
     }
-
 }
