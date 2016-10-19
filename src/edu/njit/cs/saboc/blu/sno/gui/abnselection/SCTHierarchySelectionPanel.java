@@ -17,7 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
 /**
- *
+ * A user interface element for selecting a SNOMED CT hierarchy to create
+ * some type of abstraction network
+ * 
  * @author Chris O
  */
 public class SCTHierarchySelectionPanel extends JPanel {
@@ -29,7 +31,7 @@ public class SCTHierarchySelectionPanel extends JPanel {
     private boolean statedReleaseAvailable = false;
     private final JCheckBox chkUseStatedRelationships;
     
-    private final String type;
+    private final String abstractionNetworkType;
     
     private final JPanel hierarchyPanel;
     
@@ -40,18 +42,18 @@ public class SCTHierarchySelectionPanel extends JPanel {
     public SCTHierarchySelectionPanel(
             ArrayList<DummyConcept> hierarchyRoots, 
             ArrayList<DummyConcept> enabledRoots, 
-            String type, 
+            String abstractionNetworkType, 
             HierarchySelectionAction selectionAction) {
         
         super(new BorderLayout());
         
         this.enabledRoots = enabledRoots;
-        this.type = type;
+        this.abstractionNetworkType = abstractionNetworkType;
         
-        this.chkUseStatedRelationships = new JCheckBox(String.format("Use Stated Relationships to Derive %s", type));
+        this.chkUseStatedRelationships = new JCheckBox(String.format("Use Stated Relationships to Derive %s", abstractionNetworkType));
         this.chkUseStatedRelationships.setEnabled(false);
         
-        this.subjectSelectionPanel = new SubjectAbstractionNetworkPanel(selectionAction);
+        this.subjectSelectionPanel = new SubjectAbstractionNetworkPanel(abstractionNetworkType, selectionAction);
         this.subjectSelectionPanel.setEnabled(false);
         
         Dimension fixedSize = new Dimension(500, - 1);
@@ -78,9 +80,9 @@ public class SCTHierarchySelectionPanel extends JPanel {
             });
             
             if(enabledRoots.contains(root)) {
-                btn.setToolTipText(String.format("<html>Click me to view the <b>%s</b> hierarchy's %s.", hierarchyName, type));
+                btn.setToolTipText(String.format("<html>Click me to view the <b>%s</b> hierarchy's %s.", hierarchyName, abstractionNetworkType));
             } else {
-                btn.setToolTipText(String.format("<html>It is not possible to derive a %s for the <b>%s</b> hierarchy.", type, hierarchyName));
+                btn.setToolTipText(String.format("<html>It is not possible to derive a %s for the <b>%s</b> hierarchy.", abstractionNetworkType, hierarchyName));
                 btn.setEnabled(false);
             }
             
@@ -111,10 +113,10 @@ public class SCTHierarchySelectionPanel extends JPanel {
         this.statedReleaseAvailable = value;
         
         if(value) {
-            chkUseStatedRelationships.setText(String.format("Use Stated Relationships to Derive %s", type));
+            chkUseStatedRelationships.setText(String.format("Use Stated Relationships to Derive %s", abstractionNetworkType));
         } else {
             chkUseStatedRelationships.setText(
-                    String.format("Use Stated Relationships to Derive %s (not available for selected data source or release)", type));
+                    String.format("Use Stated Relationships to Derive %s (not available for selected data source or release)", abstractionNetworkType));
             chkUseStatedRelationships.setEnabled(false);
             chkUseStatedRelationships.setSelected(false);
         }

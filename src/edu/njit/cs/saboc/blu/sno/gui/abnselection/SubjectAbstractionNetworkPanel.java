@@ -15,7 +15,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 /**
- *
+ * A user interface for creating subject-specific abstraction networks
+ * 
  * @author Chris O
  */
 public class SubjectAbstractionNetworkPanel extends JPanel {
@@ -30,7 +31,10 @@ public class SubjectAbstractionNetworkPanel extends JPanel {
     
     private Optional<Concept> selectedConcept = Optional.empty();
     
-    public SubjectAbstractionNetworkPanel(HierarchySelectionAction selectionAction) {
+    public SubjectAbstractionNetworkPanel(
+            String abstractionNetworkName, 
+            HierarchySelectionAction selectionAction) {
+        
         this.selectionAction = selectionAction;
         
         this.setLayout(new BorderLayout());
@@ -44,10 +48,7 @@ public class SubjectAbstractionNetworkPanel extends JPanel {
             public ArrayList<Concept> doSearch(ConceptSearchPanel.SearchType type, String query) {
                 
                 if(currentRelease.isPresent()) {
-                    SCTRelease theRelease = currentRelease.get();
-                    
                     return searchOntology(type, query);
-                    
                 } else {
                     return new ArrayList<>();
                 }
@@ -72,7 +73,7 @@ public class SubjectAbstractionNetworkPanel extends JPanel {
         
         this.add(conceptSearchPanel, BorderLayout.CENTER);
         
-        this.deriveButton = new JButton("Create [Abstraction Network Name]");
+        this.deriveButton = new JButton(String.format("Create %s", abstractionNetworkName));
         this.deriveButton.addActionListener( (ae) -> {
             
             if(selectedConcept.isPresent()) {
@@ -88,7 +89,6 @@ public class SubjectAbstractionNetworkPanel extends JPanel {
         lowerPanel.add(deriveButton);
         
         this.add(lowerPanel, BorderLayout.SOUTH);
-        
     }
    
     public void setCurrentRelease(SCTRelease release) {
@@ -144,7 +144,7 @@ public class SubjectAbstractionNetworkPanel extends JPanel {
     public void setEnabled(boolean value) {
         super.setEnabled(value);
         
-        
+        this.deriveButton.setEnabled(value);
+        this.conceptSearchPanel.setEnabled(value);
     }
-    
 }

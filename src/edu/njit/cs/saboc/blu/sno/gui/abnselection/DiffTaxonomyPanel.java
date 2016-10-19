@@ -51,7 +51,7 @@ public class DiffTaxonomyPanel extends JPanel {
         
         loadFromPanel.setBorder(BorderFactory.createTitledBorder("Select \"FROM\" SNOMED CT Release"));
         
-        this.subjectSelectionPanel = new SubjectAbstractionNetworkPanel((dummyRoot, useStated) -> {
+        this.subjectSelectionPanel = new SubjectAbstractionNetworkPanel("Diff Partial-area Taxonomy", (dummyRoot, useStated) -> {
             
             Thread loadThread = new Thread(new Runnable() {
                 private LoadStatusDialog loadStatusDialog = null;
