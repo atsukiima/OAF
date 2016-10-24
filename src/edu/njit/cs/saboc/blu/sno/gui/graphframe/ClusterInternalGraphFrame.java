@@ -49,7 +49,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
 
         addReportButtonToMenu(openReportsBtn);
 
-        searchButton = new PartitionedAbNSearchButton(parentFrame, this, new SCTTANTextConfiguration(null));
+        searchButton = new PartitionedAbNSearchButton(parentFrame, new SCTTANTextConfiguration(null));
         
         addToggleableButtonToMenu(searchButton);
         
@@ -84,7 +84,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
 
             BluGraph graph = new ClusterBluGraph(tan, labelCreator, currentConfiguration);
 
-            searchButton.setGraph(graph);
+            searchButton.initialize(currentConfiguration);
            
             SwingUtilities.invokeLater(() -> {
                 displayAbstractionNetwork(graph, new TANPainter(), currentConfiguration);

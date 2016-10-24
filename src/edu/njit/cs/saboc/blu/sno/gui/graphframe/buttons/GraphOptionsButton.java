@@ -1,6 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons;
 
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphEdge;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.PopupToggleButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
@@ -23,7 +24,7 @@ import javax.swing.JTextField;
  * @author Chris
  */
 public class GraphOptionsButton extends PopupToggleButton {
-
+    
     public GraphOptionsButton(JFrame parent, 
             PAreaInternalGraphFrame igf, 
             PAreaTaxonomy taxonomy) {
@@ -44,12 +45,12 @@ public class GraphOptionsButton extends PopupToggleButton {
         btnRegions.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent ae) {
-                ArrayList<GraphEdge> edges = graph.getEdges();
+                ArrayList<GraphEdge> edges = igf.getGraph().getEdges();
 
                 igf.replaceInternalFrameDataWith(taxonomy);
 
                 for (GraphEdge edge : edges) {
-                    graph.drawRoutedEdge(edge.getSource(), edge.getTarget());
+                    igf.getGraph().drawRoutedEdge(edge.getSource(), edge.getTarget());
                 }
             }
         });
@@ -60,12 +61,12 @@ public class GraphOptionsButton extends PopupToggleButton {
         btnNoRegions.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent ae) {
-                ArrayList<GraphEdge> edges = graph.getEdges();
+                ArrayList<GraphEdge> edges = igf.getGraph().getEdges();
 
                 igf.replaceInternalFrameDataWith(taxonomy);
 
                 for (GraphEdge edge : edges) {
-                    graph.drawRoutedEdge(edge.getSource(), edge.getTarget());
+                    igf.getGraph().drawRoutedEdge(edge.getSource(), edge.getTarget());
                 }
             }
         });
@@ -105,7 +106,7 @@ public class GraphOptionsButton extends PopupToggleButton {
 
         clearEdges.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                graph.clearAllEdges();
+                igf.getGraph().clearAllEdges();
             }
         });
 

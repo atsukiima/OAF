@@ -11,6 +11,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCre
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.AbNSearchButton;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyTextConfiguration;
 import javax.swing.JFrame;
@@ -35,7 +36,7 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
         
         this.displayListener = displayListener;
         
-        this.searchBtn = new AbNSearchButton(parentFrame, this, new SCTDisjointPAreaTaxonomyTextConfiguration(null));
+        this.searchBtn = new AbNSearchButton(parentFrame, new SCTDisjointPAreaTaxonomyTextConfiguration(null));
         
         super.addToggleableButtonToMenu(searchBtn);
 
@@ -56,12 +57,15 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
             BluGraph graph = new DisjointBluGraph(parentFrame, data, labelCreator);
 
-            searchBtn.setGraph(graph);
+            
 
             SCTDisjointPAreaTaxonomyConfigurationFactory factory = new SCTDisjointPAreaTaxonomyConfigurationFactory();
+            SCTDisjointPAreaTaxonomyConfiguration currentConfiguration = factory.createConfiguration(data, displayListener);
+            
+            searchBtn.initialize(currentConfiguration);
             
             SwingUtilities.invokeLater(() -> {
-                displayAbstractionNetwork(graph, new DisjointAbNPainter(), factory.createConfiguration(data, displayListener));
+                displayAbstractionNetwork(graph, new DisjointAbNPainter(), currentConfiguration);
 
                 tabbedPane.validate();
                 tabbedPane.repaint();

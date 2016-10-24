@@ -67,7 +67,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         
         optionsButton = new GraphOptionsButton(parentFrame, this, taxonomy);
 
-        searchButton = new PartitionedAbNSearchButton(parentFrame, this, new SCTPAreaTaxonomyTextConfiguration(null));
+        searchButton = new PartitionedAbNSearchButton(parentFrame, new SCTPAreaTaxonomyTextConfiguration(null));
 
         replaceInternalFrameDataWith(taxonomy);
 
@@ -152,14 +152,13 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
             currentConfiguration = factory.createConfiguration(taxonomy, displayListener);
 
             BluGraph graph = new PAreaBluGraph(parentFrame, taxonomy, labelCreator, currentConfiguration);
+            
+            searchButton.initialize(currentConfiguration);
 
             SwingUtilities.invokeLater(() -> {
                 displayAbstractionNetwork(graph, abnPainter, currentConfiguration);
 
                 updateHierarchyInfoLabel(taxonomy);
-
-                searchButton.setGraph(graph);
-                optionsButton.setGraph(graph);
             });
         });
 
