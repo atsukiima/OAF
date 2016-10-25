@@ -11,6 +11,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCre
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.PartitionedAbNSearchButton;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
+import edu.njit.cs.saboc.blu.core.gui.gep.AggregateableAbNInitializer;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTAggregateTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
@@ -156,7 +157,14 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
             searchButton.initialize(currentConfiguration);
 
             SwingUtilities.invokeLater(() -> {
-                displayAbstractionNetwork(graph, abnPainter, currentConfiguration);
+                displayAbstractionNetwork(graph, 
+                        abnPainter, 
+                        currentConfiguration, 
+                        new AggregateableAbNInitializer( (bound) -> {
+                            PAreaTaxonomy aggregateTaxonomy = taxonomy.getAggregated(bound);
+                            replaceInternalFrameDataWith(aggregateTaxonomy);
+                        })
+                );
 
                 updateHierarchyInfoLabel(taxonomy);
             });
