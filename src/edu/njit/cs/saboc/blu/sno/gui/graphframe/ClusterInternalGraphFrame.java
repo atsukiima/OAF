@@ -4,7 +4,10 @@ import edu.njit.cs.saboc.blu.core.abn.node.Node;
 import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.tan.ClusterBluGraph;
+import edu.njit.cs.saboc.blu.core.gui.gep.AggregateableAbNInitializer;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.tan.AggregateTANPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.tan.TANPainter;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.PartitionedAbNSearchButton;
@@ -72,6 +75,14 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
         Thread loadThread = new Thread(() -> {
             gep.showLoading();
             
+            AbNPainter painter;
+            
+            if(tan.isAggregated()) {
+                painter = new AggregateTANPainter();
+            } else {
+                painter = new TANPainter();
+            }
+
             SinglyRootedNodeLabelCreator labelCreator = new SinglyRootedNodeLabelCreator() {
                 public String getRootNameStr(Node node) {
                     return node.getName();
@@ -79,15 +90,20 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
             };
             
             SCTTANConfigurationFactory factory = new SCTTANConfigurationFactory();
-
             currentConfiguration = factory.createConfiguration(tan, displayListener);
 
             BluGraph graph = new ClusterBluGraph(tan, labelCreator, currentConfiguration);
-
+            
             searchButton.initialize(currentConfiguration);
            
             SwingUtilities.invokeLater(() -> {
-                displayAbstractionNetwork(graph, new TANPainter(), currentConfiguration);
+                displayAbstractionNetwork(graph, 
+                        painter, 
+                        currentConfiguration,
+                        new AggregateableAbNInitializer( (bound) -> {
+                            ClusterTribalAbstractionNetwork aggregateTAN = tan.getAggregated(bound);
+                            replaceInternalFrameDataWith(aggregateTAN);
+                        }));
                 
                 updateHierarchyInfoLabel(tan);
             });
