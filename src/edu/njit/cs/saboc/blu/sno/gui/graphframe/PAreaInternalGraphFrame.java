@@ -1,7 +1,5 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
-import edu.njit.cs.saboc.blu.core.abn.node.Node;
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.AggregatePArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
@@ -12,6 +10,7 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.PartitionedAbNSearchButton;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.AggregateableAbNInitializer;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AggregateSinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTAggregateTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
@@ -98,54 +97,16 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         Thread loadThread = new Thread(() -> {
             gep.showLoading();
             
-            SinglyRootedNodeLabelCreator labelCreator;
+            SinglyRootedNodeLabelCreator<PArea> labelCreator;
 
             AbNPainter abnPainter;
 
             if (taxonomy.isAggregated()) {
                 abnPainter = new SCTAggregateTaxonomyPainter();
-
-                labelCreator = new SinglyRootedNodeLabelCreator() {
-                    public String getRootNameStr(Node node) {
-                        PArea parea = (PArea)node;
-                        
-                        int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
-
-                        if (lastIndex == -1) {
-                            return parea.getRoot().getName();
-                        } else {
-                            return parea.getRoot().getName().substring(0, lastIndex);
-                        }
-                    }
-
-                    public String getCountStr(Node node) {
-                        AggregatePArea aggregatePArea = (AggregatePArea) node;
-
-                        if (aggregatePArea.getAggregatedNodes().isEmpty()) {
-                            return super.getCountStr(aggregatePArea);
-                        }
-
-                        return String.format("(%d) [%d]", 
-                                aggregatePArea.getConcepts().size(), 
-                                aggregatePArea.getAggregatedNodes().size());
-                    }
-                };
+                labelCreator = new AggregateSinglyRootedNodeLabelCreator<>();
             } else {
                 abnPainter = new SCTTaxonomyPainter();
-
-                labelCreator = new SinglyRootedNodeLabelCreator() {
-                    public String getRootNameStr(Node node) {
-                        PArea parea = (PArea)node;
-                        
-                        int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
-
-                        if (lastIndex == -1) {
-                            return parea.getRoot().getName();
-                        } else {
-                            return parea.getRoot().getName().substring(0, lastIndex);
-                        }
-                    }
-                };
+                labelCreator = new SinglyRootedNodeLabelCreator<>();
             }
 
             SCTPAreaTaxonomyConfigurationFactory factory = new SCTPAreaTaxonomyConfigurationFactory();
