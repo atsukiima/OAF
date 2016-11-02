@@ -11,6 +11,7 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.PartitionedAbNSe
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.AggregateableAbNInitializer;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AggregateSinglyRootedNodeLabelCreator;
+import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTAggregateTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
@@ -18,6 +19,8 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTP
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyTextConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.reports.SCTPAreaTaxonomyReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.GraphOptionsButton;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -82,7 +85,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         return (PAreaBluGraph)super.getGraph();
     }
 
-    private void updateHierarchyInfoLabel(PAreaTaxonomy taxonomy) {
+    private void updateHierarchyInfoLabel(PAreaTaxonomy<PArea> taxonomy) {
 
         setHierarchyInfoText(String.format("Areas: %d | Partial-areas: %d | Concepts: %d",
                 taxonomy.getAreaTaxonomy().getAreas().size(), 

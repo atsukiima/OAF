@@ -1,11 +1,12 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
-import edu.njit.cs.saboc.blu.core.abn.node.Node;
+import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
 import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.tan.ClusterBluGraph;
 import edu.njit.cs.saboc.blu.core.gui.gep.AggregateableAbNInitializer;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AggregateSinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.tan.AggregateTANPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.tan.TANPainter;
@@ -70,25 +71,22 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
                 setCount, clusterCount, conceptCount));
     }
 
-    public final void replaceInternalFrameDataWith(ClusterTribalAbstractionNetwork tan) {
+    public final void replaceInternalFrameDataWith(ClusterTribalAbstractionNetwork<Cluster> tan) {
         
         Thread loadThread = new Thread(() -> {
             gep.showLoading();
             
             AbNPainter painter;
+            SinglyRootedNodeLabelCreator<Cluster> labelCreator;
             
             if(tan.isAggregated()) {
                 painter = new AggregateTANPainter();
+                labelCreator = new AggregateSinglyRootedNodeLabelCreator<>();
             } else {
                 painter = new TANPainter();
+                labelCreator = new SinglyRootedNodeLabelCreator<>();
             }
 
-            SinglyRootedNodeLabelCreator labelCreator = new SinglyRootedNodeLabelCreator() {
-                public String getRootNameStr(Node node) {
-                    return node.getName();
-                }
-            };
-            
             SCTTANConfigurationFactory factory = new SCTTANConfigurationFactory();
             currentConfiguration = factory.createConfiguration(tan, displayListener);
 
