@@ -10,8 +10,8 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.PartitionedAbNSearchButton;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.AggregateableAbNInitializer;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.RelationshipSubtaxonomyPopupButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AggregateSinglyRootedNodeLabelCreator;
-import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTAggregateTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
@@ -19,8 +19,6 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTP
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyTextConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.reports.SCTPAreaTaxonomyReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons.GraphOptionsButton;
-import java.util.HashSet;
-import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -34,6 +32,8 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
     private final GraphOptionsButton optionsButton;
     
     private final SCTDisplayFrameListener displayListener;
+    
+    private final RelationshipSubtaxonomyPopupButton relationshipSubtaxonomyButton;
     
     private SCTPAreaTaxonomyConfiguration currentConfiguration;
     
@@ -71,14 +71,22 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         optionsButton = new GraphOptionsButton(parentFrame, this, taxonomy);
 
         searchButton = new PartitionedAbNSearchButton(parentFrame, new SCTPAreaTaxonomyTextConfiguration(null));
+        
+        relationshipSubtaxonomyButton = new RelationshipSubtaxonomyPopupButton(parentFrame, 
+            (selectedRels) -> {
+                PAreaTaxonomy subtaxonomy = currentTaxonomy.getRelationshipSubtaxonomy(selectedRels);
+                displayPAreaTaxonomy(subtaxonomy);
+            }
+        );
 
-        replaceInternalFrameDataWith(taxonomy);
+        displayPAreaTaxonomy(taxonomy);
 
         optionsButton.setToolTipText("Click to open the options menu for this graph.");
         searchButton.setToolTipText("Click to search within this graph.");
         
         addToggleableButtonToMenu(optionsButton);
         addToggleableButtonToMenu(searchButton);
+        addToggleableButtonToMenu(relationshipSubtaxonomyButton);
     }
 
     public PAreaBluGraph getGraph() {
@@ -93,7 +101,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
                 taxonomy.getSourceHierarchy().size()));
     }
 
-    public final void replaceInternalFrameDataWith(PAreaTaxonomy taxonomy) {
+    public final void displayPAreaTaxonomy(PAreaTaxonomy taxonomy) {
         
         this.currentTaxonomy = taxonomy;
         
@@ -114,23 +122,25 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
             SCTPAreaTaxonomyConfigurationFactory factory = new SCTPAreaTaxonomyConfigurationFactory();
 
-            currentConfiguration = factory.createConfiguration(taxonomy, displayListener);
+            currentConfiguration = factory.createConfiguration(currentTaxonomy, displayListener);
 
-            BluGraph graph = new PAreaBluGraph(parentFrame, taxonomy, labelCreator, currentConfiguration);
+            BluGraph graph = new PAreaBluGraph(parentFrame, currentTaxonomy, labelCreator, currentConfiguration);
             
             searchButton.initialize(currentConfiguration);
+            relationshipSubtaxonomyButton.initialize(currentConfiguration, currentTaxonomy);
 
             SwingUtilities.invokeLater(() -> {
+   
                 displayAbstractionNetwork(graph, 
                         abnPainter, 
                         currentConfiguration, 
                         new AggregateableAbNInitializer( (bound) -> {
-                            PAreaTaxonomy aggregateTaxonomy = taxonomy.getAggregated(bound);
-                            replaceInternalFrameDataWith(aggregateTaxonomy);
+                            PAreaTaxonomy aggregateTaxonomy = currentTaxonomy.getAggregated(bound);
+                            displayPAreaTaxonomy(aggregateTaxonomy);
                         })
                 );
 
-                updateHierarchyInfoLabel(taxonomy);
+                updateHierarchyInfoLabel(currentTaxonomy);
             });
         });
 

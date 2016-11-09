@@ -47,7 +47,7 @@ public class GraphOptionsButton extends PopupToggleButton {
             public void actionPerformed(ActionEvent ae) {
                 ArrayList<GraphEdge> edges = igf.getGraph().getEdges();
 
-                igf.replaceInternalFrameDataWith(taxonomy);
+                igf.displayPAreaTaxonomy(taxonomy);
 
                 for (GraphEdge edge : edges) {
                     igf.getGraph().drawRoutedEdge(edge.getSource(), edge.getTarget());
@@ -63,7 +63,7 @@ public class GraphOptionsButton extends PopupToggleButton {
             public void actionPerformed(ActionEvent ae) {
                 ArrayList<GraphEdge> edges = igf.getGraph().getEdges();
 
-                igf.replaceInternalFrameDataWith(taxonomy);
+                igf.displayPAreaTaxonomy(taxonomy);
 
                 for (GraphEdge edge : edges) {
                     igf.getGraph().drawRoutedEdge(edge.getSource(), edge.getTarget());
@@ -143,7 +143,7 @@ public class GraphOptionsButton extends PopupToggleButton {
                 
                 PAreaTaxonomy aggregateTaxonomy = taxonomy.getAggregated(minThresh);
 
-                igf.replaceInternalFrameDataWith(aggregateTaxonomy);
+                igf.displayPAreaTaxonomy(aggregateTaxonomy);
             }
         });
 
