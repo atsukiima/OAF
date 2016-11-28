@@ -1,6 +1,5 @@
 package edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.diffpareataxonomy;
 
-import edu.njit.cs.saboc.blu.core.abn.diff.OntologyDifferences;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.AreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffArea;
@@ -8,6 +7,7 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomyFactory;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.explain.InheritablePropertyChanges;
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.DescriptiveDelta;
 
@@ -39,7 +39,7 @@ public class SCTDescriptiveDiffPAreaTaxonomyFactory extends DiffPAreaTaxonomyFac
 
     @Override
     public DiffAreaTaxonomy createDiffAreaTaxonomy(
-            OntologyDifferences ontDifferences, 
+            InheritablePropertyChanges ontDifferences,
             AreaTaxonomy fromSourceTaxonomy, 
             AreaTaxonomy toSourceTaxonomy, 
             Hierarchy<DiffArea> diffAreas) {
