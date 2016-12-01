@@ -1,10 +1,14 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
-import edu.njit.cs.saboc.blu.core.abn.node.Node;
+import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
 import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
 import edu.njit.cs.saboc.blu.core.graph.tan.ClusterBluGraph;
+import edu.njit.cs.saboc.blu.core.gui.gep.AggregateableAbNInitializer;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AggregateSinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.tan.AggregateTANPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.tan.TANPainter;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.PartitionedAbNSearchButton;
@@ -49,7 +53,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
 
         addReportButtonToMenu(openReportsBtn);
 
-        searchButton = new PartitionedAbNSearchButton(parentFrame, this, new SCTTANTextConfiguration(null));
+        searchButton = new PartitionedAbNSearchButton(parentFrame, new SCTTANTextConfiguration(null));
         
         addToggleableButtonToMenu(searchButton);
         
@@ -67,27 +71,37 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
                 setCount, clusterCount, conceptCount));
     }
 
-    public final void replaceInternalFrameDataWith(ClusterTribalAbstractionNetwork tan) {
+    public final void replaceInternalFrameDataWith(ClusterTribalAbstractionNetwork<Cluster> tan) {
         
         Thread loadThread = new Thread(() -> {
             gep.showLoading();
             
-            SinglyRootedNodeLabelCreator labelCreator = new SinglyRootedNodeLabelCreator() {
-                public String getRootNameStr(Node node) {
-                    return node.getName();
-                }
-            };
+            AbNPainter painter;
+            SinglyRootedNodeLabelCreator<Cluster> labelCreator;
             
-            SCTTANConfigurationFactory factory = new SCTTANConfigurationFactory();
+            if(tan.isAggregated()) {
+                painter = new AggregateTANPainter();
+                labelCreator = new AggregateSinglyRootedNodeLabelCreator<>();
+            } else {
+                painter = new TANPainter();
+                labelCreator = new SinglyRootedNodeLabelCreator<>();
+            }
 
+            SCTTANConfigurationFactory factory = new SCTTANConfigurationFactory();
             currentConfiguration = factory.createConfiguration(tan, displayListener);
 
             BluGraph graph = new ClusterBluGraph(tan, labelCreator, currentConfiguration);
-
-            searchButton.setGraph(graph);
+            
+            searchButton.initialize(currentConfiguration);
            
             SwingUtilities.invokeLater(() -> {
-                displayAbstractionNetwork(graph, new TANPainter(), currentConfiguration);
+                displayAbstractionNetwork(graph, 
+                        painter, 
+                        currentConfiguration,
+                        new AggregateableAbNInitializer( (bound) -> {
+                            ClusterTribalAbstractionNetwork aggregateTAN = tan.getAggregated(bound);
+                            replaceInternalFrameDataWith(aggregateTAN);
+                        }));
                 
                 updateHierarchyInfoLabel(tan);
             });

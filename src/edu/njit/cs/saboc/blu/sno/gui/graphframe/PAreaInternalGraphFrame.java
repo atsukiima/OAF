@@ -1,7 +1,5 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
-import edu.njit.cs.saboc.blu.core.abn.node.Node;
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.AggregatePArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.graph.BluGraph;
@@ -11,6 +9,9 @@ import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCre
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.PartitionedAbNSearchButton;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
+import edu.njit.cs.saboc.blu.core.gui.gep.AggregateableAbNInitializer;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.RelationshipSubtaxonomyPopupButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AggregateSinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTAggregateTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
@@ -31,6 +32,8 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
     private final GraphOptionsButton optionsButton;
     
     private final SCTDisplayFrameListener displayListener;
+    
+    private final RelationshipSubtaxonomyPopupButton relationshipSubtaxonomyButton;
     
     private SCTPAreaTaxonomyConfiguration currentConfiguration;
     
@@ -67,22 +70,30 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         
         optionsButton = new GraphOptionsButton(parentFrame, this, taxonomy);
 
-        searchButton = new PartitionedAbNSearchButton(parentFrame, this, new SCTPAreaTaxonomyTextConfiguration(null));
+        searchButton = new PartitionedAbNSearchButton(parentFrame, new SCTPAreaTaxonomyTextConfiguration(null));
+        
+        relationshipSubtaxonomyButton = new RelationshipSubtaxonomyPopupButton(parentFrame, 
+            (selectedRels) -> {
+                PAreaTaxonomy subtaxonomy = currentTaxonomy.getRelationshipSubtaxonomy(selectedRels);
+                displayPAreaTaxonomy(subtaxonomy);
+            }
+        );
 
-        replaceInternalFrameDataWith(taxonomy);
+        displayPAreaTaxonomy(taxonomy);
 
         optionsButton.setToolTipText("Click to open the options menu for this graph.");
         searchButton.setToolTipText("Click to search within this graph.");
         
         addToggleableButtonToMenu(optionsButton);
         addToggleableButtonToMenu(searchButton);
+        addToggleableButtonToMenu(relationshipSubtaxonomyButton);
     }
 
     public PAreaBluGraph getGraph() {
         return (PAreaBluGraph)super.getGraph();
     }
 
-    private void updateHierarchyInfoLabel(PAreaTaxonomy taxonomy) {
+    private void updateHierarchyInfoLabel(PAreaTaxonomy<PArea> taxonomy) {
 
         setHierarchyInfoText(String.format("Areas: %d | Partial-areas: %d | Concepts: %d",
                 taxonomy.getAreaTaxonomy().getAreas().size(), 
@@ -90,76 +101,46 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
                 taxonomy.getSourceHierarchy().size()));
     }
 
-    public final void replaceInternalFrameDataWith(PAreaTaxonomy taxonomy) {
+    public final void displayPAreaTaxonomy(PAreaTaxonomy taxonomy) {
         
         this.currentTaxonomy = taxonomy;
         
         Thread loadThread = new Thread(() -> {
             gep.showLoading();
             
-            SinglyRootedNodeLabelCreator labelCreator;
+            SinglyRootedNodeLabelCreator<PArea> labelCreator;
 
             AbNPainter abnPainter;
 
             if (taxonomy.isAggregated()) {
                 abnPainter = new SCTAggregateTaxonomyPainter();
-
-                labelCreator = new SinglyRootedNodeLabelCreator() {
-                    public String getRootNameStr(Node node) {
-                        PArea parea = (PArea)node;
-                        
-                        int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
-
-                        if (lastIndex == -1) {
-                            return parea.getRoot().getName();
-                        } else {
-                            return parea.getRoot().getName().substring(0, lastIndex);
-                        }
-                    }
-
-                    public String getCountStr(Node node) {
-                        AggregatePArea aggregatePArea = (AggregatePArea) node;
-
-                        if (aggregatePArea.getAggregatedNodes().isEmpty()) {
-                            return super.getCountStr(aggregatePArea);
-                        }
-
-                        return String.format("(%d) [%d]", 
-                                aggregatePArea.getConcepts().size(), 
-                                aggregatePArea.getAggregatedNodes().size());
-                    }
-                };
+                labelCreator = new AggregateSinglyRootedNodeLabelCreator<>();
             } else {
                 abnPainter = new SCTTaxonomyPainter();
-
-                labelCreator = new SinglyRootedNodeLabelCreator() {
-                    public String getRootNameStr(Node node) {
-                        PArea parea = (PArea)node;
-                        
-                        int lastIndex = parea.getRoot().getName().lastIndexOf(" (");
-
-                        if (lastIndex == -1) {
-                            return parea.getRoot().getName();
-                        } else {
-                            return parea.getRoot().getName().substring(0, lastIndex);
-                        }
-                    }
-                };
+                labelCreator = new SinglyRootedNodeLabelCreator<>();
             }
 
             SCTPAreaTaxonomyConfigurationFactory factory = new SCTPAreaTaxonomyConfigurationFactory();
 
-            currentConfiguration = factory.createConfiguration(taxonomy, displayListener);
+            currentConfiguration = factory.createConfiguration(currentTaxonomy, displayListener);
 
-            BluGraph graph = new PAreaBluGraph(parentFrame, taxonomy, labelCreator, currentConfiguration);
+            BluGraph graph = new PAreaBluGraph(parentFrame, currentTaxonomy, labelCreator, currentConfiguration);
+            
+            searchButton.initialize(currentConfiguration);
+            relationshipSubtaxonomyButton.initialize(currentConfiguration, currentTaxonomy);
 
             SwingUtilities.invokeLater(() -> {
-                displayAbstractionNetwork(graph, abnPainter, currentConfiguration);
+   
+                displayAbstractionNetwork(graph, 
+                        abnPainter, 
+                        currentConfiguration, 
+                        new AggregateableAbNInitializer( (bound) -> {
+                            PAreaTaxonomy aggregateTaxonomy = currentTaxonomy.getAggregated(bound);
+                            displayPAreaTaxonomy(aggregateTaxonomy);
+                        })
+                );
 
-                updateHierarchyInfoLabel(taxonomy);
-
-                searchButton.setGraph(graph);
-                optionsButton.setGraph(graph);
+                updateHierarchyInfoLabel(currentTaxonomy);
             });
         });
 

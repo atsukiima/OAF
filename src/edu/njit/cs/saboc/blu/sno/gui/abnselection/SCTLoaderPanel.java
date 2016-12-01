@@ -45,7 +45,7 @@ public class SCTLoaderPanel extends JPanel {
 
     private final SCTHierarchySelectionPanel pareaTaxonomySelectionPanel;
     private final SCTHierarchySelectionPanel tanSelectionPanel;
-    
+
     private final DiffTaxonomyPanel diffTaxonomyPanel;
 
     private JButton openBrowserBtn;
@@ -65,15 +65,15 @@ public class SCTLoaderPanel extends JPanel {
         localReleasePanel = new LoadReleasePanel();
         localReleasePanel.addLocalDataSourceLoadedListener(new LoadReleasePanel.LocalDataSourceListener() {
             public void localDataSourceLoaded(SCTRelease dataSource) {
-                                
+
                 setEnabled(true);
-                
+
                 enableLocalDataSourceOptions(dataSource);
             }
 
             public void localDataSourceUnloaded() {
                 setEnabled(false);
-                
+
                 disableLocalDataSourceOptions();
             }
 
@@ -82,7 +82,7 @@ public class SCTLoaderPanel extends JPanel {
                 setTabsEnabled(false);
             }
         });
-        
+
         localReleasePanel.setBorder(BorderFactory.createTitledBorder("1: Select a Folder Containing SNOMED CT Release(s)"));
 
         versionSelectPanel.add(localReleasePanel, "Local");
@@ -107,32 +107,30 @@ public class SCTLoaderPanel extends JPanel {
             }
         });
 
-        pareaTaxonomySelectionPanel = new SCTHierarchySelectionPanel(rootConcepts, pareaEabledHierarchies, "Partial-area Taxonomy", 
+        pareaTaxonomySelectionPanel = new SCTHierarchySelectionPanel(rootConcepts, pareaEabledHierarchies, "Partial-area Taxonomy",
                 (root, useStated) -> {
-                    
-            loadPAreaTaxonomy(root, useStated);
-        });
+
+                    loadPAreaTaxonomy(root, useStated);
+                });
 
         pareaTaxonomySelectionPanel.setEnabled(false);
 
-        tanSelectionPanel = new SCTHierarchySelectionPanel(rootConcepts, rootConcepts, "Tribal Abstraction Network (TAN)", 
+        tanSelectionPanel = new SCTHierarchySelectionPanel(rootConcepts, rootConcepts, "Tribal Abstraction Network (TAN)",
                 (root, useStated) -> {
-                    
-            loadTAN(root, useStated);
-        });
-        
+
+                    loadTAN(root, useStated);
+                });
+
         tanSelectionPanel.setEnabled(false);
 
         diffTaxonomyPanel = new DiffTaxonomyPanel(displayFrameListener);
         diffTaxonomyPanel.setEnabled(false);
-        
-        
 
         blusnoTabbedPane.addTab("Partial-area Taxonomy", pareaTaxonomySelectionPanel);
         blusnoTabbedPane.addTab("Diff Partial-area Taxonomy", diffTaxonomyPanel);
-        
+
         blusnoTabbedPane.addTab("Tribal Abstraction Network", tanSelectionPanel);
-        
+
         blusnoTabbedPane.setEnabled(false);
 
         JPanel blusnoTabPanel = new JPanel(new BorderLayout());
@@ -142,8 +140,7 @@ public class SCTLoaderPanel extends JPanel {
 
         this.add(blusnoTabPanel, BorderLayout.CENTER);
         this.add(createConceptBrowserPanel(), BorderLayout.SOUTH);
-        
-        
+
     }
 
     private void enableLocalDataSourceOptions(SCTRelease dataSource) {
@@ -161,10 +158,10 @@ public class SCTLoaderPanel extends JPanel {
         pareaTaxonomySelectionPanel.setCurrentRelease(dataSource);
         tanSelectionPanel.setCurrentRelease(dataSource);
         diffTaxonomyPanel.setCurrentRelease(dataSource);
-        
+
         pareaTaxonomySelectionPanel.setEnabled(true);
         tanSelectionPanel.setEnabled(true);
-        
+
         openBrowserBtn.setEnabled(true);
     }
 
@@ -173,7 +170,7 @@ public class SCTLoaderPanel extends JPanel {
         pareaTaxonomySelectionPanel.setEnabled(false);
         tanSelectionPanel.setEnabled(false);
         openBrowserBtn.setEnabled(false);
-        
+
         pareaTaxonomySelectionPanel.clearCurrentRelease();
         tanSelectionPanel.clearCurrentRelease();
         diffTaxonomyPanel.clearCurrentRelease();
@@ -259,59 +256,9 @@ public class SCTLoaderPanel extends JPanel {
      * @param root
      */
     private void loadPAreaTaxonomy(DummyConcept root, boolean useStatedRelationships) {
-
-        Thread loadThread = new Thread(new Runnable() {
-            private LoadStatusDialog loadStatusDialog = null;
-            private boolean doLoad = true;
-
-            public void run() {
-
-                loadStatusDialog = LoadStatusDialog.display(parentFrame, String.format("Creating the %s partial-area taxonomy.", root.getName()),
-                        new LoadStatusDialog.LoadingDialogClosedListener() {
-
-                            @Override
-                            public void dialogClosed() {
-                                doLoad = false;
-                            }
-                        });
-
-                try {
-                    SCTRelease dataSource = localReleasePanel.getLoadedDataSource();
-
-                    SCTConcept localConcept = dataSource.getConceptFromId(root.getID());
-
-                    Hierarchy<SCTConcept> hierarchy;
-
-                    if (useStatedRelationships) {
-                        SCTReleaseWithStated statedDataSource = (SCTReleaseWithStated) dataSource;
-
-                        hierarchy = statedDataSource.getStatedHierarchy().getSubhierarchyRootedAt(localConcept);
-                    } else {
-                        hierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(localConcept);
-                    }
-
-                    PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
-
-                    PAreaTaxonomy taxonomy = generator.derivePAreaTaxonomy(
-                        new SCTInferredPAreaTaxonomyFactory(hierarchy), 
-                            hierarchy);
-                    
-                    SwingUtilities.invokeLater(() -> {
-                        if (doLoad) {
-                            displayFrameListener.addNewPAreaGraphFrame(taxonomy);
-                            
-                            loadStatusDialog.setVisible(false);
-                            loadStatusDialog.dispose();
-                        }
-                    });
-
-                } catch (NoSCTDataSourceLoadedException e) {
-                    // TODO: Show error...
-                }
-            }
-        });
-
-        loadThread.start();
+        
+        ShowPAreaTaxonomySelection pat = new ShowPAreaTaxonomySelection(parentFrame, String.format("Creating the %s partial-area taxonomy.",
+                root.getName()), localReleasePanel, root, useStatedRelationships, displayFrameListener);
     }
 
     /**
@@ -320,98 +267,15 @@ public class SCTLoaderPanel extends JPanel {
      * @param root
      */
     private void loadTAN(DummyConcept root, boolean useStated) {
-
-        Thread loadThread = new Thread(new Runnable() {
-            private LoadStatusDialog loadStatusDialog = null;
-            private boolean doLoad = true;
-
-            public void run() {
-
-                loadStatusDialog = LoadStatusDialog.display(parentFrame, String.format("Creating the %s Tribal Abstraction Network (TAN).", root.getName()),
-                        new LoadStatusDialog.LoadingDialogClosedListener() {
-
-                            @Override
-                            public void dialogClosed() {
-                                doLoad = false;
-                            }
-                        });
-
-                try {
-                    SCTRelease dataSource = localReleasePanel.getLoadedDataSource();
-
-                    Hierarchy<SCTConcept> hierarchy;
-
-                    if (useStated) {
-                        SCTReleaseWithStated statedDataSource = (SCTReleaseWithStated) dataSource;
-                        hierarchy = statedDataSource.getStatedHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getID()));
-                    } else {
-                        hierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getID()));
-                    }
-
-                    TribalAbstractionNetworkGenerator generator = new TribalAbstractionNetworkGenerator();
-
-                    ClusterTribalAbstractionNetwork tan = generator.deriveTANFromSingleRootedHierarchy(hierarchy, new TANFactory());
-
-                    SwingUtilities.invokeLater( () -> {
-                        if (doLoad) {
-                            displayFrameListener.addNewClusterGraphFrame(tan);
-                            
-                            loadStatusDialog.setVisible(false);
-                            loadStatusDialog.dispose();
-                        }
-                    });
-                } catch (NoSCTDataSourceLoadedException e) {
-                    // TODO: Show error...
-
-                }
-            }
-
-        });
-
-        loadThread.start();
-
+        
+        ShowTANSelection tan = new ShowTANSelection(parentFrame, String.format("Creating the %s Tribal Abstraction Network (TAN).",
+                root.getName()), localReleasePanel, root, useStated, displayFrameListener);
     }
 
     private void loadTargetAbN(final Concept root) {
-
-        Thread loadThread = new Thread(new Runnable() {
-            private LoadStatusDialog loadStatusDialog = null;
-            private boolean doLoad = true;
-
-            public void run() {
-
-                loadStatusDialog = LoadStatusDialog.display(parentFrame, String.format("Creating the %s Target Abstraction Network.", root.getName()),
-                        new LoadStatusDialog.LoadingDialogClosedListener() {
-
-                            @Override
-                            public void dialogClosed() {
-                                doLoad = false;
-                            }
-                        });
-
-                try {
-                    SCTRelease dataSource = localReleasePanel.getLoadedDataSource();
-
-                    TargetAbstractionNetworkGenerator generator;
-
-                    TargetAbstractionNetwork targetAbN;
-
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            if (doLoad) {
-                                loadStatusDialog.setVisible(false);
-                                loadStatusDialog.dispose();
-                            }
-                        }
-                    });
-                } catch (NoSCTDataSourceLoadedException e) {
-                    // TODO: Show error...
-                }
-
-            }
-        });
-
-        loadThread.start();
+       
+        ShowTargetAbNSelection target = new ShowTargetAbNSelection(parentFrame, String.format("Creating the %s Target Abstraction Network.", 
+                root.getName()), localReleasePanel, null, true, displayFrameListener);      
     }
 
     private SCTRelease getSelectedDataSource() {
@@ -420,7 +284,7 @@ public class SCTLoaderPanel extends JPanel {
         try {
             dataSource = localReleasePanel.getLoadedDataSource();
         } catch (NoSCTDataSourceLoadedException e) {
-            
+
             // TODO: Show error...
             return null;
         }
@@ -439,7 +303,7 @@ public class SCTLoaderPanel extends JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 //TODO: Reneable browser frame
-                
+
                 //displayFrameListener.addNewBrowserFrame(getSelectedDataSource());
             }
         });
@@ -447,6 +311,7 @@ public class SCTLoaderPanel extends JPanel {
 
     public void setTabsEnabled(boolean value) {
         blusnoTabbedPane.setEnabled(value);
+
     }
 }
 

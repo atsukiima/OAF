@@ -13,11 +13,12 @@ public class SCTReleaseWithStated extends SCTRelease {
     private final Hierarchy<SCTConcept> statedHierarchy;
     
     public SCTReleaseWithStated(
+            SCTReleaseInfo releaseInfo,
            Hierarchy<SCTConcept> activeConceptHierarchy,
            Set<SCTConcept> allConcepts,
            Hierarchy<SCTConcept> statedHierarchy) {
         
-        super(activeConceptHierarchy, allConcepts);
+        super(releaseInfo, activeConceptHierarchy, allConcepts);
         
         this.statedHierarchy = statedHierarchy;
     }
