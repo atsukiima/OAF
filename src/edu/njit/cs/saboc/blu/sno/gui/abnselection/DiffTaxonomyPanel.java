@@ -120,9 +120,8 @@ public class DiffTaxonomyPanel extends JPanel {
                             
                             SCTDescriptiveDiffPAreaTaxonomy descriptiveDiffTaxonomy = (SCTDescriptiveDiffPAreaTaxonomy)diffTaxonomy;
                             
-                            //System.out.println(descriptiveDiffTaxonomy.dumpDiffPAreaEditedConcepts());
-                            
                         } else {
+                            /*
                             diffTaxonomy
                                     = diffTaxonomyGenerator.createDiffPAreaTaxonomy(
                                             new DiffPAreaTaxonomyFactory(),
@@ -130,6 +129,10 @@ public class DiffTaxonomyPanel extends JPanel {
                                             fromTaxonomy,
                                             theToRelease,
                                             toTaxonomy);
+                            
+                            */
+                            
+                            diffTaxonomy = null;
                         }
 
                         if (doLoad) {

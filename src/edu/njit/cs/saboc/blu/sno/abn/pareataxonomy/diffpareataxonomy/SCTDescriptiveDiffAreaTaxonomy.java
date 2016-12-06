@@ -3,7 +3,7 @@ package edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.diffpareataxonomy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.AreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffAreaTaxonomy;
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.explain.InheritablePropertyChanges;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomyConceptChanges;
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.DescriptiveDelta;
 
@@ -17,7 +17,7 @@ public class SCTDescriptiveDiffAreaTaxonomy extends DiffAreaTaxonomy {
     
     public SCTDescriptiveDiffAreaTaxonomy(
             SCTDescriptiveDiffPAreaTaxonomyFactory diffFactory,
-            InheritablePropertyChanges ontDifferences,
+            DiffPAreaTaxonomyConceptChanges ontDifferences,
             DescriptiveDelta descriptiveDelta, 
             AreaTaxonomy fromAreaTaxonomy,
             AreaTaxonomy toAreaTaxonomy,

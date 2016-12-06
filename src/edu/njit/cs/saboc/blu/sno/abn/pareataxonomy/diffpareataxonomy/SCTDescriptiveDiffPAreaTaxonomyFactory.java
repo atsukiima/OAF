@@ -6,8 +6,10 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomy;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomyConceptChanges;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomyFactory;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.explain.InheritablePropertyChanges;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.explain.PropertyChangeDetailsFactory;
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.DescriptiveDelta;
 
@@ -39,7 +41,7 @@ public class SCTDescriptiveDiffPAreaTaxonomyFactory extends DiffPAreaTaxonomyFac
 
     @Override
     public DiffAreaTaxonomy createDiffAreaTaxonomy(
-            InheritablePropertyChanges ontDifferences,
+            DiffPAreaTaxonomyConceptChanges ontDifferences,
             AreaTaxonomy fromSourceTaxonomy, 
             AreaTaxonomy toSourceTaxonomy, 
             Hierarchy<DiffArea> diffAreas) {
@@ -51,5 +53,10 @@ public class SCTDescriptiveDiffPAreaTaxonomyFactory extends DiffPAreaTaxonomyFac
                 fromSourceTaxonomy, 
                 toSourceTaxonomy, 
                 diffAreas);
+    }
+
+    @Override
+    public PropertyChangeDetailsFactory getPropertyChangeDetailsFactory() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
