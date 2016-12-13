@@ -22,14 +22,15 @@ public class SCTSelectionFrame implements AbnSelectionFrameFactory{
     public JInternalFrame returnSelectionFrame(BLUFrame jFrame) {
         JInternalFrame jif = new JInternalFrame();
         jif.setSize(1400, 700);
-        JPanel jp= new SCTLoaderPanel(jFrame, new SCTDisplayFrameListener(jFrame) {
+        
+        JPanel jp = new SCTLoaderPanel(jFrame, new SCTDisplayFrameListener(jFrame) {
             
             @Override
             public void displayFrame(JInternalFrame frame) {
                 jFrame.add(frame);
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
+        
         jif.add(jp);
         jif.setVisible(true);
         return jif;

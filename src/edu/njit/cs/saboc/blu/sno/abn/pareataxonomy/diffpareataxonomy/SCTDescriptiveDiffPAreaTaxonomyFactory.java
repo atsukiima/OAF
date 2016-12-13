@@ -8,10 +8,10 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomyConceptChanges;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomyFactory;
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.explain.InheritablePropertyChanges;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.explain.PropertyChangeDetailsFactory;
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.DescriptiveDelta;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 
 /**
  *
@@ -20,9 +20,27 @@ import edu.njit.cs.saboc.blu.sno.descriptivedelta.DescriptiveDelta;
 public class SCTDescriptiveDiffPAreaTaxonomyFactory extends DiffPAreaTaxonomyFactory {
     
     private final DescriptiveDelta descriptiveDelta;
+
+    private final SCTRelease fromRelease;
+    private final SCTRelease toRelease;
     
-    public SCTDescriptiveDiffPAreaTaxonomyFactory(DescriptiveDelta descriptiveDelta) {
+    private final PAreaTaxonomy fromTaxonomy;
+    private final PAreaTaxonomy toTaxonomy;
+    
+    public SCTDescriptiveDiffPAreaTaxonomyFactory(
+            SCTRelease fromRelease,
+            SCTRelease toRelease,
+            PAreaTaxonomy fromTaxonomy,
+            PAreaTaxonomy toTaxonomy,
+            DescriptiveDelta descriptiveDelta) {
+        
         this.descriptiveDelta = descriptiveDelta;
+        
+        this.fromRelease = fromRelease;
+        this.toRelease = toRelease;
+        
+        this.fromTaxonomy = fromTaxonomy;
+        this.toTaxonomy = toTaxonomy;
     }
 
     @Override
@@ -57,6 +75,6 @@ public class SCTDescriptiveDiffPAreaTaxonomyFactory extends DiffPAreaTaxonomyFac
 
     @Override
     public PropertyChangeDetailsFactory getPropertyChangeDetailsFactory() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new SCTPropertyChangeDetailsFactory(fromRelease, toRelease, fromTaxonomy, toTaxonomy);
     }
 }

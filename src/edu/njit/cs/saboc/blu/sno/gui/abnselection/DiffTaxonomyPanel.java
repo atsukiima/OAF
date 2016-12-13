@@ -107,16 +107,19 @@ public class DiffTaxonomyPanel extends JPanel {
                                     theToRelease, 
                                     root, 
                                     deltaRelationships);
-                            
-                            
-                            
+                                                    
                             diffTaxonomy = diffTaxonomyGenerator.createDiffPAreaTaxonomy(
-                                            new SCTDescriptiveDiffPAreaTaxonomyFactory(descriptiveDelta),
+                                            new SCTDescriptiveDiffPAreaTaxonomyFactory(
+                                                    fromRelease,
+                                                    theToRelease,
+                                                    fromTaxonomy,
+                                                    toTaxonomy,
+                                                    descriptiveDelta),
+                                    
                                             fromRelease,
                                             fromTaxonomy,
                                             theToRelease,
                                             toTaxonomy);
-                            
                             
                             SCTDescriptiveDiffPAreaTaxonomy descriptiveDiffTaxonomy = (SCTDescriptiveDiffPAreaTaxonomy)diffTaxonomy;
                             
