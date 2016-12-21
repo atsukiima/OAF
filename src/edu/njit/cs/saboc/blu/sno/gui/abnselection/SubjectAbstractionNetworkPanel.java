@@ -45,6 +45,12 @@ public class SubjectAbstractionNetworkPanel extends JPanel {
         conceptSearchPanel = new ConceptSearchPanel(config, new ConceptSearchConfiguration() {
 
             @Override
+            public void searchResultDoubleClicked(Concept c) {
+                searchResultSelected(c);
+            }
+
+
+            @Override
             public ArrayList<Concept> doSearch(ConceptSearchPanel.SearchType type, String query) {
                 
                 if(currentRelease.isPresent()) {
