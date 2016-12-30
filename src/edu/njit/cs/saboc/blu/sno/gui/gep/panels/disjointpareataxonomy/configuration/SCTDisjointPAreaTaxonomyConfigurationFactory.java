@@ -2,6 +2,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration;
 
 import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointNode;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
@@ -12,7 +13,7 @@ import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
  */
 public class SCTDisjointPAreaTaxonomyConfigurationFactory {
     public SCTDisjointPAreaTaxonomyConfiguration createConfiguration(
-            DisjointAbstractionNetwork<PAreaTaxonomy<PArea>, PArea> disjointTaxonomy, 
+            DisjointAbstractionNetwork<DisjointNode<PArea>, PAreaTaxonomy<PArea>, PArea> disjointTaxonomy, 
             SCTDisplayFrameListener displayListener) {
         
         SCTDisjointPAreaTaxonomyConfiguration disjointConfiguration = new SCTDisjointPAreaTaxonomyConfiguration(disjointTaxonomy);

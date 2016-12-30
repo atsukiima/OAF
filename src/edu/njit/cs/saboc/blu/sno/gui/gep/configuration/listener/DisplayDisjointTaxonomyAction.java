@@ -1,6 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener;
 
 import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointNode;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.gui.listener.DisplayAbNAction;
@@ -20,7 +21,8 @@ public class DisplayDisjointTaxonomyAction implements DisplayAbNAction<DisjointA
 
     @Override
     public void displayAbstractionNetwork(DisjointAbstractionNetwork abstractionNetwork) {
-        DisjointAbstractionNetwork<PAreaTaxonomy<PArea>, PArea> disjointAbN = (DisjointAbstractionNetwork<PAreaTaxonomy<PArea>, PArea>)abstractionNetwork;
+        DisjointAbstractionNetwork<DisjointNode<PArea>, PAreaTaxonomy<PArea>, PArea> disjointAbN = 
+                (DisjointAbstractionNetwork<DisjointNode<PArea>, PAreaTaxonomy<PArea>, PArea>)abstractionNetwork;
         
         displayListener.addNewDisjointPAreaTaxonomyGraphFrame(disjointAbN);
     }
