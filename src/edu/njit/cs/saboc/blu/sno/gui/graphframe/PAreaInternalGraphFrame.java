@@ -2,8 +2,8 @@ package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
-import edu.njit.cs.saboc.blu.core.graph.BluGraph;
-import edu.njit.cs.saboc.blu.core.graph.pareataxonomy.PAreaBluGraph;
+import edu.njit.cs.saboc.blu.core.graph.AbstractionNetworkGraph;
+import edu.njit.cs.saboc.blu.core.graph.pareataxonomy.PAreaTaxonomyGraph;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
@@ -23,7 +23,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
+public class PAreaInternalGraphFrame extends GenericInternalGraphFrame<PAreaTaxonomy> {
     
     private final JButton openReportsBtn;
     
@@ -89,10 +89,6 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         addToggleableButtonToMenu(relationshipSubtaxonomyButton);
     }
 
-    public PAreaBluGraph getGraph() {
-        return (PAreaBluGraph)super.getGraph();
-    }
-
     private void updateHierarchyInfoLabel(PAreaTaxonomy<PArea> taxonomy) {
 
         setHierarchyInfoText(String.format("Areas: %d | Partial-areas: %d | Concepts: %d",
@@ -106,7 +102,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
         this.currentTaxonomy = taxonomy;
         
         Thread loadThread = new Thread(() -> {
-            gep.showLoading();
+            getAbNExplorationPanel().showLoading();
             
             SinglyRootedNodeLabelCreator<PArea> labelCreator;
 
@@ -124,7 +120,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame {
 
             currentConfiguration = factory.createConfiguration(currentTaxonomy, displayListener);
 
-            BluGraph graph = new PAreaBluGraph(parentFrame, currentTaxonomy, labelCreator, currentConfiguration);
+            AbstractionNetworkGraph graph = new PAreaTaxonomyGraph(getParentFrame(), currentTaxonomy, labelCreator, currentConfiguration);
             
             searchButton.initialize(currentConfiguration);
             relationshipSubtaxonomyButton.initialize(currentConfiguration, currentTaxonomy);

@@ -3,9 +3,10 @@ package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointNode;
 import edu.njit.cs.saboc.blu.core.abn.node.Node;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.DisjointPArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
-import edu.njit.cs.saboc.blu.core.graph.BluGraph;
+import edu.njit.cs.saboc.blu.core.graph.AbstractionNetworkGraph;
 import edu.njit.cs.saboc.blu.core.graph.disjointabn.DisjointBluGraph;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.DisjointAbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
@@ -22,7 +23,7 @@ import javax.swing.SwingUtilities;
  *
  * @author Chris O
  */
-public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
+public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame<DisjointAbstractionNetwork<DisjointPArea, PAreaTaxonomy<PArea>, PArea>> {
 
     private final SCTDisplayFrameListener displayListener;
     
@@ -48,7 +49,7 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
             DisjointAbstractionNetwork<DisjointNode<PArea>, PAreaTaxonomy<PArea>, PArea> data) {
         
         Thread loadThread = new Thread(() -> {
-            gep.showLoading();
+            getAbNExplorationPanel().showLoading();
             
             SinglyRootedNodeLabelCreator labelCreator = new SinglyRootedNodeLabelCreator() {
                 public String getRootNameStr(Node node) {
@@ -56,7 +57,7 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
                 }
             };
 
-            BluGraph graph = new DisjointBluGraph(parentFrame, data, labelCreator);
+            AbstractionNetworkGraph graph = new DisjointBluGraph(getParentFrame(), data, labelCreator);
 
             SCTDisjointPAreaTaxonomyConfigurationFactory factory = new SCTDisjointPAreaTaxonomyConfigurationFactory();
             SCTDisjointPAreaTaxonomyConfiguration currentConfiguration = factory.createConfiguration(data, displayListener);
@@ -65,9 +66,6 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame {
             
             SwingUtilities.invokeLater(() -> {
                 displayAbstractionNetwork(graph, new DisjointAbNPainter(), currentConfiguration);
-
-                tabbedPane.validate();
-                tabbedPane.repaint();
             });
         });
         

@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.graphframe.buttons;
 
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
-import edu.njit.cs.saboc.blu.core.graph.BluGraph;
+import edu.njit.cs.saboc.blu.core.graph.AbstractionNetworkGraph;
 import edu.njit.cs.saboc.blu.core.graph.edges.GraphEdge;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.PopupToggleButton;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.PAreaInternalGraphFrame;
@@ -42,33 +42,38 @@ public class GraphOptionsButton extends PopupToggleButton {
         ButtonGroup bg = new ButtonGroup();
 
         JRadioButton btnRegions = new JRadioButton("Regions");
-        btnRegions.addActionListener(new ActionListener() {
+        btnRegions.addActionListener((ae) -> {
 
-            public void actionPerformed(ActionEvent ae) {
-                ArrayList<GraphEdge> edges = igf.getGraph().getEdges();
+            if (igf.getGraph().isPresent()) {
+                AbstractionNetworkGraph<PAreaTaxonomy> graph = igf.getGraph().get();
+
+                ArrayList<GraphEdge> edges = graph.getEdges();
 
                 igf.displayPAreaTaxonomy(taxonomy);
 
-                for (GraphEdge edge : edges) {
-                    igf.getGraph().drawRoutedEdge(edge.getSource(), edge.getTarget());
-                }
+                edges.forEach((edge) -> {
+                    graph.drawRoutedEdge(edge.getSource(), edge.getTarget());
+                });
             }
         });
 
         btnRegions.setToolTipText("Separate PAreas by how they obtained their relationship(s).");
 
         JRadioButton btnNoRegions = new JRadioButton("No Regions");
-        btnNoRegions.addActionListener(new ActionListener() {
+        btnNoRegions.addActionListener((ae) -> {
 
-            public void actionPerformed(ActionEvent ae) {
-                ArrayList<GraphEdge> edges = igf.getGraph().getEdges();
+            if (igf.getGraph().isPresent()) {
+                AbstractionNetworkGraph<PAreaTaxonomy> graph = igf.getGraph().get();
+
+                ArrayList<GraphEdge> edges = graph.getEdges();
 
                 igf.displayPAreaTaxonomy(taxonomy);
 
-                for (GraphEdge edge : edges) {
-                    igf.getGraph().drawRoutedEdge(edge.getSource(), edge.getTarget());
-                }
+                edges.forEach((edge) -> {
+                    graph.drawRoutedEdge(edge.getSource(), edge.getTarget());
+                });
             }
+
         });
         
         btnNoRegions.setToolTipText("Group PAreas with same relationship(s) together regardless of inheritance types.");
@@ -98,15 +103,12 @@ public class GraphOptionsButton extends PopupToggleButton {
         JButton clearEdges = new JButton("Remove All Edges");
         clearEdges.setToolTipText("Remove all edges from the graph.");
 
-        drawEdges.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                
-            }
+        drawEdges.addActionListener((e) -> {
         });
 
-        clearEdges.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                igf.getGraph().clearAllEdges();
+        clearEdges.addActionListener((e) -> {
+            if(igf.getGraph().isPresent()) {
+                igf.getGraph().get().clearAllEdges();
             }
         });
 
@@ -114,43 +116,6 @@ public class GraphOptionsButton extends PopupToggleButton {
         edgeOptionsPanel.add(clearEdges);
 
         popupPanel.add(edgeOptionsPanel);
-
-        JPanel pareaThresholdPanel = new JPanel();
-        pareaThresholdPanel.setBorder(BorderFactory.createTitledBorder("Create Aggregate Partial-area Taxonomy with Bound"));
-
-        pareaThresholdPanel.add(new JLabel("Min: "));
-
-        final JTextField txtMin = new JTextField(6);
-        pareaThresholdPanel.add(txtMin);
-        txtMin.setText("1");
-        txtMin.setHorizontalAlignment(JTextField.RIGHT);
-
-        JButton btnOkay = new JButton("OK");
-        btnOkay.setPreferredSize(new Dimension(64, 24));
-
-        btnOkay.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                int minThresh = 0;
-
-                if(!txtMin.getText().trim().isEmpty()) {
-                    minThresh = Integer.parseInt(txtMin.getText());
-                }
-                
-                if(minThresh < 1) {
-                    txtMin.setText("1");
-                    return;
-                }
-                
-                PAreaTaxonomy aggregateTaxonomy = taxonomy.getAggregated(minThresh);
-
-                igf.displayPAreaTaxonomy(aggregateTaxonomy);
-            }
-        });
-
-        pareaThresholdPanel.add(btnOkay);
-
-        popupPanel.add(pareaThresholdPanel);
-
 
         this.setPopupContent(popupPanel);
     }

@@ -2,8 +2,8 @@ package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 
 import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
 import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
-import edu.njit.cs.saboc.blu.core.graph.BluGraph;
-import edu.njit.cs.saboc.blu.core.graph.tan.ClusterBluGraph;
+import edu.njit.cs.saboc.blu.core.graph.AbstractionNetworkGraph;
+import edu.njit.cs.saboc.blu.core.graph.tan.ClusterTANGraph;
 import edu.njit.cs.saboc.blu.core.gui.gep.AggregateableAbNInitializer;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AggregateSinglyRootedNodeLabelCreator;
@@ -21,7 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
+public class ClusterInternalGraphFrame extends GenericInternalGraphFrame<ClusterTribalAbstractionNetwork> {
     
     private final PartitionedAbNSearchButton searchButton;
     
@@ -74,7 +74,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
     public final void replaceInternalFrameDataWith(ClusterTribalAbstractionNetwork<Cluster> tan) {
         
         Thread loadThread = new Thread(() -> {
-            gep.showLoading();
+            getAbNExplorationPanel().showLoading();
             
             AbNPainter painter;
             SinglyRootedNodeLabelCreator<Cluster> labelCreator;
@@ -90,7 +90,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
             SCTTANConfigurationFactory factory = new SCTTANConfigurationFactory();
             currentConfiguration = factory.createConfiguration(tan, displayListener);
 
-            BluGraph newGraph = new ClusterBluGraph(tan, labelCreator, currentConfiguration);
+            AbstractionNetworkGraph newGraph = new ClusterTANGraph(tan, labelCreator, currentConfiguration);
             
             searchButton.initialize(currentConfiguration);
            
