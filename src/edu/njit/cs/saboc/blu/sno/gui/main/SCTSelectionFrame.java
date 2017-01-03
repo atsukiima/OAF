@@ -16,26 +16,27 @@ import javax.swing.JPanel;
  *
  * @author hl395
  */
-public class SCTSelectionFrame implements AbnSelectionFrameFactory{
+public class SCTSelectionFrame implements AbnSelectionFrameFactory {
 
     @Override
-    public JInternalFrame returnSelectionFrame(BLUFrame jFrame) {
+    public JInternalFrame createAbNSelectionFrame(BLUFrame parentFrame) {
         JInternalFrame jif = new JInternalFrame();
+        
         jif.setSize(1400, 700);
         
-        JPanel jp = new SCTLoaderPanel(jFrame, new SCTDisplayFrameListener(jFrame) {
+        JPanel jp = new SCTLoaderPanel(parentFrame, new SCTDisplayFrameListener(parentFrame) {
             
             @Override
             public void displayFrame(JInternalFrame frame) {
-                jFrame.add(frame);
+                parentFrame.addInternalFrame(frame);
             }
+            
         });
         
         jif.add(jp);
         jif.setVisible(true);
+        
         return jif;
     }
-
-
     
 }

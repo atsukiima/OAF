@@ -19,13 +19,13 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.diff.SCTDescriptiv
 public class SCTDiffPAreaTaxonomyUIConfiguration extends DiffPAreaTaxonomyUIConfiguration {
     
     private final SCTDisplayFrameListener displayListener;
-    
+
     public SCTDiffPAreaTaxonomyUIConfiguration(
             SCTDiffPAreaTaxonomyConfiguration config, 
             SCTDiffPAreaTaxonomyListenerConfiguration listenerConfig,
             SCTDisplayFrameListener displayListener) {
 
-        super(config, listenerConfig);
+        super(config, listenerConfig, new SCTDiffPAreaChangeExplanationFactory(config));
         
         this.displayListener = displayListener;
     }
@@ -38,6 +38,10 @@ public class SCTDiffPAreaTaxonomyUIConfiguration extends DiffPAreaTaxonomyUIConf
     
     public SCTDiffPAreaTaxonomyConfiguration getConfiguration() {
         return (SCTDiffPAreaTaxonomyConfiguration)super.getConfiguration();
+    }
+    
+    public SCTDiffPAreaChangeExplanationFactory getChangeExplanationEntryFactory() {
+        return (SCTDiffPAreaChangeExplanationFactory)super.getChangeExplanationEntryFactory();
     }
     
     public SCTDisplayFrameListener getDisplayFrameListener() {
@@ -65,7 +69,7 @@ public class SCTDiffPAreaTaxonomyUIConfiguration extends DiffPAreaTaxonomyUIConf
     @Override
     public NodeDashboardPanel createGroupDetailsPanel() {
         if(this.getConfiguration().getPAreaTaxonomy() instanceof SCTDescriptiveDiffPAreaTaxonomy) { 
-            return new SCTDescriptiveDiffPAreaPanel(this.getConfiguration());
+            return new SCTDescriptiveDiffPAreaPanel(this.getConfiguration(), getChangeExplanationEntryFactory());
         } else {
             return super.createGroupDetailsPanel();
         }

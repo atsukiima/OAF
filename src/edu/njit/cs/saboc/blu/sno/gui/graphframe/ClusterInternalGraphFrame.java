@@ -90,12 +90,12 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame {
             SCTTANConfigurationFactory factory = new SCTTANConfigurationFactory();
             currentConfiguration = factory.createConfiguration(tan, displayListener);
 
-            BluGraph graph = new ClusterBluGraph(tan, labelCreator, currentConfiguration);
+            BluGraph newGraph = new ClusterBluGraph(tan, labelCreator, currentConfiguration);
             
             searchButton.initialize(currentConfiguration);
            
             SwingUtilities.invokeLater(() -> {
-                displayAbstractionNetwork(graph, 
+                displayAbstractionNetwork(newGraph, 
                         painter, 
                         currentConfiguration,
                         new AggregateableAbNInitializer( (bound) -> {
