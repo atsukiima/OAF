@@ -39,7 +39,7 @@ public class SCTDiffPAreaTaxonomyGraphFrame extends GenericInternalGraphFrame<Di
         setHierarchyInfoText("*** SCT DIFF TAXONOMY UI IN DEVELOPMENT ***");
     }
 
-    public final void replaceInternalFrameDataWith(DiffPAreaTaxonomy data) {
+    public final void displayDiffPAreaTaxonomy(DiffPAreaTaxonomy data) {
         
         Thread loadThread = new Thread(() -> {
             getAbNExplorationPanel().showLoading();

@@ -99,7 +99,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame<Cluster
                         painter, 
                         currentConfiguration,
                         new AggregateableAbNInitializer( (bound) -> {
-                            ClusterTribalAbstractionNetwork aggregateTAN = tan.getAggregated(bound);
+                            ClusterTribalAbstractionNetwork aggregateTAN = currentConfiguration.getTribalAbstractionNetwork().getAggregated(bound);
                             replaceInternalFrameDataWith(aggregateTAN);
                         }));
                 

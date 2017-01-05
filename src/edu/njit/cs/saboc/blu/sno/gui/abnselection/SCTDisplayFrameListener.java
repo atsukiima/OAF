@@ -68,7 +68,7 @@ public abstract class SCTDisplayFrameListener implements FrameCreationListener {
     
     public SCTDiffPAreaTaxonomyGraphFrame addNewDiffPAreaTaxonomyGraphFrame(DiffPAreaTaxonomy diffTaxonomy) {
         SCTDiffPAreaTaxonomyGraphFrame frame = new SCTDiffPAreaTaxonomyGraphFrame(mainFrame, this);
-        frame.replaceInternalFrameDataWith(diffTaxonomy);
+        frame.displayDiffPAreaTaxonomy(diffTaxonomy);
         
         this.displayFrame(frame);
         
