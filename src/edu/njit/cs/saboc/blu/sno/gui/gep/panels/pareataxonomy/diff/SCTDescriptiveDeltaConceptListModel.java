@@ -1,5 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.diff;
 
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPArea;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.models.AbstractNodeEntityTableModel;
 import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.diffpareataxonomy.SCTDescriptiveDiffPAreaTaxonomy;
@@ -12,7 +13,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
  *
  * @author Chris O
  */
-public class SCTDescriptiveDeltaConceptListModel extends AbstractNodeEntityTableModel<Concept> {
+public class SCTDescriptiveDeltaConceptListModel extends AbstractNodeEntityTableModel<Concept, DiffPArea> {
     
     private final SCTDiffPAreaTaxonomyConfiguration config;
     
