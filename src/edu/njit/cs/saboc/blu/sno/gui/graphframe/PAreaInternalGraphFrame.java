@@ -10,7 +10,7 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.PartitionedAbNSearchButton;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.core.gui.gep.AggregateableAbNInitializer;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.RelationshipSubtaxonomyPopupButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportPartitionedAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AggregateSinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTAggregateTaxonomyPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.painter.SCTTaxonomyPainter;
@@ -27,18 +27,19 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame<PAreaTaxo
     
     private final JButton openReportsBtn;
     
+    private final ExportPartitionedAbNButton exportBtn;
+    
     private final PartitionedAbNSearchButton searchButton;
     
     private final GraphOptionsButton optionsButton;
     
     private final SCTDisplayFrameListener displayListener;
     
-    private final RelationshipSubtaxonomyPopupButton relationshipSubtaxonomyButton;
     
     private SCTPAreaTaxonomyConfiguration currentConfiguration;
     
     private PAreaTaxonomy currentTaxonomy;
-
+    
     public PAreaInternalGraphFrame(
             final JFrame parentFrame, 
             final PAreaTaxonomy taxonomy, 
@@ -49,8 +50,6 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame<PAreaTaxo
         this.displayListener = displayListener;
         
         this.currentTaxonomy = taxonomy;
-
-        super.setContainerAbNCheckboxText("Show Area Taxonomy");
 
         openReportsBtn = new JButton("Taxonomy Reports and Metrics");
         openReportsBtn.addActionListener( (ae) -> {
@@ -65,19 +64,15 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame<PAreaTaxo
                 reportDialog.setVisible(true);
             }
         });
+        
+        this.exportBtn = new ExportPartitionedAbNButton();
 
         addReportButtonToMenu(openReportsBtn);
+        addReportButtonToMenu(exportBtn);
         
         optionsButton = new GraphOptionsButton(parentFrame, this, taxonomy);
 
         searchButton = new PartitionedAbNSearchButton(parentFrame, new SCTPAreaTaxonomyTextConfiguration(null));
-        
-        relationshipSubtaxonomyButton = new RelationshipSubtaxonomyPopupButton(parentFrame, 
-            (selectedRels) -> {
-                PAreaTaxonomy subtaxonomy = currentTaxonomy.getRelationshipSubtaxonomy(selectedRels);
-                displayPAreaTaxonomy(subtaxonomy);
-            }
-        );
 
         displayPAreaTaxonomy(taxonomy);
 
@@ -86,7 +81,6 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame<PAreaTaxo
         
         addToggleableButtonToMenu(optionsButton);
         addToggleableButtonToMenu(searchButton);
-        addToggleableButtonToMenu(relationshipSubtaxonomyButton);
     }
 
     private void updateHierarchyInfoLabel(PAreaTaxonomy<PArea> taxonomy) {
@@ -122,9 +116,10 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame<PAreaTaxo
 
             AbstractionNetworkGraph graph = new PAreaTaxonomyGraph(getParentFrame(), currentTaxonomy, labelCreator, currentConfiguration);
             
+            exportBtn.initialize(currentConfiguration);
+            
             searchButton.initialize(currentConfiguration);
-            relationshipSubtaxonomyButton.initialize(currentConfiguration, currentTaxonomy);
-
+            
             SwingUtilities.invokeLater(() -> {
    
                 displayAbstractionNetwork(graph, 

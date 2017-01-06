@@ -8,6 +8,7 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.graph.AbstractionNetworkGraph;
 import edu.njit.cs.saboc.blu.core.graph.disjointabn.DisjointBluGraph;
 import edu.njit.cs.saboc.blu.core.gui.gep.DisjointAbNInitializer;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AggregateDisjointAbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AggregateSinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.DisjointAbNPainter;
@@ -32,6 +33,8 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame<D
     private final SCTDisplayFrameListener displayListener;
     
     private final AbNSearchButton searchBtn;
+    
+    private final ExportAbNButton exportBtn;
 
     public DisjointPAreaInternalGraphFrame(
             JFrame parentFrame, 
@@ -41,6 +44,10 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame<D
         super(parentFrame, "SNOMED CT Disjoint Partial-area Taxonomy");
         
         this.displayListener = displayListener;
+        
+        this.exportBtn = new ExportAbNButton();
+        
+        super.addReportButtonToMenu(exportBtn);
         
         this.searchBtn = new AbNSearchButton(parentFrame, new SCTDisjointPAreaTaxonomyTextConfiguration(null));
         
@@ -80,6 +87,7 @@ public class DisjointPAreaInternalGraphFrame extends GenericInternalGraphFrame<D
             SCTPAreaTaxonomyConfiguration parentConfig = parentTaxonomyConfigFactory.createConfiguration(
                     disjointPAreaTaxonomy.getParentAbstractionNetwork(), displayListener);
             
+            exportBtn.initialize(currentConfiguration);
             searchBtn.initialize(currentConfiguration);
             
             SwingUtilities.invokeLater(() -> {

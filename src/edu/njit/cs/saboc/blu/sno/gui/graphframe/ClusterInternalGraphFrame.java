@@ -5,6 +5,7 @@ import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.graph.AbstractionNetworkGraph;
 import edu.njit.cs.saboc.blu.core.graph.tan.ClusterTANGraph;
 import edu.njit.cs.saboc.blu.core.gui.gep.AggregateableAbNInitializer;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportPartitionedAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AggregateSinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
@@ -28,6 +29,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame<Cluster
     private final SCTDisplayFrameListener displayListener;
     
     private final JButton openReportsBtn;
+    private final ExportPartitionedAbNButton exportBtn;
     
     private SCTTANConfiguration currentConfiguration;
 
@@ -39,8 +41,6 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame<Cluster
         super(parentFrame, "SNOMED Tribal Abstraction Network");
         
         this.displayListener = displayListener;
-
-        super.setContainerAbNCheckboxText("Show Band TAN");
         
         openReportsBtn = new JButton("Reports and Metrics");
         openReportsBtn.addActionListener( (ae) -> {
@@ -50,8 +50,11 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame<Cluster
 
             reportDialog.setVisible(true);
         });
+        
+        exportBtn = new ExportPartitionedAbNButton();
 
         addReportButtonToMenu(openReportsBtn);
+        addReportButtonToMenu(exportBtn);
 
         searchButton = new PartitionedAbNSearchButton(parentFrame, new SCTTANTextConfiguration(null));
         
@@ -92,6 +95,7 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame<Cluster
 
             AbstractionNetworkGraph newGraph = new ClusterTANGraph(tan, labelCreator, currentConfiguration);
             
+            exportBtn.initialize(currentConfiguration);
             searchButton.initialize(currentConfiguration);
            
             SwingUtilities.invokeLater(() -> {

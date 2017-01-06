@@ -10,8 +10,8 @@ import java.awt.Point;
  * @author Chris O
  */
 public class SCTAggregateTaxonomyPainter extends AggregatePAreaTaxonomyPainter {
-    public void paintContainerAtPoint(Graphics2D g2d, PartitionedNodeEntry entry, Point p, double scale) {
+    public void paintPartitionedNodeAtPoint(Graphics2D g2d, PartitionedNodeEntry entry, Point p, double scale) {
         SCTTaxonomyPainter painter = new SCTTaxonomyPainter();
-        painter.paintContainerAtPoint(g2d, entry, p, scale);
+        painter.paintPartitionedNodeAtPoint(g2d, entry, p, scale);
     }
 }

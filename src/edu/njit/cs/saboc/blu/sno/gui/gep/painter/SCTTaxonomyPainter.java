@@ -14,7 +14,7 @@ import java.awt.Stroke;
  * @author Chris O
  */
 public class SCTTaxonomyPainter extends AbNPainter {
-    public void paintContainerAtPoint(Graphics2D g2d, PartitionedNodeEntry entry, Point p, double scale) {
+    public void paintPartitionedNodeAtPoint(Graphics2D g2d, PartitionedNodeEntry entry, Point p, double scale) {
         AreaEntry area = (AreaEntry)entry;
         
         Stroke savedStroke = g2d.getStroke();
