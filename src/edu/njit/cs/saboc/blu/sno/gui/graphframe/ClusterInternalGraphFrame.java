@@ -3,15 +3,18 @@ package edu.njit.cs.saboc.blu.sno.gui.graphframe;
 import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
 import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.graph.AbstractionNetworkGraph;
+import edu.njit.cs.saboc.blu.core.graph.tan.BandTANGraph;
 import edu.njit.cs.saboc.blu.core.graph.tan.ClusterTANGraph;
 import edu.njit.cs.saboc.blu.core.gui.gep.AggregateableAbNInitializer;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportPartitionedAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AggregateSinglyRootedNodeLabelCreator;
+import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.PartitionedAbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.tan.AggregateTANPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.tan.TANPainter;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
+import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.PartitionedAbNSelectionPanel;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.PartitionedAbNSearchButton;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
@@ -32,13 +35,14 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame<Cluster
     private final ExportPartitionedAbNButton exportBtn;
     
     private SCTTANConfiguration currentConfiguration;
+    
+    private final PartitionedAbNSelectionPanel abnTypeSelectionPanel;
 
     public ClusterInternalGraphFrame(
             JFrame parentFrame, 
-            ClusterTribalAbstractionNetwork data, 
             SCTDisplayFrameListener displayListener) {
         
-        super(parentFrame, "SNOMED Tribal Abstraction Network");
+        super(parentFrame, "SNOMED CT Tribal Abstraction Network");
         
         this.displayListener = displayListener;
         
@@ -60,9 +64,20 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame<Cluster
         
         addToggleableButtonToMenu(searchButton);
         
-        replaceInternalFrameDataWith(data);
-        
-        addToggleableButtonToMenu(searchButton);
+        this.abnTypeSelectionPanel = new PartitionedAbNSelectionPanel() {
+
+            @Override
+            public void showFullClicked() {
+                displayClusterTAN(currentConfiguration.getTribalAbstractionNetwork());
+            }
+
+            @Override
+            public void showBaseClicked() {
+                displayBandTAN(currentConfiguration.getTribalAbstractionNetwork());
+            }
+        };
+
+        this.addOtherOptionsComponent(abnTypeSelectionPanel);
     }
 
     private void updateHierarchyInfoLabel(ClusterTribalAbstractionNetwork tan) {
@@ -74,11 +89,11 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame<Cluster
                 setCount, clusterCount, conceptCount));
     }
 
-    public final void replaceInternalFrameDataWith(ClusterTribalAbstractionNetwork<Cluster> tan) {
+    public void displayClusterTAN(ClusterTribalAbstractionNetwork tan) {
+        getAbNExplorationPanel().showLoading();
         
         Thread loadThread = new Thread(() -> {
-            getAbNExplorationPanel().showLoading();
-            
+
             AbNPainter painter;
             SinglyRootedNodeLabelCreator<Cluster> labelCreator;
             
@@ -91,26 +106,58 @@ public class ClusterInternalGraphFrame extends GenericInternalGraphFrame<Cluster
             }
 
             SCTTANConfigurationFactory factory = new SCTTANConfigurationFactory();
-            currentConfiguration = factory.createConfiguration(tan, displayListener);
+            SCTTANConfiguration config = factory.createConfiguration(tan, displayListener);
 
-            AbstractionNetworkGraph newGraph = new ClusterTANGraph(tan, labelCreator, currentConfiguration);
+            AbstractionNetworkGraph newGraph = new ClusterTANGraph(tan, labelCreator, config);
             
-            exportBtn.initialize(currentConfiguration);
-            searchButton.initialize(currentConfiguration);
-           
-            SwingUtilities.invokeLater(() -> {
-                displayAbstractionNetwork(newGraph, 
-                        painter, 
-                        currentConfiguration,
-                        new AggregateableAbNInitializer( (bound) -> {
-                            ClusterTribalAbstractionNetwork aggregateTAN = currentConfiguration.getTribalAbstractionNetwork().getAggregated(bound);
-                            replaceInternalFrameDataWith(aggregateTAN);
-                        }));
-                
-                updateHierarchyInfoLabel(tan);
-            });
+            displayTAN(config, newGraph, painter, true);
         });
         
         loadThread.start();
+    }
+    
+    public final void displayBandTAN(ClusterTribalAbstractionNetwork tan) {
+        getAbNExplorationPanel().showLoading();
+        
+        Thread loadThread = new Thread(() -> {
+            PartitionedAbNPainter abnPainter = new PartitionedAbNPainter();
+            
+            SCTTANConfigurationFactory factory = new SCTTANConfigurationFactory();
+            SCTTANConfiguration config = factory.createConfiguration(tan, displayListener);
+
+            abnPainter.initialize(tan);
+
+            BandTANGraph newGraph = new BandTANGraph(tan, new SinglyRootedNodeLabelCreator<>(), config);
+
+            displayTAN(config, newGraph, abnPainter, false);
+        });
+
+        loadThread.start();
+    }
+    
+    private void displayTAN(
+            SCTTANConfiguration config,
+            AbstractionNetworkGraph<ClusterTribalAbstractionNetwork> graph,
+            AbNPainter painter,
+            boolean showClusterTAN) {
+        
+        this.currentConfiguration = config;
+
+        abnTypeSelectionPanel.initialize(config, showClusterTAN);
+        exportBtn.initialize(config);
+        searchButton.initialize(config);
+
+        SwingUtilities.invokeLater(() -> {
+            displayAbstractionNetwork(graph,
+                    painter,
+                    currentConfiguration,
+                    new AggregateableAbNInitializer((bound) -> {
+                        ClusterTribalAbstractionNetwork aggregateTAN = currentConfiguration.getAbstractionNetwork().getAggregated(bound);
+
+                        displayClusterTAN(aggregateTAN);
+                    }));
+
+            updateHierarchyInfoLabel(config.getTribalAbstractionNetwork());
+        });
     }
 }

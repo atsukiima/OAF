@@ -50,8 +50,9 @@ public abstract class SCTDisplayFrameListener implements FrameCreationListener {
      */
     public ClusterInternalGraphFrame addNewClusterGraphFrame(ClusterTribalAbstractionNetwork data) {
         
-        ClusterInternalGraphFrame cigf = new ClusterInternalGraphFrame(mainFrame, data, this);
-
+        ClusterInternalGraphFrame cigf = new ClusterInternalGraphFrame(mainFrame, this);
+        cigf.displayClusterTAN(data);
+        
         this.displayFrame(cigf);
 
         return cigf;
