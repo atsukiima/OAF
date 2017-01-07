@@ -29,13 +29,13 @@ public class SCTDisjointPAreaTaxonomyUIConfiguration extends DisjointPAreaTaxono
         this.displayListener = displayListener;
     }
     
-    public SCTDisplayFrameListener getDisplayListener() {
+    public SCTDisplayFrameListener getDisplayFrameListener() {
         return displayListener;
     }
 
     @Override
     public NodeOptionsPanel<DisjointNode<PArea>> getNodeOptionsPanel() {
-        return new SCTDisjointPAreaOptionsPanel(config);
+        return new SCTDisjointPAreaOptionsPanel(config, config.getAbstractionNetwork().isAggregated());
     }
 
     @Override

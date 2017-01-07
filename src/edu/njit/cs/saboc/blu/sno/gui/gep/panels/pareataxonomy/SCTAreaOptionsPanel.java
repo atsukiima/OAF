@@ -42,7 +42,6 @@ public class SCTAreaOptionsPanel extends NodeOptionsPanel {
 
         super.addOptionButton(popoutBtn);
         
-        
         ExportPartitionedNodeButton exportBtn = new ExportPartitionedNodeButton(config);
         
         super.addOptionButton(exportBtn);
