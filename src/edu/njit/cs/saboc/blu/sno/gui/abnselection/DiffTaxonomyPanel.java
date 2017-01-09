@@ -36,13 +36,13 @@ public class DiffTaxonomyPanel extends JPanel {
     
     private Optional<SCTRelease> toRelease = Optional.empty();
     
-    private final SCTDisplayFrameListener displayListener;
+    private final SCTAbNFrameManager displayListener;
     
     private final SubjectAbstractionNetworkPanel subjectSelectionPanel;
     
     private final JCheckBox createDescriptiveDeltaBox;
     
-    public DiffTaxonomyPanel(SCTDisplayFrameListener displayListener) {
+    public DiffTaxonomyPanel(SCTAbNFrameManager displayListener) {
         this.displayListener = displayListener;
         
         this.setLayout(new GridLayout(1, 2));
@@ -140,7 +140,7 @@ public class DiffTaxonomyPanel extends JPanel {
 
                         if (doLoad) {
                             SwingUtilities.invokeLater(() -> {
-                                displayListener.addNewDiffPAreaTaxonomyGraphFrame(diffTaxonomy);
+                                displayListener.displayDiffPAreaTaxonomy(diffTaxonomy);
                                 
                                 loadStatusDialog.setVisible(false);
                             });

@@ -6,8 +6,8 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.abn.AbstractAbNDetailsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.diff.configuration.DiffPAreaTaxonomyUIConfiguration;
+import edu.njit.cs.saboc.blu.core.gui.graphframe.AbNDisplayManager;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.diffpareataxonomy.SCTDescriptiveDiffPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.diff.DescriptiveDiffPAreaTaxonomyReportPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.diff.SCTDescriptiveDiffAreaPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.diff.SCTDescriptiveDiffPAreaPanel;
@@ -17,35 +17,29 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.diff.SCTDescriptiv
  * @author Chris O
  */
 public class SCTDiffPAreaTaxonomyUIConfiguration extends DiffPAreaTaxonomyUIConfiguration {
-    
-    private final SCTDisplayFrameListener displayListener;
 
     public SCTDiffPAreaTaxonomyUIConfiguration(
             SCTDiffPAreaTaxonomyConfiguration config, 
             SCTDiffPAreaTaxonomyListenerConfiguration listenerConfig,
-            SCTDisplayFrameListener displayListener) {
+            AbNDisplayManager displayListener) {
 
-        super(config, listenerConfig, new SCTDiffPAreaChangeExplanationFactory(config));
-        
-        this.displayListener = displayListener;
+        super(config, displayListener, listenerConfig, new SCTDiffPAreaChangeExplanationFactory(config));
     }
     
-    public SCTDiffPAreaTaxonomyUIConfiguration(SCTDiffPAreaTaxonomyConfiguration config, 
-            SCTDisplayFrameListener displayListener) {
+    
+    public SCTDiffPAreaTaxonomyUIConfiguration(SCTDiffPAreaTaxonomyConfiguration config, AbNDisplayManager displayListener) {
         
         this(config, new SCTDiffPAreaTaxonomyListenerConfiguration(config), displayListener);
     }
     
+    @Override
     public SCTDiffPAreaTaxonomyConfiguration getConfiguration() {
         return (SCTDiffPAreaTaxonomyConfiguration)super.getConfiguration();
     }
     
+    @Override
     public SCTDiffPAreaChangeExplanationFactory getChangeExplanationEntryFactory() {
         return (SCTDiffPAreaChangeExplanationFactory)super.getChangeExplanationEntryFactory();
-    }
-    
-    public SCTDisplayFrameListener getDisplayFrameListener() {
-        return displayListener;
     }
 
     @Override

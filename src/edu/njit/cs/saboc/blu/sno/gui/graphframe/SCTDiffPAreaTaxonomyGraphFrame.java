@@ -10,7 +10,7 @@ import edu.njit.cs.saboc.blu.core.graph.pareataxonomy.diff.DiffPAreaTaxonomyGrap
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.pareataxonomy.DiffTaxonomyPainter;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
-import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
+import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.diff.configuration.SCTDiffPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.diff.configuration.SCTDiffPAreaTaxonomyConfigurationFactory;
 import javax.swing.JFrame;
@@ -22,11 +22,11 @@ import javax.swing.SwingUtilities;
  */
 public class SCTDiffPAreaTaxonomyGraphFrame extends GenericInternalGraphFrame<DiffPAreaTaxonomy> {
 
-    private final SCTDisplayFrameListener displayListener;
+    private final SCTAbNFrameManager displayListener;
     
     public SCTDiffPAreaTaxonomyGraphFrame(
             JFrame parentFrame,
-            SCTDisplayFrameListener displayListener) {
+            SCTAbNFrameManager displayListener) {
 
         super(parentFrame, "SNOMED CT Diff Partial-area Taxonomy");
         

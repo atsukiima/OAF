@@ -9,7 +9,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AbNPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.PartitionedAbNSearchButton;
-import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
+import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.core.gui.gep.AggregateableAbNInitializer;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportPartitionedAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AggregateSinglyRootedNodeLabelCreator;
@@ -35,7 +35,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame<PAreaTaxo
     
     private final GraphOptionsButton optionsButton;
     
-    private final SCTDisplayFrameListener displayListener;
+    private final SCTAbNFrameManager displayListener;
 
     private SCTPAreaTaxonomyConfiguration currentConfiguration;
     
@@ -46,7 +46,7 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame<PAreaTaxo
     public PAreaInternalGraphFrame(
             final JFrame parentFrame, 
             final PAreaTaxonomy taxonomy, 
-            SCTDisplayFrameListener displayListener) {
+            SCTAbNFrameManager displayListener) {
         
         super(parentFrame, "SNOMED CT Partial-area Taxonomy");
         

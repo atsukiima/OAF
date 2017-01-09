@@ -23,7 +23,7 @@ import javax.swing.JFrame;
 public class ShowPAreaTaxonomySelection extends ShowAbNSelection {
 
     public ShowPAreaTaxonomySelection(JFrame parentFrame, String text, LoadReleasePanel localReleasePanel, DummyConcept root, 
-            boolean useStatedRelationships, SCTDisplayFrameListener displayFrameListener) {
+            boolean useStatedRelationships, SCTAbNFrameManager displayFrameListener) {
         super(parentFrame, text, localReleasePanel, root, useStatedRelationships, displayFrameListener);
     }
 
@@ -59,6 +59,6 @@ public class ShowPAreaTaxonomySelection extends ShowAbNSelection {
 
     @Override
     protected void displayFrame(PartitionedAbstractionNetwork taxonomy) {
-        displayFrameListener.addNewPAreaGraphFrame((PAreaTaxonomy) taxonomy);
+        displayFrameListener.displayPAreaTaxonomy((PAreaTaxonomy) taxonomy);
     }
 }

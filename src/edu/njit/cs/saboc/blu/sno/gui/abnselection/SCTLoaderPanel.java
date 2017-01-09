@@ -50,11 +50,11 @@ public class SCTLoaderPanel extends JPanel {
 
     private JButton openBrowserBtn;
 
-    private final SCTDisplayFrameListener displayFrameListener;
+    private final SCTAbNFrameManager displayFrameListener;
 
     private final JFrame parentFrame;
 
-    public SCTLoaderPanel(final JFrame parentFrame, SCTDisplayFrameListener displayFrameListener) {
+    public SCTLoaderPanel(final JFrame parentFrame, SCTAbNFrameManager displayFrameListener) {
         this.parentFrame = parentFrame;
         this.displayFrameListener = displayFrameListener;
 

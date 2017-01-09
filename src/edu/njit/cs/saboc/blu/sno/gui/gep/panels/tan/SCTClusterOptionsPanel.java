@@ -22,12 +22,12 @@ public class SCTClusterOptionsPanel extends NodeOptionsPanel {
     public SCTClusterOptionsPanel(SCTTANConfiguration config, boolean forAggregate) {
         
         CreateRootTANButton rootTANBtn = new CreateRootTANButton(config, 
-            new DisplayTANAction(config.getUIConfiguration().getDisplayFrameListener()));
+            new DisplayTANAction(config.getUIConfiguration().getAbNDisplayManager()));
         
         super.addOptionButton(rootTANBtn);
         
         CreateAncestorTANButton ancestorTANBtn = new CreateAncestorTANButton(config, 
-            new DisplayTANAction(config.getUIConfiguration().getDisplayFrameListener()));
+            new DisplayTANAction(config.getUIConfiguration().getAbNDisplayManager()));
         
         super.addOptionButton(ancestorTANBtn);
         
@@ -35,7 +35,7 @@ public class SCTClusterOptionsPanel extends NodeOptionsPanel {
         if(forAggregate) {
             ExpandAggregateClusterButton<AggregateCluster> expandAggregateBtn = new ExpandAggregateClusterButton<>(config, 
                 (tan) -> {
-                    config.getUIConfiguration().getDisplayFrameListener().addNewClusterGraphFrame(tan);
+                    config.getUIConfiguration().getAbNDisplayManager().displayTribalAbstractionNetwork(tan);
                 });
             
             super.addOptionButton(expandAggregateBtn);
@@ -44,7 +44,7 @@ public class SCTClusterOptionsPanel extends NodeOptionsPanel {
         CreateTANFromSinglyRootedNodeButton tanBtn = new CreateTANFromSinglyRootedNodeButton(
                 config.getTribalAbstractionNetwork().getSourceFactory(),
                 config,
-            new DisplayTANAction(config.getUIConfiguration().getDisplayFrameListener()));
+            new DisplayTANAction(config.getUIConfiguration().getAbNDisplayManager()));
         
         super.addOptionButton(tanBtn);
         

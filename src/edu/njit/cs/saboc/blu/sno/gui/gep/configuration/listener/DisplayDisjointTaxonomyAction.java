@@ -4,8 +4,8 @@ import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointNode;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.core.gui.graphframe.AbNDisplayManager;
 import edu.njit.cs.saboc.blu.core.gui.listener.DisplayAbNAction;
-import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
 
 /**
  *
@@ -13,9 +13,9 @@ import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
  */
 public class DisplayDisjointTaxonomyAction implements DisplayAbNAction<DisjointAbstractionNetwork> {
     
-    private final SCTDisplayFrameListener displayListener;
+    private final AbNDisplayManager displayListener;
     
-    public DisplayDisjointTaxonomyAction(SCTDisplayFrameListener displayListener) {
+    public DisplayDisjointTaxonomyAction(AbNDisplayManager displayListener) {
         this.displayListener = displayListener;
     }
 
@@ -24,6 +24,6 @@ public class DisplayDisjointTaxonomyAction implements DisplayAbNAction<DisjointA
         DisjointAbstractionNetwork<DisjointNode<PArea>, PAreaTaxonomy<PArea>, PArea> disjointAbN = 
                 (DisjointAbstractionNetwork<DisjointNode<PArea>, PAreaTaxonomy<PArea>, PArea>)abstractionNetwork;
         
-        displayListener.addNewDisjointPAreaTaxonomyGraphFrame(disjointAbN);
+        displayListener.displayDisjointPAreaTaxonomy(disjointAbN);
     }
 }

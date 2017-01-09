@@ -3,9 +3,11 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan;
 import edu.njit.cs.saboc.blu.core.abn.tan.Band;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateDisjointAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANFromPartitionedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportPartitionedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
+import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayDisjointTANAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 
@@ -16,11 +18,16 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfigur
 public class SCTBandOptionsPanel extends NodeOptionsPanel {
 
     public SCTBandOptionsPanel(SCTTANConfiguration config, boolean forAggregate) {
+        
+        super.addOptionButton(new CreateDisjointAbNButton(
+                config,
+                new DisplayDisjointTANAction(config.getUIConfiguration().getAbNDisplayManager())));
+        
 
         CreateTANFromPartitionedNodeButton tanBtn = new CreateTANFromPartitionedNodeButton(
                 config.getTribalAbstractionNetwork().getSourceFactory(),
                 config,
-            new DisplayTANAction(config.getUIConfiguration().getDisplayFrameListener()));
+            new DisplayTANAction(config.getUIConfiguration().getAbNDisplayManager()));
         
         super.addOptionButton(tanBtn);
         

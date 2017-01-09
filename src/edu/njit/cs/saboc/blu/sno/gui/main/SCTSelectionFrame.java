@@ -7,7 +7,7 @@ package edu.njit.cs.saboc.blu.sno.gui.main;
 
 import edu.njit.cs.saboc.blu.core.gui.frame.AbnSelectionFrameFactory;
 import edu.njit.cs.saboc.blu.core.gui.frame.BLUFrame;
-import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
+import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTLoaderPanel;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -24,14 +24,11 @@ public class SCTSelectionFrame implements AbnSelectionFrameFactory {
         
         jif.setSize(1400, 700);
         
-        JPanel jp = new SCTLoaderPanel(parentFrame, new SCTDisplayFrameListener(parentFrame) {
-            
-            @Override
-            public void displayFrame(JInternalFrame frame) {
-                parentFrame.addInternalFrame(frame);
-            }
-            
-        });
+        JPanel jp = new SCTLoaderPanel(parentFrame,
+                new SCTAbNFrameManager(parentFrame, (frame) -> {
+                    parentFrame.addInternalFrame(frame);
+                }));
+
         
         jif.add(jp);
         jif.setVisible(true);

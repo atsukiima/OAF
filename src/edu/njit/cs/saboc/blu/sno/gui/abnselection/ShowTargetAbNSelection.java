@@ -19,7 +19,7 @@ import javax.swing.SwingUtilities;
  */
 public class ShowTargetAbNSelection extends ShowAbNSelection {
 
-    public ShowTargetAbNSelection(JFrame parentFrame, String text, LoadReleasePanel localReleasePanel, DummyConcept root, boolean useStatedRelationships, SCTDisplayFrameListener displayFrameListener) {
+    public ShowTargetAbNSelection(JFrame parentFrame, String text, LoadReleasePanel localReleasePanel, DummyConcept root, boolean useStatedRelationships, SCTAbNFrameManager displayFrameListener) {
         super(parentFrame, text, localReleasePanel, root, useStatedRelationships, displayFrameListener);
     }
 

@@ -22,13 +22,13 @@ public class SCTPAreaOptionsPanel extends NodeOptionsPanel {
     public SCTPAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config) {
 
         CreateRootSubtaxonomyButton rootSubtaxonomyBtn = new CreateRootSubtaxonomyButton(config,
-            new DisplayPAreaTaxonomyAction(config.getUIConfiguration().getDisplayFrameListener()));
+            new DisplayPAreaTaxonomyAction(config.getUIConfiguration().getAbNDisplayManager()));
         
         super.addOptionButton(rootSubtaxonomyBtn);
         
         
         CreateAncestorSubtaxonomyButton ancestorSubtaxonomyBtn = new CreateAncestorSubtaxonomyButton(config, 
-            new DisplayPAreaTaxonomyAction(config.getUIConfiguration().getDisplayFrameListener()));
+            new DisplayPAreaTaxonomyAction(config.getUIConfiguration().getAbNDisplayManager()));
         
         super.addOptionButton(ancestorSubtaxonomyBtn);
         
@@ -36,7 +36,7 @@ public class SCTPAreaOptionsPanel extends NodeOptionsPanel {
         CreateTANFromSinglyRootedNodeButton tanBtn = new CreateTANFromSinglyRootedNodeButton(
                 new TANFactory(),
                 config, 
-                new DisplayTANAction(config.getUIConfiguration().getDisplayFrameListener()));
+                new DisplayTANAction(config.getUIConfiguration().getAbNDisplayManager()));
         
         super.addOptionButton(tanBtn);
         

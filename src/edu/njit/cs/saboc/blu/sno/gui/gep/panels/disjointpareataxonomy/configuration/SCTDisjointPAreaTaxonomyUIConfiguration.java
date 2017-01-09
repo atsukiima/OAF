@@ -5,7 +5,8 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.ConceptPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.disjointabn.pareataxonomy.DisjointPAreaTaxonomyUIConfiguration;
-import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
+import edu.njit.cs.saboc.blu.core.gui.graphframe.AbNDisplayManager;
+import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.SCTDisjointPAreaOptionsPanel;
 
@@ -16,21 +17,14 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.SCTDisjoin
 public class SCTDisjointPAreaTaxonomyUIConfiguration extends DisjointPAreaTaxonomyUIConfiguration {
     
     private final SCTDisjointPAreaTaxonomyConfiguration config;
-    
-    private final SCTDisplayFrameListener displayListener;
-    
+
     public SCTDisjointPAreaTaxonomyUIConfiguration(
             SCTDisjointPAreaTaxonomyConfiguration config,
-            SCTDisplayFrameListener displayListener) {
+            AbNDisplayManager displayListener) {
         
-        super(config, new SCTDisjointPAreaTaxonomyListenerConfiguration(config));
+        super(config, displayListener, new SCTDisjointPAreaTaxonomyListenerConfiguration(config));
         
         this.config = config;
-        this.displayListener = displayListener;
-    }
-    
-    public SCTDisplayFrameListener getDisplayFrameListener() {
-        return displayListener;
     }
 
     @Override

@@ -22,7 +22,7 @@ import javax.swing.JFrame;
  */
 public class ShowTANSelection extends ShowAbNSelection {
 
-    public ShowTANSelection(JFrame parentFrame, String text, LoadReleasePanel localReleasePanel, DummyConcept root, boolean useStatedRelationships, SCTDisplayFrameListener displayFrameListener) {
+    public ShowTANSelection(JFrame parentFrame, String text, LoadReleasePanel localReleasePanel, DummyConcept root, boolean useStatedRelationships, SCTAbNFrameManager displayFrameListener) {
         super(parentFrame, text, localReleasePanel, root, useStatedRelationships, displayFrameListener);
     }
 
@@ -54,7 +54,7 @@ public class ShowTANSelection extends ShowAbNSelection {
 
     @Override
     protected void displayFrame(PartitionedAbstractionNetwork taxonomy) {
-        displayFrameListener.addNewClusterGraphFrame((ClusterTribalAbstractionNetwork) taxonomy);
+        displayFrameListener.displayTribalAbstractionNetwork((ClusterTribalAbstractionNetwork) taxonomy);
     }
 
 }

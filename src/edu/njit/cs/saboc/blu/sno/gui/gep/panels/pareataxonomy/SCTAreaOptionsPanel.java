@@ -22,12 +22,12 @@ public class SCTAreaOptionsPanel extends NodeOptionsPanel {
         
         super.addOptionButton(new CreateDisjointAbNButton(
                 config,
-                new DisplayDisjointTaxonomyAction(config.getUIConfiguration().getDisplayFrameListener())));
+                new DisplayDisjointTaxonomyAction(config.getUIConfiguration().getAbNDisplayManager())));
 
         CreateTANFromPartitionedNodeButton tanBtn = new CreateTANFromPartitionedNodeButton(
                 new TANFactory(),
                 config,
-                new DisplayTANAction(config.getUIConfiguration().getDisplayFrameListener()));
+                new DisplayTANAction(config.getUIConfiguration().getAbNDisplayManager()));
         
         super.addOptionButton(tanBtn);
                 

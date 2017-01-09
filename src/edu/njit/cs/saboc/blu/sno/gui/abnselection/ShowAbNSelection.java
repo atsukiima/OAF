@@ -21,10 +21,10 @@ public abstract class ShowAbNSelection {
     protected LoadReleasePanel localReleasePanel;
     protected DummyConcept root;
     protected boolean useStatedRelationships;
-    protected SCTDisplayFrameListener displayFrameListener;
+    protected SCTAbNFrameManager displayFrameListener;
 
     public ShowAbNSelection(JFrame parentFrame, String text, LoadReleasePanel localReleasePanel, DummyConcept root,
-            boolean useStatedRelationships, SCTDisplayFrameListener displayFrameListener) {
+            boolean useStatedRelationships, SCTAbNFrameManager displayFrameListener) {
         this.parentFrame = parentFrame;
         this.text = text;
         this.localReleasePanel = localReleasePanel;

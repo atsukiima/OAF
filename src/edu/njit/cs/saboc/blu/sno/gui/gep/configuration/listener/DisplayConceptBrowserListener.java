@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener;
 
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.EntitySelectionAdapter;
-import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTDisplayFrameListener;
+import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import javax.swing.SwingUtilities;
@@ -13,11 +13,11 @@ import javax.swing.SwingUtilities;
  */
 public class DisplayConceptBrowserListener extends EntitySelectionAdapter<SCTConcept> {
 
-    private final SCTDisplayFrameListener displayListener;
+    private final SCTAbNFrameManager displayListener;
     
     private final SCTRelease dataSource;
     
-    public DisplayConceptBrowserListener(SCTDisplayFrameListener displayListener, SCTRelease dataSource) {
+    public DisplayConceptBrowserListener(SCTAbNFrameManager displayListener, SCTRelease dataSource) {
         this.displayListener = displayListener;
         this.dataSource = dataSource;
     }
