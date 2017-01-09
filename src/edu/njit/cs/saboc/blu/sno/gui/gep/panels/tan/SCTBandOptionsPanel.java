@@ -1,7 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan;
 
 import edu.njit.cs.saboc.blu.core.abn.tan.Band;
-import edu.njit.cs.saboc.blu.core.abn.tan.TANFactory;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANFromPartitionedNodeButton;
@@ -16,7 +15,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfigur
  */
 public class SCTBandOptionsPanel extends NodeOptionsPanel {
 
-    public SCTBandOptionsPanel(SCTTANConfiguration config) {
+    public SCTBandOptionsPanel(SCTTANConfiguration config, boolean forAggregate) {
 
         CreateTANFromPartitionedNodeButton tanBtn = new CreateTANFromPartitionedNodeButton(
                 config.getTribalAbstractionNetwork().getSourceFactory(),

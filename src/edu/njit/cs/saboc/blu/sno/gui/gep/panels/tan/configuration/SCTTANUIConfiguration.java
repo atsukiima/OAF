@@ -30,12 +30,12 @@ public class SCTTANUIConfiguration extends TANUIConfiguration {
 
     @Override
     public NodeOptionsPanel getPartitionedNodeOptionsPanel() {        
-        return new SCTBandOptionsPanel(config);
+        return new SCTBandOptionsPanel(config, config.getAbstractionNetwork().isAggregated());
     }
 
     @Override
     public NodeOptionsPanel getNodeOptionsPanel() {
-        return new SCTClusterOptionsPanel(config);
+        return new SCTClusterOptionsPanel(config, config.getAbstractionNetwork().isAggregated());
     }
 
     @Override

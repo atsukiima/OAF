@@ -1,6 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan;
 
 import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
+import edu.njit.cs.saboc.blu.core.abn.tan.aggregate.AggregateCluster;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANFromSinglyRootedNodeButton;
@@ -8,6 +9,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportSin
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.buttons.CreateAncestorTANButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.buttons.CreateRootTANButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.buttons.ExpandAggregateClusterButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 
@@ -17,7 +19,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfigur
  */
 public class SCTClusterOptionsPanel extends NodeOptionsPanel {
         
-    public SCTClusterOptionsPanel(SCTTANConfiguration config) {
+    public SCTClusterOptionsPanel(SCTTANConfiguration config, boolean forAggregate) {
         
         CreateRootTANButton rootTANBtn = new CreateRootTANButton(config, 
             new DisplayTANAction(config.getUIConfiguration().getDisplayFrameListener()));
@@ -29,6 +31,16 @@ public class SCTClusterOptionsPanel extends NodeOptionsPanel {
         
         super.addOptionButton(ancestorTANBtn);
         
+        
+        if(forAggregate) {
+            ExpandAggregateClusterButton<AggregateCluster> expandAggregateBtn = new ExpandAggregateClusterButton<>(config, 
+                (tan) -> {
+                    config.getUIConfiguration().getDisplayFrameListener().addNewClusterGraphFrame(tan);
+                });
+            
+            super.addOptionButton(expandAggregateBtn);
+        }
+        
         CreateTANFromSinglyRootedNodeButton tanBtn = new CreateTANFromSinglyRootedNodeButton(
                 config.getTribalAbstractionNetwork().getSourceFactory(),
                 config,
@@ -36,9 +48,11 @@ public class SCTClusterOptionsPanel extends NodeOptionsPanel {
         
         super.addOptionButton(tanBtn);
         
+        
         ExportSinglyRootedNodeButton exportBtn = new ExportSinglyRootedNodeButton(config);
         
         super.addOptionButton(exportBtn);
+        
         
         PopoutNodeDetailsButton popoutBtn = new PopoutNodeDetailsButton("cluster", () -> {
             Cluster cluster = (Cluster)super.getCurrentNode().get();
