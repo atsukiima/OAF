@@ -235,19 +235,15 @@ public class LoadReleasePanel extends JPanel {
                 File file = chooser.getSelectedFile();
                 this.availableReleases = LoadLocalRelease.findReleaseFolders(file);
                 
-                availableReleases.forEach( (releaseDir) -> {
-                    System.out.println(releaseDir.getAbsoluteFile());
-                });
-
                 if (availableReleases.isEmpty()) {
                     localVersionBox.removeAllItems();
                     localVersionBox.addItem("Choose a directory");
                 } else {
                     ArrayList<String> releaseNames = LoadLocalRelease.getReleaseFileNames(this.availableReleases);
 
-                    for (String releaseName : releaseNames) {
+                    releaseNames.forEach((releaseName) -> {
                         localVersionBox.addItem(releaseName);
-                    }
+                    });
                     
                 }
             } catch (Exception e) {
