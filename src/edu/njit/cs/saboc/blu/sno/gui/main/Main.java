@@ -1,6 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.main;
 
-import edu.njit.cs.saboc.blu.core.gui.frame.BLUFrame;
+import edu.njit.cs.saboc.blu.core.gui.frame.OAFMainFrame;
 
 /**
  *
@@ -9,6 +9,6 @@ import edu.njit.cs.saboc.blu.core.gui.frame.BLUFrame;
 public class Main {
 
     public static void main(String[] args) {
-        BLUFrame bLUFrame = new BLUFrame(new SCTSelectionFrame());
+        OAFMainFrame bLUFrame = new OAFMainFrame(new SCTSelectionFrame());
     }  
 }
