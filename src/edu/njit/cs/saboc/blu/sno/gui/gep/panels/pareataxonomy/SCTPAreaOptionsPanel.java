@@ -4,6 +4,7 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.tan.TANFactory;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateDisjointAbNFromSinglyRootedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANFromSinglyRootedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportSinglyRootedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
@@ -21,6 +22,16 @@ public class SCTPAreaOptionsPanel extends NodeOptionsPanel {
 
     public SCTPAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config) {
 
+        CreateDisjointAbNFromSinglyRootedNodeButton<PArea> createDisjointBtn = new CreateDisjointAbNFromSinglyRootedNodeButton<>(
+            config, 
+            (disjointTaxonomy) -> {
+                config.getUIConfiguration().getAbNDisplayManager().displayDisjointPAreaTaxonomy(disjointTaxonomy);
+            });
+        
+        super.addOptionButton(createDisjointBtn);
+        
+        
+        
         CreateRootSubtaxonomyButton rootSubtaxonomyBtn = new CreateRootSubtaxonomyButton(config,
             new DisplayPAreaTaxonomyAction(config.getUIConfiguration().getAbNDisplayManager()));
         

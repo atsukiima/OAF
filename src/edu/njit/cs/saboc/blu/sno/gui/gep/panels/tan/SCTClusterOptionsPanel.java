@@ -4,6 +4,7 @@ import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
 import edu.njit.cs.saboc.blu.core.abn.tan.aggregate.AggregateCluster;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateDisjointAbNFromSinglyRootedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANFromSinglyRootedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportSinglyRootedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
@@ -20,6 +21,17 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfigur
 public class SCTClusterOptionsPanel extends NodeOptionsPanel {
         
     public SCTClusterOptionsPanel(SCTTANConfiguration config, boolean forAggregate) {
+        
+        
+        CreateDisjointAbNFromSinglyRootedNodeButton<Cluster> createDisjointBtn = new CreateDisjointAbNFromSinglyRootedNodeButton<>(
+                config,
+                (disjointTAN) -> {
+                    config.getUIConfiguration().getAbNDisplayManager().displayDisjointTribalAbstractionNetwork(disjointTAN);
+                });
+        
+        super.addOptionButton(createDisjointBtn);
+        
+        
         
         CreateRootTANButton rootTANBtn = new CreateRootTANButton(config, 
             new DisplayTANAction(config.getUIConfiguration().getAbNDisplayManager()));

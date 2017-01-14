@@ -4,7 +4,7 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.Area;
 import edu.njit.cs.saboc.blu.core.abn.tan.TANFactory;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateDisjointAbNButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateDisjointAbNFromPartitionNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANFromPartitionedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayDisjointTaxonomyAction;
@@ -19,7 +19,7 @@ public class SCTAggregateAreaOptionsPanel extends NodeOptionsPanel {
     
     public SCTAggregateAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config) {
               
-        super.addOptionButton(new CreateDisjointAbNButton(
+        super.addOptionButton(new CreateDisjointAbNFromPartitionNodeButton(
                 config,
                 new DisplayDisjointTaxonomyAction(config.getUIConfiguration().getAbNDisplayManager())));
 

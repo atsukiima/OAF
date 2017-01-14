@@ -3,7 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan;
 import edu.njit.cs.saboc.blu.core.abn.tan.Band;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateDisjointAbNButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateDisjointAbNFromPartitionNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANFromPartitionedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportPartitionedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
@@ -19,7 +19,7 @@ public class SCTBandOptionsPanel extends NodeOptionsPanel {
 
     public SCTBandOptionsPanel(SCTTANConfiguration config, boolean forAggregate) {
         
-        super.addOptionButton(new CreateDisjointAbNButton(
+        super.addOptionButton(new CreateDisjointAbNFromPartitionNodeButton(
                 config,
                 new DisplayDisjointTANAction(config.getUIConfiguration().getAbNDisplayManager())));
         
