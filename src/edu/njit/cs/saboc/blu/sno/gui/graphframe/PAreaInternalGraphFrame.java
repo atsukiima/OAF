@@ -10,7 +10,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.SinglyRootedNodeLabelCre
 import edu.njit.cs.saboc.blu.core.gui.graphframe.GenericInternalGraphFrame;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.search.PartitionedAbNSearchButton;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
-import edu.njit.cs.saboc.blu.core.gui.gep.AggregateableAbNInitializer;
+import edu.njit.cs.saboc.blu.core.gui.gep.AggregateableAbNExplorationPanelInitializer;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.exportabn.ExportPartitionedAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.AggregateSinglyRootedNodeLabelCreator;
 import edu.njit.cs.saboc.blu.core.gui.gep.utils.drawing.PartitionedAbNPainter;
@@ -176,11 +176,10 @@ public class PAreaInternalGraphFrame extends GenericInternalGraphFrame<PAreaTaxo
 
         SwingUtilities.invokeLater(() -> {
 
-            displayAbstractionNetwork(
-                    graph,
+            displayAbstractionNetwork(graph,
                     painter,
                     currentConfiguration,
-                    new AggregateableAbNInitializer((bound) -> {
+                    new AggregateableAbNExplorationPanelInitializer((bound) -> {
                         PAreaTaxonomy aggregateTaxonomy = currentConfiguration.getPAreaTaxonomy().getAggregated(bound);
 
                         displayPAreaTaxonomy(aggregateTaxonomy);
