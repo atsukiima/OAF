@@ -47,7 +47,7 @@ public class ShowPAreaTaxonomySelection extends ShowAbNSelection {
             PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
 
             PAreaTaxonomy taxonomy = generator.derivePAreaTaxonomy(
-                    new SCTInferredPAreaTaxonomyFactory(hierarchy),
+                    new SCTInferredPAreaTaxonomyFactory(dataSource, hierarchy),
                     hierarchy);
 
             doLater(doLoad, loadStatusDialog, taxonomy);

@@ -82,13 +82,13 @@ public class DiffTaxonomyPanel extends JPanel {
                         PAreaTaxonomyGenerator generator = new PAreaTaxonomyGenerator();
 
                         PAreaTaxonomy fromTaxonomy = generator.derivePAreaTaxonomy(
-                                new SCTInferredPAreaTaxonomyFactory(fromHierarchy),
+                                new SCTInferredPAreaTaxonomyFactory(fromRelease, fromHierarchy),
                                 fromHierarchy);
 
                         Hierarchy<SCTConcept> toHierarchy = theToRelease.getConceptHierarchy().getSubhierarchyRootedAt(root);
 
                         PAreaTaxonomy toTaxonomy = generator.derivePAreaTaxonomy(
-                                new SCTInferredPAreaTaxonomyFactory(toHierarchy),
+                                new SCTInferredPAreaTaxonomyFactory(theToRelease, toHierarchy),
                                 toHierarchy);
 
                         DiffPAreaTaxonomyGenerator diffTaxonomyGenerator = new DiffPAreaTaxonomyGenerator();

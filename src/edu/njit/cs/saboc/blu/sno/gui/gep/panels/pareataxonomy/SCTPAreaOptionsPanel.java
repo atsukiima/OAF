@@ -45,7 +45,7 @@ public class SCTPAreaOptionsPanel extends NodeOptionsPanel {
         
         
         CreateTANFromSinglyRootedNodeButton tanBtn = new CreateTANFromSinglyRootedNodeButton(
-                new TANFactory(),
+                new TANFactory(config.getPAreaTaxonomy().getDerivation().getSourceOntology()),
                 config, 
                 new DisplayTANAction(config.getUIConfiguration().getAbNDisplayManager()));
         

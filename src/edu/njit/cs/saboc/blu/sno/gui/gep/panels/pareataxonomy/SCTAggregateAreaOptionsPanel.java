@@ -24,7 +24,7 @@ public class SCTAggregateAreaOptionsPanel extends NodeOptionsPanel {
                 new DisplayDisjointTaxonomyAction(config.getUIConfiguration().getAbNDisplayManager())));
 
          CreateTANFromPartitionedNodeButton tanBtn = new CreateTANFromPartitionedNodeButton(
-                 new TANFactory(),
+                 new TANFactory(config.getPAreaTaxonomy().getDerivation().getSourceOntology()),
                  config, new DisplayTANAction(config.getUIConfiguration().getAbNDisplayManager()));
         
         super.addOptionButton(tanBtn);

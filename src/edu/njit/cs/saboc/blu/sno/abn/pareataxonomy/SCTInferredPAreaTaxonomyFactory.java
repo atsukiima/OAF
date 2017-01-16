@@ -6,6 +6,7 @@ import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -20,7 +21,9 @@ public class SCTInferredPAreaTaxonomyFactory extends PAreaTaxonomyFactory {
     
     private final Map<SCTConcept, Set<InheritableProperty>> properties = new HashMap<>();
     
-    public SCTInferredPAreaTaxonomyFactory(Hierarchy<SCTConcept> hierarchy) {
+    public SCTInferredPAreaTaxonomyFactory(SCTRelease release, Hierarchy<SCTConcept> hierarchy) {
+        
+        super(release);
         
         Map<SCTConcept, Set<SCTConcept>> uniqueRels = new HashMap<>();
         

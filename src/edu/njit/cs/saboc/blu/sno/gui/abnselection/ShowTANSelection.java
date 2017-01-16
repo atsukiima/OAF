@@ -42,7 +42,9 @@ public class ShowTANSelection extends ShowAbNSelection {
 
             TribalAbstractionNetworkGenerator generator = new TribalAbstractionNetworkGenerator();
 
-            ClusterTribalAbstractionNetwork tan = generator.deriveTANFromSingleRootedHierarchy(hierarchy, new TANFactory());
+            ClusterTribalAbstractionNetwork tan = generator.deriveTANFromSingleRootedHierarchy(
+                    hierarchy, 
+                    new TANFactory(dataSource));
 
             doLater(doLoad, loadStatusDialog, tan);
 
