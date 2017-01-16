@@ -136,4 +136,14 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
     public void displayTargetAbstractionNetwork(TargetAbstractionNetwork targetAbN) {
         
     }
+
+    @Override
+    public void displayAreaTaxonomy(PAreaTaxonomy taxonomy) {
+        
+    }
+
+    @Override
+    public void displayBandTribalAbstractionNetwork(ClusterTribalAbstractionNetwork tan) {
+        
+    }
 }
