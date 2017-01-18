@@ -1,6 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
-import edu.njit.cs.saboc.blu.core.gui.iconmanager.IconManager;
+import edu.njit.cs.saboc.blu.core.gui.iconmanager.ImageManager;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -187,7 +187,7 @@ public class SCTHierarchySelectionPanel extends JPanel {
             return null;
         }
 
-        return IconManager.getIconManager().getIcon(iconName);
+        return ImageManager.getImageManager().getIcon(iconName);
     }
     
     

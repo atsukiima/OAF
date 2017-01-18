@@ -1,7 +1,7 @@
 
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.diff;
 
-import edu.njit.cs.saboc.blu.core.gui.iconmanager.IconManager;
+import edu.njit.cs.saboc.blu.core.gui.iconmanager.ImageManager;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.DeltaRelationship;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.DescriptiveDelta;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.EditingOperationReport.EditingOperationType;
@@ -74,7 +74,7 @@ public class DescriptiveDeltaGUIUtils {
                 return null;
         }
         
-        return IconManager.getIconManager().getIcon(iconName);
+        return ImageManager.getImageManager().getIcon(iconName);
     }
     
     private static final Color ADDED = new Color(240, 255, 240);
