@@ -83,6 +83,7 @@ public class SCTRelease extends Ontology {
         return releaseInfo;
     }
     
+    @Override
     public Hierarchy<SCTConcept> getConceptHierarchy() {
         return super.getConceptHierarchy();
     }
