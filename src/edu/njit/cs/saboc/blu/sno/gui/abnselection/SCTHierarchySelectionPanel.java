@@ -53,7 +53,11 @@ public class SCTHierarchySelectionPanel extends JPanel {
         this.chkUseStatedRelationships = new JCheckBox(String.format("Use Stated Relationships to Derive %s", abstractionNetworkType));
         this.chkUseStatedRelationships.setEnabled(false);
         
-        this.subjectSelectionPanel = new SubjectAbstractionNetworkPanel(abstractionNetworkType, selectionAction);
+        this.subjectSelectionPanel = new SubjectAbstractionNetworkPanel(
+                abstractionNetworkType, 
+                chkUseStatedRelationships,
+                selectionAction);
+        
         this.subjectSelectionPanel.setEnabled(false);
         
         Dimension fixedSize = new Dimension(500, - 1);

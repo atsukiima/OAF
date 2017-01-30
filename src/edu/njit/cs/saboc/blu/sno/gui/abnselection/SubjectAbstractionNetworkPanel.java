@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 /**
@@ -31,11 +32,15 @@ public class SubjectAbstractionNetworkPanel extends JPanel {
     
     private Optional<Concept> selectedConcept = Optional.empty();
     
+    private final JCheckBox useStatedCheckBox;
+    
     public SubjectAbstractionNetworkPanel(
             String abstractionNetworkName, 
+            JCheckBox useStatedCheckBox,
             HierarchySelectionAction selectionAction) {
         
         this.selectionAction = selectionAction;
+        this.useStatedCheckBox = useStatedCheckBox;
         
         this.setLayout(new BorderLayout());
         
@@ -48,7 +53,6 @@ public class SubjectAbstractionNetworkPanel extends JPanel {
             public void searchResultDoubleClicked(Concept c) {
                 searchResultSelected(c);
             }
-
 
             @Override
             public ArrayList<Concept> doSearch(ConceptSearchPanel.SearchType type, String query) {
@@ -87,7 +91,11 @@ public class SubjectAbstractionNetworkPanel extends JPanel {
                 
                 DummyConcept dummyConcept = new DummyConcept((Long)c.getID(), c.getName());
                 
-                selectionAction.performHierarchySelectionAction(dummyConcept, false);
+                if(useStatedCheckBox == null) {
+                    selectionAction.performHierarchySelectionAction(dummyConcept, false);
+                } else {
+                    selectionAction.performHierarchySelectionAction(dummyConcept, useStatedCheckBox.isSelected());
+                }
             }
         });
         

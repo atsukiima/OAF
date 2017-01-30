@@ -11,6 +11,7 @@ import edu.njit.cs.saboc.blu.core.abn.tan.TANFactory;
 import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetworkGenerator;
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
+import edu.njit.cs.saboc.blu.sno.abn.tan.SCTStatedTANFactory;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
@@ -22,7 +23,13 @@ import javax.swing.JFrame;
  */
 public class ShowTANSelection extends ShowAbNSelection {
 
-    public ShowTANSelection(JFrame parentFrame, String text, LoadReleasePanel localReleasePanel, DummyConcept root, boolean useStatedRelationships, SCTAbNFrameManager displayFrameListener) {
+    public ShowTANSelection(JFrame parentFrame, 
+            String text, 
+            LoadReleasePanel localReleasePanel, 
+            DummyConcept root, 
+            boolean useStatedRelationships, 
+            SCTAbNFrameManager displayFrameListener) {
+        
         super(parentFrame, text, localReleasePanel, root, useStatedRelationships, displayFrameListener);
     }
 
@@ -32,19 +39,24 @@ public class ShowTANSelection extends ShowAbNSelection {
             SCTRelease dataSource = localReleasePanel.getLoadedDataSource();
 
             Hierarchy<SCTConcept> hierarchy;
+            
+            TANFactory factory;
 
             if (useStatedRelationships) {
                 SCTReleaseWithStated statedDataSource = (SCTReleaseWithStated) dataSource;
                 hierarchy = statedDataSource.getStatedHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getID()));
+                factory = new SCTStatedTANFactory(statedDataSource);
             } else {
                 hierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getID()));
+                
+                factory = new TANFactory(dataSource);
             }
 
             TribalAbstractionNetworkGenerator generator = new TribalAbstractionNetworkGenerator();
 
             ClusterTribalAbstractionNetwork tan = generator.deriveTANFromSingleRootedHierarchy(
                     hierarchy, 
-                    new TANFactory(dataSource));
+                    factory);
 
             doLater(doLoad, loadStatusDialog, tan);
 

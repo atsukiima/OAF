@@ -19,12 +19,15 @@ public abstract class ShowAbNSelection {
     protected JFrame parentFrame;
     protected String text;
     protected LoadReleasePanel localReleasePanel;
+    
     protected DummyConcept root;
+    
     protected boolean useStatedRelationships;
     protected SCTAbNFrameManager displayFrameListener;
 
     public ShowAbNSelection(JFrame parentFrame, String text, LoadReleasePanel localReleasePanel, DummyConcept root,
             boolean useStatedRelationships, SCTAbNFrameManager displayFrameListener) {
+        
         this.parentFrame = parentFrame;
         this.text = text;
         this.localReleasePanel = localReleasePanel;
@@ -38,13 +41,8 @@ public abstract class ShowAbNSelection {
 
             public void run() {
 
-                loadStatusDialog = LoadStatusDialog.display(parentFrame, text,
-                        new LoadStatusDialog.LoadingDialogClosedListener() {
-
-                    @Override
-                    public void dialogClosed() {
-                        doLoad = false;
-                    }
+                loadStatusDialog = LoadStatusDialog.display(parentFrame, text, () -> {
+                    doLoad = false;
                 });
 
                 loadDataSource(doLoad, loadStatusDialog);
@@ -68,5 +66,4 @@ public abstract class ShowAbNSelection {
     protected abstract void loadDataSource(boolean doLoad, LoadStatusDialog loadStatusDialog);
 
     protected abstract void displayFrame(PartitionedAbstractionNetwork taxonomy);
-
 }

@@ -1,19 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomyGenerator;
-import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
-import edu.njit.cs.saboc.blu.core.abn.tan.TANFactory;
-import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetworkGenerator;
-import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetAbstractionNetwork;
-import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetAbstractionNetworkGenerator;
-import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
-import edu.njit.cs.saboc.blu.core.gui.dialogs.LoadStatusDialog;
 import edu.njit.cs.saboc.blu.core.ontology.Concept;
-import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInferredPAreaTaxonomyFactory;
-import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -107,9 +95,12 @@ public class SCTLoaderPanel extends JPanel {
             }
         });
 
-        pareaTaxonomySelectionPanel = new SCTHierarchySelectionPanel(rootConcepts, pareaEabledHierarchies, "Partial-area Taxonomy",
+        pareaTaxonomySelectionPanel = new SCTHierarchySelectionPanel(
+                rootConcepts, 
+                pareaEabledHierarchies, 
+                "Partial-area Taxonomy",
+                
                 (root, useStated) -> {
-
                     loadPAreaTaxonomy(root, useStated);
                 });
 
@@ -257,8 +248,15 @@ public class SCTLoaderPanel extends JPanel {
      */
     private void loadPAreaTaxonomy(DummyConcept root, boolean useStatedRelationships) {
         
-        ShowPAreaTaxonomySelection pat = new ShowPAreaTaxonomySelection(parentFrame, String.format("Creating the %s partial-area taxonomy.",
-                root.getName()), localReleasePanel, root, useStatedRelationships, displayFrameListener);
+        ShowPAreaTaxonomySelection pat = 
+                new ShowPAreaTaxonomySelection(
+                        parentFrame, 
+                        String.format("Creating the %s partial-area taxonomy.",
+                        root.getName()), 
+                        localReleasePanel, 
+                        root, 
+                        useStatedRelationships, 
+                        displayFrameListener);
     }
 
     /**
@@ -268,8 +266,13 @@ public class SCTLoaderPanel extends JPanel {
      */
     private void loadTAN(DummyConcept root, boolean useStated) {
         
-        ShowTANSelection tan = new ShowTANSelection(parentFrame, String.format("Creating the %s Tribal Abstraction Network (TAN).",
-                root.getName()), localReleasePanel, root, useStated, displayFrameListener);
+        ShowTANSelection tan = new ShowTANSelection(
+                parentFrame, 
+                String.format("Creating the %s Tribal Abstraction Network (TAN).", root.getName()), 
+                localReleasePanel, 
+                root, 
+                useStated, 
+                displayFrameListener);
     }
 
     private void loadTargetAbN(final Concept root) {
