@@ -22,6 +22,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -248,6 +249,7 @@ public class LoadReleasePanel extends JPanel {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                JOptionPane.showMessageDialog(null,"SNOMED CT release name cannot be properly parsed","SNOMED CT release name error",JOptionPane.ERROR_MESSAGE);
             }
         } else {
             if (availableReleases.isEmpty()) {
