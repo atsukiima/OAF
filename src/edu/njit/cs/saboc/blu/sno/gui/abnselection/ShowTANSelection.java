@@ -35,9 +35,9 @@ public class ShowTANSelection extends ShowAbNSelection {
 
             if (useStatedRelationships) {
                 SCTReleaseWithStated statedDataSource = (SCTReleaseWithStated) dataSource;
-                hierarchy = statedDataSource.getStatedHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getID()));
+                hierarchy = statedDataSource.getStatedHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getID()).get());
             } else {
-                hierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getID()));
+                hierarchy = dataSource.getConceptHierarchy().getSubhierarchyRootedAt(dataSource.getConceptFromId(root.getID()).get());
             }
 
             TribalAbstractionNetworkGenerator generator = new TribalAbstractionNetworkGenerator();

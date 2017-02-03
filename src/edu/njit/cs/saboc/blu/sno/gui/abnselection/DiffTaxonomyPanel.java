@@ -75,7 +75,7 @@ public class DiffTaxonomyPanel extends JPanel {
                         SCTRelease fromRelease = loadFromPanel.getLoadedDataSource();
 
                         // TODO: What if the concept doesn't exist in FROM?
-                        SCTConcept root = theToRelease.getConceptFromId(dummyRoot.getID()); 
+                        SCTConcept root = theToRelease.getConceptFromId(dummyRoot.getID()).get(); 
      
                         Hierarchy<SCTConcept> fromHierarchy = fromRelease.getConceptHierarchy().getSubhierarchyRootedAt(root);
 

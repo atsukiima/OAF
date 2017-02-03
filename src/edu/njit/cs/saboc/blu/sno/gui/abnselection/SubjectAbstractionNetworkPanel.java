@@ -122,7 +122,7 @@ public class SubjectAbstractionNetworkPanel extends JPanel {
             results = new ArrayList<>(theRelease.searchExact(query));
         } else {
             if(isValidConceptId(query)) {
-                results = new ArrayList<>(Collections.singletonList(theRelease.getConceptFromId(Long.parseLong(query))));
+                results = new ArrayList<>(Collections.singletonList(theRelease.getConceptFromId(Long.parseLong(query)).get()));
             } else {
                 results = new ArrayList<>();
             }

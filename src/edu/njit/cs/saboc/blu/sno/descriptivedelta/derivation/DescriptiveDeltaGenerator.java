@@ -121,7 +121,7 @@ public class DescriptiveDeltaGenerator {
         
         Map<SCTConcept, EditingOperationReport> reports = new HashMap<>();
         
-        final SCTConcept IS_A = release.getConceptFromId(116680003l);
+        final SCTConcept IS_A = release.getConceptFromId(116680003l).get();
 
         relChanges.forEach((sourceConcept, changes) -> {
 

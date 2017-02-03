@@ -15,6 +15,11 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.FrameCreationAction;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.MultiAbNGraphFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.SCTDiffPAreaTaxonomyGraphFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.initializers.SCTMultiAbNGraphFrameInitializers;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
+import edu.njit.cs.saboc.blu.sno.nat.SCTConceptBrowserDataSource;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
+import edu.njit.cs.saboc.nat.generic.NATBrowserFrame;
+import edu.njit.cs.saboc.nat.generic.gui.layout.NATBasicLayout;
 import javax.swing.JFrame;
 
 /**
@@ -23,7 +28,6 @@ import javax.swing.JFrame;
  */
 public class SCTAbNFrameManager extends AbNDisplayManager  {
     
-        
     private final JFrame mainFrame;
     
     public SCTAbNFrameManager(JFrame mainFrame, FrameCreationAction fca) {
@@ -103,5 +107,20 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
         frame.displayDiffPAreaTaxonomy(diffTaxonomy);
         
         super.getFrameCreationAction().displayFrame(frame);
+    }
+    
+    
+    
+    public void displayConceptBrowserFrame(SCTRelease release) {
+        SCTConceptBrowserDataSource browserDataSource = new SCTConceptBrowserDataSource(release);
+        
+        NATBrowserFrame<SCTConcept> browserFrame = new NATBrowserFrame<>(
+            mainFrame,
+            browserDataSource, 
+            new NATBasicLayout(browserDataSource));
+        
+        browserFrame.nagivateTo(browserDataSource.getOntology().getConceptHierarchy().getRoot());
+        
+        super.getFrameCreationAction().displayFrame(browserFrame);
     }
 }

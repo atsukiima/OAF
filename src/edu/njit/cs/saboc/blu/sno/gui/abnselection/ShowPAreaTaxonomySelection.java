@@ -32,7 +32,7 @@ public class ShowPAreaTaxonomySelection extends ShowAbNSelection {
         try {
             SCTRelease dataSource = localReleasePanel.getLoadedDataSource();
 
-            SCTConcept localConcept = dataSource.getConceptFromId(root.getID());
+            SCTConcept localConcept = dataSource.getConceptFromId(root.getID()).get();
 
             Hierarchy<SCTConcept> hierarchy;
 

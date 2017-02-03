@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -88,8 +89,8 @@ public class SCTRelease extends Ontology {
         return super.getConceptHierarchy();
     }
 
-    public SCTConcept getConceptFromId(long id) {
-        return concepts.get(id);
+    public Optional<SCTConcept> getConceptFromId(long id) {
+        return Optional.ofNullable(concepts.get(id));
     }
     
     public Set<SCTConcept> getAllConcepts() {
@@ -120,7 +121,7 @@ public class SCTRelease extends Ontology {
         }).collect(Collectors.toSet());
     }
 
-    public Set<Concept> searchExact(String term) {
+    public Set<SCTConcept> searchExact(String term) {
         
         term = term.toLowerCase();
         
@@ -130,7 +131,7 @@ public class SCTRelease extends Ontology {
 
         char firstChar = Character.toLowerCase(term.charAt(0));
 
-        Set<Concept> results = new HashSet<>();
+        Set<SCTConcept> results = new HashSet<>();
 
         int startIndex;
 
@@ -172,7 +173,7 @@ public class SCTRelease extends Ontology {
         return results;
     }
 
-    public Set<Concept> searchStarting(String term) {
+    public Set<SCTConcept> searchStarting(String term) {
         term = term.toLowerCase();
         
         if (term.length() < 3) {
@@ -181,7 +182,7 @@ public class SCTRelease extends Ontology {
 
         char firstChar = Character.toLowerCase(term.charAt(0));
 
-        Set<Concept> results = new HashSet<>();
+        Set<SCTConcept> results = new HashSet<>();
 
         int startIndex;
 
@@ -220,11 +221,11 @@ public class SCTRelease extends Ontology {
         return results;
     }
 
-    public Set<Concept> searchAnywhere(String term) {
+    public Set<SCTConcept> searchAnywhere(String term) {
 
         term = term.toLowerCase();
 
-        Set<Concept> results = new HashSet<>();
+        Set<SCTConcept> results = new HashSet<>();
 
         for (DescriptionEntry entry : descriptions) {
             if (entry.description.getTerm().toLowerCase().contains(term)) {

@@ -55,9 +55,9 @@ public class DeltaRelationshipLoader {
 
                 long characteristicType = Long.parseLong(parts[8]);
                 
-                SCTConcept source = release.getConceptFromId(sourceId);
-                SCTConcept type = release.getConceptFromId(typeId);
-                SCTConcept target = release.getConceptFromId(targetId);
+                SCTConcept source = release.getConceptFromId(sourceId).get();
+                SCTConcept type = release.getConceptFromId(typeId).get();
+                SCTConcept target = release.getConceptFromId(targetId).get();
 
                 DeltaRelationship rel = new DeltaRelationship(type, target, group, characteristicType, active);
 
