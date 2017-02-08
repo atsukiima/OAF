@@ -6,9 +6,9 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.InheritablePropertySelectionPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configuration.PAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.AbNDerivationWizardPanel;
-import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.RootSelectionPanel.RootSelectionListener;
+import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.rootselection.BaseRootSelectionOptionsPanel.RootSelectionListener;
 import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.InheritablePropertySelectionPanel.SelectionType;
-import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.RootSelectionPanel;
+import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.rootselection.BaseRootSelectionOptionsPanel;
 import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInheritableProperty;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
@@ -47,7 +47,7 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
 
     private Optional<SCTRelease> optRelease = Optional.empty();
     
-    private final RootSelectionPanel<PAreaTaxonomy> rootSelectionPanel;
+    private final BaseRootSelectionOptionsPanel<PAreaTaxonomy> rootSelectionPanel;
         
     private final InheritablePropertySelectionPanel propertySelectionPanel;
     
@@ -68,7 +68,7 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
         SCTPAreaTaxonomyConfigurationFactory dummyFactory = new SCTPAreaTaxonomyConfigurationFactory();
         PAreaTaxonomyConfiguration config = dummyFactory.createConfiguration(null, null);
 
-        this.rootSelectionPanel = new RootSelectionPanel<>(config);
+        this.rootSelectionPanel = new SCTRootSelectionPanel(config);
         
         this.rootSelectionPanel.setBorder(
                 BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), 
