@@ -17,9 +17,9 @@ import edu.njit.cs.saboc.blu.sno.gui.graphframe.SCTDiffPAreaTaxonomyGraphFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.initializers.SCTMultiAbNGraphFrameInitializers;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.nat.SCTConceptBrowserDataSource;
+import edu.njit.cs.saboc.blu.sno.nat.SCTNATLayout;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.nat.generic.NATBrowserFrame;
-import edu.njit.cs.saboc.nat.generic.gui.layout.NATBasicLayout;
 import javax.swing.JFrame;
 
 /**
@@ -117,7 +117,7 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
         NATBrowserFrame<SCTConcept> browserFrame = new NATBrowserFrame<>(
             mainFrame,
             browserDataSource, 
-            new NATBasicLayout(browserDataSource));
+            new SCTNATLayout(browserDataSource));
         
         browserFrame.nagivateTo(browserDataSource.getOntology().getConceptHierarchy().getRoot());
         
