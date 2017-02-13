@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.sctdatasource;
 
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
-import edu.njit.cs.saboc.blu.core.ontology.Concept;
+import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.OntologySearcher;
 import edu.njit.cs.saboc.blu.core.ontology.Ontology;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * 
  * @author Chris O
  */
-public class SCTRelease extends Ontology {
+public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept> {
 
     private class DescriptionEntry {
 
@@ -83,6 +83,7 @@ public class SCTRelease extends Ontology {
         return releaseInfo;
     }
     
+    @Override
     public Hierarchy<SCTConcept> getConceptHierarchy() {
         return super.getConceptHierarchy();
     }
@@ -119,7 +120,8 @@ public class SCTRelease extends Ontology {
         }).collect(Collectors.toSet());
     }
 
-    public Set<Concept> searchExact(String term) {
+    @Override
+    public Set<SCTConcept> searchExact(String term) {
         
         term = term.toLowerCase();
         
@@ -129,7 +131,7 @@ public class SCTRelease extends Ontology {
 
         char firstChar = Character.toLowerCase(term.charAt(0));
 
-        Set<Concept> results = new HashSet<>();
+        Set<SCTConcept> results = new HashSet<>();
 
         int startIndex;
 
@@ -171,7 +173,8 @@ public class SCTRelease extends Ontology {
         return results;
     }
 
-    public Set<Concept> searchStarting(String term) {
+    @Override
+    public Set<SCTConcept> searchStarting(String term) {
         term = term.toLowerCase();
         
         if (term.length() < 3) {
@@ -180,7 +183,7 @@ public class SCTRelease extends Ontology {
 
         char firstChar = Character.toLowerCase(term.charAt(0));
 
-        Set<Concept> results = new HashSet<>();
+        Set<SCTConcept> results = new HashSet<>();
 
         int startIndex;
 
@@ -219,11 +222,12 @@ public class SCTRelease extends Ontology {
         return results;
     }
 
-    public Set<Concept> searchAnywhere(String term) {
+    @Override
+    public Set<SCTConcept> searchAnywhere(String term) {
 
         term = term.toLowerCase();
 
-        Set<Concept> results = new HashSet<>();
+        Set<SCTConcept> results = new HashSet<>();
 
         for (DescriptionEntry entry : descriptions) {
             if (entry.description.getTerm().toLowerCase().contains(term)) {
@@ -233,6 +237,24 @@ public class SCTRelease extends Ontology {
             }
         }
 
+        return results;
+    }
+
+    @Override
+    public Set<SCTConcept> searchID(String query) {
+        Set<SCTConcept> results = new HashSet<>();
+        
+        try {
+            long id = Long.parseLong(query);
+            
+            if(concepts.containsKey(id)) {
+                results.add(concepts.get(id));
+            }
+            
+        } catch(NumberFormatException nfe) {
+            
+        }
+        
         return results;
     }
 

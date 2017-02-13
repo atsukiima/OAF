@@ -40,12 +40,13 @@ public class LoadReleasePanel extends JPanel {
 
     private class LoadMonitorTask extends SwingWorker {
 
-        private LocalLoadStateMonitor stateMonitor;
+        private final LocalLoadStateMonitor stateMonitor;
 
         public LoadMonitorTask(LocalLoadStateMonitor stateMonitor) {
             this.stateMonitor = stateMonitor;
         }
 
+        @Override
         public Void doInBackground() {
 
             setProgress(0);

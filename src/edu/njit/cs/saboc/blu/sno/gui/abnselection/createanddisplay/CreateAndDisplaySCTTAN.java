@@ -1,0 +1,70 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package edu.njit.cs.saboc.blu.sno.gui.abnselection.createanddisplay;
+
+import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
+import edu.njit.cs.saboc.blu.core.abn.tan.TANFactory;
+import edu.njit.cs.saboc.blu.core.abn.tan.TribalAbstractionNetworkGenerator;
+import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
+import edu.njit.cs.saboc.blu.core.gui.dialogs.AbNCreateAndDisplayDialog;
+import edu.njit.cs.saboc.blu.sno.abn.tan.SCTStatedTANFactory;
+import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
+import java.util.Set;
+
+/**
+ *
+ * @author Kevyn
+ */
+public class CreateAndDisplaySCTTAN extends AbNCreateAndDisplayDialog<ClusterTribalAbstractionNetwork> {
+
+    private final SCTRelease release;
+    private final Set<SCTConcept> roots;
+    
+    private final boolean useStatedRelationships;
+
+    public CreateAndDisplaySCTTAN(
+            String text, 
+            Set<SCTConcept> roots,
+            boolean useStatedRelationships,
+            SCTAbNFrameManager frameManager, 
+            SCTRelease release) {
+        
+        super(text, frameManager);
+
+        this.release = release;
+        this.roots = roots;
+        this.useStatedRelationships = useStatedRelationships;
+    }
+
+    @Override
+    protected void displayAbN(ClusterTribalAbstractionNetwork abn) {
+        super.getDisplayFrameListener().displayTribalAbstractionNetwork(abn);
+    }
+
+    @Override
+    protected ClusterTribalAbstractionNetwork deriveAbN() {
+        Hierarchy<SCTConcept> hierarchy;
+
+        TANFactory factory;
+
+        if (useStatedRelationships) {
+            SCTReleaseWithStated statedRelease = (SCTReleaseWithStated) release;
+            
+            hierarchy = statedRelease.getStatedHierarchy().getSubhierarchyRootedAt(roots);
+            factory = new SCTStatedTANFactory(statedRelease);
+        } else {
+            hierarchy = release.getConceptHierarchy().getSubhierarchyRootedAt(roots);
+            factory = new TANFactory(release);
+        }
+
+        return new TribalAbstractionNetworkGenerator().deriveTANFromMultiRootedHierarchy(
+                hierarchy,
+                factory);
+    }
+}
