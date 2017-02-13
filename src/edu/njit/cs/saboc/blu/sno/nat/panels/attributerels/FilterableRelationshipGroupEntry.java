@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.nat.panels.attributerels;
 
 import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
-import edu.njit.cs.saboc.nat.generic.gui.filterable.FilterableNestedEntry;
+import edu.njit.cs.saboc.nat.generic.gui.filterable.nestedlist.FilterableNestedEntry;
 import java.util.ArrayList;
 
 /**

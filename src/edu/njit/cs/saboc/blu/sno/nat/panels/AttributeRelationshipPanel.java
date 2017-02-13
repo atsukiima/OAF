@@ -10,9 +10,10 @@ import edu.njit.cs.saboc.blu.sno.nat.panels.attributerels.FilterableRelationship
 import edu.njit.cs.saboc.blu.sno.nat.panels.attributerels.RelationshipGroup;
 import edu.njit.cs.saboc.blu.sno.nat.panels.attributerels.RelationshipGroupPanel;
 import edu.njit.cs.saboc.nat.generic.NATBrowserPanel;
-import edu.njit.cs.saboc.nat.generic.gui.filterable.FilterableNestedEntry;
-import edu.njit.cs.saboc.nat.generic.gui.filterable.FilterableNestedEntryPanel;
-import edu.njit.cs.saboc.nat.generic.gui.filterable.NestedFilterableList;
+import edu.njit.cs.saboc.nat.generic.gui.filterable.nestedlist.FilterableNestedEntry;
+import edu.njit.cs.saboc.nat.generic.gui.filterable.nestedlist.FilterableNestedEntryPanel;
+import edu.njit.cs.saboc.nat.generic.gui.filterable.nestedlist.NestedFilterableList;
+import edu.njit.cs.saboc.nat.generic.gui.filterable.nestedlist.NestedFilterableList.EntrySelectionListener;
 import edu.njit.cs.saboc.nat.generic.gui.panels.ResultPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import static javafx.scene.input.KeyCode.T;
 import javax.swing.BorderFactory;
 
 /**
@@ -28,7 +30,7 @@ import javax.swing.BorderFactory;
  */
 public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayList<AttributeRelationship>> {
     
-    private final NestedFilterableList<RelationshipGroup, AttributeRelationship> nestedFilterableList;
+    private final NestedFilterableList<RelationshipGroup, AttributeRelationship> attributeRelaitonshipList;
     
     public AttributeRelationshipPanel(
             NATBrowserPanel<SCTConcept> mainPanel,
@@ -43,7 +45,7 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
                     "Attribute Relationships")
             );
         
-        this.nestedFilterableList = new NestedFilterableList<RelationshipGroup, AttributeRelationship>() {
+        this.attributeRelaitonshipList = new NestedFilterableList<RelationshipGroup, AttributeRelationship>() {
 
             @Override
             public FilterableNestedEntryPanel<FilterableNestedEntry<RelationshipGroup, AttributeRelationship>> getEntry(
@@ -62,14 +64,32 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
             }
         };
         
+        this.attributeRelaitonshipList.addEntrySelectionListener(new EntrySelectionListener<AttributeRelationship>() {
+
+            @Override
+            public void entryClicked(AttributeRelationship entry) {
+                
+            }
+
+            @Override
+            public void entryDoubleClicked(AttributeRelationship entry) {
+                mainPanel.getFocusConceptManager().navigateTo(entry.getTarget());
+            }
+
+            @Override
+            public void noEntrySelected() {
+                
+            }
+        });
+        
         this.setLayout(new BorderLayout());
         
-        this.add(nestedFilterableList, BorderLayout.CENTER);
+        this.add(attributeRelaitonshipList, BorderLayout.CENTER);
     }
 
     @Override
     public void dataPending() {
-        nestedFilterableList.clearContents();
+        attributeRelaitonshipList.clearContents();
     }
 
     @Override
@@ -103,7 +123,12 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
             relGroupEntries.add(new FilterableRelationshipGroupEntry(relGroup, relEntries));
         });
         
-        nestedFilterableList.displayContents(relGroupEntries);
+        attributeRelaitonshipList.displayContents(relGroupEntries);
+        
+        this.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createLineBorder(Color.BLACK), 
+                    String.format("Attribute Relationships (%d)", data.size()))
+            );
     }
 
     @Override

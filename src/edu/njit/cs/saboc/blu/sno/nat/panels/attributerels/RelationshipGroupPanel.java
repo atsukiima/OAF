@@ -4,7 +4,7 @@ package edu.njit.cs.saboc.blu.sno.nat.panels.attributerels;
 import edu.njit.cs.saboc.blu.core.graph.pareataxonomy.BasePAreaTaxonomyLayout;
 import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
-import edu.njit.cs.saboc.nat.generic.gui.filterable.FilterableNestedEntryPanel;
+import edu.njit.cs.saboc.nat.generic.gui.filterable.nestedlist.FilterableNestedEntryPanel;
 import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
