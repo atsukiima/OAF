@@ -40,6 +40,8 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
     
     private final SCTReleaseInfo releaseInfo;
     
+    private final Set<SCTConcept> subhierarchiesWithAttributeRels;
+    
     public SCTRelease(
             SCTReleaseInfo releaseInfo,
             Hierarchy<SCTConcept> activeConceptHierarchy, 
@@ -50,6 +52,18 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
         this.releaseInfo = releaseInfo;
                 
         this.descriptions = new ArrayList<>();
+        
+        subhierarchiesWithAttributeRels = new HashSet<>();
+        
+        activeConceptHierarchy.getChildren(
+                activeConceptHierarchy.getRoot()).forEach( (root) -> {
+            
+            Hierarchy<SCTConcept> hierarchy = activeConceptHierarchy.getSubhierarchyRootedAt(root);
+            
+            if(hierarchy.getNodes().stream().anyMatch( (p -> !p.getAttributeRelationships().isEmpty()))) {
+                subhierarchiesWithAttributeRels.add(root);
+            }
+        });
         
         allConcepts.forEach( (concept) -> {
             concepts.put(concept.getID(), concept);
@@ -81,6 +95,10 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
     
     public SCTReleaseInfo getReleaseInfo() {
         return releaseInfo;
+    }
+    
+    public Set<SCTConcept> getHierarchiesWithAttributeRelationships() {
+        return subhierarchiesWithAttributeRels;
     }
     
     @Override
@@ -119,7 +137,7 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
             return !concept.isPrimitive();
         }).collect(Collectors.toSet());
     }
-
+    
     @Override
     public Set<SCTConcept> searchExact(String term) {
         

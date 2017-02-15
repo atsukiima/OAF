@@ -7,6 +7,8 @@ import edu.njit.cs.saboc.blu.sno.gui.abnselection.createanddisplay.CreateAndDisp
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.createanddisplay.CreateAndDisplaySCTTAN;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.createanddisplay.CreateAndDisplayTargetAbN;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.wizard.SCTInheritablePropertyRetriever;
+import edu.njit.cs.saboc.blu.sno.gui.abnselection.wizard.AttributeRelationshipRootSelectionPanel;
+import edu.njit.cs.saboc.blu.sno.gui.abnselection.wizard.SCTDiffPAreaTaxonomyWizardPanel;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.wizard.SCTPAreaTaxonomyWizardPanel;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.wizard.SCTTANDerivationWizardPanel;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.wizard.SCTTargetHierarchyRetriever;
@@ -33,6 +35,8 @@ public class SCTAbNCreationPanel extends JPanel {
     
     private final SCTPAreaTaxonomyWizardPanel pareaTaxonomyDerivationWizardPanel;
     
+    private final SCTDiffPAreaTaxonomyWizardPanel diffPAreaTaxonomyDerivationWizardPanel;
+    
     private final SCTTANDerivationWizardPanel tanDerivationWizardPanel;
     
     private final TargetAbNDerivationWizardPanel targetAbNDerivationWizardPanel;
@@ -51,14 +55,16 @@ public class SCTAbNCreationPanel extends JPanel {
         
         
         this.pareaTaxonomyDerivationWizardPanel = new SCTPAreaTaxonomyWizardPanel( 
-                (release, root, availableProperties, selectedProperties) -> {
+                
+                (release, root, availableProperties, selectedProperties, useStatedRels) -> {
                     CreateAndDisplaySCTPAreaTaxonomy createPAreaTaxonomy = new CreateAndDisplaySCTPAreaTaxonomy(
                             "Creating partial-area taxonomy...",
                             root, 
                             availableProperties,
                             selectedProperties,
                             frameManager,
-                            release);
+                            release,
+                            useStatedRels);
                     
                     createPAreaTaxonomy.createAbN();
                     
@@ -68,10 +74,13 @@ public class SCTAbNCreationPanel extends JPanel {
         JPanel pareaPanel = new JPanel(new BorderLayout());
         pareaPanel.add(pareaTaxonomyDerivationWizardPanel, BorderLayout.CENTER);
         
-        /*
+        
+        this.diffPAreaTaxonomyDerivationWizardPanel = new SCTDiffPAreaTaxonomyWizardPanel(frameManager);
+        
+        
         JPanel diffPAreaPanel = new JPanel(new BorderLayout());
-        diffPAreaPanel.add(diffPAreaTaxonomyWizardPanel, BorderLayout.CENTER);
-        */
+        diffPAreaPanel.add(diffPAreaTaxonomyDerivationWizardPanel, BorderLayout.CENTER);
+        
         
         SCTTANConfigurationFactory factory = new SCTTANConfigurationFactory();
         SCTTANConfiguration dummyConfig = factory.createConfiguration(null, frameManager);        
@@ -104,14 +113,15 @@ public class SCTAbNCreationPanel extends JPanel {
                     );
 
                     createRangeAbN.createAbN();
-                });
+                },
+                new AttributeRelationshipRootSelectionPanel<>(dummyConfig));
 
         JPanel targetPanel = new JPanel(new BorderLayout());
         targetPanel.add(targetAbNDerivationWizardPanel, BorderLayout.CENTER);
         
         
         abnSelectionTabs.addTab("Partial-area Taxonomy", pareaPanel);
-//        abnSelectionTabs.addTab("Diff Partial-area Taxonomy", diffPAreaTaxonomyWizardPanel);
+        abnSelectionTabs.addTab("Diff Partial-area Taxonomy", diffPAreaPanel);
         abnSelectionTabs.addTab("Tribal Abstraction Network", tanPanel);
         abnSelectionTabs.addTab("Target Abstraction Network", targetPanel);
 
@@ -140,6 +150,8 @@ public class SCTAbNCreationPanel extends JPanel {
         
         pareaTaxonomyDerivationWizardPanel.initialize(release);
         
+        diffPAreaTaxonomyDerivationWizardPanel.initialize(release);
+        
         tanDerivationWizardPanel.initialize(release);
         
         targetAbNDerivationWizardPanel.initialize(
@@ -151,6 +163,11 @@ public class SCTAbNCreationPanel extends JPanel {
     
     public void clear() {
        this.optCurrentRelease = Optional.empty();
+       
+       pareaTaxonomyDerivationWizardPanel.clearContents();
+       tanDerivationWizardPanel.clearContents();
+       targetAbNDerivationWizardPanel.clearContents();
+       diffPAreaTaxonomyDerivationWizardPanel.clearContents();
     }
     
     public void resetView() {

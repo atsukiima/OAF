@@ -22,7 +22,7 @@ public class SCTTANDerivationWizardPanel extends TANDerivationWizardPanel {
             TANConfiguration config, 
             DeriveTANAction derivationAction) {
         
-        super(config, derivationAction);
+        super(config, derivationAction, new SCTRootSelectionPanel(config));
         
         this.chkUseStatedRelationships = new JCheckBox("<html>Use Stated <i>Is a</i> Relationships");
         this.chkUseStatedRelationships.addActionListener( (ae) -> {

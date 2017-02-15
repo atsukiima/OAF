@@ -8,13 +8,13 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configura
 import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.AbNDerivationWizardPanel;
 import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.rootselection.BaseRootSelectionOptionsPanel.RootSelectionListener;
 import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.InheritablePropertySelectionPanel.SelectionType;
-import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.rootselection.BaseRootSelectionOptionsPanel;
 import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInheritableProperty;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -26,6 +26,8 @@ import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -42,14 +44,17 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
                 SCTRelease release,
                 SCTConcept root,
                 Set<SCTInheritableProperty> availableProperties,
-                Set<SCTInheritableProperty> selectedProperties);
+                Set<SCTInheritableProperty> selectedProperties,
+                boolean useStatedRelationships);
     }
 
     private Optional<SCTRelease> optRelease = Optional.empty();
     
-    private final BaseRootSelectionOptionsPanel<PAreaTaxonomy> rootSelectionPanel;
+    private final AttributeRelationshipRootSelectionPanel<PAreaTaxonomy> rootSelectionPanel;
         
     private final InheritablePropertySelectionPanel propertySelectionPanel;
+    
+    private final JCheckBox chkUseStatedRelationships;
     
     private final JButton deriveBtn;
     
@@ -57,6 +62,9 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
     
     private final SCTPAreaTaxonomyDerivationAction taxonomyDerivationAction;
     
+    private final JPanel additionalOptionsPanel;
+    
+
     public SCTPAreaTaxonomyWizardPanel(
             SCTPAreaTaxonomyDerivationAction taxonomyDerivationAction,
             SCTAbNFrameManager displayFrameListener) {
@@ -68,7 +76,7 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
         SCTPAreaTaxonomyConfigurationFactory dummyFactory = new SCTPAreaTaxonomyConfigurationFactory();
         PAreaTaxonomyConfiguration config = dummyFactory.createConfiguration(null, null);
 
-        this.rootSelectionPanel = new SCTRootSelectionPanel(config);
+        this.rootSelectionPanel = new AttributeRelationshipRootSelectionPanel<>(config);
         
         this.rootSelectionPanel.setBorder(
                 BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), 
@@ -112,28 +120,60 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
         
         this.statusLabel = new JLabel(" ");
         
-        JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        statusPanel.add(statusLabel);
-        
-        JPanel derivationPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
         
         this.deriveBtn = new JButton("Derive Partial-area Taxonomy");
         this.deriveBtn.addActionListener( (ae) -> {
             performedDerivationAction();
         });
         
+        this.chkUseStatedRelationships = new JCheckBox("Use Stated Relationships");
+        this.chkUseStatedRelationships.addActionListener( (ae) -> {
+            
+            this.setEnabled(false);
+            
+            SwingUtilities.invokeLater(() -> {
+                if (this.chkUseStatedRelationships.isSelected()) {
+                    SCTReleaseWithStated statedRelease = (SCTReleaseWithStated) optRelease.get();
+
+                    this.initialize(statedRelease.getStatedHierarchyRelease(), false);
+                } else {
+                    this.initialize(optRelease.get(), false);
+                }
+                
+                this.setEnabled(true);
+            });
+        });
+        
+        additionalOptionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        
+        JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+     
+        statusPanel.add(statusLabel);
+        
+        JPanel derivationPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        
         derivationPanel.add(deriveBtn);
         
         JPanel southPanel = new JPanel(new BorderLayout());
+        
+        southPanel.add(additionalOptionsPanel, BorderLayout.WEST);
+        
         southPanel.add(statusPanel, BorderLayout.CENTER);
         
         southPanel.add(derivationPanel, BorderLayout.EAST);
         
         this.add(southPanel, BorderLayout.SOUTH);
+        
+        addOptionComponent(chkUseStatedRelationships);
     }
     
     public void setDerivationButtonText(String derivationBtnStr) {
         this.deriveBtn.setText(derivationBtnStr);
+    }
+    
+    public final void addOptionComponent(JComponent component) {
+        this.additionalOptionsPanel.add(component);
     }
 
     @Override
@@ -144,13 +184,28 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
         this.propertySelectionPanel.setEnabled(value);
         
         this.deriveBtn.setEnabled(value);
+        this.chkUseStatedRelationships.setEnabled(value);
     }
     
     public void initialize(SCTRelease release) {
+        initialize(release, true);
+    }
+    
+    public void initialize(SCTRelease release, boolean setCurrentRelease) {
+        this.resetView();
+        
         super.initialize(release);
         
-        this.optRelease = Optional.of(release);
-
+        if(setCurrentRelease) {
+            this.optRelease = Optional.of(release); 
+        }
+        
+        if(release.supportsStatedRelationships()) {
+            this.chkUseStatedRelationships.setEnabled(true);
+        } else {
+             this.chkUseStatedRelationships.setEnabled(false);
+        }
+        
         rootSelectionPanel.initialize(release, release);
         
         deriveBtn.setEnabled(true);
@@ -249,7 +304,12 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
         Set<SCTInheritableProperty> availableProperties = (Set<SCTInheritableProperty>)(Set<?>)propertySelectionPanel.getAvailableProperties();
         Set<SCTInheritableProperty> selectedProperties = (Set<SCTInheritableProperty>)(Set<?>)propertySelectionPanel.getUserSelectedProperties();
         
-        this.taxonomyDerivationAction.derivePAreaTaxonomy(release, root, availableProperties, selectedProperties);
+        this.taxonomyDerivationAction.derivePAreaTaxonomy(
+                release, 
+                root, 
+                availableProperties, 
+                selectedProperties, 
+                chkUseStatedRelationships.isSelected());
     }
 }
 

@@ -15,7 +15,8 @@ public class SCTRootSelectionPanel extends BaseRootSelectionOptionsPanel {
     private final SearchForRootPanel searchForRoot;
     
     public SCTRootSelectionPanel(AbNConfiguration config) {
-        this.selectRoot = new SelectOntologyRootPanel(config);
+        this.selectRoot = new SelectOntologyRootPanel("Select SNOMED CT Subhierarchy", config);
+        
         this.searchForRoot = new SearchForRootPanel(config);
         
         super.addRootSelectionOption(selectRoot);
