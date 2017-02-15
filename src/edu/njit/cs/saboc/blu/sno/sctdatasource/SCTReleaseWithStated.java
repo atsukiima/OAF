@@ -38,4 +38,11 @@ public class SCTReleaseWithStated extends SCTRelease {
     public boolean supportsStatedRelationships() {
         return true;
     }
+    
+    public SCTRelease asSCTRelease() {
+        return new SCTRelease(
+                this.getReleaseInfo(), 
+                this.getStatedHierarchy(), 
+                this.getAllConcepts());
+    }
 }

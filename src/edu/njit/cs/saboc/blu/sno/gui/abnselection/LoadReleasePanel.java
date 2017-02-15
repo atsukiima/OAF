@@ -9,8 +9,6 @@ import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseInfo;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -168,7 +166,7 @@ public class LoadReleasePanel extends JPanel {
                 final LocalLoadStateMonitor loadMonitor;
                 final SCTRelease dataSource;
                 
-                if (selectedFile.getAbsolutePath().contains("RF2Release")) {
+                if (selectedFile.getAbsolutePath().contains("RF2Release") || selectedFile.getAbsolutePath().contains("RF2_Production")) {
                     RF2ReleaseLoader rf2Importer = new RF2ReleaseLoader();
                     
                     loadMonitor = rf2Importer.getLoadStateMonitor();
@@ -197,11 +195,9 @@ public class LoadReleasePanel extends JPanel {
                     
                     LoadMonitorTask task = new LoadMonitorTask(loadMonitor);
                     
-                    task.addPropertyChangeListener(new PropertyChangeListener() {
-                        public void propertyChange(PropertyChangeEvent pce) {
-                            loadProgressBar.setValue(loadMonitor.getOverallProgress());
-                            loadProgressBar.setString(loadMonitor.getProcessName());
-                        }
+                    task.addPropertyChangeListener((pce) -> {
+                        loadProgressBar.setValue(loadMonitor.getOverallProgress());
+                        loadProgressBar.setString(loadMonitor.getProcessName());
                     });
                     
                     task.execute();
@@ -213,10 +209,8 @@ public class LoadReleasePanel extends JPanel {
                 
                 loadedDataSource = dataSource;
                 
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        loadComplete();
-                    }
+                SwingUtilities.invokeLater(() -> {
+                    loadComplete();
                 });
                 
             } catch (IOException ioe) {
