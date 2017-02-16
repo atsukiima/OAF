@@ -5,6 +5,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
 import edu.njit.cs.saboc.nat.generic.gui.filterable.nestedlist.FilterableEntryPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import javax.swing.Box;
@@ -22,6 +23,7 @@ public class AttributeRelationshipEntryPanel extends FilterableEntryPanel<Filter
     private final JLabel targetConceptIdLabel;
 
     public AttributeRelationshipEntryPanel(FilterableAttributeRelationshipEntry relEntry) {
+        
         super(relEntry, relEntry.getCurrentFilter());
 
         this.setOpaque(false);
@@ -90,5 +92,7 @@ public class AttributeRelationshipEntryPanel extends FilterableEntryPanel<Filter
         this.attributeRelTypeLabel.setText(relNameStr);
         this.targetConceptNameLabel.setText(conceptNameStr);
         this.targetConceptIdLabel.setText(conceptIdStr);
+        
+        this.setPreferredSize(new Dimension(-1, 40));
     }
 }

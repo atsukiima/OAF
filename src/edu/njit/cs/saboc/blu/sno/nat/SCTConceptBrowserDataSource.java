@@ -36,7 +36,7 @@ public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTCon
                 return description.getTerm().equalsIgnoreCase(str.toLowerCase());
             }).map( (desc) -> desc.getTerm()).collect(Collectors.toSet());
             
-            results.add(new NATConceptSearchResult<>(concept, matchedTerms));
+            results.add(new NATConceptSearchResult<>(concept, matchedTerms, str));
         });
         
         
@@ -59,7 +59,7 @@ public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTCon
                 return description.getTerm().toLowerCase().startsWith(str.toLowerCase());
             }).map( (desc) -> desc.getTerm()).collect(Collectors.toSet());
             
-            results.add(new NATConceptSearchResult<>(concept, matchedTerms));
+            results.add(new NATConceptSearchResult<>(concept, matchedTerms, str));
         });
         
         
@@ -81,7 +81,7 @@ public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTCon
                 return description.getTerm().toLowerCase().contains(str.toLowerCase());
             }).map( (desc) -> desc.getTerm()).collect(Collectors.toSet());
             
-            results.add(new NATConceptSearchResult<>(concept, matchedTerms));
+            results.add(new NATConceptSearchResult<>(concept, matchedTerms, str));
         });
         
         
@@ -105,7 +105,7 @@ public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTCon
             if(optConcept.isPresent()) {
                 SCTConcept concept = optConcept.get();
                 
-                results.add(new NATConceptSearchResult<>(concept, Collections.singleton(concept.getIDAsString())));
+                results.add(new NATConceptSearchResult<>(concept, Collections.singleton(concept.getIDAsString()), str));
             }
             
         } catch(NumberFormatException e) {
