@@ -1,5 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.nat;
 
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.nat.generic.data.ConceptBrowserDataSource;
@@ -22,6 +23,37 @@ public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTCon
         super(release);
         
         this.theRelease = release;
+    }
+    
+    @Override
+    public String getFocusConceptText(SCTConcept concept) {
+        
+        ArrayList<String> descriptions = new ArrayList<>();
+        
+        concept.getDescriptions().forEach( (description) -> {
+            descriptions.add(description.getTerm());
+        });
+        
+        Collections.sort(descriptions);
+        
+        String descStr = "";
+        
+        for(String desc : descriptions) {
+            descStr += ("- " + desc + "<br>");
+        }
+        
+        return String.format("<html><font face='Arial' size = '5'>"
+                + "<b>%s</b></font>"
+                + "<font face='Arial' size = '3'"
+                + "<br>%s"
+                + "<br>(%s) (%s)"
+                + "<p><b>Descriptions</b><br>"
+                + "%s", 
+                concept.getName(), 
+                concept.getIDAsString(),
+                concept.isPrimitive() ? "Primitve" : "Fully Defined",
+                concept.isActive() ? "Active" : "Retired",
+                descStr);
     }
 
     @Override

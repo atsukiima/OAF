@@ -34,7 +34,7 @@ public class AttributeRelationshipEntryPanel extends FilterableEntryPanel<Filter
         this.targetConceptNameLabel = new JLabel();
         this.targetConceptIdLabel = new JLabel();
 
-        this.attributeRelTypeLabel.setFont(this.attributeRelTypeLabel.getFont().deriveFont(Font.PLAIN, 16));
+        this.attributeRelTypeLabel.setFont(this.attributeRelTypeLabel.getFont().deriveFont(Font.BOLD, 16));
         this.targetConceptNameLabel.setFont(this.targetConceptNameLabel.getFont().deriveFont(Font.PLAIN, 16));
         this.targetConceptIdLabel.setFont(this.targetConceptIdLabel.getFont().deriveFont(Font.PLAIN, 10));
 

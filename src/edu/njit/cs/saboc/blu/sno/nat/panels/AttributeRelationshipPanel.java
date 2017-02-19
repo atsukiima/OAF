@@ -1,5 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.nat.panels;
 
+import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
@@ -19,10 +20,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import static javafx.scene.input.KeyCode.T;
+import java.util.Set;
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 
 /**
  *
@@ -31,6 +34,8 @@ import javax.swing.BorderFactory;
 public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayList<AttributeRelationship>> {
     
     private final NestedFilterableList<RelationshipGroup, AttributeRelationship> attributeRelaitonshipList;
+    
+    private final JCheckBox chkHideRelationshipGroups;
     
     public AttributeRelationshipPanel(
             NATBrowserPanel<SCTConcept> mainPanel,
@@ -82,6 +87,14 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
             }
         });
         
+        
+        this.chkHideRelationshipGroups = new JCheckBox("Hide Relationship Groups");
+        this.chkHideRelationshipGroups.addActionListener( (ae) -> {
+            super.reload();
+        });
+        
+        this.attributeRelaitonshipList.addOptionPanelComponent(chkHideRelationshipGroups);
+        
         this.setLayout(new BorderLayout());
         
         this.add(attributeRelaitonshipList, BorderLayout.CENTER);
@@ -99,14 +112,75 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
         
         Map<Integer, ArrayList<AttributeRelationship>> relGroupMap = new HashMap<>();
         
-        data.forEach( (rel) -> {
-            if(!relGroupMap.containsKey(rel.getGroup())) {
-                relGroupMap.put(rel.getGroup(), new ArrayList<>());
-            }
+        if(this.chkHideRelationshipGroups.isSelected()) {
             
-            relGroupMap.get(rel.getGroup()).add(rel);
-        });
-        
+            Map<SCTConcept, ArrayList<AttributeRelationship>> uniqueRelsOfType = new HashMap<>();
+            
+            data.forEach((rel) -> {
+               if(!uniqueRelsOfType.containsKey(rel.getType())) {
+                   uniqueRelsOfType.put(rel.getType(), new ArrayList<>());
+               }
+               
+               if(uniqueRelsOfType.get(rel.getType()).stream().noneMatch( (uniqueRel) -> {
+                   return uniqueRel.equalsIgnoreGroup(rel);
+               })) {
+                   uniqueRelsOfType.get(rel.getType()).add(rel);
+               }
+            });
+            
+            
+            Map<SCTConcept, Integer> targetDepth = new HashMap<>();
+            
+            ArrayList<AttributeRelationship> sortedUniqueRels = new ArrayList<>();
+          
+            uniqueRelsOfType.forEach( (type, rels) -> {
+                Set<SCTConcept> uniqueTargets = new HashSet<>();
+                
+                rels.forEach( (rel) -> {
+                    uniqueTargets.add(rel.getTarget());
+                });
+                
+                Hierarchy<SCTConcept> ancestorHierarchy = getDataSource().getOntology().getConceptHierarchy().getAncestorHierarchy(uniqueTargets);
+                
+                Map<SCTConcept, Integer> longestPathDepths = ancestorHierarchy.getAllLongestPathDepths();
+                
+                uniqueTargets.forEach( (target) -> {
+                    targetDepth.put(target, longestPathDepths.get(target));
+                });
+                
+                sortedUniqueRels.addAll(rels);
+            });
+            
+            
+            sortedUniqueRels.sort( (a, b) -> {
+                
+                if(a.getType().equals(b.getType())) {
+                    int aDepth = targetDepth.get(a.getTarget());
+                    int bDepth = targetDepth.get(b.getTarget());
+                    
+                    if(aDepth == bDepth) {
+                        return a.getTarget().getName().compareToIgnoreCase(b.getTarget().getName());
+                    } else {
+                        return aDepth - bDepth;
+                    }
+                    
+                } else {
+                    return a.getType().getName().compareToIgnoreCase(b.getType().getName());
+                }
+            });
+
+            relGroupMap.put(0, sortedUniqueRels);
+            
+        } else {
+            data.forEach((rel) -> {
+                if (!relGroupMap.containsKey(rel.getGroup())) {
+                    relGroupMap.put(rel.getGroup(), new ArrayList<>());
+                }
+
+                relGroupMap.get(rel.getGroup()).add(rel);
+            });
+        }
+
         relGroupMap.forEach( (id, attributeRels) -> {
             relGroups.add(new RelationshipGroup(id, attributeRels));
         });
