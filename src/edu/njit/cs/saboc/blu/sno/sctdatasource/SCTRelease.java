@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.sctdatasource;
 
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
-import edu.njit.cs.saboc.blu.core.ontology.Concept;
+import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.OntologySearcher;
 import edu.njit.cs.saboc.blu.core.ontology.Ontology;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * 
  * @author Chris O
  */
-public class SCTRelease extends Ontology {
+public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept> {
 
     private class DescriptionEntry {
 
@@ -41,6 +41,8 @@ public class SCTRelease extends Ontology {
     
     private final SCTReleaseInfo releaseInfo;
     
+    private final Set<SCTConcept> subhierarchiesWithAttributeRels;
+    
     public SCTRelease(
             SCTReleaseInfo releaseInfo,
             Hierarchy<SCTConcept> activeConceptHierarchy, 
@@ -51,6 +53,18 @@ public class SCTRelease extends Ontology {
         this.releaseInfo = releaseInfo;
                 
         this.descriptions = new ArrayList<>();
+        
+        subhierarchiesWithAttributeRels = new HashSet<>();
+        
+        activeConceptHierarchy.getChildren(
+                activeConceptHierarchy.getRoot()).forEach( (root) -> {
+            
+            Hierarchy<SCTConcept> hierarchy = activeConceptHierarchy.getSubhierarchyRootedAt(root);
+            
+            if(hierarchy.getNodes().stream().anyMatch( (p -> !p.getAttributeRelationships().isEmpty()))) {
+                subhierarchiesWithAttributeRels.add(root);
+            }
+        });
         
         allConcepts.forEach( (concept) -> {
             concepts.put(concept.getID(), concept);
@@ -82,6 +96,10 @@ public class SCTRelease extends Ontology {
     
     public SCTReleaseInfo getReleaseInfo() {
         return releaseInfo;
+    }
+    
+    public Set<SCTConcept> getHierarchiesWithAttributeRelationships() {
+        return subhierarchiesWithAttributeRels;
     }
     
     @Override
@@ -120,7 +138,8 @@ public class SCTRelease extends Ontology {
             return !concept.isPrimitive();
         }).collect(Collectors.toSet());
     }
-
+    
+    @Override
     public Set<SCTConcept> searchExact(String term) {
         
         term = term.toLowerCase();
@@ -173,6 +192,7 @@ public class SCTRelease extends Ontology {
         return results;
     }
 
+    @Override
     public Set<SCTConcept> searchStarting(String term) {
         term = term.toLowerCase();
         
@@ -221,6 +241,8 @@ public class SCTRelease extends Ontology {
         return results;
     }
 
+    
+    @Override
     public Set<SCTConcept> searchAnywhere(String term) {
 
         term = term.toLowerCase();
@@ -235,6 +257,24 @@ public class SCTRelease extends Ontology {
             }
         }
 
+        return results;
+    }
+
+    @Override
+    public Set<SCTConcept> searchID(String query) {
+        Set<SCTConcept> results = new HashSet<>();
+        
+        try {
+            long id = Long.parseLong(query);
+            
+            if(concepts.containsKey(id)) {
+                results.add(concepts.get(id));
+            }
+            
+        } catch(NumberFormatException nfe) {
+            
+        }
+        
         return results;
     }
 

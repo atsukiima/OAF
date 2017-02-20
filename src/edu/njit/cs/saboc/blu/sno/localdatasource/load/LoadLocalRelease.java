@@ -49,6 +49,7 @@ public class LoadLocalRelease {
             String dirName = dir.getAbsolutePath();
 
             String releaseName;
+            
             try {
                 if (dirName.contains("_RF2Release_")) {
                     releaseName = dirName.substring(dirName.lastIndexOf("_RF2Release_"), dirName.lastIndexOf("\\Snapshot\\Terminology"));
@@ -59,7 +60,11 @@ public class LoadLocalRelease {
                     } else {
                         releaseName = dirName.substring(dirName.lastIndexOf("SnomedCT_"), dirName.lastIndexOf("\\RF1"));
                     }
-
+                } else if(dirName.contains("SnomedCT_InternationalRF2_Production")) {
+                    releaseName = dirName.substring(
+                            dirName.lastIndexOf("InternationalRF2_Production_") + "InternationalRF2_Production_".length(), 
+                            dirName.lastIndexOf("\\Snapshot\\"));
+                    
                 } else {
                     if (dirName.contains("Essential Resources")) {
                         releaseName = dirName.substring(dirName.lastIndexOf("\\SNOMED_CT_Essential_") + 21, dirName.lastIndexOf("\\Essential Resources"));
@@ -76,6 +81,8 @@ public class LoadLocalRelease {
                     releaseName = releaseName.substring(releaseName.lastIndexOf("Release_") + 8);
                 } else if (releaseName.contains("SnomedCT_")) {
                     releaseName = releaseName.substring(releaseName.lastIndexOf("SnomedCT_") + 9);
+                } else if (releaseName.contains("T")) {
+                    releaseName = "INT " + releaseName.substring(0, releaseName.lastIndexOf("T"));
                 }
 
                 if (dirName.contains("RF2")) {

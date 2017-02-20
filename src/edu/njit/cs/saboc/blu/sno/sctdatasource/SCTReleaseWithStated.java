@@ -27,6 +27,13 @@ public class SCTReleaseWithStated extends SCTRelease {
         return statedHierarchy;
     }
     
+    public SCTRelease getStatedHierarchyRelease() {
+        return new SCTRelease(
+                this.getReleaseInfo(), 
+                this.getStatedHierarchy(), 
+                this.getAllConcepts());
+    }
+    
     @Override
     public boolean supportsStatedRelationships() {
         return true;
