@@ -33,6 +33,7 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
     }
 
     private final Map<Long, SCTConcept> concepts = new HashMap<>();
+    
 
     // TODO: This needs to go away and be replaced by something better.
     private final HashMap<Character, Integer> startingIndex = new HashMap<>();
