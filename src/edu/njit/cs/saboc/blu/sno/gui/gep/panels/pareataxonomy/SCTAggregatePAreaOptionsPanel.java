@@ -7,6 +7,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANFromSinglyRootedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportSinglyRootedNodeButton;
 
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.HelpButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.CreateAncestorSubtaxonomyButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.CreateExpandedSubtaxonomyButton;
@@ -64,5 +65,9 @@ public class SCTAggregatePAreaOptionsPanel extends NodeOptionsPanel {
         ExportSinglyRootedNodeButton exportBtn = new ExportSinglyRootedNodeButton(config);
         
         super.addOptionButton(exportBtn);
+
+        HelpButton helpBtn = new HelpButton(config);
+
+        super.addOptionButton(helpBtn);
     }
 }

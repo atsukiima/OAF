@@ -4,10 +4,7 @@ import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
 import edu.njit.cs.saboc.blu.core.abn.tan.aggregate.AggregateCluster;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateDisjointAbNFromSinglyRootedNodeButton;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANFromSinglyRootedNodeButton;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportSinglyRootedNodeButton;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.*;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.buttons.CreateAncestorTANButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.buttons.CreateRootTANButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.buttons.ExpandAggregateClusterButton;
@@ -76,5 +73,9 @@ public class SCTClusterOptionsPanel extends NodeOptionsPanel {
         });
 
         super.addOptionButton(popoutBtn);
+
+        HelpButton helpBtn = new HelpButton(config);
+
+        super.addOptionButton(helpBtn);
     }
 }
