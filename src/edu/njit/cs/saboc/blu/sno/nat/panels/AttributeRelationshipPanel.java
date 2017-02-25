@@ -18,6 +18,7 @@ import edu.njit.cs.saboc.nat.generic.gui.filterable.nestedlist.NestedFilterableL
 import edu.njit.cs.saboc.nat.generic.gui.panels.ResultPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,6 +27,7 @@ import java.util.Optional;
 import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JPanel;
 
 /**
  *
@@ -36,6 +38,8 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
     private final NestedFilterableList<RelationshipGroup, AttributeRelationship> attributeRelaitonshipList;
     
     private final JCheckBox chkHideRelationshipGroups;
+    
+    private final JCheckBox chkDisplayOnlyStatedRels;
     
     public AttributeRelationshipPanel(
             NATBrowserPanel<SCTConcept> mainPanel,
@@ -87,13 +91,31 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
             }
         });
         
-        
         this.chkHideRelationshipGroups = new JCheckBox("Hide Relationship Groups");
         this.chkHideRelationshipGroups.addActionListener( (ae) -> {
-            super.reload();
+            super.forceReload();
         });
         
-        this.attributeRelaitonshipList.addOptionPanelComponent(chkHideRelationshipGroups);
+        this.chkDisplayOnlyStatedRels = new JCheckBox("Show Only Stated Attribute Relationships");
+        this.chkDisplayOnlyStatedRels.addActionListener( (ae) -> {
+            
+            if(chkDisplayOnlyStatedRels.isSelected()) {
+                super.setDataRetriever(SCTNATDataRetrievers.getStatedAttributRelationshipsRetriever(dataSource));
+            } else {
+                super.setDataRetriever(SCTNATDataRetrievers.getAttributeRelationshipRetriever(dataSource));
+            }
+            
+        });
+        
+        JPanel optionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        
+        optionPanel.add(chkHideRelationshipGroups);
+        
+        if(dataSource.getRelease().supportsStatedRelationships()) {
+            optionPanel.add(chkDisplayOnlyStatedRels);
+        }
+        
+        this.attributeRelaitonshipList.addOptionPanelComponent(optionPanel);
         
         this.setLayout(new BorderLayout());
         

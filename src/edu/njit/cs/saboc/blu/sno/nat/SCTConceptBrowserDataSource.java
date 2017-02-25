@@ -1,6 +1,5 @@
 package edu.njit.cs.saboc.blu.sno.nat;
 
-import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.nat.generic.data.ConceptBrowserDataSource;
@@ -23,6 +22,10 @@ public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTCon
         super(release);
         
         this.theRelease = release;
+    }
+    
+    public SCTRelease getRelease() {
+        return theRelease;
     }
     
     @Override
