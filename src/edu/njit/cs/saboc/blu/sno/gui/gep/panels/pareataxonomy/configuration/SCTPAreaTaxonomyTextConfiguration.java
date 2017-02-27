@@ -5,7 +5,7 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.Area;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configuration.PAreaTaxonomyTextConfiguration;
-import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTEntityNameUtils;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTEntityNameConfiguration;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,7 +16,7 @@ import java.util.Set;
 public class SCTPAreaTaxonomyTextConfiguration extends PAreaTaxonomyTextConfiguration {
 
     public SCTPAreaTaxonomyTextConfiguration(PAreaTaxonomy taxonomy) {
-        super(taxonomy);
+        super(new SCTEntityNameConfiguration(), taxonomy);
     }
 
     @Override
@@ -204,25 +204,5 @@ public class SCTPAreaTaxonomyTextConfiguration extends PAreaTaxonomyTextConfigur
         } else {
             return pareaTaxonomyDesc;
         }
-    }
-
-    @Override
-    public String getConceptTypeName(boolean plural) {
-        return SCTEntityNameUtils.getConceptTypeName(plural);
-    }
-
-    @Override
-    public String getPropertyTypeName(boolean plural) {
-        return SCTEntityNameUtils.getPropertyTypeName(plural);
-    }
-
-    @Override
-    public String getParentConceptTypeName(boolean plural) {
-        return SCTEntityNameUtils.getParentConceptTypeName(plural);
-    }
-
-    @Override
-    public String getChildConceptTypeName(boolean plural) {
-        return SCTEntityNameUtils.getChildConceptTypeName(plural);
     }
 }
