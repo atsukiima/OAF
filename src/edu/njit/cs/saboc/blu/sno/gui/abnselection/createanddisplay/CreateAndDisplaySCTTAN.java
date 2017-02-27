@@ -43,12 +43,12 @@ public class CreateAndDisplaySCTTAN extends AbNCreateAndDisplayDialog<ClusterTri
     }
 
     @Override
-    protected void displayAbN(ClusterTribalAbstractionNetwork abn) {
+    protected void display(ClusterTribalAbstractionNetwork abn) {
         super.getDisplayFrameListener().displayTribalAbstractionNetwork(abn);
     }
 
     @Override
-    protected ClusterTribalAbstractionNetwork deriveAbN() {
+    protected ClusterTribalAbstractionNetwork create() {
         Hierarchy<SCTConcept> hierarchy;
 
         TANFactory factory;

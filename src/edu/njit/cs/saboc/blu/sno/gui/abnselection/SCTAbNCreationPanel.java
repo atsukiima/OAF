@@ -81,7 +81,7 @@ public class SCTAbNCreationPanel extends JPanel {
                             release,
                             useStatedRels);
                     
-                    createPAreaTaxonomy.createAbN();
+                    createPAreaTaxonomy.run();
                     
                 }, frameManager);
         
@@ -110,7 +110,7 @@ public class SCTAbNCreationPanel extends JPanel {
                     optCurrentRelease.get()
                 );
             
-            creatingTANDialog.createAbN();
+            creatingTANDialog.run();
         });
         
         JPanel tanPanel = new JPanel(new BorderLayout());
@@ -127,7 +127,7 @@ public class SCTAbNCreationPanel extends JPanel {
                             (SCTReleaseWithStated)optCurrentRelease.get()
                     );
 
-                    createRangeAbN.createAbN();
+                    createRangeAbN.run();
                 },
                 new AttributeRelationshipRootSelectionPanel<>(dummyConfig));
 
@@ -204,10 +204,8 @@ public class SCTAbNCreationPanel extends JPanel {
         openBrowserBtn = new JButton("<html><div align='center'>Open NAT Concept Browser");
         openBrowserBtn.setFont(openBrowserBtn.getFont().deriveFont(Font.BOLD, 14));
 
-        openBrowserBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                openConceptBrowser();
-            }
+        openBrowserBtn.addActionListener( (ae) -> {
+            openConceptBrowser();
         });
 
         openBrowserBtn.setEnabled(false);

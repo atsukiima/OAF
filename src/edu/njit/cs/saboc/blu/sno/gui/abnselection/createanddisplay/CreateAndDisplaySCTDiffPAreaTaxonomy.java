@@ -67,12 +67,12 @@ public class CreateAndDisplaySCTDiffPAreaTaxonomy extends AbNCreateAndDisplayDia
     }
 
     @Override
-    protected void displayAbN(DiffPAreaTaxonomy taxonomy) {
+    protected void display(DiffPAreaTaxonomy taxonomy) {
         super.getDisplayFrameListener().displayDiffPAreaTaxonomy(taxonomy);
     }
 
     @Override
-    protected DiffPAreaTaxonomy deriveAbN() {
+    protected DiffPAreaTaxonomy create() {
         
         PAreaTaxonomyGenerator taxonomyGenerator = new PAreaTaxonomyGenerator();
         

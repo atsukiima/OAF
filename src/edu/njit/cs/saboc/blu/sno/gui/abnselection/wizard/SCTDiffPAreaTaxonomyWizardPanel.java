@@ -75,7 +75,7 @@ public class SCTDiffPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
                             useStatedRelationships,
                             chkDeriveDescriptiveDelta.isEnabled() && chkDeriveDescriptiveDelta.isSelected());
 
-                        createAndDisplay.createAbN();
+                        createAndDisplay.run();
                         
                     } catch (NoSCTDataSourceLoadedException e) {
                         
