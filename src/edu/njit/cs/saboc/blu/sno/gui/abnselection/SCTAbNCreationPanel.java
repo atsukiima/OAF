@@ -117,7 +117,7 @@ public class SCTAbNCreationPanel extends JPanel {
         targetAbNDerivationWizardPanel = new TargetAbNDerivationWizardPanel(dummyConfig,
                 (sourceHierarchy, type, targetHierarchy) -> {
                     CreateAndDisplayTargetAbN createRangeAbN = new CreateAndDisplayTargetAbN(
-                            "Creating Range Abstraction Network",
+                            "Creating Attribute Relationship Target Abstraction Network",
                             frameManager,
                             (Hierarchy<SCTConcept>) (Hierarchy<?>) sourceHierarchy,
                             (SCTInheritableProperty) type,
