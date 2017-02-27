@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.targetbased.TargetAbNDerivationWizardPanel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInheritableProperty;
+import edu.njit.cs.saboc.blu.sno.gui.abnselection.createanddisplay.CreateAndDisplaySCTNAT;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.createanddisplay.CreateAndDisplaySCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.createanddisplay.CreateAndDisplaySCTTAN;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.createanddisplay.CreateAndDisplayTargetAbN;
@@ -20,8 +21,6 @@ import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Optional;
 import java.util.Set;
 import javax.swing.BorderFactory;
@@ -32,7 +31,6 @@ import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -245,9 +243,8 @@ public class SCTAbNCreationPanel extends JPanel {
             return;
         }
 
-        SwingUtilities.invokeLater( () -> {
-            frameManager.displayConceptBrowserFrame(optCurrentRelease.get());
-        });
+        CreateAndDisplaySCTNAT createNATDialog = new CreateAndDisplaySCTNAT(frameManager, optCurrentRelease.get());
+        createNATDialog.run();
     }
 
 }
