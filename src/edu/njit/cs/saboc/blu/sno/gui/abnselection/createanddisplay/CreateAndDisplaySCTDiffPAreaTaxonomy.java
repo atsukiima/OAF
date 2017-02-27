@@ -111,16 +111,16 @@ public class CreateAndDisplaySCTDiffPAreaTaxonomy extends AbNCreateAndDisplayDia
 
         if(deriveDescriptiveDelta) {
             DeltaRelationshipLoader deltaRelLoader = new DeltaRelationshipLoader();
-                            
-                            DeltaRelationships deltaRelationships = deltaRelLoader.loadDeltaRelationships(toRelease);
-                            
-                            DescriptiveDeltaGenerator descriptiveDeltaGenerator = new DescriptiveDeltaGenerator();
-                            
-                            DescriptiveDelta descriptiveDelta = descriptiveDeltaGenerator.createDescriptiveDelta(
-                                    fromRelease, 
-                                    toRelease, 
-                                    selectedRoot, 
-                                    deltaRelationships);
+
+            DeltaRelationships deltaRelationships = deltaRelLoader.loadDeltaRelationships(toRelease);
+
+            DescriptiveDeltaGenerator descriptiveDeltaGenerator = new DescriptiveDeltaGenerator();
+
+            DescriptiveDelta descriptiveDelta = descriptiveDeltaGenerator.createDescriptiveDelta(
+                    fromRelease,
+                    toRelease,
+                    selectedRoot,
+                    deltaRelationships);
                                                     
            return diffTaxonomyGenerator.createDiffPAreaTaxonomy(
                     new SCTDescriptiveDiffPAreaTaxonomyFactory(
