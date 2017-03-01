@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.targetbased.TargetAbNDerivationWizardPanel;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInheritableProperty;
+import edu.njit.cs.saboc.blu.sno.gui.abnselection.createanddisplay.CreateAndDisplaySCTNAT;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.createanddisplay.CreateAndDisplaySCTPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.createanddisplay.CreateAndDisplaySCTTAN;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.createanddisplay.CreateAndDisplayTargetAbN;
@@ -20,8 +21,6 @@ import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Optional;
 import java.util.Set;
 import javax.swing.BorderFactory;
@@ -32,7 +31,6 @@ import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -81,7 +79,7 @@ public class SCTAbNCreationPanel extends JPanel {
                             release,
                             useStatedRels);
                     
-                    createPAreaTaxonomy.createAbN();
+                    createPAreaTaxonomy.run();
                     
                 }, frameManager);
         
@@ -110,7 +108,7 @@ public class SCTAbNCreationPanel extends JPanel {
                     optCurrentRelease.get()
                 );
             
-            creatingTANDialog.createAbN();
+            creatingTANDialog.run();
         });
         
         JPanel tanPanel = new JPanel(new BorderLayout());
@@ -119,7 +117,7 @@ public class SCTAbNCreationPanel extends JPanel {
         targetAbNDerivationWizardPanel = new TargetAbNDerivationWizardPanel(dummyConfig,
                 (sourceHierarchy, type, targetHierarchy) -> {
                     CreateAndDisplayTargetAbN createRangeAbN = new CreateAndDisplayTargetAbN(
-                            "Creating Range Abstraction Network",
+                            "Creating Attribute Relationship Target Abstraction Network",
                             frameManager,
                             (Hierarchy<SCTConcept>) (Hierarchy<?>) sourceHierarchy,
                             (SCTInheritableProperty) type,
@@ -127,7 +125,7 @@ public class SCTAbNCreationPanel extends JPanel {
                             (SCTReleaseWithStated)optCurrentRelease.get()
                     );
 
-                    createRangeAbN.createAbN();
+                    createRangeAbN.run();
                 },
                 new AttributeRelationshipRootSelectionPanel<>(dummyConfig));
 
@@ -204,10 +202,8 @@ public class SCTAbNCreationPanel extends JPanel {
         openBrowserBtn = new JButton("<html><div align='center'>Open NAT Concept Browser");
         openBrowserBtn.setFont(openBrowserBtn.getFont().deriveFont(Font.BOLD, 14));
 
-        openBrowserBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                openConceptBrowser();
-            }
+        openBrowserBtn.addActionListener( (ae) -> {
+            openConceptBrowser();
         });
 
         openBrowserBtn.setEnabled(false);
@@ -247,9 +243,8 @@ public class SCTAbNCreationPanel extends JPanel {
             return;
         }
 
-        SwingUtilities.invokeLater( () -> {
-            frameManager.displayConceptBrowserFrame(optCurrentRelease.get());
-        });
+        CreateAndDisplaySCTNAT createNATDialog = new CreateAndDisplaySCTNAT(frameManager, optCurrentRelease.get());
+        createNATDialog.run();
     }
 
 }

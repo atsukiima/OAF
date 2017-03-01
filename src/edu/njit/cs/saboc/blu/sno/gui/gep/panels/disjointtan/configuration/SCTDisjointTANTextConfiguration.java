@@ -5,7 +5,7 @@ import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointNode;
 import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
 import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.disjointabn.tan.DisjointTANTextConfiguration;
-import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTEntityNameUtils;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTEntityNameConfiguration;
 
 /**
  *
@@ -16,26 +16,6 @@ public class SCTDisjointTANTextConfiguration extends DisjointTANTextConfiguratio
     public SCTDisjointTANTextConfiguration(
             DisjointAbstractionNetwork<DisjointNode<Cluster>, ClusterTribalAbstractionNetwork<Cluster>, Cluster> disjointTAN) {
         
-        super(disjointTAN);
-    }
-
-    @Override
-    public String getConceptTypeName(boolean plural) {
-        return SCTEntityNameUtils.getConceptTypeName(plural);
-    }
-
-    @Override
-    public String getPropertyTypeName(boolean plural) {
-        return SCTEntityNameUtils.getPropertyTypeName(plural);
-    }
-
-    @Override
-    public String getParentConceptTypeName(boolean plural) {
-        return SCTEntityNameUtils.getParentConceptTypeName(plural);
-    }
-
-    @Override
-    public String getChildConceptTypeName(boolean plural) {
-        return SCTEntityNameUtils.getConceptTypeName(plural);
+        super(new SCTEntityNameConfiguration(), disjointTAN);
     }
 }

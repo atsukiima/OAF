@@ -111,15 +111,14 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
     
     
     
-    public void displayConceptBrowserFrame(SCTRelease release) {
-        SCTConceptBrowserDataSource browserDataSource = new SCTConceptBrowserDataSource(release);
+    public void displayConceptBrowserFrame(SCTConceptBrowserDataSource dataSource) {
         
         NATBrowserFrame<SCTConcept> browserFrame = new NATBrowserFrame<>(
             mainFrame,
-            browserDataSource, 
-            new SCTNATLayout(browserDataSource));
+            dataSource, 
+            new SCTNATLayout(dataSource));
         
-        browserFrame.nagivateTo(browserDataSource.getOntology().getConceptHierarchy().getRoot());
+        browserFrame.nagivateTo(dataSource.getOntology().getConceptHierarchy().getRoot());
         
         super.getFrameCreationAction().displayFrame(browserFrame);
     }
