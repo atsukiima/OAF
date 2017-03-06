@@ -46,6 +46,7 @@ public class SCTDiffPAreaTaxonomyGraphFrame extends GenericInternalGraphFrame<Di
             
             SinglyRootedNodeLabelCreator<DiffPArea> labelCreator = new SinglyRootedNodeLabelCreator<DiffPArea>() {
 
+                @Override
                 public String getCountStr(DiffPArea parea) {
                     
                     int num;
@@ -62,8 +63,6 @@ public class SCTDiffPAreaTaxonomyGraphFrame extends GenericInternalGraphFrame<Di
                     
                     return String.format("(%d)", num);
                 }
-                
-                
             };
             
             SCTDiffPAreaTaxonomyConfigurationFactory configFactory = new SCTDiffPAreaTaxonomyConfigurationFactory();
