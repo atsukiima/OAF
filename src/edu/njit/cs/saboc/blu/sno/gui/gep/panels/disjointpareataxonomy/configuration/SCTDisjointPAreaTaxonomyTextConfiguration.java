@@ -5,7 +5,7 @@ import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointNode;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.disjointabn.pareataxonomy.DisjointPAreaTaxonomyTextConfiguration;
-import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTEntityNameUtils;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTEntityNameConfiguration;
 
 /**
  *
@@ -13,27 +13,9 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTEntityNameUtils;
  */
 public class SCTDisjointPAreaTaxonomyTextConfiguration extends DisjointPAreaTaxonomyTextConfiguration {
 
-    public SCTDisjointPAreaTaxonomyTextConfiguration(DisjointAbstractionNetwork<DisjointNode<PArea>, PAreaTaxonomy<PArea>, PArea> disjointTaxonomy) {
-        super(disjointTaxonomy);
-    }
-
-    @Override
-    public String getConceptTypeName(boolean plural) {
-        return SCTEntityNameUtils.getConceptTypeName(plural);
-    }
-
-    @Override
-    public String getPropertyTypeName(boolean plural) {
-        return SCTEntityNameUtils.getPropertyTypeName(plural);
-    }
-
-    @Override
-    public String getParentConceptTypeName(boolean plural) {
-        return SCTEntityNameUtils.getParentConceptTypeName(plural);
-    }
-
-    @Override
-    public String getChildConceptTypeName(boolean plural) {
-        return SCTEntityNameUtils.getConceptTypeName(plural);
+    public SCTDisjointPAreaTaxonomyTextConfiguration(
+            DisjointAbstractionNetwork<DisjointNode<PArea>, PAreaTaxonomy<PArea>, PArea> disjointTaxonomy) {
+        
+        super(new SCTEntityNameConfiguration(), disjointTaxonomy);
     }
 }

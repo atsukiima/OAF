@@ -1,12 +1,12 @@
 package edu.njit.cs.saboc.blu.sno.nat;
 
-import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.nat.generic.data.ConceptBrowserDataSource;
 import edu.njit.cs.saboc.nat.generic.data.NATConceptSearchResult;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,6 +23,10 @@ public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTCon
         super(release);
         
         this.theRelease = release;
+    }
+    
+    public SCTRelease getRelease() {
+        return theRelease;
     }
     
     @Override
@@ -145,5 +149,28 @@ public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTCon
         }
         
         return results;
+    }
+
+    @Override
+    public Set<SCTConcept> getConceptsFromIds(Set<String> idStrs) {
+        
+        Set<SCTConcept> concepts = new HashSet<>();
+        
+        idStrs.forEach( (idStr) -> {
+            try {
+                long id = Long.parseLong(idStr);
+                
+                Optional<SCTConcept> concept = theRelease.getConceptFromId(id);
+                
+                if(concept.isPresent()) {
+                    concepts.add(concept.get());
+                }
+                
+            } catch (NumberFormatException nfe) {
+                
+            }
+        });
+        
+        return concepts;
     }
 }

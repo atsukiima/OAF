@@ -5,14 +5,13 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomyFactory;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomy;
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomyFactory;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.DiffPAreaTaxonomyGenerator;
-import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.explain.PropertyChangeDetailsFactory;
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInferredPAreaTaxonomyFactory;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInheritableProperty;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTStatedRelationshipsPAreaTaxonomyFactory;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.diffpareataxonomy.SCTDescriptiveDiffPAreaTaxonomyFactory;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.diffpareataxonomy.SCTDiffPAreaTaxonomyFactory;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.DescriptiveDelta;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.DeltaRelationshipLoader;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.DeltaRelationships;
@@ -32,7 +31,6 @@ public class CreateAndDisplaySCTDiffPAreaTaxonomy extends AbNCreateAndDisplayDia
     private final SCTConcept selectedRoot;
     
     private final SCTRelease fromRelease;
-    
     private final SCTRelease toRelease;
     
     private final Set<SCTInheritableProperty> availableProperties;
@@ -67,12 +65,12 @@ public class CreateAndDisplaySCTDiffPAreaTaxonomy extends AbNCreateAndDisplayDia
     }
 
     @Override
-    protected void displayAbN(DiffPAreaTaxonomy taxonomy) {
+    protected void display(DiffPAreaTaxonomy taxonomy) {
         super.getDisplayFrameListener().displayDiffPAreaTaxonomy(taxonomy);
     }
 
     @Override
-    protected DiffPAreaTaxonomy deriveAbN() {
+    protected DiffPAreaTaxonomy create() {
         
         PAreaTaxonomyGenerator taxonomyGenerator = new PAreaTaxonomyGenerator();
         
@@ -111,16 +109,16 @@ public class CreateAndDisplaySCTDiffPAreaTaxonomy extends AbNCreateAndDisplayDia
 
         if(deriveDescriptiveDelta) {
             DeltaRelationshipLoader deltaRelLoader = new DeltaRelationshipLoader();
-                            
-                            DeltaRelationships deltaRelationships = deltaRelLoader.loadDeltaRelationships(toRelease);
-                            
-                            DescriptiveDeltaGenerator descriptiveDeltaGenerator = new DescriptiveDeltaGenerator();
-                            
-                            DescriptiveDelta descriptiveDelta = descriptiveDeltaGenerator.createDescriptiveDelta(
-                                    fromRelease, 
-                                    toRelease, 
-                                    selectedRoot, 
-                                    deltaRelationships);
+
+            DeltaRelationships deltaRelationships = deltaRelLoader.loadDeltaRelationships(toRelease);
+
+            DescriptiveDeltaGenerator descriptiveDeltaGenerator = new DescriptiveDeltaGenerator();
+
+            DescriptiveDelta descriptiveDelta = descriptiveDeltaGenerator.createDescriptiveDelta(
+                    fromRelease,
+                    toRelease,
+                    selectedRoot,
+                    deltaRelationships);
                                                     
            return diffTaxonomyGenerator.createDiffPAreaTaxonomy(
                     new SCTDescriptiveDiffPAreaTaxonomyFactory(
@@ -134,21 +132,13 @@ public class CreateAndDisplaySCTDiffPAreaTaxonomy extends AbNCreateAndDisplayDia
                     fromTaxonomy,
                     toRelease,
                     toTaxonomy);
-        } else {
+        } else {           
             return diffTaxonomyGenerator.createDiffPAreaTaxonomy(
-                    new DiffPAreaTaxonomyFactory() {
-
-                        @Override
-                        public PropertyChangeDetailsFactory getPropertyChangeDetailsFactory() {
-                            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-                        }
-
-                    },
+                    new SCTDiffPAreaTaxonomyFactory(fromRelease, toRelease, fromTaxonomy, toTaxonomy),
                     fromRelease,
                     fromTaxonomy,
                     toRelease,
                     toTaxonomy);
-
         }
     }
 }

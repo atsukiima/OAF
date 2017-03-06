@@ -50,12 +50,12 @@ public class CreateAndDisplaySCTPAreaTaxonomy extends AbNCreateAndDisplayDialog<
     }
 
     @Override
-    protected void displayAbN(PAreaTaxonomy taxonomy) {
+    protected void display(PAreaTaxonomy taxonomy) {
         super.getDisplayFrameListener().displayPAreaTaxonomy(taxonomy);
     }
 
     @Override
-    protected PAreaTaxonomy deriveAbN() {
+    protected PAreaTaxonomy create() {
         
         Hierarchy<SCTConcept> conceptHierarchy;
         PAreaTaxonomyFactory factory;

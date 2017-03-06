@@ -1,6 +1,5 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
-import edu.njit.cs.saboc.blu.sno.descriptivedelta.derivation.DeltaRelationshipLoader;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LoadLocalRelease;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LocalLoadStateMonitor;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.RF1ReleaseLoader;
@@ -186,8 +185,6 @@ public class LoadReleasePanel extends JPanel {
                             new SCTReleaseInfo(selectedFile, getSelectedVersionName()), 
                             loadMonitor);
                     
-                    
-                    new DeltaRelationshipLoader().loadDeltaRelationships(dataSource);
                     
                 } else {
                     RF1ReleaseLoader importer = new RF1ReleaseLoader();

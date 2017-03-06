@@ -42,12 +42,12 @@ public class CreateAndDisplayTargetAbN extends AbNCreateAndDisplayDialog<TargetA
     }
 
     @Override
-    protected void displayAbN(TargetAbstractionNetwork abn) {
+    protected void display(TargetAbstractionNetwork abn) {
         super.getDisplayFrameListener().displayTargetAbstractionNetwork(abn);
     }
 
     @Override
-    protected TargetAbstractionNetwork deriveAbN() {
+    protected TargetAbstractionNetwork create() {
         SCTTargetAbstractionNetworkFactory rangeFactory = new SCTTargetAbstractionNetworkFactory(
                 release, 
                 sourceHierarchy, 
