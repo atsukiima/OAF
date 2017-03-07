@@ -84,8 +84,6 @@ public class LoadReleasePanel extends JPanel {
         chooserBtn = new JButton("Open Folder");
 
         chooserBtn.addActionListener((ae) -> {
-            localVersionBox.removeAllItems();
-            
             showReleaseFolderSelectionDialog();
         });
 
@@ -226,12 +224,17 @@ public class LoadReleasePanel extends JPanel {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             try {
                 File file = chooser.getSelectedFile();
-                this.availableReleases = LoadLocalRelease.findReleaseFolders(file);
-                
-                if (availableReleases.isEmpty()) {
-                    localVersionBox.removeAllItems();
-                    localVersionBox.addItem("Choose a directory");
+                ArrayList<File> temp = LoadLocalRelease.findReleaseFolders(file);
+
+                if(temp.isEmpty()){
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "SNOMED CT release was not found in the selected directory",
+                            "SNOMED CT No Release Found",
+                            JOptionPane.WARNING_MESSAGE);
                 } else {
+                    localVersionBox.removeAllItems();
+                    availableReleases = temp;
                     ArrayList<String> releaseNames = LoadLocalRelease.getReleaseFileNames(this.availableReleases);
 
                     releaseNames.forEach((releaseName) -> {
@@ -241,12 +244,11 @@ public class LoadReleasePanel extends JPanel {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(null,"SNOMED CT release name cannot be properly parsed","SNOMED CT release name error",JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            if (availableReleases.isEmpty()) {
-                localVersionBox.removeAllItems();
-                localVersionBox.addItem("Choose a directory");
+                JOptionPane.showMessageDialog(
+                        null,
+                        "SNOMED CT release name cannot be properly parsed",
+                        "SNOMED CT Release Name Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
