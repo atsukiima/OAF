@@ -226,10 +226,4 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
                     String.format("Attribute Relationships (%d)", data.size()))
             );
     }
-
-    @Override
-    protected void setFontSize(int fontSize) {
-        
-    }
-
 }
