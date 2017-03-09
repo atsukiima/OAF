@@ -173,4 +173,9 @@ public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTCon
         
         return concepts;
     }
+
+    @Override
+    public String getOntologyID() {
+        return theRelease.getReleaseInfo().getReleaseName();
+    }
 }
