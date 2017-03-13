@@ -16,11 +16,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
+ * A SNOMED CT release loaded from a local source
  * 
  * @author Chris O
  */
 public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept> {
 
+    /**
+     * An entry for a description, used for searching
+     */
     private class DescriptionEntry {
 
         public Description description;
@@ -112,28 +116,53 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
         return Optional.ofNullable(concepts.get(id));
     }
     
+    /**
+     * Returns all concepts in the release (active and retired)
+     * 
+     * @return 
+     */
     public Set<SCTConcept> getAllConcepts() {
         return concepts.values().stream().collect(Collectors.toSet());
     }
     
+    /**
+     * Returns the set of active concepts
+     * 
+     * @return 
+     */
     public Set<SCTConcept> getActiveConcepts() {
         return concepts.values().stream().filter((concept) -> {
            return concept.isActive();
         }).collect(Collectors.toSet());
     }
     
+    /**
+     * Returns the set of currently inactive concepts
+     * 
+     * @return 
+     */
     public Set<SCTConcept> getInactiveConcepts() {
         return concepts.values().stream().filter((concept) -> {
             return !concept.isActive();
         }).collect(Collectors.toSet());
     }
     
+    /**
+     * Returns the set of primitive concepts
+     * 
+     * @return 
+     */
     public Set<SCTConcept> getPrimitiveConcepts() {
         return concepts.values().stream().filter((concept) -> {
             return concept.isPrimitive();
         }).collect(Collectors.toSet());
     }
     
+    /**
+     * Returns the set of fully defined concepts
+     * 
+     * @return 
+     */
     public Set<SCTConcept> getFullyDefinedConcepts() {
         return concepts.values().stream().filter((concept) -> {
             return !concept.isPrimitive();
@@ -163,7 +192,7 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
             startIndex = startingIndex.get(firstChar);
         }
                 
-        // TODO: Replace with binary search...
+        // TODO: Replace with binary search... Or a trie?
         
         boolean withinIndexBounds = (firstChar >= 'a' && firstChar <= 'z');
 
@@ -195,6 +224,8 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
 
     @Override
     public Set<SCTConcept> searchStarting(String term) {
+        //TODO: Replace with Binary Search or a Trie or something
+        
         term = term.toLowerCase();
         
         if (term.length() < 3) {
@@ -279,6 +310,11 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
         return results;
     }
 
+    /**
+     * Indicates if the given release includes stated relationships
+     * 
+     * @return 
+     */
     public boolean supportsStatedRelationships() {
         return false;
     }

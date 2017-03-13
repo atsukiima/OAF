@@ -3,7 +3,8 @@ package edu.njit.cs.saboc.blu.sno.sctdatasource;
 import java.io.File;
 
 /**
- *
+ * Class for storing various properties of a SNOMED CT release 
+ * 
  * @author Chris O
  */
 public class SCTReleaseInfo {

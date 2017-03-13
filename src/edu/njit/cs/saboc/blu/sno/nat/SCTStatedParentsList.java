@@ -7,7 +7,8 @@ import edu.njit.cs.saboc.nat.generic.gui.filterable.list.renderer.SimpleConceptR
 import edu.njit.cs.saboc.nat.generic.gui.panels.ConceptListPanel;
 
 /**
- *
+ * Concept list for displaying the stated parents of the focus concept
+ * 
  * @author Chris O
  */
 public class SCTStatedParentsList extends ConceptListPanel<SCTConcept> {

@@ -13,7 +13,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- *
+ * Factory for creating SNOMED CT target abstraction networks. For SNOMED CT
+ * target abstraction networks are based on the stated attribute relationships 
+ * of a concept.
+ * 
  * @author Chris O
  */
 public class SCTTargetAbstractionNetworkFactory extends TargetAbstractionNetworkFactory {

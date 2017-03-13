@@ -6,7 +6,8 @@ import edu.njit.cs.saboc.blu.sno.nat.SCTConceptBrowserDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 
 /**
- *
+ * Creates and displays a NAT frame for SNOMED CT
+ * 
  * @author Chris O
  */
 public class CreateAndDisplaySCTNAT extends CreateAndDisplayDialog<SCTConceptBrowserDataSource> {

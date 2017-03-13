@@ -15,7 +15,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 
 /**
- *
+ * Wizard panel for creating SNOMED CT Diff partial-area Taxonomies
+ * and Descriptive Delta Diff Partial-area Taxonomies
+ * 
  * @author Chris O
  */
 public class SCTDiffPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {

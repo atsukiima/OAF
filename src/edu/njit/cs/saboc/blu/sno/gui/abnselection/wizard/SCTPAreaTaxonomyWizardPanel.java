@@ -33,7 +33,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 /**
- *
+ * A wizard panel for creating SNOMED CT partial-area taxonomies
+ * 
  * @author Chris O
  */
 public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {

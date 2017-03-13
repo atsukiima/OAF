@@ -21,11 +21,15 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 /**
- *
+ * Panel that allows a user to open a SNOMED CT release.
+ * 
  * @author Chris O
  */
 public class LoadReleasePanel extends JPanel {
     
+    /**
+     * Listener for handling events related to loading a SNOMED CT release
+     */
     public interface LocalDataSourceListener {
         public void localDataSourceLoaded(SCTRelease dataSource);
         
@@ -34,6 +38,9 @@ public class LoadReleasePanel extends JPanel {
         public void localDataSourceUnloaded();
     }
 
+    /**
+     * A worker for monitoring the progress in loading a SNOMED CT release
+     */
     private class LoadMonitorTask extends SwingWorker {
 
         private final LocalLoadStateMonitor stateMonitor;
@@ -165,7 +172,12 @@ public class LoadReleasePanel extends JPanel {
                 final LocalLoadStateMonitor loadMonitor;
                 final SCTRelease dataSource;
                 
-                if (selectedFile.getAbsolutePath().contains("RF2Release") || selectedFile.getAbsolutePath().contains("RF2_Production")) {
+                // Determine which release format the release is in.
+                // Currently do this based on the name of the path
+                // where the release is located.
+                if (selectedFile.getAbsolutePath().contains("RF2Release") || 
+                        selectedFile.getAbsolutePath().contains("RF2_Production")) {
+                    
                     RF2ReleaseLoader rf2Importer = new RF2ReleaseLoader();
                     
                     loadMonitor = rf2Importer.getLoadStateMonitor();
@@ -216,6 +228,10 @@ public class LoadReleasePanel extends JPanel {
         }).start();
     }
 
+    /**
+     * Opens a dialog that allows a user to select a folder that contains one 
+     * or more SNOMED CT release folders.
+     */
     private void showReleaseFolderSelectionDialog() {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

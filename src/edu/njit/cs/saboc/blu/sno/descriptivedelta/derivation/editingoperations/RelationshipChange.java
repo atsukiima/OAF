@@ -5,7 +5,8 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 
 
 /**
- *
+ * Base class for defining a change to a concept's attribute relationship
+ * 
  * @author Chris O
  */
 public abstract class RelationshipChange {

@@ -6,7 +6,9 @@ import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.rootselection.S
 import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.rootselection.SelectOntologyRootPanel;
 
 /**
- *
+ * A panel for selecting a top-level SNOMED CT hierarchy or searching
+ * for a specific concept
+ * 
  * @author Chris O
  */
 public class SCTRootSelectionPanel extends BaseRootSelectionOptionsPanel {

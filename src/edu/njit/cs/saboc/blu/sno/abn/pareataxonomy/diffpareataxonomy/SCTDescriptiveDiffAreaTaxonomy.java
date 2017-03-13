@@ -8,7 +8,9 @@ import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.DescriptiveDelta;
 
 /**
- *
+ * A diff area taxonomy that includes descriptive delta
+ * change information
+ * 
  * @author Chris O
  */
 public class SCTDescriptiveDiffAreaTaxonomy extends DiffAreaTaxonomy {

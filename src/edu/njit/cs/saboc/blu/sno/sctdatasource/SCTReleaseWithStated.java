@@ -5,15 +5,21 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import java.util.Set;
 
 /**
- *
+ * A SNOMED CT release that includes the stated relationships of 
+ * each concept
+ * 
  * @author Chris
  */
 public class SCTReleaseWithStated extends SCTRelease {
     
+    /**
+     * A hierarchy based on the stated Is a relationships
+     * of each concept.
+     */
     private final Hierarchy<SCTConcept> statedHierarchy;
     
     public SCTReleaseWithStated(
-            SCTReleaseInfo releaseInfo,
+           SCTReleaseInfo releaseInfo,
            Hierarchy<SCTConcept> activeConceptHierarchy,
            Set<SCTConcept> allConcepts,
            Hierarchy<SCTConcept> statedHierarchy) {
@@ -27,6 +33,12 @@ public class SCTReleaseWithStated extends SCTRelease {
         return statedHierarchy;
     }
     
+    /**
+     * Returns a SNOMED CT release where the hierarchy is based on
+     * only stated hierarchical relationships
+     * 
+     * @return 
+     */
     public SCTRelease getStatedHierarchyRelease() {
         return new SCTRelease(
                 this.getReleaseInfo(), 
@@ -37,12 +49,5 @@ public class SCTReleaseWithStated extends SCTRelease {
     @Override
     public boolean supportsStatedRelationships() {
         return true;
-    }
-    
-    public SCTRelease asSCTRelease() {
-        return new SCTRelease(
-                this.getReleaseInfo(), 
-                this.getStatedHierarchy(), 
-                this.getAllConcepts());
     }
 }

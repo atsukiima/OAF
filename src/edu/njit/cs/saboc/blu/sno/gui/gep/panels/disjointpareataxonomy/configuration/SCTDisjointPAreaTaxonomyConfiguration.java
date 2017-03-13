@@ -21,10 +21,12 @@ public class SCTDisjointPAreaTaxonomyConfiguration extends DisjointPAreaTaxonomy
         super.setTextConfiguration(uiConfiguation);
     }
     
+    @Override
     public SCTDisjointPAreaTaxonomyUIConfiguration getUIConfiguration() {
         return (SCTDisjointPAreaTaxonomyUIConfiguration)super.getUIConfiguration();
     }
     
+    @Override
     public SCTDisjointPAreaTaxonomyTextConfiguration getTextConfiguration() {
         return (SCTDisjointPAreaTaxonomyTextConfiguration)super.getTextConfiguration();
     }

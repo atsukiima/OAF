@@ -33,8 +33,9 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 /**
- *
- * @author cro3
+ * Panel for creating abstraction networks from a SNOMED CT release.
+ * 
+ * @author Chris O
  */
 public class SCTAbNCreationPanel extends JPanel {
     

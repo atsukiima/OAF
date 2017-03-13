@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
+ * Stores the set of editing operations obtained by applying the descriptive delta process on a
+ * set of delta relationships.
+ * 
  * @author Chris O
  */
 public class DescriptiveDelta {
