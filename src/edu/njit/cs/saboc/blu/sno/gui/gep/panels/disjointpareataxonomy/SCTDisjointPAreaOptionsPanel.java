@@ -18,10 +18,11 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANAction
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfiguration;
 
 /**
- *
+ * Options panel for disjoint partial-areas
+ * 
  * @author Chris O
  */
-public class SCTDisjointPAreaOptionsPanel extends NodeOptionsPanel {
+public class SCTDisjointPAreaOptionsPanel extends NodeOptionsPanel<DisjointNode<PArea>> {
 
     public SCTDisjointPAreaOptionsPanel(SCTDisjointPAreaTaxonomyConfiguration config, boolean forAggregate) {
         

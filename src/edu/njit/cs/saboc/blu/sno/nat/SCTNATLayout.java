@@ -6,7 +6,8 @@ import edu.njit.cs.saboc.nat.generic.NATBrowserPanel;
 import edu.njit.cs.saboc.nat.generic.gui.layout.BasicNATAdjustableLayout;
 
 /**
- *
+ * SNOMED CT specific layout for the NAT. Displays SNOMED CT-specific panels.
+ * 
  * @author Chris O
  */
 public class SCTNATLayout extends BasicNATAdjustableLayout<SCTConcept> {

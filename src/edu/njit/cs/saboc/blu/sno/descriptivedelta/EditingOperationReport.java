@@ -12,7 +12,8 @@ import java.util.Set;
 
 
 /**
- *
+ * A report on which editing operations where applied on a given concept
+ * 
  * @author Chris O
  */
 public class EditingOperationReport {
@@ -30,6 +31,7 @@ public class EditingOperationReport {
         AttributeRelationshipLessRefined,
         RelationshipGroupChanged;
         
+        @Override
         public String toString() {
             switch (this) {
                 case AddedParent:

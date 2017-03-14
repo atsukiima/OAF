@@ -13,7 +13,9 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
 
 /**
- *
+ * Creates and displays a target AbN (i.e., ingredient abn) with the given arguments
+ * for the given SNOMED CT release.
+ * 
  * @author Chris O
  */
 public class CreateAndDisplayTargetAbN extends AbNCreateAndDisplayDialog<TargetAbstractionNetwork> {

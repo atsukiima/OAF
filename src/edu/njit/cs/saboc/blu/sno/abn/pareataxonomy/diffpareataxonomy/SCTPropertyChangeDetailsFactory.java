@@ -15,7 +15,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
+ * Factory method for computing change information about changes to 
+ * attribute relationships. Currently uses the stated attribute relationships
+ * of each concept for computing changes.
+ * 
  * @author Chris O
  */
 public class SCTPropertyChangeDetailsFactory implements PropertyChangeDetailsFactory {
@@ -58,6 +61,15 @@ public class SCTPropertyChangeDetailsFactory implements PropertyChangeDetailsFac
         return (Map<InheritableProperty, Set<Concept>>)(Map<?, ?>)toDomains;
     }
     
+    /**
+     * Determine which concepts are modeled with a given type of 
+     * attribute relationship
+     * 
+     * @param fromRelease
+     * @param toRelease
+     * @param fromTaxonomy
+     * @param toTaxonomy 
+     */
     private void initializeStatedAttributeRelationships(
             SCTRelease fromRelease,
             SCTRelease toRelease,

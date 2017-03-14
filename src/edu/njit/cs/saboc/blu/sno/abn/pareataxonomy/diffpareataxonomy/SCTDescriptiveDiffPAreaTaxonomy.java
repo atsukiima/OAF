@@ -9,7 +9,9 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import java.util.Set;
 
 /**
- *
+ * A diff partial-area taxonomy that includes descriptive delta
+ * change information
+ * 
  * @author Chris O
  */
 public class SCTDescriptiveDiffPAreaTaxonomy extends DiffPAreaTaxonomy {

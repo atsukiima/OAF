@@ -9,7 +9,8 @@ import javax.swing.JCheckBox;
 import javax.swing.SwingUtilities;
 
 /**
- *
+ * Panel for creating SNOMED CT Tribal Abstraction Networks. 
+ * 
  * @author Chris O
  */
 public class SCTTANDerivationWizardPanel extends TANDerivationWizardPanel {

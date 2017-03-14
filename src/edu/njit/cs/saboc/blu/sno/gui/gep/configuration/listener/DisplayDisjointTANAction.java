@@ -8,7 +8,8 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.AbNDisplayManager;
 import edu.njit.cs.saboc.blu.core.gui.listener.DisplayAbNAction;
 
 /**
- *
+ * Action for displaying a disjoint TAN
+ * 
  * @author Chris O
  */
 public class DisplayDisjointTANAction implements DisplayAbNAction<DisjointAbstractionNetwork> {

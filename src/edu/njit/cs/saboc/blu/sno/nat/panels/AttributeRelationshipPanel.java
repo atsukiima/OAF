@@ -30,7 +30,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 /**
- *
+ * A panel for displaying a concept's inferred (or stated) attribute relationships,
+ * with the option of showing the unique set of attribute relationships
+ * 
  * @author Chris O
  */
 public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayList<AttributeRelationship>> {
@@ -136,6 +138,11 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
         
         if(this.chkHideRelationshipGroups.isSelected()) {
             
+            // If relationship groups are hidden then attribute relationships are
+            // sorted by their type and then subsorted based on the longest path 
+            // depth of their target concepts, with the most specific concepts
+            // displayed last (i.e., deepest in the hierarchy displayed last).
+            
             Map<SCTConcept, ArrayList<AttributeRelationship>> uniqueRelsOfType = new HashMap<>();
             
             data.forEach((rel) -> {
@@ -226,10 +233,4 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
                     String.format("Attribute Relationships (%d)", data.size()))
             );
     }
-
-    @Override
-    protected void setFontSize(int fontSize) {
-        
-    }
-
 }

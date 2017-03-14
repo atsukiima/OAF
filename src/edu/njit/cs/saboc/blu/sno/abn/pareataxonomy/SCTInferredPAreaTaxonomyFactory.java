@@ -14,7 +14,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- *
+ * Factory for creating partial-area taxonomies from a concept's 
+ * inferred relationships (both hierarchical and attribute)
+ * 
  * @author Chris O
  */
 public class SCTInferredPAreaTaxonomyFactory extends PAreaTaxonomyFactory {

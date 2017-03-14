@@ -9,7 +9,9 @@ import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
 
 /**
- *
+ * A factory for creating a TAN from the stated hierarchical relationships
+ * of concepts.
+ * 
  * @author Chris O
  */
 public class SCTStatedTANFactory extends TANFactory {
