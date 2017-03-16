@@ -23,7 +23,9 @@ import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
 import java.util.Set;
 
 /**
- *
+ * Derives and displays a diff partial-area taxonomy derived using the given
+ * arguments
+ * 
  * @author Chris O
  */
 public class CreateAndDisplaySCTDiffPAreaTaxonomy extends AbNCreateAndDisplayDialog<DiffPAreaTaxonomy> {

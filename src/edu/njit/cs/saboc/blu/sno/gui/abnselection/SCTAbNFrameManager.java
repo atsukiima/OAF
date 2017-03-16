@@ -18,12 +18,13 @@ import edu.njit.cs.saboc.blu.sno.gui.graphframe.initializers.SCTMultiAbNGraphFra
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.nat.SCTConceptBrowserDataSource;
 import edu.njit.cs.saboc.blu.sno.nat.SCTNATLayout;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.nat.generic.NATBrowserFrame;
 import javax.swing.JFrame;
 
 /**
- *
+ * A class for creating and displaying new abstraction network and NAT
+ * frames (and any other kind of frame) in the OAF
+ * 
  * @author Chris
  */
 public class SCTAbNFrameManager extends AbNDisplayManager  {

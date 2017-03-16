@@ -6,7 +6,8 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.diff.explain.PropertyChangeD
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 
 /**
- *
+ * A factory for creating SNOMED CT diff partial-area taxonomies
+ * 
  * @author Chris O
  */
 public class SCTDiffPAreaTaxonomyFactory extends DiffPAreaTaxonomyFactory {

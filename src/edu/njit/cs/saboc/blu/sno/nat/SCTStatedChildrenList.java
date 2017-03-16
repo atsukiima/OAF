@@ -6,7 +6,8 @@ import edu.njit.cs.saboc.nat.generic.gui.filterable.list.renderer.SimpleConceptR
 import edu.njit.cs.saboc.nat.generic.gui.panels.ConceptListPanel;
 
 /**
- *
+ * A concept list that displays the stated children of the focus concept
+ * 
  * @author Chris O
  */
 public class SCTStatedChildrenList extends ConceptListPanel<SCTConcept> {

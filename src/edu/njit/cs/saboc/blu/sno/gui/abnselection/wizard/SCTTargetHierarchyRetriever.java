@@ -11,7 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
+ * Target AbN retriever class for obtaining the subhierarchy of concepts that are 
+ * targets (or ancestors of targets) for a given type of attribute relationship
+ * 
  * @author Chris O
  */
 public class SCTTargetHierarchyRetriever implements TargetHierarchyRetriever {

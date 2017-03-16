@@ -12,7 +12,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
+ * A target AbN retriever class for retrieving the set of attribute relationships 
+ * (stored as Inheritable properties) used to define concepts in a 
+ * given subhierarchy of concepts.
+ * 
  * @author Chris O
  */
 public class SCTInheritablePropertyRetriever implements TargetAbNDerivationWizardPanel.InheritablePropertyRetriever {

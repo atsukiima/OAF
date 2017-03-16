@@ -6,11 +6,14 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import java.awt.Color;
 
 /**
- *
- * @author Chris
+ * A concept hierarchy painter that paints primitive concepts
+ * as purple
+ * 
+ * @author Chris O
  */
 public class SCTConceptPainter extends ConceptPainter {
     
+    @Override
     public Color getEntryColor(ConceptEntry entry) {
         SCTConcept concept = (SCTConcept)entry.getConcept();
         

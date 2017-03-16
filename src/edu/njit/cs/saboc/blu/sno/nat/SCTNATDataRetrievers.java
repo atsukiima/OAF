@@ -10,11 +10,18 @@ import java.util.ArrayList;
 import java.util.Set;
 
 /**
- *
+ * SNOMED CT-specific data retrievers for the NAT
+ * 
  * @author Chris O
  */
 public class SCTNATDataRetrievers {
     
+    /**
+     * Returns the attribute relationships of the given concept
+     * 
+     * @param dataSource
+     * @return 
+     */
     public static DataRetriever<SCTConcept, ArrayList<AttributeRelationship>> getAttributeRelationshipRetriever(SCTConceptBrowserDataSource dataSource) {
         
         return new DataRetriever<SCTConcept, ArrayList<AttributeRelationship>>() {
@@ -31,6 +38,12 @@ public class SCTNATDataRetrievers {
         };
     }
     
+    /**
+     * Retriever for obtaining the stated parents of the given concept
+     * 
+     * @param dataSource
+     * @return 
+     */
     public static DataRetriever<SCTConcept, ArrayList<SCTConcept>> getStatedParentRetriever(
             SCTConceptBrowserDataSource dataSource) {
         
@@ -51,6 +64,12 @@ public class SCTNATDataRetrievers {
         };
     }
     
+    /**
+     * Retriever for obtaining the stated children (i.e., concepts with the given concept as a stated parent)
+     * 
+     * @param dataSource
+     * @return 
+     */
     public static DataRetriever<SCTConcept, ArrayList<SCTConcept>> getStatedChildrenRetriever(
             SCTConceptBrowserDataSource dataSource) {
         
@@ -69,6 +88,13 @@ public class SCTNATDataRetrievers {
         };
     }
     
+    /**
+     * Retriever for obtaining the stated siblings of a concept (i.e., concepts 
+     * with at least one of the same stated parents).
+     * 
+     * @param dataSource
+     * @return 
+     */
     public static DataRetriever<SCTConcept, ArrayList<SCTConcept>> getStatedSiblingRetriever(
             SCTConceptBrowserDataSource dataSource) {
         
@@ -87,6 +113,13 @@ public class SCTNATDataRetrievers {
         };
     }
     
+    /**
+     * Retriever for obtaining the stated strict siblings of the given concept 
+     * (i.e., concepts with the exact same set of stated parents).
+     * 
+     * @param dataSource
+     * @return 
+     */
     public static DataRetriever<SCTConcept, ArrayList<SCTConcept>> getStatedStrictSiblingRetriever(
             SCTConceptBrowserDataSource dataSource) {
         
@@ -105,6 +138,12 @@ public class SCTNATDataRetrievers {
         };
     }
     
+    /**
+     * Returns the stated attribute relationships of the given concept
+     * 
+     * @param dataSource
+     * @return 
+     */
     public static DataRetriever<SCTConcept, ArrayList<AttributeRelationship>> getStatedAttributRelationshipsRetriever(
             SCTConceptBrowserDataSource dataSource) {
         
@@ -123,6 +162,13 @@ public class SCTNATDataRetrievers {
         };
     }
     
+    /**
+     * Returns a sorted list of attribute relationships, where the relationships are
+     * sorted by type and then subsorted based on the name of their target.
+     * 
+     * @param attributeRels
+     * @return 
+     */
     public static ArrayList<AttributeRelationship> getSortedAttributeRelationships(Set<AttributeRelationship> attributeRels) {
         ArrayList<AttributeRelationship> relationships = new ArrayList<>(attributeRels);
 

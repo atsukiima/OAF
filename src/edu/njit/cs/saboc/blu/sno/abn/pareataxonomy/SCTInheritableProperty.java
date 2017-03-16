@@ -5,7 +5,8 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.InheritableProperty;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 
 /**
- *
+ * Wrapper around SNOMED CT's attribute relationships.
+ * 
  * @author Chris O
  */
 public class SCTInheritableProperty extends InheritableProperty<Long, SCTConcept> {

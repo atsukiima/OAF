@@ -6,7 +6,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 /**
- *
+ * The main panel of the SNOMED CT module of the OAF
+ * 
  * @author Chris O
  */
 public class SCTMainPanel extends JPanel {

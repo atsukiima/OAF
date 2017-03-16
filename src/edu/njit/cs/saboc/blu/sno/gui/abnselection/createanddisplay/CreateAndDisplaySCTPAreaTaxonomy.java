@@ -15,7 +15,8 @@ import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
 import java.util.Set;
 
 /**
- *
+ * Creates and displays a partial-area taxonomy for a given SNOMED CT release
+ * 
  * @author Kevyn
  */
 public class CreateAndDisplaySCTPAreaTaxonomy extends AbNCreateAndDisplayDialog<PAreaTaxonomy> {

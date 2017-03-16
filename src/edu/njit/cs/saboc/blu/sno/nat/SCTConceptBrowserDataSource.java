@@ -16,7 +16,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- *
+ * SNOMED CT-specific data source for the NAT concept browser
+ * 
  * @author Chris O
  */
 public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTConcept> {

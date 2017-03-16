@@ -8,7 +8,8 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.AbNDisplayManager;
 import edu.njit.cs.saboc.blu.core.gui.listener.DisplayAbNAction;
 
 /**
- *
+ * Action for displaying a disjoint partial-area taxonomy
+ * 
  * @author Chris O
  */
 public class DisplayDisjointTaxonomyAction implements DisplayAbNAction<DisjointAbstractionNetwork> {
