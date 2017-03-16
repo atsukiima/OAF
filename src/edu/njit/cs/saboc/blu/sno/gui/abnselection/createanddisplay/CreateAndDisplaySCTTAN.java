@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.njit.cs.saboc.blu.sno.gui.abnselection.createanddisplay;
 
 import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
@@ -18,7 +13,9 @@ import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
 import java.util.Set;
 
 /**
- *
+ * Creates and displays a TAN with the given arguments for the given SNOMED CT
+ * release.
+ * 
  * @author Kevyn
  */
 public class CreateAndDisplaySCTTAN extends AbNCreateAndDisplayDialog<ClusterTribalAbstractionNetwork> {
@@ -43,12 +40,12 @@ public class CreateAndDisplaySCTTAN extends AbNCreateAndDisplayDialog<ClusterTri
     }
 
     @Override
-    protected void displayAbN(ClusterTribalAbstractionNetwork abn) {
+    protected void display(ClusterTribalAbstractionNetwork abn) {
         super.getDisplayFrameListener().displayTribalAbstractionNetwork(abn);
     }
 
     @Override
-    protected ClusterTribalAbstractionNetwork deriveAbN() {
+    protected ClusterTribalAbstractionNetwork create() {
         Hierarchy<SCTConcept> hierarchy;
 
         TANFactory factory;

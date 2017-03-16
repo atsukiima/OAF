@@ -10,7 +10,7 @@ import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.diffpareataxonomy.SCTDescript
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.DescriptiveDelta;
 import edu.njit.cs.saboc.blu.sno.descriptivedelta.EditingOperationReport;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
-import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTEntityNameUtils;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTEntityNameConfiguration;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -22,7 +22,7 @@ import java.util.Set;
 public class SCTDiffPAreaTaxonomyTextConfiguration extends DiffPAreaTaxonomyTextConfiguration {
 
     public SCTDiffPAreaTaxonomyTextConfiguration(DiffPAreaTaxonomy taxonomy) {
-        super(taxonomy);
+        super(new SCTEntityNameConfiguration(), taxonomy);
     }
 
     @Override
@@ -30,26 +30,6 @@ public class SCTDiffPAreaTaxonomyTextConfiguration extends DiffPAreaTaxonomyText
         return "[SCT DIFF AREA HELP DESCRIPTION]";
     }
 
-    @Override
-    public String getConceptTypeName(boolean plural) {
-        return SCTEntityNameUtils.getConceptTypeName(plural);
-    }
-
-    @Override
-    public String getPropertyTypeName(boolean plural) {
-        return SCTEntityNameUtils.getPropertyTypeName(plural);
-    }
-
-    @Override
-    public String getParentConceptTypeName(boolean plural) {
-        return SCTEntityNameUtils.getParentConceptTypeName(plural);
-    }
-
-    @Override
-    public String getChildConceptTypeName(boolean plural) {
-        return SCTEntityNameUtils.getChildConceptTypeName(plural);
-    }
-    
     @Override
     public String getNodeHelpDescription(PArea parea) {
         return "[SCT DIFF PAREA HELP DESCRIPTION]";

@@ -5,7 +5,6 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,7 +12,8 @@ import java.util.Scanner;
 import java.util.Set;
 
 /**
- *
+ * Loads relationship delta files from a SNOMED CT release
+ * 
  * @author Chris O
  */
 public class DeltaRelationshipLoader {
@@ -55,9 +55,9 @@ public class DeltaRelationshipLoader {
 
                 long characteristicType = Long.parseLong(parts[8]);
                 
-                SCTConcept source = release.getConceptFromId(sourceId);
-                SCTConcept type = release.getConceptFromId(typeId);
-                SCTConcept target = release.getConceptFromId(targetId);
+                SCTConcept source = release.getConceptFromId(sourceId).get();
+                SCTConcept type = release.getConceptFromId(typeId).get();
+                SCTConcept target = release.getConceptFromId(targetId).get();
 
                 DeltaRelationship rel = new DeltaRelationship(type, target, group, characteristicType, active);
 

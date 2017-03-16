@@ -40,4 +40,19 @@ public class AttributeRelationship {
     public long getCharacteristicType() {
         return characteristicType;
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof AttributeRelationship) {
+            AttributeRelationship other = (AttributeRelationship)o;
+            
+            return equalsIgnoreGroup(other) && (this.getGroup() == other.getGroup());
+        }
+        
+        return false;
+    }
+    
+    public boolean equalsIgnoreGroup(AttributeRelationship other) {
+        return this.getType().equals(other.getType()) && this.getTarget() == other.getTarget();
+    }
 }

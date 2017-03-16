@@ -6,7 +6,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
+ * The set of delta relationships found in the stated and inferred relationships
+ * delta files
+ * 
  * @author Chris O
  */
 public class DeltaRelationships {

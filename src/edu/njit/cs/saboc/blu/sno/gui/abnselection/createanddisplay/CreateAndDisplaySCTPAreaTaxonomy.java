@@ -7,13 +7,16 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomyGenerator;
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInferredPAreaTaxonomyFactory;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInheritableProperty;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTStatedRelationshipsPAreaTaxonomyFactory;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
 import java.util.Set;
 
 /**
- *
+ * Creates and displays a partial-area taxonomy for a given SNOMED CT release
+ * 
  * @author Kevyn
  */
 public class CreateAndDisplaySCTPAreaTaxonomy extends AbNCreateAndDisplayDialog<PAreaTaxonomy> {
@@ -24,6 +27,8 @@ public class CreateAndDisplaySCTPAreaTaxonomy extends AbNCreateAndDisplayDialog<
     
     private final Set<SCTInheritableProperty> availableProperties;
     private final Set<SCTInheritableProperty> selectedProperties;
+    
+    private final boolean useStatedRelationships;
 
     public CreateAndDisplaySCTPAreaTaxonomy(
             String text, 
@@ -31,7 +36,8 @@ public class CreateAndDisplaySCTPAreaTaxonomy extends AbNCreateAndDisplayDialog<
             Set<SCTInheritableProperty> availableProperties,
             Set<SCTInheritableProperty> selectedProperties,
             SCTAbNFrameManager displayFrameListener, 
-            SCTRelease release) {
+            SCTRelease release,
+            boolean useStatedRelationships) {
         
         super(text, displayFrameListener);
         
@@ -40,19 +46,31 @@ public class CreateAndDisplaySCTPAreaTaxonomy extends AbNCreateAndDisplayDialog<
         this.release = release;
         this.availableProperties = availableProperties;
         this.selectedProperties = selectedProperties;
+        
+        this.useStatedRelationships = useStatedRelationships;
     }
 
     @Override
-    protected void displayAbN(PAreaTaxonomy taxonomy) {
+    protected void display(PAreaTaxonomy taxonomy) {
         super.getDisplayFrameListener().displayPAreaTaxonomy(taxonomy);
     }
 
     @Override
-    protected PAreaTaxonomy deriveAbN() {
-        Hierarchy<SCTConcept> conceptHierarchy = release.getConceptHierarchy().getSubhierarchyRootedAt(selectedRoot);
+    protected PAreaTaxonomy create() {
         
-        PAreaTaxonomyFactory factory = new SCTInferredPAreaTaxonomyFactory(release, conceptHierarchy);
-
+        Hierarchy<SCTConcept> conceptHierarchy;
+        PAreaTaxonomyFactory factory;
+        
+        if(useStatedRelationships) {
+            SCTReleaseWithStated statedRelease = (SCTReleaseWithStated)release;
+            
+            conceptHierarchy = statedRelease.getStatedHierarchy().getSubhierarchyRootedAt(selectedRoot);
+            factory = new SCTStatedRelationshipsPAreaTaxonomyFactory(statedRelease, selectedRoot); 
+        } else {
+            conceptHierarchy = release.getConceptHierarchy().getSubhierarchyRootedAt(selectedRoot);
+            factory = new SCTInferredPAreaTaxonomyFactory(release, conceptHierarchy);
+        }
+        
         PAreaTaxonomyGenerator taxonomyGenerator = new PAreaTaxonomyGenerator();
         PAreaTaxonomy taxonomy = taxonomyGenerator.derivePAreaTaxonomy(factory, conceptHierarchy);
         

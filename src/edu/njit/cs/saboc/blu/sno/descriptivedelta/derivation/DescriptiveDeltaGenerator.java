@@ -19,7 +19,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
+ * Generates a descriptive delta from a set of delta relationships.
+ * 
+ * Requires two consecutive SNOMED CT releases.
+ * 
  * @author Chris O
  */
 public class DescriptiveDeltaGenerator {
@@ -30,6 +33,7 @@ public class DescriptiveDeltaGenerator {
             SCTConcept subhierarchyRoot,
             DeltaRelationships deltaRelationships) {
         
+        // Step 1: Identify activated and retired concepts
         Set<SCTConcept> toInactiveConcepts = toRelease.getInactiveConcepts();
         
         Set<SCTConcept> allRetiredConcepts = new HashSet<>(fromRelease.getActiveConcepts());
@@ -41,6 +45,8 @@ public class DescriptiveDeltaGenerator {
         allActivatedConcepts.removeAll(toInactiveConcepts);
         
         
+        // Step 2: Identify differences in the set of active concepts in the
+        // subhierarchy of concepts
         final Hierarchy<SCTConcept> beforeSubhierarchy = fromRelease.getConceptHierarchy().getSubhierarchyRootedAt(subhierarchyRoot);
         Set<SCTConcept> beforeConcepts = beforeSubhierarchy.getNodes();
 
@@ -57,6 +63,8 @@ public class DescriptiveDeltaGenerator {
         
         Set<SCTConcept> editedConcepts = new HashSet<>();
         
+        // Step 3: Identify all of the concepts that had one or more 
+        // stated or inferred editing operations applied
         statedDeltaRelationships.keySet().forEach( (editedConcept) -> {            
             if (allSubhierarchyConcepts.contains(editedConcept)) {
                 editedConcepts.add(editedConcept);
@@ -77,6 +85,7 @@ public class DescriptiveDeltaGenerator {
         int statedDeltaEntries = 0;
         int inferredDeltaEntries = 0;
         
+        // Step 4: Found the total number of relevant delta entries
         for(SCTConcept editedConcept : editedConceptSet) {
             if(statedDeltaRelationships.containsKey(editedConcept)) {
                 statedDeltaEntries += statedDeltaRelationships.get(editedConcept).size();
@@ -87,6 +96,7 @@ public class DescriptiveDeltaGenerator {
             }
         }
         
+        // Step 5: Compute the descriptive delta result
         Set<SCTConcept> subhierarchyRetiredConcepts = SetUtilities.getSetIntersection(beforeConcepts, toInactiveConcepts);
         Set<SCTConcept> subhierarchyActivatedConcepts = SetUtilities.getSetIntersection(afterConcepts, allActivatedConcepts);
 
@@ -114,6 +124,16 @@ public class DescriptiveDeltaGenerator {
         );
     }
     
+    /**
+     * Identifies the editing operations that were applied to a set of concepts,
+     * based on the set of delta relationships provided.
+     * 
+     * @param release
+     * @param subhierarchyConcepts
+     * @param relChanges
+     * 
+     * @return 
+     */
     public Map<SCTConcept, EditingOperationReport> identifyEditingOperations(
             SCTRelease release,
             Set<SCTConcept> subhierarchyConcepts,
@@ -121,13 +141,13 @@ public class DescriptiveDeltaGenerator {
         
         Map<SCTConcept, EditingOperationReport> reports = new HashMap<>();
         
-        final SCTConcept IS_A = release.getConceptFromId(116680003l);
-
+        final SCTConcept IS_A = release.getConceptFromId(116680003l).get();
         relChanges.forEach((sourceConcept, changes) -> {
 
             if (subhierarchyConcepts.contains(sourceConcept)) {
                 EditingOperationReport report = new EditingOperationReport(sourceConcept);
                 
+                // Step 1: Identify the sets of activated and retired relationships 
                 Set<DeltaRelationship> activatedRelationships = new HashSet<>();
                 Set<DeltaRelationship> retiredRelationships = new HashSet<>();
                 
@@ -144,7 +164,11 @@ public class DescriptiveDeltaGenerator {
                 
                 Set<DeltaRelationship> matchedActiveRels = new HashSet<>();
                 
+                // Step 2: For each retired relationship, attempt to match it to an activated relationship.
+                // If that isn't possible then the relationship was simply removed
                 retiredRelationships.forEach((rel) -> {
+                    
+                    // Step 2a: Handle changes to parents
                     if (rel.getType().equals(IS_A)) {
                         SCTConcept retiredParent = rel.getTarget();
                         
@@ -197,7 +221,7 @@ public class DescriptiveDeltaGenerator {
                             });
                         }
 
-                    } else {
+                    } else { // Step 2b: Handle a change to an attribute relationship
 
                         SCTConcept retiredRelType = rel.getType();
                         SCTConcept retiredRelTarget = rel.getTarget();
@@ -290,6 +314,16 @@ public class DescriptiveDeltaGenerator {
         return reports;
     }
     
+    /**
+     * For a given retired relationship, this method determines if there are 
+     * any activated relationships of the same type and target but in a different
+     * relationship group. Returns the set of matched activated relationships.
+     * 
+     * @param retiredRel
+     * @param activeRels
+     * 
+     * @return 
+     */
     private Set<DeltaRelationship> getModifiedRelGroup(
             DeltaRelationship retiredRel, 
             Set<DeltaRelationship> activeRels) {
@@ -309,7 +343,16 @@ public class DescriptiveDeltaGenerator {
     }
     
     /**
-     * Finds relationships that have targets that are more refined than the given retired relationship
+     * For a given retired relationship, tries to find matching 
+     * activated relationships of the same type but their 
+     * target is a descendant of the original target. Returns
+     * the set of matched activated relationships.
+     * 
+     * @param dataSource
+     * @param retiredRel
+     * @param activeRels
+     * 
+     * @return 
      */
     private Set<DeltaRelationship> getMoreRefinedRels(
             SCTRelease dataSource,
@@ -333,6 +376,18 @@ public class DescriptiveDeltaGenerator {
         return targetRefinedRels;
     }
     
+    /**
+     * For a given retired relationship, tries to find matching 
+     * activated relationships of the same type but their 
+     * target is an ancestor of the original target. Returns
+     * the set of matched activated relationships.
+     * 
+     * @param dataSource
+     * @param retiredRel
+     * @param activeRels
+     * 
+     * @return 
+     */
     private Set<DeltaRelationship> getLessRefinedRels(
             SCTRelease dataSource,
             DeltaRelationship retiredRel, 
@@ -357,6 +412,18 @@ public class DescriptiveDeltaGenerator {
         return targetRefinedRels;
     }
 
+    /**
+     * For a given retired relationship, tries to find matching 
+     * activated relationships of the same type but their 
+     * target is neither an ancestor or descendant (or equal to)
+     * the original target.
+     * 
+     * @param dataSource
+     * @param retiredRel
+     * @param activeRels
+     * 
+     * @return 
+     */
     private HashSet<DeltaRelationship> getChangedRels(
             SCTRelease dataSource,
             DeltaRelationship retiredRel, 
@@ -374,5 +441,4 @@ public class DescriptiveDeltaGenerator {
         
         return changedRels;
     }
-    
 }

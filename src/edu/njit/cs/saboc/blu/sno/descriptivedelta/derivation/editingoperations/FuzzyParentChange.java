@@ -4,7 +4,9 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import java.util.Set;
 
 /**
- *
+ * A change in a concept's parents where any or all of the potential new parents
+ * replaced a single parent
+ * 
  * @author Chris O
  */
 public class FuzzyParentChange extends FuzzyRelationshipChange implements ParentChange {

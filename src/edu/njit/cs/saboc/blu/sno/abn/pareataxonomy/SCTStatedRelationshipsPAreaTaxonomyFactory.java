@@ -18,11 +18,16 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
+ * Factory for creating partial-area taxonomies from a concept's stated relationships
+ * 
  * @author Chris O
  */
 public class SCTStatedRelationshipsPAreaTaxonomyFactory extends PAreaTaxonomyFactory {
     
+    /**
+     * Visitor for computing the introduction and inheritance of attribute relationships
+     * throughout a concept hierarchy (based on the stated hierarchical relationships)
+     */
     private class SCTStatedRelationshipsVisitor extends TopologicalVisitor<SCTStatedConcept> {
         
         private final Map<SCTStatedConcept, Set<SCTInheritableProperty>> inheritedStatedRelationships = new HashMap<>();

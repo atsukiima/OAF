@@ -4,7 +4,8 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import java.util.Set;
 
 /**
- *
+ * A change where its
+ * 
  * @author Chris O
  */
 public class FuzzyRelationshipChange extends RelationshipChange {

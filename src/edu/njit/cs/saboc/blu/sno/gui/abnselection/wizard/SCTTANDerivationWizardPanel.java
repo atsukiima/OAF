@@ -9,7 +9,8 @@ import javax.swing.JCheckBox;
 import javax.swing.SwingUtilities;
 
 /**
- *
+ * Panel for creating SNOMED CT Tribal Abstraction Networks. 
+ * 
  * @author Chris O
  */
 public class SCTTANDerivationWizardPanel extends TANDerivationWizardPanel {
@@ -22,7 +23,7 @@ public class SCTTANDerivationWizardPanel extends TANDerivationWizardPanel {
             TANConfiguration config, 
             DeriveTANAction derivationAction) {
         
-        super(config, derivationAction);
+        super(config, derivationAction, new SCTRootSelectionPanel(config));
         
         this.chkUseStatedRelationships = new JCheckBox("<html>Use Stated <i>Is a</i> Relationships");
         this.chkUseStatedRelationships.addActionListener( (ae) -> {

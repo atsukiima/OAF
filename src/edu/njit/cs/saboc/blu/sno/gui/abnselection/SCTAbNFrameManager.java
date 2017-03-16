@@ -15,15 +15,20 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.FrameCreationAction;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.MultiAbNGraphFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.SCTDiffPAreaTaxonomyGraphFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.initializers.SCTMultiAbNGraphFrameInitializers;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
+import edu.njit.cs.saboc.blu.sno.nat.SCTConceptBrowserDataSource;
+import edu.njit.cs.saboc.blu.sno.nat.SCTNATLayout;
+import edu.njit.cs.saboc.nat.generic.NATBrowserFrame;
 import javax.swing.JFrame;
 
 /**
- *
+ * A class for creating and displaying new abstraction network and NAT
+ * frames (and any other kind of frame) in the OAF
+ * 
  * @author Chris
  */
 public class SCTAbNFrameManager extends AbNDisplayManager  {
     
-        
     private final JFrame mainFrame;
     
     public SCTAbNFrameManager(JFrame mainFrame, FrameCreationAction fca) {
@@ -103,5 +108,19 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
         frame.displayDiffPAreaTaxonomy(diffTaxonomy);
         
         super.getFrameCreationAction().displayFrame(frame);
+    }
+    
+    
+    
+    public void displayConceptBrowserFrame(SCTConceptBrowserDataSource dataSource) {
+        
+        NATBrowserFrame<SCTConcept> browserFrame = new NATBrowserFrame<>(
+            mainFrame,
+            dataSource, 
+            new SCTNATLayout(dataSource));
+        
+        browserFrame.nagivateTo(dataSource.getOntology().getConceptHierarchy().getRoot());
+        
+        super.getFrameCreationAction().displayFrame(browserFrame);
     }
 }

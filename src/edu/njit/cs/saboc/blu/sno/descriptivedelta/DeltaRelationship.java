@@ -4,10 +4,12 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 
 /**
- *
+ * A relationship that may be active or inactive in a given release
+ * 
  * @author Chris O
  */
 public class DeltaRelationship extends AttributeRelationship {
+    
     private final boolean active;
     
     public DeltaRelationship(

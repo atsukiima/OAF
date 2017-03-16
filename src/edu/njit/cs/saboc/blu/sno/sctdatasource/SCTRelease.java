@@ -11,15 +11,20 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
+ * A SNOMED CT release loaded from a local source
  * 
  * @author Chris O
  */
 public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept> {
 
+    /**
+     * An entry for a description, used for searching
+     */
     private class DescriptionEntry {
 
         public Description description;
@@ -32,6 +37,7 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
     }
 
     private final Map<Long, SCTConcept> concepts = new HashMap<>();
+    
 
     // TODO: This needs to go away and be replaced by something better.
     private final HashMap<Character, Integer> startingIndex = new HashMap<>();
@@ -39,6 +45,8 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
     private final ArrayList<DescriptionEntry> descriptions;
     
     private final SCTReleaseInfo releaseInfo;
+    
+    private final Set<SCTConcept> subhierarchiesWithAttributeRels;
     
     public SCTRelease(
             SCTReleaseInfo releaseInfo,
@@ -50,6 +58,18 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
         this.releaseInfo = releaseInfo;
                 
         this.descriptions = new ArrayList<>();
+        
+        subhierarchiesWithAttributeRels = new HashSet<>();
+        
+        activeConceptHierarchy.getChildren(
+                activeConceptHierarchy.getRoot()).forEach( (root) -> {
+            
+            Hierarchy<SCTConcept> hierarchy = activeConceptHierarchy.getSubhierarchyRootedAt(root);
+            
+            if(hierarchy.getNodes().stream().anyMatch( (p -> !p.getAttributeRelationships().isEmpty()))) {
+                subhierarchiesWithAttributeRels.add(root);
+            }
+        });
         
         allConcepts.forEach( (concept) -> {
             concepts.put(concept.getID(), concept);
@@ -83,43 +103,72 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
         return releaseInfo;
     }
     
+    public Set<SCTConcept> getHierarchiesWithAttributeRelationships() {
+        return subhierarchiesWithAttributeRels;
+    }
+    
     @Override
     public Hierarchy<SCTConcept> getConceptHierarchy() {
         return super.getConceptHierarchy();
     }
 
-    public SCTConcept getConceptFromId(long id) {
-        return concepts.get(id);
+    public Optional<SCTConcept> getConceptFromId(long id) {
+        return Optional.ofNullable(concepts.get(id));
     }
     
+    /**
+     * Returns all concepts in the release (active and retired)
+     * 
+     * @return 
+     */
     public Set<SCTConcept> getAllConcepts() {
         return concepts.values().stream().collect(Collectors.toSet());
     }
     
+    /**
+     * Returns the set of active concepts
+     * 
+     * @return 
+     */
     public Set<SCTConcept> getActiveConcepts() {
         return concepts.values().stream().filter((concept) -> {
            return concept.isActive();
         }).collect(Collectors.toSet());
     }
     
+    /**
+     * Returns the set of currently inactive concepts
+     * 
+     * @return 
+     */
     public Set<SCTConcept> getInactiveConcepts() {
         return concepts.values().stream().filter((concept) -> {
             return !concept.isActive();
         }).collect(Collectors.toSet());
     }
     
+    /**
+     * Returns the set of primitive concepts
+     * 
+     * @return 
+     */
     public Set<SCTConcept> getPrimitiveConcepts() {
         return concepts.values().stream().filter((concept) -> {
             return concept.isPrimitive();
         }).collect(Collectors.toSet());
     }
     
+    /**
+     * Returns the set of fully defined concepts
+     * 
+     * @return 
+     */
     public Set<SCTConcept> getFullyDefinedConcepts() {
         return concepts.values().stream().filter((concept) -> {
             return !concept.isPrimitive();
         }).collect(Collectors.toSet());
     }
-
+    
     @Override
     public Set<SCTConcept> searchExact(String term) {
         
@@ -143,7 +192,7 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
             startIndex = startingIndex.get(firstChar);
         }
                 
-        // TODO: Replace with binary search...
+        // TODO: Replace with binary search... Or a trie?
         
         boolean withinIndexBounds = (firstChar >= 'a' && firstChar <= 'z');
 
@@ -175,6 +224,8 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
 
     @Override
     public Set<SCTConcept> searchStarting(String term) {
+        //TODO: Replace with Binary Search or a Trie or something
+        
         term = term.toLowerCase();
         
         if (term.length() < 3) {
@@ -222,6 +273,7 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
         return results;
     }
 
+    
     @Override
     public Set<SCTConcept> searchAnywhere(String term) {
 
@@ -258,6 +310,11 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
         return results;
     }
 
+    /**
+     * Indicates if the given release includes stated relationships
+     * 
+     * @return 
+     */
     public boolean supportsStatedRelationships() {
         return false;
     }

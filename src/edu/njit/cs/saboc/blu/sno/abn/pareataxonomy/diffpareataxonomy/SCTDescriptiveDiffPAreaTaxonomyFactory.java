@@ -14,7 +14,9 @@ import edu.njit.cs.saboc.blu.sno.descriptivedelta.DescriptiveDelta;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 
 /**
- *
+ * Factory for creating partial-area taxonomies with descriptive delta
+ * change information. 
+ * 
  * @author Chris O
  */
 public class SCTDescriptiveDiffPAreaTaxonomyFactory extends DiffPAreaTaxonomyFactory {

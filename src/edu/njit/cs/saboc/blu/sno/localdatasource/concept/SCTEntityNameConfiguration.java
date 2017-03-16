@@ -1,11 +1,15 @@
 package edu.njit.cs.saboc.blu.sno.localdatasource.concept;
 
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.configuration.OntologyEntityNameConfiguration;
+
 /**
  *
  * @author Chris O
  */
-public class SCTEntityNameUtils {
-    public static String getConceptTypeName(boolean plural) {
+public class SCTEntityNameConfiguration implements OntologyEntityNameConfiguration {
+    
+    @Override
+    public String getConceptTypeName(boolean plural) {
         if(plural) {
             return "Concepts";
         } else {
@@ -13,7 +17,8 @@ public class SCTEntityNameUtils {
         }
     }
     
-    public static String getPropertyTypeName(boolean plural) {
+    @Override
+    public String getPropertyTypeName(boolean plural) {
         if(plural) {
             return "Attribute relationships";
         } else {
@@ -21,7 +26,8 @@ public class SCTEntityNameUtils {
         }
     }
 
-    public static String getParentConceptTypeName(boolean plural) {
+    @Override
+    public String getParentConceptTypeName(boolean plural) {
         if(plural) {
             return "Parents";
         } else {
@@ -29,7 +35,8 @@ public class SCTEntityNameUtils {
         }
     }
 
-    public static String getChildConceptTypeName(boolean plural) {
+    @Override
+    public String getChildConceptTypeName(boolean plural) {
         if(plural) {
             return "Children";
         } else {
