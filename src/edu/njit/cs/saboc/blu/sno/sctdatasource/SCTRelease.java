@@ -44,6 +44,8 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
     
     private final Set<SCTConcept> subhierarchiesWithAttributeRels;
     
+    private final Set<SCTConcept> attributeRelationshipTypes;
+    
     public SCTRelease(
             SCTReleaseInfo releaseInfo,
             Hierarchy<SCTConcept> activeConceptHierarchy, 
@@ -55,8 +57,9 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
                 
         this.descriptions = new ArrayList<>();
         
-        subhierarchiesWithAttributeRels = new HashSet<>();
+        this.subhierarchiesWithAttributeRels = new HashSet<>();
         
+
         activeConceptHierarchy.getChildren(
                 activeConceptHierarchy.getRoot()).forEach( (root) -> {
             
@@ -74,6 +77,8 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
                 descriptions.add(new DescriptionEntry(d, concept));
             });
         });
+        
+        this.attributeRelationshipTypes = activeConceptHierarchy.getSubhierarchyRootedAt(this.getConceptFromId(410662002l).get()).getNodes();
 
         Collections.sort(descriptions, (a, b) -> a.description.getTerm().compareToIgnoreCase(b.description.getTerm()));
 
@@ -101,6 +106,10 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
     
     public Set<SCTConcept> getHierarchiesWithAttributeRelationships() {
         return subhierarchiesWithAttributeRels;
+    }
+    
+    public Set<SCTConcept> getAvailableAttributeRelationships() {
+        return attributeRelationshipTypes;
     }
     
     @Override

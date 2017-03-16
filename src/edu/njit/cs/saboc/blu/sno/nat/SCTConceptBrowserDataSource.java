@@ -1,5 +1,9 @@
 package edu.njit.cs.saboc.blu.sno.nat;
 
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.InheritableProperty;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.InheritableProperty.InheritanceType;
+import edu.njit.cs.saboc.blu.core.utils.comparators.ConceptNameComparator;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInheritableProperty;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.nat.generic.data.ConceptBrowserDataSource;
@@ -177,5 +181,46 @@ public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTCon
     @Override
     public String getOntologyID() {
         return theRelease.getReleaseInfo().getReleaseName();
+    }
+
+    @Override
+    public Set<? extends InheritableProperty> getPropertiesFromIds(Set<String> idStrs) {
+        Set<SCTInheritableProperty> properties = new HashSet<>();
+        
+        idStrs.forEach( (idStr) -> {
+            
+            try {
+                long id = Long.parseLong(idStr);
+                
+                Optional<SCTConcept> relType = theRelease.getConceptFromId(id);
+                
+                if(relType.isPresent() ){
+                     properties.add(new SCTInheritableProperty(relType.get(), InheritanceType.Inherited));
+                }                
+            } catch (NumberFormatException nfe) {
+                
+            }
+            
+        });
+        
+        return properties;
+    }
+
+    @Override
+    public ArrayList<InheritableProperty> getAvailableProperties() {
+        ArrayList<InheritableProperty> properties = new ArrayList<>();
+        
+        ArrayList<SCTConcept> attributeRels = new ArrayList<>(theRelease.getAvailableAttributeRelationships());
+        attributeRels.sort(new ConceptNameComparator());
+        
+        attributeRels.forEach( (rel) -> {
+            properties.add(new SCTInheritableProperty(rel, InheritanceType.Introduced));
+        });
+        
+        properties.sort( (a, b) -> {
+            return a.getName().compareToIgnoreCase(b.getName());
+        });
+        
+        return properties;
     }
 }
