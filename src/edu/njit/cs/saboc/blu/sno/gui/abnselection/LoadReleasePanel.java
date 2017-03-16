@@ -11,15 +11,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 /**
  * Panel that allows a user to open a SNOMED CT release.
@@ -125,12 +117,19 @@ public class LoadReleasePanel extends JPanel {
         loadProgressBar = new JProgressBar(0, 100);
         loadProgressBar.setVisible(false);
 
+        JComboBox recentlyOpenedVersionBox = new JComboBox();
+        recentlyOpenedVersionBox.setBackground(Color.WHITE);
+        recentlyOpenedVersionBox.addItem("Recently Opened Release");
+
         JPanel localReleasePanel = new JPanel();
 
         localReleasePanel.add(chooserBtn);
         localReleasePanel.add(localVersionBox);
         localReleasePanel.add(loadButton);
         localReleasePanel.add(loadProgressBar);
+        localReleasePanel.add(Box.createHorizontalGlue());
+        localReleasePanel.add(new JLabel("Recently Opened:"));
+        localReleasePanel.add(recentlyOpenedVersionBox);
 
         this.setLayout(new BorderLayout());
         this.add(localReleasePanel);
@@ -168,6 +167,8 @@ public class LoadReleasePanel extends JPanel {
             try {
                 File selectedFile = getSelectedVersion();
                 
+                SCTReleaseInfo a = new SCTReleaseInfo(selectedFile, getSelectedVersionName());
+
                 final LocalLoadStateMonitor loadMonitor;
                 final SCTRelease dataSource;
                 
