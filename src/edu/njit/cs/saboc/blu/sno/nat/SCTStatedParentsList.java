@@ -23,6 +23,7 @@ public class SCTStatedParentsList extends ConceptListPanel<SCTConcept> {
                 SCTNATDataRetrievers.getStatedParentRetriever(dataSource),
                 new SimpleConceptRenderer<>(dataSource, HierarchyDisplayInfo.None), 
                 true,
+                true,
                 true);
     }
 }

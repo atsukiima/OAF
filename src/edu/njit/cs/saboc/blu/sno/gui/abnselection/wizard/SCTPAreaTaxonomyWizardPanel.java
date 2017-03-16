@@ -105,7 +105,7 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
             }
         });
 
-        this.propertySelectionPanel = new InheritablePropertySelectionPanel(SelectionType.Multiple);
+        this.propertySelectionPanel = new InheritablePropertySelectionPanel(SelectionType.Multiple, false);
         this.propertySelectionPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), 
                 "Select Attribute Relationships"));
         
