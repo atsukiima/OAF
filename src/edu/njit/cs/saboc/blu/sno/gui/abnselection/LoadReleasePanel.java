@@ -8,6 +8,8 @@ import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseInfo;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,9 +63,13 @@ public class LoadReleasePanel extends JPanel {
         }
     }
 
-    private JComboBox localVersionBox;
+    private JComboBox chooserVersionBox;
+    private JComboBox recentlyOpenedVersionBox;
+    private JComboBox localVersionBox = chooserVersionBox;
 
-    private ArrayList<File> availableReleases = new ArrayList<>();
+    private ArrayList<File> chooserReleases = new ArrayList<>();
+    private ArrayList<File> recentlyOpenedReleases = new ArrayList<>();
+    private ArrayList<File> availableReleases = chooserReleases;
 
     private final JButton chooserBtn;
 
@@ -76,9 +82,42 @@ public class LoadReleasePanel extends JPanel {
     private final ArrayList<LocalDataSourceListener> dataSourceLoadedListeners = new ArrayList<>();
 
     public LoadReleasePanel() {
-        localVersionBox = new JComboBox();
-        localVersionBox.setBackground(Color.WHITE);
-        localVersionBox.addItem("Choose a directory");
+        chooserVersionBox = new JComboBox();
+        chooserVersionBox.setBackground(Color.WHITE);
+        chooserVersionBox.addItem("Choose a directory");
+        chooserVersionBox.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                System.out.println("hey");
+                localVersionBox = chooserVersionBox;
+                availableReleases = chooserReleases;
+                loadButton.setText("Load from File Opener");
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                System.out.println("adios");
+            }
+        });
+
+        recentlyOpenedVersionBox = new JComboBox();
+        recentlyOpenedVersionBox.setBackground(Color.WHITE);
+        recentlyOpenedVersionBox.addItem("Recently Opened Release");
+        //code that will populate JComboBox and releases list
+        recentlyOpenedVersionBox.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                System.out.println("hi");
+                localVersionBox = recentlyOpenedVersionBox;
+                availableReleases = recentlyOpenedReleases;
+                loadButton.setText("Load from Recently Opened");
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                System.out.println("bye");
+            }
+        });
 
         chooserBtn = new JButton("Open Folder");
 
@@ -101,7 +140,8 @@ public class LoadReleasePanel extends JPanel {
                 loadProgressBar.setVisible(true);
                 
                 loadButton.setEnabled(false);
-                localVersionBox.setEnabled(false);
+                chooserVersionBox.setEnabled(false);
+                recentlyOpenedVersionBox.setEnabled(false);
                 chooserBtn.setEnabled(false);
                 
                 dataSourceLoadedListeners.forEach( (listener) -> {
@@ -117,19 +157,14 @@ public class LoadReleasePanel extends JPanel {
         loadProgressBar = new JProgressBar(0, 100);
         loadProgressBar.setVisible(false);
 
-        JComboBox recentlyOpenedVersionBox = new JComboBox();
-        recentlyOpenedVersionBox.setBackground(Color.WHITE);
-        recentlyOpenedVersionBox.addItem("Recently Opened Release");
-
         JPanel localReleasePanel = new JPanel();
 
         localReleasePanel.add(chooserBtn);
-        localReleasePanel.add(localVersionBox);
+        localReleasePanel.add(chooserVersionBox);
+        localReleasePanel.add(new JLabel(" OR "));
+        localReleasePanel.add(recentlyOpenedVersionBox);
         localReleasePanel.add(loadButton);
         localReleasePanel.add(loadProgressBar);
-        localReleasePanel.add(Box.createHorizontalGlue());
-        localReleasePanel.add(new JLabel("Recently Opened:"));
-        localReleasePanel.add(recentlyOpenedVersionBox);
 
         this.setLayout(new BorderLayout());
         this.add(localReleasePanel);
@@ -153,6 +188,7 @@ public class LoadReleasePanel extends JPanel {
     private void dataSourceUnloaded() {
         loadButton.setText("Load");
         localVersionBox.setEnabled(true);
+        recentlyOpenedVersionBox.setEnabled(true);
         chooserBtn.setEnabled(true);
 
         this.loadedDataSource = null;
@@ -167,7 +203,8 @@ public class LoadReleasePanel extends JPanel {
             try {
                 File selectedFile = getSelectedVersion();
                 
-                SCTReleaseInfo a = new SCTReleaseInfo(selectedFile, getSelectedVersionName());
+//                SCTReleaseInfo a = new SCTReleaseInfo(selectedFile, getSelectedVersionName());
+                //code that will save "a" using JSON
 
                 final LocalLoadStateMonitor loadMonitor;
                 final SCTRelease dataSource;
@@ -250,12 +287,12 @@ public class LoadReleasePanel extends JPanel {
                             "SNOMED CT No Release Found",
                             JOptionPane.WARNING_MESSAGE);
                 } else {
-                    localVersionBox.removeAllItems();
-                    availableReleases = temp;
-                    ArrayList<String> releaseNames = LoadLocalRelease.getReleaseFileNames(this.availableReleases);
+                    chooserVersionBox.removeAllItems();
+                    chooserReleases = temp;
+                    ArrayList<String> releaseNames = LoadLocalRelease.getReleaseFileNames(this.chooserReleases);
 
                     releaseNames.forEach((releaseName) -> {
-                        localVersionBox.addItem(releaseName);
+                        chooserVersionBox.addItem(releaseName);
                     });
                     
                 }
