@@ -19,7 +19,7 @@ public class SCTStatedChildrenList extends ConceptListPanel<SCTConcept> {
         super(mainPanel, 
                 dataSource,
                 SCTNATDataRetrievers.getStatedChildrenRetriever(dataSource),
-                new SimpleConceptRenderer<>(dataSource, SimpleConceptRenderer.HierarchyDisplayInfo.None), 
+                new SimpleConceptRenderer<>(mainPanel, dataSource), 
                 true,
                 true,
                 true);
