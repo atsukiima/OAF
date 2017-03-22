@@ -93,6 +93,9 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
             }
         });
         
+        this.attributeRelaitonshipList.setRightClickMenuGenerator(new AttributeRelationshipRightClickMenu(mainPanel, dataSource));
+        
+        
         this.chkHideRelationshipGroups = new JCheckBox("Hide Relationship Groups");
         this.chkHideRelationshipGroups.addActionListener( (ae) -> {
             super.forceReload();
