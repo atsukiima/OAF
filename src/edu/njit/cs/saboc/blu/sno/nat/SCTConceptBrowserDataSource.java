@@ -8,6 +8,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.nat.generic.data.ConceptBrowserDataSource;
 import edu.njit.cs.saboc.nat.generic.data.NATConceptSearchResult;
+import edu.njit.cs.saboc.nat.generic.errorreport.AuditSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -62,6 +63,38 @@ public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTCon
                 concept.getIDAsString(),
                 concept.isPrimitive() ? "Primitve" : "Fully Defined",
                 concept.isActive() ? "Active" : "Retired",
+                descStr);
+    }
+    
+    @Override
+    public String getFocusConceptText(AuditSet<SCTConcept> auditSet, SCTConcept concept) {
+        
+        ArrayList<String> descriptions = new ArrayList<>();
+        
+        concept.getDescriptions().forEach( (description) -> {
+            descriptions.add(description.getTerm());
+        });
+        
+        Collections.sort(descriptions);
+        
+        String descStr = "";
+        
+        for(String desc : descriptions) {
+            descStr += ("- " + desc + "<br>");
+        }
+        
+        return String.format("<html><font face='Arial' size = '5'>"
+                + "<b>%s</b></font>"
+                + "<font face='Arial' size = '3'"
+                + "<br>%s"
+                + "<br>(%s) (%s) (%s)"
+                + "<p><b>Descriptions</b><br>"
+                + "%s", 
+                concept.getName(), 
+                concept.getIDAsString(),
+                concept.isPrimitive() ? "Primitve" : "Fully Defined",
+                concept.isActive() ? "Active" : "Retired",
+                super.getStyledAuditStatusText(auditSet, concept),
                 descStr);
     }
 

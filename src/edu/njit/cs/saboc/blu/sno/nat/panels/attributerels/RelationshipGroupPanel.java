@@ -4,6 +4,9 @@ package edu.njit.cs.saboc.blu.sno.nat.panels.attributerels;
 import edu.njit.cs.saboc.blu.core.graph.pareataxonomy.BasePAreaTaxonomyLayout;
 import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
+import edu.njit.cs.saboc.blu.sno.nat.SCTConceptBrowserDataSource;
+import edu.njit.cs.saboc.nat.generic.NATBrowserPanel;
 import edu.njit.cs.saboc.nat.generic.gui.filterable.nestedlist.FilterableNestedEntryPanel;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -16,7 +19,11 @@ import javax.swing.BoxLayout;
  */
 public class RelationshipGroupPanel extends FilterableNestedEntryPanel<FilterableRelationshipGroupEntry> {
     
-    public RelationshipGroupPanel(FilterableRelationshipGroupEntry entry) {
+    public RelationshipGroupPanel(
+            NATBrowserPanel<SCTConcept> mainPanel,
+            SCTConceptBrowserDataSource dataSource,
+            FilterableRelationshipGroupEntry entry) {
+        
         super(entry);
 
         this.setOpaque(false);
@@ -43,7 +50,10 @@ public class RelationshipGroupPanel extends FilterableNestedEntryPanel<Filterabl
         rels.forEach((rel) -> {
             
             if (!rel.getCurrentFilter().isPresent() || rel.containsFilter(rel.getCurrentFilter().get())) {
-                AttributeRelationshipEntryPanel relPanel = new AttributeRelationshipEntryPanel((FilterableAttributeRelationshipEntry) rel);
+                AttributeRelationshipEntryPanel relPanel = new AttributeRelationshipEntryPanel(
+                        mainPanel, 
+                        dataSource, 
+                        (FilterableAttributeRelationshipEntry) rel);
 
                 this.add(relPanel);
 

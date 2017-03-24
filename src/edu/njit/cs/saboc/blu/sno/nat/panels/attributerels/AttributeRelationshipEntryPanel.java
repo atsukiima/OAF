@@ -1,13 +1,22 @@
 package edu.njit.cs.saboc.blu.sno.nat.panels.attributerels;
 
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.InheritableProperty;
+import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.InheritableProperty.InheritanceType;
 import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
+import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInheritableProperty;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
+import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
+import edu.njit.cs.saboc.blu.sno.nat.SCTConceptBrowserDataSource;
+import edu.njit.cs.saboc.nat.generic.NATBrowserPanel;
+import edu.njit.cs.saboc.nat.generic.errorreport.AuditSet;
+import edu.njit.cs.saboc.nat.generic.errorreport.error.semanticrel.IncorrectSemanticRelationshipError;
 import edu.njit.cs.saboc.nat.generic.gui.filterable.nestedlist.FilterableEntryPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.util.List;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,8 +30,12 @@ public class AttributeRelationshipEntryPanel extends FilterableEntryPanel<Filter
     private final JLabel attributeRelTypeLabel;
     private final JLabel targetConceptNameLabel;
     private final JLabel targetConceptIdLabel;
+    private final JLabel errorDetailsLabel;
 
-    public AttributeRelationshipEntryPanel(FilterableAttributeRelationshipEntry relEntry) {
+    public AttributeRelationshipEntryPanel(
+            NATBrowserPanel<SCTConcept> mainPanel,
+            SCTConceptBrowserDataSource dataSource,
+            FilterableAttributeRelationshipEntry relEntry) {
         
         super(relEntry, relEntry.getCurrentFilter());
 
@@ -33,15 +46,19 @@ public class AttributeRelationshipEntryPanel extends FilterableEntryPanel<Filter
         this.attributeRelTypeLabel = new JLabel();
         this.targetConceptNameLabel = new JLabel();
         this.targetConceptIdLabel = new JLabel();
+        this.errorDetailsLabel = new JLabel();
 
         this.attributeRelTypeLabel.setFont(this.attributeRelTypeLabel.getFont().deriveFont(Font.BOLD, 16));
         this.targetConceptNameLabel.setFont(this.targetConceptNameLabel.getFont().deriveFont(Font.PLAIN, 16));
         this.targetConceptIdLabel.setFont(this.targetConceptIdLabel.getFont().deriveFont(Font.PLAIN, 10));
+        this.errorDetailsLabel.setFont(this.errorDetailsLabel.getFont().deriveFont(Font.BOLD, 10));
 
         this.targetConceptIdLabel.setForeground(Color.BLUE);
+        this.errorDetailsLabel.setForeground(Color.RED);
 
         this.targetConceptNameLabel.setOpaque(false);
         this.targetConceptIdLabel.setOpaque(false);
+        this.errorDetailsLabel.setOpaque(false);
 
         JPanel relNamePanel = new JPanel();
         relNamePanel.setOpaque(false);
@@ -74,6 +91,8 @@ public class AttributeRelationshipEntryPanel extends FilterableEntryPanel<Filter
 
         entryPanel.add(relNamePanel);
         entryPanel.add(targetPanel);
+        entryPanel.add(Box.createHorizontalStrut(10));
+        entryPanel.add(errorDetailsLabel);
 
         this.add(entryPanel, BorderLayout.WEST);
         
@@ -92,6 +111,26 @@ public class AttributeRelationshipEntryPanel extends FilterableEntryPanel<Filter
         this.attributeRelTypeLabel.setText(relNameStr);
         this.targetConceptNameLabel.setText(conceptNameStr);
         this.targetConceptIdLabel.setText(conceptIdStr);
+        
+        this.errorDetailsLabel.setText("");
+        
+        if (mainPanel.getAuditDatabase().getLoadedAuditSet().isPresent()) {
+            AuditSet<SCTConcept> auditSet = mainPanel.getAuditDatabase().getLoadedAuditSet().get();
+
+            List<IncorrectSemanticRelationshipError<SCTConcept, InheritableProperty>> errors
+                    = auditSet.getRelatedSemanticRelationshipErrors(
+                            mainPanel.getFocusConceptManager().getActiveFocusConcept(),
+                            new SCTInheritableProperty(rel.getType(), InheritanceType.Introduced),
+                            rel.getTarget());
+            
+            if (!errors.isEmpty()) {
+                if (errors.size() == 1) {
+                    errorDetailsLabel.setText("Error");
+                } else {
+                    errorDetailsLabel.setText(String.format("Errors (%d)", errors.size()));
+                }
+            }
+        }
         
         this.setPreferredSize(new Dimension(-1, 40));
     }
