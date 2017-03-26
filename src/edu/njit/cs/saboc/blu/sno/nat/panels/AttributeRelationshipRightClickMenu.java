@@ -52,10 +52,10 @@ public class AttributeRelationshipRightClickMenu extends AuditReportRightClickMe
             namePanel.add(Box.createHorizontalStrut(8), BorderLayout.EAST);
 
             JLabel nameLabel = new JLabel(
-                String.format("<html> <font color = 'RED'>==</font> %s <font color = 'RED'>==></font> %s", 
-                        item.getType().getName(),
-                        item.getTarget().getName()));
-            
+                    SemanticRelationshipError.generateStyledRelationshipText(
+                            item.getType().getName(), 
+                            item.getTarget().getName()));
+                    
             
             nameLabel.setFont(nameLabel.getFont().deriveFont(16.0f));
 

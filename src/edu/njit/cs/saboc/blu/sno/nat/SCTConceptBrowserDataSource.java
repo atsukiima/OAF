@@ -54,7 +54,7 @@ public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTCon
         
         return String.format("<html><font face='Arial' size = '5'>"
                 + "<b>%s</b></font>"
-                + "<font face='Arial' size = '3'"
+                + "<font face='Arial' size = '3'>"
                 + "<br>%s"
                 + "<br>(%s) (%s)"
                 + "<p><b>Descriptions</b><br>"
@@ -85,7 +85,7 @@ public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTCon
         
         return String.format("<html><font face='Arial' size = '5'>"
                 + "<b>%s</b></font>"
-                + "<font face='Arial' size = '3'"
+                + "<font face='Arial' size = '3'>"
                 + "<br>%s"
                 + "<br>(%s) (%s) (%s)"
                 + "<p><b>Descriptions</b><br>"
