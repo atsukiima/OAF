@@ -68,7 +68,7 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
                 
                 FilterableRelationshipGroupEntry groupEntry = (FilterableRelationshipGroupEntry)entry;
                 
-                RelationshipGroupPanel relGroupPanel = new RelationshipGroupPanel(groupEntry);
+                RelationshipGroupPanel relGroupPanel = new RelationshipGroupPanel(mainPanel, dataSource, groupEntry);
                 
                 return  (FilterableNestedEntryPanel<FilterableNestedEntry<RelationshipGroup, AttributeRelationship>>)
                         (FilterableNestedEntryPanel<?>)relGroupPanel;
@@ -92,6 +92,9 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
                 
             }
         });
+        
+        this.attributeRelaitonshipList.setRightClickMenuGenerator(new AttributeRelationshipRightClickMenu(mainPanel, dataSource));
+        
         
         this.chkHideRelationshipGroups = new JCheckBox("Hide Relationship Groups");
         this.chkHideRelationshipGroups.addActionListener( (ae) -> {
@@ -220,7 +223,10 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
             ArrayList<Filterable<AttributeRelationship>> relEntries = new ArrayList<>();
             
             relGroup.getAttributeRelationships().forEach( (rel) -> {
-                relEntries.add(new FilterableAttributeRelationshipEntry(rel));
+                relEntries.add(new FilterableAttributeRelationshipEntry(
+                        getMainPanel(), 
+                        (SCTConceptBrowserDataSource)getDataSource(), 
+                        rel));
             });
             
             relGroupEntries.add(new FilterableRelationshipGroupEntry(relGroup, relEntries));
