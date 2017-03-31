@@ -6,6 +6,11 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.load.RF1ReleaseLoader;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.RF2ReleaseLoader;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseInfo;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
@@ -13,6 +18,8 @@ import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.prefs.Preferences;
 import javax.swing.*;
 
 /**
@@ -80,6 +87,9 @@ public class LoadReleasePanel extends JPanel {
     private JProgressBar loadProgressBar;
 
     private final ArrayList<LocalDataSourceListener> dataSourceLoadedListeners = new ArrayList<>();
+    
+    private String prefsKey_RecentlyOpenedReleases = "Recently Opened Releases";
+    private String defaultJSON = "{}";
 
     public LoadReleasePanel() {
         chooserVersionBox = new JComboBox();
@@ -88,35 +98,63 @@ public class LoadReleasePanel extends JPanel {
         chooserVersionBox.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                System.out.println("hey");
                 localVersionBox = chooserVersionBox;
                 availableReleases = chooserReleases;
                 loadButton.setText("Load from File Opener");
             }
 
             @Override
-            public void focusLost(FocusEvent e) {
-                System.out.println("adios");
-            }
+            public void focusLost(FocusEvent e) {}
         });
 
         recentlyOpenedVersionBox = new JComboBox();
         recentlyOpenedVersionBox.setBackground(Color.WHITE);
-        recentlyOpenedVersionBox.addItem("Recently Opened Release");
-        //code that will populate JComboBox and releases list
+        Preferences prefsRoot = Preferences.userNodeForPackage(this.getClass());
+        String recentlyOpenedReleasesListJSON = prefsRoot.get(prefsKey_RecentlyOpenedReleases,defaultJSON);
+        JSONParser parser = new JSONParser();
+        try{
+            JSONObject recentlyOpenedReleasesJSONObj = (JSONObject) parser.parse(recentlyOpenedReleasesListJSON);
+            recentlyOpenedReleasesJSONObj.keySet().forEach(it -> {
+                File temp = new File((String)it);
+                try {
+                    if(temp.exists())
+                        recentlyOpenedReleases.add(temp);
+                } catch (SecurityException se) {
+                    se.printStackTrace();
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "One of the recently opened location is not readable - READ ACCESS DENIED."
+                                    + "\nLocation path: " + it
+                                    + "\nThis location is removed from the recently opened list.",
+                            "File/Directory Read Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            });
+            if(recentlyOpenedReleases.isEmpty())
+                recentlyOpenedVersionBox.addItem("NO Recently Opened Releases");
+            ArrayList<String> releaseNames = LoadLocalRelease.getReleaseFileNames(recentlyOpenedReleases);
+            releaseNames.forEach((releaseName) -> {
+                recentlyOpenedVersionBox.addItem(releaseName);
+            });
+//            prefsRoot.remove(prefsKey_RecentlyOpenedReleases);
+        }catch(ParseException pe){
+            pe.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Reading the list of recently opened files failed - PARSE ERROR",
+                    "Recently Opened Files: Read Failed",
+                    JOptionPane.ERROR_MESSAGE);
+        }
         recentlyOpenedVersionBox.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                System.out.println("hi");
                 localVersionBox = recentlyOpenedVersionBox;
                 availableReleases = recentlyOpenedReleases;
                 loadButton.setText("Load from Recently Opened");
             }
 
             @Override
-            public void focusLost(FocusEvent e) {
-                System.out.println("bye");
-            }
+            public void focusLost(FocusEvent e) {}
         });
 
         chooserBtn = new JButton("Open Folder");
@@ -203,8 +241,21 @@ public class LoadReleasePanel extends JPanel {
             try {
                 File selectedFile = getSelectedVersion();
                 
-//                SCTReleaseInfo a = new SCTReleaseInfo(selectedFile, getSelectedVersionName());
-                //code that will save "a" using JSON
+                Preferences prefsRoot = Preferences.userNodeForPackage(this.getClass());
+                String recentlyOpenedReleasesListJSON = prefsRoot.get(prefsKey_RecentlyOpenedReleases,defaultJSON);
+                JSONParser parser = new JSONParser();
+                try{
+                    JSONObject recentlyOpenedReleasesJSONObj = (JSONObject) parser.parse(recentlyOpenedReleasesListJSON);
+                    recentlyOpenedReleasesJSONObj.put(selectedFile.getAbsolutePath(),new Date().getTime());
+                    prefsRoot.put(prefsKey_RecentlyOpenedReleases, JSONValue.toJSONString(recentlyOpenedReleasesJSONObj));
+                }catch(ParseException pe){
+                    pe.printStackTrace();
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Saving the list of recently opened files failed - PARSE ERROR",
+                            "Recently Opened Files: Save Failed",
+                            JOptionPane.ERROR_MESSAGE);
+                }
 
                 final LocalLoadStateMonitor loadMonitor;
                 final SCTRelease dataSource;
@@ -295,6 +346,9 @@ public class LoadReleasePanel extends JPanel {
                         chooserVersionBox.addItem(releaseName);
                     });
                     
+                    localVersionBox = chooserVersionBox;
+                    availableReleases = chooserReleases;
+                    loadButton.setText("Load from File Opener");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
