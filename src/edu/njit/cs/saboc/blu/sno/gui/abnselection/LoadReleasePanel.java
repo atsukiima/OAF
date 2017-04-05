@@ -6,6 +6,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.load.RF1ReleaseLoader;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.RF2ReleaseLoader;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseInfo;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
@@ -17,8 +18,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.prefs.Preferences;
 import javax.swing.*;
 
@@ -109,42 +109,7 @@ public class LoadReleasePanel extends JPanel {
 
         recentlyOpenedVersionBox = new JComboBox();
         recentlyOpenedVersionBox.setBackground(Color.WHITE);
-        Preferences prefsRoot = Preferences.userNodeForPackage(this.getClass());
-        String recentlyOpenedReleasesListJSON = prefsRoot.get(prefsKey_RecentlyOpenedReleases,defaultJSON);
-        JSONParser parser = new JSONParser();
-        try{
-            JSONObject recentlyOpenedReleasesJSONObj = (JSONObject) parser.parse(recentlyOpenedReleasesListJSON);
-            recentlyOpenedReleasesJSONObj.keySet().forEach(it -> {
-                File temp = new File((String)it);
-                try {
-                    if(temp.exists())
-                        recentlyOpenedReleases.add(temp);
-                } catch (SecurityException se) {
-                    se.printStackTrace();
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "One of the recently opened location is not readable - READ ACCESS DENIED."
-                                    + "\nLocation path: " + it
-                                    + "\nThis location is removed from the recently opened list.",
-                            "File/Directory Read Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-            });
-            if(recentlyOpenedReleases.isEmpty())
-                recentlyOpenedVersionBox.addItem("NO Recently Opened Releases");
-            ArrayList<String> releaseNames = LoadLocalRelease.getReleaseFileNames(recentlyOpenedReleases);
-            releaseNames.forEach((releaseName) -> {
-                recentlyOpenedVersionBox.addItem(releaseName);
-            });
-//            prefsRoot.remove(prefsKey_RecentlyOpenedReleases);
-        }catch(ParseException pe){
-            pe.printStackTrace();
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Reading the list of recently opened files failed - PARSE ERROR",
-                    "Recently Opened Files: Read Failed",
-                    JOptionPane.ERROR_MESSAGE);
-        }
+        loadHistory();
         recentlyOpenedVersionBox.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -234,28 +199,15 @@ public class LoadReleasePanel extends JPanel {
         dataSourceLoadedListeners.forEach( (listener) -> {
             listener.localDataSourceUnloaded();
         });
+        loadHistory();
     }
 
     private void startLocalReleaseThread() {
         new Thread(() -> {
             try {
                 File selectedFile = getSelectedVersion();
-                
-                Preferences prefsRoot = Preferences.userNodeForPackage(this.getClass());
-                String recentlyOpenedReleasesListJSON = prefsRoot.get(prefsKey_RecentlyOpenedReleases,defaultJSON);
-                JSONParser parser = new JSONParser();
-                try{
-                    JSONObject recentlyOpenedReleasesJSONObj = (JSONObject) parser.parse(recentlyOpenedReleasesListJSON);
-                    recentlyOpenedReleasesJSONObj.put(selectedFile.getAbsolutePath(),new Date().getTime());
-                    prefsRoot.put(prefsKey_RecentlyOpenedReleases, JSONValue.toJSONString(recentlyOpenedReleasesJSONObj));
-                }catch(ParseException pe){
-                    pe.printStackTrace();
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "Saving the list of recently opened files failed - PARSE ERROR",
-                            "Recently Opened Files: Save Failed",
-                            JOptionPane.ERROR_MESSAGE);
-                }
+
+                saveHistory(selectedFile);
 
                 final LocalLoadStateMonitor loadMonitor;
                 final SCTRelease dataSource;
@@ -375,5 +327,135 @@ public class LoadReleasePanel extends JPanel {
         }
 
         return loadedDataSource;
+    }
+    
+    private void loadHistory(){
+        recentlyOpenedVersionBox.removeAllItems();
+        recentlyOpenedReleases.clear();
+        Preferences prefsRoot = Preferences.userNodeForPackage(this.getClass());
+        String recentlyOpenedReleasesListJSON = prefsRoot.get(prefsKey_RecentlyOpenedReleases,defaultJSON);
+        if(recentlyOpenedReleasesListJSON.equals(defaultJSON)){
+            recentlyOpenedVersionBox.addItem("NO Recently Opened Releases");
+            return;
+        }
+        JSONParser parser = new JSONParser();
+        try{
+            JSONArray recentlyOpenedReleasesJSONArr = (JSONArray) parser.parse(recentlyOpenedReleasesListJSON);
+            HashMap<Long,ArrayList<String>> unsorted = new HashMap<>(recentlyOpenedReleasesJSONArr.size());
+            for (int i = 0; i < recentlyOpenedReleasesJSONArr.size(); i++){
+                JSONObject obj = (JSONObject) recentlyOpenedReleasesJSONArr.get(i);
+                long date = Long.parseLong((String) obj.get("date"));
+                String path = (String) obj.get("filepath");
+                if(unsorted.containsKey(date)){
+                    unsorted.get(date).add(path);
+                }
+                else{
+                    ArrayList<String> temp = new ArrayList<>();
+                    temp.add(path);
+                    unsorted.put(date,temp);
+                }
+            }
+            List<Map.Entry<Long,ArrayList<String>>> sortedEntries = new ArrayList<>(unsorted.entrySet());
+            Collections.sort(sortedEntries,
+                    (Map.Entry<Long,ArrayList<String>> e1, Map.Entry<Long,ArrayList<String>> e2) -> 
+                            e2.getKey().compareTo(e1.getKey())
+            );
+            for (int i = 0; i < sortedEntries.size(); i++){
+                Map.Entry<Long,ArrayList<String>> entry = sortedEntries.get(i);
+                for(String path : entry.getValue()){
+                    File temp = new File(path);
+                    try {
+                        if(temp.exists())
+                            recentlyOpenedReleases.add(temp);
+                    } catch (SecurityException se) {
+                        se.printStackTrace();
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "One of the recently opened location is not readable - READ ACCESS DENIED."
+                                        + "\nLocation path: " + path
+                                        + "\nThis location is removed from the recently opened list.",
+                                "File/Directory Read Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+            ArrayList<String> releaseNames = LoadLocalRelease.getReleaseFileNames(recentlyOpenedReleases);
+            releaseNames.forEach((releaseName) -> {
+                recentlyOpenedVersionBox.addItem(releaseName);
+            });
+        }catch(ParseException pe){
+            pe.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Reading the list of recently opened files failed - PARSE ERROR",
+                    "Recently Opened Files: Read Failed",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        catch(ClassCastException|NumberFormatException e){
+            e.printStackTrace();
+            int answer = JOptionPane.showOptionDialog(
+                    null,
+                    "Reading the list of recently opened files failed - DATA ERROR"
+                            + "\nHistory data seems corrupted.\nReset history?",
+                    "Recently Opened Files: Read Failed",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.ERROR_MESSAGE,
+                    null,
+                    new Object[]{"Yes","No"},
+                    "No");
+            switch(answer) {
+                case 0:
+                    prefsRoot.remove(prefsKey_RecentlyOpenedReleases);
+                case 1:
+                default:
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            int answer = JOptionPane.showOptionDialog(
+                    null,
+                    "Reading the list of recently opened files failed - UNKNOWN ERROR"
+                            + "\nReset history?",
+                    "Recently Opened Files: Read Failed",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.ERROR_MESSAGE,
+                    null,
+                    new Object[]{"Yes","No"},
+                    "No");
+            switch(answer) {
+                case 0:
+                    prefsRoot.remove(prefsKey_RecentlyOpenedReleases);
+                case 1:
+                default:
+            }
+        }
+    }
+    
+    private void saveHistory(File selectedFile){
+        Preferences prefsRoot = Preferences.userNodeForPackage(this.getClass());
+        String recentlyOpenedReleasesListJSON = prefsRoot.get(prefsKey_RecentlyOpenedReleases,defaultJSON);
+        HashMap<String,String> obj = new HashMap<>();
+        obj.put("date",Long.toString(new Date().getTime()));
+        obj.put("filepath",selectedFile.getAbsolutePath());
+        JSONArray recentlyOpenedReleasesJSONArr;
+        if(recentlyOpenedReleasesListJSON.equals(defaultJSON)){
+            recentlyOpenedReleasesJSONArr = new JSONArray();
+            recentlyOpenedReleasesJSONArr.add(obj);
+            prefsRoot.put(prefsKey_RecentlyOpenedReleases, JSONValue.toJSONString(recentlyOpenedReleasesJSONArr));
+            return;
+        }
+        JSONParser parser = new JSONParser();
+        try{
+            recentlyOpenedReleasesJSONArr = (JSONArray) parser.parse(recentlyOpenedReleasesListJSON);
+            recentlyOpenedReleasesJSONArr.add(obj);
+            prefsRoot.put(prefsKey_RecentlyOpenedReleases, JSONValue.toJSONString(recentlyOpenedReleasesJSONArr));
+        }catch(ParseException pe){
+            pe.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Saving the list of recently opened files failed - PARSE ERROR",
+                    "Recently Opened Files: Save Failed",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
