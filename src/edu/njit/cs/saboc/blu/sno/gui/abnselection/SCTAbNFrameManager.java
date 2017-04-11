@@ -39,6 +39,7 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
     
     @Override
     public void displayPAreaTaxonomy(PAreaTaxonomy taxonomy) {
+        
         MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame, new SCTMultiAbNGraphFrameInitializers());
         graphFrame.displayPAreaTaxonomy(taxonomy);
 
