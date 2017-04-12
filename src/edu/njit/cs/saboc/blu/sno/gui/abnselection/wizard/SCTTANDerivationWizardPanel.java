@@ -1,6 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection.wizard;
 
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.TANConfiguration;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.configuration.TANConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.tan.TANDerivationWizardPanel;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;

@@ -2,7 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration;
 
 import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.ConceptPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.TANUIConfiguration;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.configuration.TANUIConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.AbNDisplayManager;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptPainter;
