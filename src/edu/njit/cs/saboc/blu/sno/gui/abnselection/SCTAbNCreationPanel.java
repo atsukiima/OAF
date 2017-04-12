@@ -97,7 +97,7 @@ public class SCTAbNCreationPanel extends JPanel {
         
         
         SCTTANConfigurationFactory factory = new SCTTANConfigurationFactory();
-        SCTTANConfiguration dummyConfig = factory.createConfiguration(null, frameManager);        
+        SCTTANConfiguration dummyConfig = factory.createConfiguration(null, frameManager, null);        
         
         tanDerivationWizardPanel = new SCTTANDerivationWizardPanel(dummyConfig, (patriarchs) -> {
             

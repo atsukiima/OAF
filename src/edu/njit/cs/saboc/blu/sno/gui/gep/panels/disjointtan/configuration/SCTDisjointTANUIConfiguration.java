@@ -16,20 +16,30 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointtan.SCTDisjointTANOption
  */
 public class SCTDisjointTANUIConfiguration extends DisjointTANUIConfiguration {
     
-    private final SCTDisjointTANConfiguration config;
-    
+    private final SCTAbNFrameManager frameManager;
+
     public SCTDisjointTANUIConfiguration(
             SCTDisjointTANConfiguration config,
-            AbNDisplayManager displayListener) {
+            AbNDisplayManager displayListener,
+            SCTAbNFrameManager frameManager) {
         
         super(config, displayListener, new SCTDisjointTANListenerConfiguration(config));
-        
-        this.config = config;
+    
+        this.frameManager = frameManager;
+    }
+    
+    public SCTAbNFrameManager getFrameManager() {
+        return frameManager;
+    }
+    
+    @Override
+    public SCTDisjointTANConfiguration getConfiguration() {
+        return (SCTDisjointTANConfiguration)super.getConfiguration();
     }
     
     @Override
     public NodeOptionsPanel<DisjointNode<Cluster>> getNodeOptionsPanel() {
-        return new SCTDisjointTANOptionsPanel(config, config.getAbstractionNetwork().isAggregated());
+        return new SCTDisjointTANOptionsPanel(getConfiguration(), getConfiguration().getAbstractionNetwork().isAggregated());
     }
 
     @Override

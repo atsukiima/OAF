@@ -22,6 +22,7 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.initializers.DisjointA
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.initializers.PAreaTaxonomyInitializer;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.initializers.TANInitializer;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.initializers.TargetAbNInitializer;
+import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointtan.configuration.SCTDisjointTANConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
@@ -38,6 +39,12 @@ import javax.swing.JButton;
  * @author Chris O
  */
 public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializers {
+    
+    private final SCTAbNFrameManager frameManager;
+    
+    public SCTMultiAbNGraphFrameInitializers(SCTAbNFrameManager frameManager) {
+        this.frameManager = frameManager;
+    }
     
     private JButton createPAreaTaxonomyReportsBtn(SCTPAreaTaxonomyConfiguration config) {
         
@@ -75,6 +82,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
         return sctTANReportsBtn;
     }
 
+    
     @Override
     public GraphFrameInitializer<PAreaTaxonomy, PAreaTaxonomyConfiguration> getPAreaTaxonomyInitializer() {
         
@@ -91,7 +99,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
 
             @Override
             public AbNConfiguration getConfiguration(PAreaTaxonomy abn, AbNDisplayManager displayManager) {
-                return new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(abn, displayManager);
+                return new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(abn, displayManager, frameManager);
             }
         };
     }
@@ -111,7 +119,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
             
             @Override
             public AbNConfiguration getConfiguration(PAreaTaxonomy abn, AbNDisplayManager displayManager) {
-                return new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(abn, displayManager);
+                return new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(abn, displayManager, frameManager);
             }
         };
     }
@@ -132,7 +140,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
 
             @Override
             public AbNConfiguration getConfiguration(ClusterTribalAbstractionNetwork abn, AbNDisplayManager displayManager) {
-                return new SCTTANConfigurationFactory().createConfiguration(abn, displayManager);
+                return new SCTTANConfigurationFactory().createConfiguration(abn, displayManager, frameManager);
             }
         };
     }
@@ -153,7 +161,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
 
             @Override
             public AbNConfiguration getConfiguration(ClusterTribalAbstractionNetwork abn, AbNDisplayManager displayManager) {
-                return new SCTTANConfigurationFactory().createConfiguration(abn, displayManager);
+                return new SCTTANConfigurationFactory().createConfiguration(abn, displayManager, frameManager);
             }
         };
     }
@@ -177,7 +185,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
 
             @Override
             public AbNConfiguration getConfiguration(DisjointAbstractionNetwork abn, AbNDisplayManager displayManager) {
-                return new SCTDisjointPAreaTaxonomyConfigurationFactory().createConfiguration(abn, displayManager);
+                return new SCTDisjointPAreaTaxonomyConfigurationFactory().createConfiguration(abn, displayManager, frameManager);
             }
 
             @Override
@@ -187,7 +195,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
                 
                 return new DisjointAbNExplorationPanelInitializer(
                         config,
-                        new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(taxonomy, config.getUIConfiguration().getAbNDisplayManager()),
+                        new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(taxonomy, config.getUIConfiguration().getAbNDisplayManager(), frameManager),
                         (bound) -> {
                             DisjointAbstractionNetwork disjointAbN = config.getAbstractionNetwork().getAggregated(bound);
                             config.getUIConfiguration().getAbNDisplayManager().displayDisjointPAreaTaxonomy(disjointAbN);
@@ -206,7 +214,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
 
             @Override
             public AbNConfiguration getConfiguration(DisjointAbstractionNetwork abn, AbNDisplayManager displayManager) {
-                return new SCTDisjointTANConfigurationFactory().createConfiguration(abn, displayManager);
+                return new SCTDisjointTANConfigurationFactory().createConfiguration(abn, displayManager, frameManager);
             }
 
             @Override
@@ -216,7 +224,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
 
                 return new DisjointAbNExplorationPanelInitializer(
                         config,
-                        new SCTTANConfigurationFactory().createConfiguration(tan, config.getUIConfiguration().getAbNDisplayManager()),
+                        new SCTTANConfigurationFactory().createConfiguration(tan, config.getUIConfiguration().getAbNDisplayManager(), frameManager),
                         (bound) -> {
                             DisjointAbstractionNetwork disjointAbN = config.getAbstractionNetwork().getAggregated(bound);
                             config.getUIConfiguration().getAbNDisplayManager().displayDisjointTribalAbstractionNetwork(disjointAbN);

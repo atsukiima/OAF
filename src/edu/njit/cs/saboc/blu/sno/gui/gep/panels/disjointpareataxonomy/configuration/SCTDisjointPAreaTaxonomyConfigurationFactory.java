@@ -6,6 +6,7 @@ import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointNode;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.AbNDisplayManager;
+import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 
 /**
  *
@@ -14,10 +15,11 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.AbNDisplayManager;
 public class SCTDisjointPAreaTaxonomyConfigurationFactory {
     public SCTDisjointPAreaTaxonomyConfiguration createConfiguration(
             DisjointAbstractionNetwork<DisjointNode<PArea>, PAreaTaxonomy<PArea>, PArea> disjointTaxonomy, 
-            AbNDisplayManager displayListener) {
+            AbNDisplayManager displayListener,
+            SCTAbNFrameManager frameManager) {
         
         SCTDisjointPAreaTaxonomyConfiguration disjointConfiguration = new SCTDisjointPAreaTaxonomyConfiguration(disjointTaxonomy);
-        disjointConfiguration.setUIConfiguration(new SCTDisjointPAreaTaxonomyUIConfiguration(disjointConfiguration, displayListener));
+        disjointConfiguration.setUIConfiguration(new SCTDisjointPAreaTaxonomyUIConfiguration(disjointConfiguration, displayListener, frameManager));
         disjointConfiguration.setTextConfiguration(new SCTDisjointPAreaTaxonomyTextConfiguration(disjointTaxonomy));
         
         return disjointConfiguration;

@@ -14,22 +14,35 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.SCTClusterOptionsPanel;
  */
 public class SCTTANUIConfiguration extends TANUIConfiguration {
 
-    private final SCTTANConfiguration config;
-            
-    public SCTTANUIConfiguration(SCTTANConfiguration config, AbNDisplayManager displayListener) {
+    private final SCTAbNFrameManager frameManager;
+    
+    public SCTTANUIConfiguration(
+            SCTTANConfiguration config, 
+            AbNDisplayManager displayListener, 
+            SCTAbNFrameManager frameManager) {
+        
         super(config, displayListener, new SCTTANListenerConfiguration(config));
+        
+        this.frameManager = frameManager;
+    }
 
-        this.config = config;
+    public SCTAbNFrameManager getFrameManager() {
+        return frameManager;
+    }
+    
+    @Override
+    public SCTTANConfiguration getConfiguration() {
+        return (SCTTANConfiguration)super.getConfiguration();
     }
 
     @Override
     public NodeOptionsPanel getPartitionedNodeOptionsPanel() {        
-        return new SCTBandOptionsPanel(config, config.getAbstractionNetwork().isAggregated());
+        return new SCTBandOptionsPanel(getConfiguration(), getConfiguration().getAbstractionNetwork().isAggregated());
     }
 
     @Override
     public NodeOptionsPanel getNodeOptionsPanel() {
-        return new SCTClusterOptionsPanel(config, config.getAbstractionNetwork().isAggregated());
+        return new SCTClusterOptionsPanel(getConfiguration(), getConfiguration().getAbstractionNetwork().isAggregated());
     }
 
     @Override

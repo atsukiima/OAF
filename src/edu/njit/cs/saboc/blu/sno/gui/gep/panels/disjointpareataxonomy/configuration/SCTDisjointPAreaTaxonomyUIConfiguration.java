@@ -15,21 +15,31 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.SCTDisjoin
  * @author Chris O
  */
 public class SCTDisjointPAreaTaxonomyUIConfiguration extends DisjointPAreaTaxonomyUIConfiguration {
-    
-    private final SCTDisjointPAreaTaxonomyConfiguration config;
 
+    private final SCTAbNFrameManager frameManager;
+    
     public SCTDisjointPAreaTaxonomyUIConfiguration(
             SCTDisjointPAreaTaxonomyConfiguration config,
-            AbNDisplayManager displayListener) {
+            AbNDisplayManager displayListener,
+            SCTAbNFrameManager frameManager) {
         
         super(config, displayListener, new SCTDisjointPAreaTaxonomyListenerConfiguration(config));
         
-        this.config = config;
+        this.frameManager = frameManager;
+    }
+    
+    public SCTAbNFrameManager getFrameManager() {
+        return frameManager;
     }
 
     @Override
+    public SCTDisjointPAreaTaxonomyConfiguration getConfiguration() {
+        return (SCTDisjointPAreaTaxonomyConfiguration)super.getConfiguration();
+    }
+    
+    @Override
     public NodeOptionsPanel<DisjointNode<PArea>> getNodeOptionsPanel() {
-        return new SCTDisjointPAreaOptionsPanel(config, config.getAbstractionNetwork().isAggregated());
+        return new SCTDisjointPAreaOptionsPanel(getConfiguration(), getConfiguration().getAbstractionNetwork().isAggregated());
     }
 
     @Override

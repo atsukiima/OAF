@@ -5,6 +5,7 @@ import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.ConceptPainter;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configuration.PAreaTaxonomyUIConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.AbNDisplayManager;
+import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptPainter;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.SCTAggregateAreaOptionsPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.SCTAggregatePAreaOptionsPanel;
@@ -17,30 +18,43 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.SCTPAreaOptionsPan
  */
 public class SCTPAreaTaxonomyUIConfiguration extends PAreaTaxonomyUIConfiguration {
     
-    private final SCTPAreaTaxonomyConfiguration config;
+    private final SCTAbNFrameManager frameManager;
     
-    public SCTPAreaTaxonomyUIConfiguration(SCTPAreaTaxonomyConfiguration config, AbNDisplayManager displayListener) {
+    public SCTPAreaTaxonomyUIConfiguration(
+            SCTPAreaTaxonomyConfiguration config, 
+            AbNDisplayManager displayListener, 
+            SCTAbNFrameManager frameManager) {
+        
         super(config, displayListener, new SCTPAreaTaxonomyListenerConfiguration(config));
         
-        this.config = config;
+        this.frameManager = frameManager;
+    }
+    
+    public SCTAbNFrameManager getFrameManager() {
+        return frameManager;
+    }
+    
+    @Override
+    public SCTPAreaTaxonomyConfiguration getConfiguration() {
+        return (SCTPAreaTaxonomyConfiguration)super.getConfiguration();
     }
 
     @Override
     public NodeOptionsPanel getPartitionedNodeOptionsPanel() {
         
-        if(config.getPAreaTaxonomy().isAggregated()) {
-            return new SCTAggregateAreaOptionsPanel(config);
+        if(getConfiguration().getPAreaTaxonomy().isAggregated()) {
+            return new SCTAggregateAreaOptionsPanel(getConfiguration());
         } else {
-            return new SCTAreaOptionsPanel(config);
+            return new SCTAreaOptionsPanel(getConfiguration());
         }
     }
 
     @Override
     public NodeOptionsPanel getNodeOptionsPanel() {
-        if(config.getPAreaTaxonomy().isAggregated()) {
-            return new SCTAggregatePAreaOptionsPanel(config);
+        if(getConfiguration().getPAreaTaxonomy().isAggregated()) {
+            return new SCTAggregatePAreaOptionsPanel(getConfiguration());
         } else {
-            return new SCTPAreaOptionsPanel(config);
+            return new SCTPAreaOptionsPanel(getConfiguration());
         }
     }
 
