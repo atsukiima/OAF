@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.targetabn.configuration;
 import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetGroup;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.HelpButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 
 /**
@@ -23,5 +24,9 @@ public class SCTTargetGroupOptionsPanel extends NodeOptionsPanel<TargetGroup> {
         });
 
         super.addOptionButton(popoutBtn);
+
+        HelpButton helpBtn = new HelpButton(config);
+
+        super.addOptionButton(helpBtn);
     }
 }

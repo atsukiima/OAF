@@ -12,6 +12,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.disjointabn.buttons.Cre
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.disjointabn.buttons.ExpandAggregateDisjointNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANFromSinglyRootedNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportSinglyRootedNodeButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.HelpButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfiguration;
@@ -70,5 +71,9 @@ public class SCTDisjointPAreaOptionsPanel extends NodeOptionsPanel<DisjointNode<
         });
 
         super.addOptionButton(popoutBtn);
+
+        HelpButton helpBtn = new HelpButton(config);
+
+        super.addOptionButton(helpBtn);
     }
 }

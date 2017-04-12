@@ -6,19 +6,20 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.load.RF1ReleaseLoader;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.RF2ReleaseLoader;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseInfo;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+import java.util.*;
+import java.util.prefs.Preferences;
+import javax.swing.*;
 
 /**
  * Panel that allows a user to open a SNOMED CT release.
@@ -68,9 +69,13 @@ public class LoadReleasePanel extends JPanel {
         }
     }
 
-    private JComboBox localVersionBox;
+    private JComboBox<String> chooserVersionBox;
+    private JComboBox<String> recentlyOpenedVersionBox;
+    private JComboBox<String> localVersionBox = chooserVersionBox;
 
-    private ArrayList<File> availableReleases = new ArrayList<>();
+    private ArrayList<File> chooserReleases = new ArrayList<>();
+    private ArrayList<File> recentlyOpenedReleases = new ArrayList<>();
+    private ArrayList<File> availableReleases = chooserReleases;
 
     private final JButton chooserBtn;
 
@@ -81,17 +86,65 @@ public class LoadReleasePanel extends JPanel {
     private JProgressBar loadProgressBar;
 
     private final ArrayList<LocalDataSourceListener> dataSourceLoadedListeners = new ArrayList<>();
+    
+    private final String prefsKey_RecentlyOpenedReleases = "Recently Opened Releases";
+    private final String defaultJSON = "{}";
 
     public LoadReleasePanel() {
-        localVersionBox = new JComboBox();
-        localVersionBox.setBackground(Color.WHITE);
-        localVersionBox.addItem("Choose a directory");
+        chooserVersionBox = new JComboBox();
+        chooserVersionBox.setBackground(Color.WHITE);
+        chooserVersionBox.addItem("Choose a directory");
+        chooserVersionBox.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                localVersionBox = chooserVersionBox;
+                availableReleases = chooserReleases;
+                loadButton.setText("Load from File Opener");
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {}
+        });
+
+        recentlyOpenedVersionBox = new JComboBox();
+        recentlyOpenedVersionBox.setBackground(Color.WHITE);
+        loadHistory();
+        recentlyOpenedVersionBox.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                localVersionBox = recentlyOpenedVersionBox;
+                availableReleases = recentlyOpenedReleases;
+                loadButton.setText("Load from History");
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {}
+        });
+        
+        JButton clearHistoryBtn = new JButton("Clear History");
+        clearHistoryBtn.addActionListener( (ae) -> {
+            int answer = JOptionPane.showOptionDialog(
+                    null,
+                    "The history of recently opened items will be lost."
+                            + "\nAre you sure to clear history?",
+                    "Recently Opened Files: Clear History?",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE,
+                    null,
+                    new Object[]{"Yes","No"},
+                    "No");
+            switch(answer) {
+                case 0:
+                    eraseHistory();
+                    loadHistory();
+                case 1:
+                default:
+            }
+        });
 
         chooserBtn = new JButton("Open Folder");
 
         chooserBtn.addActionListener((ae) -> {
-            localVersionBox.removeAllItems();
-            
             showReleaseFolderSelectionDialog();
         });
 
@@ -110,7 +163,8 @@ public class LoadReleasePanel extends JPanel {
                 loadProgressBar.setVisible(true);
                 
                 loadButton.setEnabled(false);
-                localVersionBox.setEnabled(false);
+                chooserVersionBox.setEnabled(false);
+                recentlyOpenedVersionBox.setEnabled(false);
                 chooserBtn.setEnabled(false);
                 
                 dataSourceLoadedListeners.forEach( (listener) -> {
@@ -129,8 +183,11 @@ public class LoadReleasePanel extends JPanel {
         JPanel localReleasePanel = new JPanel();
 
         localReleasePanel.add(chooserBtn);
-        localReleasePanel.add(localVersionBox);
+        localReleasePanel.add(chooserVersionBox);
+        localReleasePanel.add(new JLabel(" OR "));
+        localReleasePanel.add(recentlyOpenedVersionBox);
         localReleasePanel.add(loadButton);
+        localReleasePanel.add(clearHistoryBtn);
         localReleasePanel.add(loadProgressBar);
 
         this.setLayout(new BorderLayout());
@@ -154,7 +211,8 @@ public class LoadReleasePanel extends JPanel {
 
     private void dataSourceUnloaded() {
         loadButton.setText("Load");
-        localVersionBox.setEnabled(true);
+        chooserVersionBox.setEnabled(true);
+        recentlyOpenedVersionBox.setEnabled(true);
         chooserBtn.setEnabled(true);
 
         this.loadedDataSource = null;
@@ -168,7 +226,10 @@ public class LoadReleasePanel extends JPanel {
         new Thread(() -> {
             try {
                 File selectedFile = getSelectedVersion();
-                
+
+                saveHistory(selectedFile);
+                loadHistory();
+
                 final LocalLoadStateMonitor loadMonitor;
                 final SCTRelease dataSource;
                 
@@ -221,6 +282,7 @@ public class LoadReleasePanel extends JPanel {
                 SwingUtilities.invokeLater(() -> {
                     loadComplete();
                 });
+                System.out.println("Load Complete!");
                 
             } catch (IOException ioe) {
                 ioe.printStackTrace();
@@ -241,26 +303,34 @@ public class LoadReleasePanel extends JPanel {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             try {
                 File file = chooser.getSelectedFile();
-                this.availableReleases = LoadLocalRelease.findReleaseFolders(file);
-                
-                if (availableReleases.isEmpty()) {
-                    localVersionBox.removeAllItems();
-                    localVersionBox.addItem("Choose a directory");
+                ArrayList<File> temp = LoadLocalRelease.findReleaseFolders(file);
+
+                if(temp.isEmpty()){
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "SNOMED CT release was not found in the selected directory",
+                            "SNOMED CT No Release Found",
+                            JOptionPane.WARNING_MESSAGE);
                 } else {
-                    ArrayList<String> releaseNames = LoadLocalRelease.getReleaseFileNames(this.availableReleases);
+                    chooserVersionBox.removeAllItems();
+                    chooserReleases = temp;
+                    ArrayList<String> releaseNames = LoadLocalRelease.getReleaseFileNames(this.chooserReleases);
 
                     releaseNames.forEach((releaseName) -> {
-                        localVersionBox.addItem(releaseName);
+                        chooserVersionBox.addItem(releaseName);
                     });
                     
+                    localVersionBox = chooserVersionBox;
+                    availableReleases = chooserReleases;
+                    loadButton.setText("Load from File Opener");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-        } else {
-            if (availableReleases.isEmpty()) {
-                localVersionBox.removeAllItems();
-                localVersionBox.addItem("Choose a directory");
+                JOptionPane.showMessageDialog(
+                        null,
+                        "SNOMED CT release name cannot be properly parsed",
+                        "SNOMED CT Release Name Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -279,5 +349,136 @@ public class LoadReleasePanel extends JPanel {
         }
 
         return loadedDataSource;
+    }
+    
+    private List<Map.Entry<String,Long>> getRecentlyOpened(Class<?> c, String prefsKey) throws ParseException {
+        Preferences prefsRoot = Preferences.userNodeForPackage(c);
+        String recentlyOpenedReleasesListJSON = prefsRoot.get(prefsKey,defaultJSON);
+        System.out.println(recentlyOpenedReleasesListJSON);
+        JSONParser parser = new JSONParser();
+        JSONObject recentlyOpenedReleasesJSONobj = (JSONObject) parser.parse(recentlyOpenedReleasesListJSON);
+        HashMap<String,Long> unsorted = new HashMap<>();
+        recentlyOpenedReleasesJSONobj.keySet().forEach( key -> {
+            unsorted.put((String) key,(Long) recentlyOpenedReleasesJSONobj.get(key));
+        });
+        List<Map.Entry<String,Long>> sortedEntries = new ArrayList<>(unsorted.entrySet());
+        Collections.sort(sortedEntries,
+                (Map.Entry<String,Long> e1, Map.Entry<String,Long> e2) ->
+                        e2.getValue().compareTo(e1.getValue())
+        );
+        return sortedEntries;
+    }
+    
+    private ArrayList<File> getHistory(Class<?> c, String prefsKey) throws ParseException {
+        List<Map.Entry<String,Long>> sortedEntries = getRecentlyOpened(c,prefsKey);
+        ArrayList<File> returnList = new ArrayList<>(sortedEntries.size());
+
+        for (Map.Entry<String,Long> entry : sortedEntries){
+            String path = entry.getKey();
+            File temp = new File(path);
+            try {
+                if(temp.exists())
+                    returnList.add(temp);
+            } catch (SecurityException se) {
+                se.printStackTrace();
+                JOptionPane.showMessageDialog(
+                        null,
+                        "One of the recently opened location is not readable - READ ACCESS DENIED."
+                                + "\nLocation path: " + path
+                                + "\nThis location is removed from the recently opened list.",
+                        "File/Directory Read Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        return returnList;
+    }
+    
+    private void eraseHistory(){
+        eraseHistory(this.getClass(),prefsKey_RecentlyOpenedReleases);
+    }
+    
+    private void eraseHistory(Class<?> c, String prefsKey){
+        Preferences prefsRoot = Preferences.userNodeForPackage(c);
+        prefsRoot.remove(prefsKey);
+    }
+    
+    private void loadHistory(){
+        recentlyOpenedVersionBox.removeAllItems();
+        recentlyOpenedReleases.clear();
+        try{
+            recentlyOpenedReleases = getHistory(this.getClass(),prefsKey_RecentlyOpenedReleases);
+        }
+        catch(ParseException pe) {
+            pe.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Reading the list of recently opened files failed - PARSE ERROR",
+                    "Recently Opened Files: Read Failed",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        catch(ClassCastException|NumberFormatException e){
+            e.printStackTrace();
+            int answer = JOptionPane.showOptionDialog(
+                    null,
+                    "Reading the list of recently opened files failed - DATA ERROR"
+                            + "\nHistory data seems corrupted.\nReset history?",
+                    "Recently Opened Files: Read Failed",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.ERROR_MESSAGE,
+                    null,
+                    new Object[]{"Yes","No"},
+                    "No");
+            switch(answer) {
+                case 0:
+                    eraseHistory();
+                case 1:
+                default:
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            int answer = JOptionPane.showOptionDialog(
+                    null,
+                    "Reading the list of recently opened files failed - UNKNOWN ERROR"
+                            + "\nReset history?",
+                    "Recently Opened Files: Read Failed",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.ERROR_MESSAGE,
+                    null,
+                    new Object[]{"Yes","No"},
+                    "No");
+            switch(answer) {
+                case 0:
+                    eraseHistory();
+                case 1:
+                default:
+            }
+        }
+        ArrayList<String> releaseNames = LoadLocalRelease.getReleaseFileNames(recentlyOpenedReleases);
+        releaseNames.forEach((releaseName) -> {
+            recentlyOpenedVersionBox.addItem(releaseName);
+        });
+        if(recentlyOpenedReleases.isEmpty()){
+            recentlyOpenedVersionBox.addItem("NO History");
+        }
+    }
+    
+    private void saveHistory(File selectedFile){
+        Preferences prefsRoot = Preferences.userNodeForPackage(this.getClass());
+        String recentlyOpenedReleasesListJSON = prefsRoot.get(prefsKey_RecentlyOpenedReleases,defaultJSON);
+        System.out.println(recentlyOpenedReleasesListJSON);
+        JSONParser parser = new JSONParser();
+        try{
+            JSONObject recentlyOpenedReleasesJSONObj = (JSONObject) parser.parse(recentlyOpenedReleasesListJSON);
+            recentlyOpenedReleasesJSONObj.put(selectedFile.getAbsolutePath(),new Date().getTime());
+            prefsRoot.put(prefsKey_RecentlyOpenedReleases, JSONValue.toJSONString(recentlyOpenedReleasesJSONObj));
+        }catch(ParseException pe){
+            pe.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Saving the list of recently opened files failed - PARSE ERROR",
+                    "Recently Opened Files: Save Failed",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

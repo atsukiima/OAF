@@ -6,6 +6,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateDisjointAbNFromPartitionNodeButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANFromPartitionedNodeButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.HelpButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayDisjointTaxonomyAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANAction;
@@ -39,5 +40,9 @@ public class SCTAggregateAreaOptionsPanel extends NodeOptionsPanel {
         });
         
         super.addOptionButton(popoutBtn);
+
+        HelpButton helpBtn = new HelpButton(config);
+
+        super.addOptionButton(helpBtn);
     }
 }
