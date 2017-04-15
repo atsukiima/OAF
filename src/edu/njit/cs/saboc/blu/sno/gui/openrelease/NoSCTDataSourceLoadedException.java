@@ -1,4 +1,4 @@
-package edu.njit.cs.saboc.blu.sno.gui.abnselection;
+package edu.njit.cs.saboc.blu.sno.gui.openrelease;
 
 /**
  * General purpose exception for when there is no given 

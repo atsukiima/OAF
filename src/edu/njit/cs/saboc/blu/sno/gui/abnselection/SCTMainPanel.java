@@ -1,5 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
+import edu.njit.cs.saboc.blu.sno.gui.openrelease.LoadReleasePanel;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
@@ -45,8 +46,6 @@ public class SCTMainPanel extends JPanel {
             }
         });
 
-        loadReleasePanel.setBorder(BorderFactory.createTitledBorder("Select a Folder Containing SNOMED CT Release(s)"));
-        
         this.add(loadReleasePanel, BorderLayout.NORTH);
         
         abnCreationPanel = new SCTAbNCreationPanel(frameManager);

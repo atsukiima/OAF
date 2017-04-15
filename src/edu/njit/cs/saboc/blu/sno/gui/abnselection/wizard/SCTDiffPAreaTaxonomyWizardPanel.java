@@ -1,9 +1,9 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection.wizard;
 
 import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.AbNDerivationWizardPanel;
-import edu.njit.cs.saboc.blu.sno.gui.abnselection.LoadReleasePanel;
-import edu.njit.cs.saboc.blu.sno.gui.abnselection.LoadReleasePanel.LocalDataSourceListener;
-import edu.njit.cs.saboc.blu.sno.gui.abnselection.NoSCTDataSourceLoadedException;
+import edu.njit.cs.saboc.blu.sno.gui.openrelease.LoadReleasePanel;
+import edu.njit.cs.saboc.blu.sno.gui.openrelease.LoadReleasePanel.LocalDataSourceListener;
+import edu.njit.cs.saboc.blu.sno.gui.openrelease.NoSCTDataSourceLoadedException;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.createanddisplay.CreateAndDisplaySCTDiffPAreaTaxonomy;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
