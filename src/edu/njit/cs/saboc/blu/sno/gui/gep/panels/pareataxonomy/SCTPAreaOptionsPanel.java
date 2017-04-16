@@ -6,6 +6,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.*;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.CreateAncestorSubtaxonomyButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.CreateExpandedSubtaxonomyButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.CreateRootSubtaxonomyButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayPAreaTaxonomyAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANAction;
@@ -17,16 +18,22 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTP
  */
 public class SCTPAreaOptionsPanel extends NodeOptionsPanel {
 
-    public SCTPAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config) {
+    public SCTPAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config, boolean aggregated) {
 
-        CreateDisjointAbNFromSinglyRootedNodeButton<PArea> createDisjointBtn = new CreateDisjointAbNFromSinglyRootedNodeButton<>(
-            config, 
-            (disjointTaxonomy) -> {
-                config.getUIConfiguration().getAbNDisplayManager().displayDisjointPAreaTaxonomy(disjointTaxonomy);
-            });
-        
-        super.addOptionButton(createDisjointBtn);
-        
+        if (aggregated) {
+            CreateExpandedSubtaxonomyButton expandedSubtaxonomyBtn = new CreateExpandedSubtaxonomyButton(
+                    config, new DisplayPAreaTaxonomyAction(config.getUIConfiguration().getAbNDisplayManager()));
+
+            super.addOptionButton(expandedSubtaxonomyBtn);
+        } else {
+            CreateDisjointAbNFromSinglyRootedNodeButton<PArea> createDisjointBtn = new CreateDisjointAbNFromSinglyRootedNodeButton<>(
+                    config,
+                    (disjointTaxonomy) -> {
+                        config.getUIConfiguration().getAbNDisplayManager().displayDisjointPAreaTaxonomy(disjointTaxonomy);
+                    });
+
+            super.addOptionButton(createDisjointBtn);
+        }
         
         
         CreateRootSubtaxonomyButton rootSubtaxonomyBtn = new CreateRootSubtaxonomyButton(config,
@@ -64,6 +71,7 @@ public class SCTPAreaOptionsPanel extends NodeOptionsPanel {
         ExportSinglyRootedNodeButton exportBtn = new ExportSinglyRootedNodeButton(config);
         
         super.addOptionButton(exportBtn);
+        
 
         HelpButton helpBtn = new HelpButton(config);
 

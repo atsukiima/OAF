@@ -7,8 +7,6 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configura
 import edu.njit.cs.saboc.blu.core.gui.graphframe.AbNDisplayManager;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptPainter;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.SCTAggregateAreaOptionsPanel;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.SCTAggregatePAreaOptionsPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.SCTAreaOptionsPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.SCTPAreaOptionsPanel;
 
@@ -41,21 +39,12 @@ public class SCTPAreaTaxonomyUIConfiguration extends PAreaTaxonomyUIConfiguratio
 
     @Override
     public NodeOptionsPanel getPartitionedNodeOptionsPanel() {
-        
-        if(getConfiguration().getPAreaTaxonomy().isAggregated()) {
-            return new SCTAggregateAreaOptionsPanel(getConfiguration());
-        } else {
-            return new SCTAreaOptionsPanel(getConfiguration());
-        }
+        return new SCTAreaOptionsPanel(getConfiguration(), getConfiguration().getPAreaTaxonomy().isAggregated());
     }
 
     @Override
     public NodeOptionsPanel getNodeOptionsPanel() {
-        if(getConfiguration().getPAreaTaxonomy().isAggregated()) {
-            return new SCTAggregatePAreaOptionsPanel(getConfiguration());
-        } else {
-            return new SCTPAreaOptionsPanel(getConfiguration());
-        }
+        return new SCTPAreaOptionsPanel(getConfiguration(), getConfiguration().getPAreaTaxonomy().isAggregated());
     }
 
     @Override

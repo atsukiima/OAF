@@ -15,7 +15,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTP
  */
 public class SCTAreaOptionsPanel extends NodeOptionsPanel {
     
-    public SCTAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config) {
+    public SCTAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config, boolean aggregated) {
         
         super.addOptionButton(new CreateDisjointAbNFromPartitionNodeButton(
                 config,
