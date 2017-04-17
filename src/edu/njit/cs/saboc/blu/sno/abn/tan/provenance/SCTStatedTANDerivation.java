@@ -25,20 +25,12 @@ public class SCTStatedTANDerivation extends SimpleClusterTANDerivation {
     }
     
     @Override
-    public JSONArray serializeToJSON() {
-        JSONArray result = new JSONArray();
+    public JSONObject serializeToJSON() {
+        JSONObject result = new JSONObject();
         
-        //serialize class
-        JSONObject obj_class = new JSONObject();
-        obj_class.put("ClassName","SCTStatedTANDerivation");       
-        result.add(obj_class);
-        
-        //serialzie base
-        JSONObject obj_base = new JSONObject();
-        obj_base.put("BaseDerivation", base.serializeToJSON());   
-        result.add(obj_base);
+        result.put("ClassName","SCTStatedTANDerivation");       
+        result.put("BaseDerivation", base.serializeToJSON());   
         
         return result;
-        
     }    
 }
