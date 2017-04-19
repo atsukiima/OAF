@@ -5,6 +5,7 @@
  */
 package testing;
 
+import edu.njit.cs.saboc.blu.core.abn.provenance.AbNDerivationFactory;
 import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointAbNFactory;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomyFactory;
 import edu.njit.cs.saboc.blu.core.abn.tan.TANFactory;
@@ -21,36 +22,34 @@ import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
  *
  * @author hl395
  */
-public class SCTAbNDerivationFactory implements AbNDerivationFactoryTesting{
+public class SCTAbNDerivationFactory implements AbNDerivationFactory {
     
     private SCTRelease sctRelease;
     private SCTReleaseWithStated statedRelease;
     private Hierarchy<SCTConcept> hierarchy;
 
     @Override
-    public <T extends PAreaTaxonomyFactory> T getPAreaTaxonomyFactory() {
-        //return statedPareaTaxonomyFactory
-        return (T)new SCTInferredPAreaTaxonomyFactory(sctRelease, hierarchy);
+    public PAreaTaxonomyFactory getPAreaTaxonomyFactory() {
+        return new SCTInferredPAreaTaxonomyFactory(sctRelease, hierarchy);
     }
 
     @Override
-    public <V extends DisjointAbNFactory> V getDisjointPAreaAbNFactory() {
+    public DisjointAbNFactory getDisjointPAreaAbNFactory() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <U extends DisjointAbNFactory> U getDisjointTANbNFactory() {
+    public DisjointAbNFactory getDisjointTANbNFactory() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <N extends TANFactory> N getTANFactory() {
-       return  (N)new SCTStatedTANFactory(statedRelease);
+    public TANFactory getTANFactory() {
+       return new TANFactory(statedRelease);
     }
 
     @Override
-    public <R extends TargetAbstractionNetworkFactory> R getTargetAbNFactory() {
-        return (R) new SCTTargetAbstractionNetworkFactory(statedRelease, null, null, null);
+    public TargetAbstractionNetworkFactory getTargetAbNFactory() {
+        return new SCTTargetAbstractionNetworkFactory(statedRelease, null, null, null);
     }
-    
 }

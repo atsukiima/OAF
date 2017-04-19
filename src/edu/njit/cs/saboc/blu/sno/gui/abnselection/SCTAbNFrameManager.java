@@ -83,7 +83,7 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
     @Override
     public void displayTargetAbstractionNetwork(TargetAbstractionNetwork targetAbN) {
         MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame, new SCTMultiAbNGraphFrameInitializers(this), null);
-        graphFrame.displayTargetAbstractionNewtork(targetAbN);
+        graphFrame.displayTargetAbstractionNetwork(targetAbN);
 
         this.getFrameCreationAction().displayFrame(graphFrame);
     }

@@ -21,13 +21,13 @@ import java.util.Set;
  */
 public class SCTPropertyLocationDataFactory implements PropertyLocationDataFactory{
 
-        private final Map<Long, SCTConcept> concepts;
+    private final Map<Long, SCTConcept> concepts;
     
     public SCTPropertyLocationDataFactory(Set<SCTConcept> sourceConcepts) {
         concepts = new HashMap<>();
         
         sourceConcepts.forEach( (c) -> {
-            concepts.put((Long)c.getID(), c);
+            concepts.put(c.getID(), c);
         });
     }
     
@@ -44,7 +44,10 @@ public class SCTPropertyLocationDataFactory implements PropertyLocationDataFacto
         
         conceptIds.forEach( (id) -> {
             if(concepts.containsKey(id)) {
-                SCTInheritableProperty sctProperty = new SCTInheritableProperty(concepts.get(id), InheritableProperty.InheritanceType.Inherited);
+                SCTInheritableProperty sctProperty = new SCTInheritableProperty(
+                        concepts.get(id), 
+                        InheritableProperty.InheritanceType.Introduced);
+                
                 resultPropertys.add(sctProperty);
             }
         });
@@ -52,7 +55,4 @@ public class SCTPropertyLocationDataFactory implements PropertyLocationDataFacto
         return resultPropertys;
 
     }
-    
-    
-    
 }
