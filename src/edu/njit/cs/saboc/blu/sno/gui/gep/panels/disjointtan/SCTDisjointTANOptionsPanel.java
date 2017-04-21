@@ -63,7 +63,7 @@ public class SCTDisjointTANOptionsPanel extends NodeOptionsPanel {
         PopoutNodeDetailsButton popoutBtn = new PopoutNodeDetailsButton("disjoint cluster", () -> {
             DisjointPArea parea = (DisjointPArea) super.getCurrentNode().get();
 
-            NodeDashboardPanel anp = config.getUIConfiguration().createGroupDetailsPanel();
+            NodeDashboardPanel anp = config.getUIConfiguration().createNodeDetailsPanel();
             anp.setContents(parea);
 
             return anp;

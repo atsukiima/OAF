@@ -31,7 +31,7 @@ public class SCTAreaOptionsPanel extends NodeOptionsPanel {
         PopoutNodeDetailsButton popoutBtn = new PopoutNodeDetailsButton("area", () -> {
             Area area = (Area)super.getCurrentNode().get();
             
-            NodeDashboardPanel anp = config.getUIConfiguration().createContainerDetailsPanel();
+            NodeDashboardPanel anp = config.getUIConfiguration().createPartitionedNodeDetailsPanel();
             anp.setContents(area);
 
             return anp;
