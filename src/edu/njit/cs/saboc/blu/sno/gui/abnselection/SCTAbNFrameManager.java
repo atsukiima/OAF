@@ -13,7 +13,6 @@ import edu.njit.cs.saboc.blu.core.graph.tan.DisjointCluster;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.AbNDisplayManager;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.FrameCreationAction;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.MultiAbNGraphFrame;
-import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.SCTDiffPAreaTaxonomyGraphFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.initializers.SCTMultiAbNGraphFrameInitializers;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
@@ -41,7 +40,9 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
     
     @Override
     public void displayPAreaTaxonomy(PAreaTaxonomy taxonomy) {
-        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame, new SCTMultiAbNGraphFrameInitializers(this));
+
+        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame, new SCTMultiAbNGraphFrameInitializers(this), null);
+
         graphFrame.displayPAreaTaxonomy(taxonomy);
 
         this.getFrameCreationAction().displayFrame(graphFrame);
@@ -50,7 +51,7 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
     
     @Override
     public void displayTribalAbstractionNetwork(ClusterTribalAbstractionNetwork tan) {
-        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame, new SCTMultiAbNGraphFrameInitializers(this));
+        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame, new SCTMultiAbNGraphFrameInitializers(this), null);
         graphFrame.displayTAN(tan);
 
         this.getFrameCreationAction().displayFrame(graphFrame);
@@ -60,7 +61,7 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
     public void displayDisjointPAreaTaxonomy(
             DisjointAbstractionNetwork<DisjointNode<PArea>, PAreaTaxonomy<PArea>, PArea> disjointTaxonomy) {
 
-        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame, new SCTMultiAbNGraphFrameInitializers(this));
+        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame, new SCTMultiAbNGraphFrameInitializers(this), null);
         graphFrame.displayDisjointPAreaTaxonomy(
                 (DisjointAbstractionNetwork<DisjointPArea, PAreaTaxonomy<PArea>, PArea>)(DisjointAbstractionNetwork<?, ?, ?>)disjointTaxonomy);
 
@@ -71,7 +72,7 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
     public void displayDisjointTribalAbstractionNetwork(
             DisjointAbstractionNetwork<DisjointNode<Cluster>, ClusterTribalAbstractionNetwork<Cluster>, Cluster> disjointTAN) {
         
-        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame, new SCTMultiAbNGraphFrameInitializers(this));
+        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame, new SCTMultiAbNGraphFrameInitializers(this), null);
         graphFrame.displayDisjointTAN(
                 (DisjointAbstractionNetwork<DisjointCluster, ClusterTribalAbstractionNetwork<Cluster>, Cluster>)(DisjointAbstractionNetwork<?, ?, ?>)
                         disjointTAN);
@@ -81,7 +82,7 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
 
     @Override
     public void displayTargetAbstractionNetwork(TargetAbstractionNetwork targetAbN) {
-        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame, new SCTMultiAbNGraphFrameInitializers(this));
+        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame, new SCTMultiAbNGraphFrameInitializers(this), null);
         graphFrame.displayTargetAbstractionNewtork(targetAbN);
 
         this.getFrameCreationAction().displayFrame(graphFrame);
@@ -89,7 +90,7 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
 
     @Override
     public void displayAreaTaxonomy(PAreaTaxonomy taxonomy) {
-        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame, new SCTMultiAbNGraphFrameInitializers(this));
+        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame, new SCTMultiAbNGraphFrameInitializers(this), null);
         graphFrame.displayAreaTaxonomy(taxonomy);
 
         this.getFrameCreationAction().displayFrame(graphFrame);
@@ -97,7 +98,7 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
 
     @Override
     public void displayBandTribalAbstractionNetwork(ClusterTribalAbstractionNetwork tan) {
-        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame, new SCTMultiAbNGraphFrameInitializers(this));
+        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame, new SCTMultiAbNGraphFrameInitializers(this), null);
         graphFrame.displayBandTAN(tan);
 
         this.getFrameCreationAction().displayFrame(graphFrame);
