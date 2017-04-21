@@ -1,7 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.abn.tan.provenance;
 
 import edu.njit.cs.saboc.blu.core.abn.tan.provenance.SimpleClusterTANDerivation;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -16,7 +15,8 @@ public class SCTStatedTANDerivation extends SimpleClusterTANDerivation {
     
     public SCTStatedTANDerivation(SimpleClusterTANDerivation base) {
         super(base);
-        this.base= base;
+        
+        this.base = base;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class SCTStatedTANDerivation extends SimpleClusterTANDerivation {
     public JSONObject serializeToJSON() {
         JSONObject result = new JSONObject();
         
-        result.put("ClassName","SCTStatedTANDerivation");       
+        result.put("ClassName", "SCTStatedTANDerivation");       
         result.put("BaseDerivation", base.serializeToJSON());   
         
         return result;

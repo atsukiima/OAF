@@ -1,7 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.provenance;
 
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.provenance.SimplePAreaTaxonomyDerivation;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -27,6 +26,11 @@ public class SCTBasicStatedPAreaTaxonomyDerivation extends SimplePAreaTaxonomyDe
         return "Derived SCT Stated PArea Taxonomy";
     }
 
+    @Override
+    public String getName() {
+        return String.format("%s (stated)", super.getName());
+    }
+    
     @Override
     public JSONObject serializeToJSON() {
         JSONObject result = new JSONObject();
