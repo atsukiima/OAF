@@ -52,20 +52,20 @@ public class SCTDiffPAreaTaxonomyUIConfiguration extends DiffPAreaTaxonomyUIConf
     }
 
     @Override
-    public NodeDashboardPanel createContainerDetailsPanel() {
+    public NodeDashboardPanel createPartitionedNodeDetailsPanel() {
         if(this.getConfiguration().getPAreaTaxonomy() instanceof SCTDescriptiveDiffPAreaTaxonomy) { 
             return new SCTDescriptiveDiffAreaPanel(this.getConfiguration());
         } else {
-            return super.createContainerDetailsPanel();
+            return super.createPartitionedNodeDetailsPanel();
         }
     }
 
     @Override
-    public NodeDashboardPanel createGroupDetailsPanel() {
+    public NodeDashboardPanel createNodeDetailsPanel() {
         if(this.getConfiguration().getPAreaTaxonomy() instanceof SCTDescriptiveDiffPAreaTaxonomy) { 
             return new SCTDescriptiveDiffPAreaPanel(this.getConfiguration(), getChangeExplanationEntryFactory());
         } else {
-            return super.createGroupDetailsPanel();
+            return super.createNodeDetailsPanel();
         }
     }
     

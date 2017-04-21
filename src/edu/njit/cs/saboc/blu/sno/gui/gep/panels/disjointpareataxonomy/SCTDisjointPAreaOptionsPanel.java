@@ -64,7 +64,7 @@ public class SCTDisjointPAreaOptionsPanel extends NodeOptionsPanel<DisjointNode<
         PopoutNodeDetailsButton popoutBtn = new PopoutNodeDetailsButton("disjoint partial-area", () -> {
             DisjointPArea parea = (DisjointPArea) super.getCurrentNode().get();
 
-            NodeDashboardPanel anp = config.getUIConfiguration().createGroupDetailsPanel();
+            NodeDashboardPanel anp = config.getUIConfiguration().createNodeDetailsPanel();
             anp.setContents(parea);
 
             return anp;

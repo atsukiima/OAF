@@ -59,7 +59,7 @@ public class SCTPAreaOptionsPanel extends NodeOptionsPanel {
         PopoutNodeDetailsButton popoutBtn = new PopoutNodeDetailsButton("partial-area", () -> {
             PArea parea = (PArea)super.getCurrentNode().get();
             
-            NodeDashboardPanel anp = config.getUIConfiguration().createGroupDetailsPanel();
+            NodeDashboardPanel anp = config.getUIConfiguration().createNodeDetailsPanel();
             anp.setContents(parea);
 
             return anp;

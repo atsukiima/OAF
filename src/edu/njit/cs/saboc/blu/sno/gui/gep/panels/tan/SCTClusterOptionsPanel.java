@@ -64,7 +64,7 @@ public class SCTClusterOptionsPanel extends NodeOptionsPanel {
         PopoutNodeDetailsButton popoutBtn = new PopoutNodeDetailsButton("cluster", () -> {
             Cluster cluster = (Cluster) super.getCurrentNode().get();
 
-            NodeDashboardPanel anp = config.getUIConfiguration().createGroupDetailsPanel();
+            NodeDashboardPanel anp = config.getUIConfiguration().createNodeDetailsPanel();
             anp.setContents(cluster);
 
             return anp;

@@ -36,7 +36,7 @@ public class SCTBandOptionsPanel extends NodeOptionsPanel {
         PopoutNodeDetailsButton popoutBtn = new PopoutNodeDetailsButton("band", () -> {
             Band band = (Band)super.getCurrentNode().get();
             
-            NodeDashboardPanel anp = config.getUIConfiguration().createContainerDetailsPanel();
+            NodeDashboardPanel anp = config.getUIConfiguration().createPartitionedNodeDetailsPanel();
             anp.setContents(band);
 
             return anp;

@@ -17,7 +17,7 @@ public class SCTTargetGroupOptionsPanel extends NodeOptionsPanel<TargetGroup> {
         PopoutNodeDetailsButton popoutBtn = new PopoutNodeDetailsButton("partial-area", () -> {
             TargetGroup group = super.getCurrentNode().get();
 
-            NodeDashboardPanel anp = config.getUIConfiguration().createGroupDetailsPanel();
+            NodeDashboardPanel anp = config.getUIConfiguration().createNodeDetailsPanel();
             anp.setContents(group);
 
             return anp;
