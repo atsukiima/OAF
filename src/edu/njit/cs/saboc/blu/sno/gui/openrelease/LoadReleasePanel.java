@@ -235,7 +235,21 @@ public class LoadReleasePanel extends JPanel {
 
             JMenuItem clearHistoryItem = new JMenuItem("<html><font size = '4' color = 'red'>Clear recently opened release history</font>");
             clearHistoryItem.addActionListener((ae) -> {
-                recentlyOpenedFileManager.eraseHistory();
+
+                int answer = JOptionPane.showOptionDialog(
+                        null,
+                        "The history of recently opened SNOMED CT releases will be deleted."
+                        + "\nAre you sure you want to clear the history?",
+                        "Recently Opened Releases: Clear History?",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE,
+                        null,
+                        new Object[]{"Yes", "No"},
+                        "No");
+                
+                if(answer == JOptionPane.YES_OPTION) {
+                    recentlyOpenedFileManager.eraseHistory();
+                }
             });
 
             recentReleaseMenu.add(clearHistoryItem);
