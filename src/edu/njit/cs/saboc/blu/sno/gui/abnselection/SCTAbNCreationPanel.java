@@ -31,6 +31,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 
 /**
  * Panel for creating abstraction networks from a SNOMED CT release.
@@ -140,7 +141,12 @@ public class SCTAbNCreationPanel extends JPanel {
         abnSelectionTabs.addTab("Target Abstraction Network", targetPanel);
 
         centerPanel.add(abnSelectionTabs, BorderLayout.CENTER);
-        centerPanel.add(createConceptBrowserPanel(), BorderLayout.SOUTH);
+        
+        JPanel conceptBrowserPanel = new JPanel(new BorderLayout());
+        conceptBrowserPanel.add(Box.createVerticalStrut(20), BorderLayout.CENTER);
+        conceptBrowserPanel.add(createConceptBrowserPanel(), BorderLayout.SOUTH);
+        
+        centerPanel.add(conceptBrowserPanel, BorderLayout.SOUTH);
 
         this.add(centerPanel, BorderLayout.CENTER);
     }
@@ -164,20 +170,20 @@ public class SCTAbNCreationPanel extends JPanel {
     
     public void setCurrentRelease(SCTRelease release) {
         this.optCurrentRelease = Optional.of(release);
-        
+
         pareaTaxonomyDerivationWizardPanel.initialize(release);
-        
+
         diffPAreaTaxonomyDerivationWizardPanel.initialize(release);
-        
+
         tanDerivationWizardPanel.initialize(release);
-        
+
         targetAbNDerivationWizardPanel.initialize(
-                release, 
-                release, 
-                new SCTInheritablePropertyRetriever((SCTReleaseWithStated)release), 
-                new SCTTargetHierarchyRetriever((SCTReleaseWithStated)release));
+                release,
+                release,
+                new SCTInheritablePropertyRetriever((SCTReleaseWithStated) release),
+                new SCTTargetHierarchyRetriever((SCTReleaseWithStated) release));
     }
-    
+
     public void clear() {
        this.optCurrentRelease = Optional.empty();
        
@@ -217,11 +223,8 @@ public class SCTAbNCreationPanel extends JPanel {
         JEditorPane detailsPane = new JEditorPane();
         detailsPane.setContentType("text/html");
 
-        String detailsString = "<html>The BLUSNO Neighborhood Auditing Tool (NAT) concept browser allows you to browse individual concepts. "
-                + "BLUSNO's concept browser is unique in that it displays information derived "
-                + "from various SNOMED CT abstraction networks alongside information about a chosen concept's neighborhood. "
-                + "<b>Subject subtaxonomies</b>, <b>Focus subtaxonomies</b>, and <b>Tribal Abstraction Networks</b> can be derived "
-                + "for individual concepts from within the concept browser when using a local SNOMED CT release.";
+        String detailsString = "<html>The BLUSNO Neighborhood Auditing Tool (NAT) "
+                + "concept browser allows you to browse individual concepts. ";
 
         detailsPane.setText(detailsString);
 

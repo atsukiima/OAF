@@ -10,6 +10,7 @@ import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
 import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.graph.tan.DisjointCluster;
+import edu.njit.cs.saboc.blu.core.gui.frame.OAFMainFrame;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.AbNDisplayManager;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.FrameCreationAction;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.MultiAbNGraphFrame;
@@ -22,7 +23,6 @@ import edu.njit.cs.saboc.blu.sno.nat.SCTNATLayout;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.nat.generic.NATBrowserFrame;
 import java.util.Optional;
-import javax.swing.JFrame;
 
 /**
  * A class for creating and displaying new abstraction network and NAT
@@ -32,12 +32,16 @@ import javax.swing.JFrame;
  */
 public class SCTAbNFrameManager extends AbNDisplayManager  {
     
-    private final JFrame mainFrame;
+    private final OAFMainFrame mainFrame;
     
-    public SCTAbNFrameManager(JFrame mainFrame, FrameCreationAction fca) {
+    public SCTAbNFrameManager(OAFMainFrame mainFrame, FrameCreationAction fca) {
         super(fca);
 
         this.mainFrame = mainFrame;
+    }
+    
+    public OAFMainFrame getMainFrame() {
+        return mainFrame;
     }
     
     @Override

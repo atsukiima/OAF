@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.openrelease;
 import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.RecentlyOpenedFile;
 import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.RecentlyOpenedFileManager;
 import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.RecentlyOpenedFileManager.RecentlyOpenedFileException;
+import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LoadLocalRelease;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LocalLoadStateMonitor;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.RF1ReleaseLoader;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -97,8 +99,12 @@ public class LoadReleasePanel extends JPanel {
     private final ArrayList<LocalDataSourceListener> dataSourceLoadedListeners = new ArrayList<>();
     
     private final RecentlyOpenedFileManager recentlyOpenedFileManager;
+    
+    private final SCTAbNFrameManager frameManager;
 
-    public LoadReleasePanel() {
+    public LoadReleasePanel(SCTAbNFrameManager frameManager) {
+        
+        this.frameManager = frameManager;
         
         recentlyOpenedFileManager = new RecentlyOpenedFileManager(LoadReleasePanel.class, "RecentSCTReleases");
         
@@ -142,7 +148,23 @@ public class LoadReleasePanel extends JPanel {
                 
                 startLocalReleaseThread();
             } else {
-                dataSourceUnloaded();
+
+                int answer = JOptionPane.showOptionDialog(
+                        null,
+                        "The opened release will be unloaded and all windows will be closed."
+                        + "\nAre you sure you want to unload the current release?",
+                        "Unload current release?",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE,
+                        null,
+                        new Object[]{"Yes", "No"},
+                        "Yes");
+                
+                if(answer == JOptionPane.YES_OPTION) {
+                    dataSourceUnloaded();
+                } else {
+                    loadButton.setSelected(true);
+                }
             }
         });
 
@@ -186,8 +208,8 @@ public class LoadReleasePanel extends JPanel {
         loadButton.setText("Load");
         
         chooseReleaseBox.setEnabled(true);
+                
         btnOpenRecentRelease.setEnabled(true);
-        
         btnOpenReleaseFolder.setEnabled(true);
 
         loadedDataSource = Optional.empty();
@@ -195,6 +217,10 @@ public class LoadReleasePanel extends JPanel {
         dataSourceLoadedListeners.forEach( (listener) -> {
             listener.localDataSourceUnloaded();
         });
+        
+        frameManager.getMainFrame().closeFrames(frameManager.getMainFrame().getContentFrames());
+        
+        
     }
     
     private void displayRecentReleaseMenu() {
@@ -356,7 +382,6 @@ public class LoadReleasePanel extends JPanel {
                             "SNOMED CT release was not found in the selected directory",
                             "SNOMED CT No Release Found",
                             JOptionPane.WARNING_MESSAGE);
-                    
                 }
                 
                 setReleaseList(releaseFolders);

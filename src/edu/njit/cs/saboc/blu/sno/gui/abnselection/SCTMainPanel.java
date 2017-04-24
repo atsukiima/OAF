@@ -3,7 +3,6 @@ package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 import edu.njit.cs.saboc.blu.sno.gui.openrelease.LoadReleasePanel;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import java.awt.BorderLayout;
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 /**
@@ -20,7 +19,7 @@ public class SCTMainPanel extends JPanel {
     public SCTMainPanel(SCTAbNFrameManager frameManager) {
         super(new BorderLayout());
         
-        loadReleasePanel = new LoadReleasePanel();
+        loadReleasePanel = new LoadReleasePanel(frameManager);
         loadReleasePanel.addLocalDataSourceLoadedListener(new LoadReleasePanel.LocalDataSourceListener() {
             
             @Override

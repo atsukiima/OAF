@@ -9,6 +9,8 @@ import edu.njit.cs.saboc.blu.core.gui.frame.OAFMainFrame;
 public class Main {
 
     public static void main(String[] args) {
-        OAFMainFrame bLUFrame = new OAFMainFrame(new SCTSelectionFrame());
+        OAFMainFrame frame = new OAFMainFrame(new SCTSelectionFrame());
+        
+        
     }  
 }
