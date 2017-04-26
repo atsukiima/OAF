@@ -14,10 +14,17 @@ public class SCTPAreaTaxonomyConfigurationFactory {
     public SCTPAreaTaxonomyConfiguration createConfiguration(
             PAreaTaxonomy taxonomy, 
             AbNDisplayManager displayListener, 
-            SCTAbNFrameManager frameManager) {
+            SCTAbNFrameManager frameManager,
+            boolean showingAreaTaxonomy) {
         
         SCTPAreaTaxonomyConfiguration pareaTaxonomyConfiguration = new SCTPAreaTaxonomyConfiguration(taxonomy);
-        pareaTaxonomyConfiguration.setUIConfiguration(new SCTPAreaTaxonomyUIConfiguration(pareaTaxonomyConfiguration, displayListener, frameManager));
+        pareaTaxonomyConfiguration.setUIConfiguration(
+                new SCTPAreaTaxonomyUIConfiguration(
+                        pareaTaxonomyConfiguration, 
+                        displayListener, 
+                        frameManager,
+                        showingAreaTaxonomy));
+        
         pareaTaxonomyConfiguration.setTextConfiguration(new SCTPAreaTaxonomyTextConfiguration(taxonomy));
         
         return pareaTaxonomyConfiguration;

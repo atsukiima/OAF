@@ -21,9 +21,13 @@ public class SCTTANUIConfiguration extends TANUIConfiguration {
     public SCTTANUIConfiguration(
             SCTTANConfiguration config, 
             AbNDisplayManager displayListener, 
-            SCTAbNFrameManager frameManager) {
+            SCTAbNFrameManager frameManager,
+            boolean showingAreaTaxonomy) {
         
-        super(config, displayListener, new SCTTANListenerConfiguration(config));
+        super(config, 
+                displayListener, 
+                new SCTTANListenerConfiguration(config), 
+                showingAreaTaxonomy);
         
         this.frameManager = frameManager;
     }

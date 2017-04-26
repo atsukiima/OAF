@@ -75,7 +75,7 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
         this.setLayout(new BorderLayout());
         
         SCTPAreaTaxonomyConfigurationFactory dummyFactory = new SCTPAreaTaxonomyConfigurationFactory();
-        PAreaTaxonomyConfiguration config = dummyFactory.createConfiguration(null, null, null);
+        PAreaTaxonomyConfiguration config = dummyFactory.createConfiguration(null, null, null, false);
 
         this.rootSelectionPanel = new AttributeRelationshipRootSelectionPanel<>(config);
         

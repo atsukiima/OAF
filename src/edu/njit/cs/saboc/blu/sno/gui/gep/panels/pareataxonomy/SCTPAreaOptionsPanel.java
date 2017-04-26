@@ -14,6 +14,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.C
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.CreateRootSubtaxonomyButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayPAreaTaxonomyAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANAction;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTOpenBrowserButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 
 /**
@@ -23,6 +24,10 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTP
 public class SCTPAreaOptionsPanel extends NodeOptionsPanel {
 
     public SCTPAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config, boolean aggregated) {
+        
+        SCTOpenBrowserButton openBrowserButton = new SCTOpenBrowserButton(config, config.getUIConfiguration().getFrameManager());
+        
+        super.addOptionButton(openBrowserButton);
 
         if (aggregated) {
             CreateExpandedSubtaxonomyButton expandedSubtaxonomyBtn = new CreateExpandedSubtaxonomyButton(

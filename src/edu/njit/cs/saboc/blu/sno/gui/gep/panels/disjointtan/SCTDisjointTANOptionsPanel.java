@@ -16,6 +16,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.Node
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutDetailsButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointtan.configuration.SCTDisjointTANConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTOpenBrowserButton;
 
 /**
  *
@@ -24,6 +25,10 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointtan.configuration.SCTDis
 public class SCTDisjointTANOptionsPanel extends NodeOptionsPanel {
 
     public SCTDisjointTANOptionsPanel(SCTDisjointTANConfiguration config, boolean forAggregate) {
+        
+        SCTOpenBrowserButton openBrowserButton = new SCTOpenBrowserButton(config, config.getUIConfiguration().getFrameManager());
+
+        super.addOptionButton(openBrowserButton);
         
         if(forAggregate) {
             ExpandAggregateDisjointNodeButton expandAggregateButton = new ExpandAggregateDisjointNodeButton(config, (disjointAbN) -> {

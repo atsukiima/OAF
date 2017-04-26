@@ -12,10 +12,17 @@ public class SCTTANConfigurationFactory {
     public SCTTANConfiguration createConfiguration(
             ClusterTribalAbstractionNetwork tan, 
             AbNDisplayManager displayListener, 
-            SCTAbNFrameManager frameManager) {
+            SCTAbNFrameManager frameManager,
+            boolean showingBandTAN) {
 
         SCTTANConfiguration pareaTaxonomyConfiguration = new SCTTANConfiguration(tan);
-        pareaTaxonomyConfiguration.setUIConfiguration(new SCTTANUIConfiguration(pareaTaxonomyConfiguration, displayListener, frameManager));
+        pareaTaxonomyConfiguration.setUIConfiguration(
+                new SCTTANUIConfiguration(
+                        pareaTaxonomyConfiguration, 
+                        displayListener, 
+                        frameManager,
+                        showingBandTAN));
+        
         pareaTaxonomyConfiguration.setTextConfiguration(new SCTTANTextConfiguration(tan));
 
         return pareaTaxonomyConfiguration;

@@ -13,6 +13,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.buttons.CreateAnces
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.buttons.CreateRootTANButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.buttons.ExpandAggregateClusterButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANAction;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTOpenBrowserButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 
 /**
@@ -23,6 +24,10 @@ public class SCTClusterOptionsPanel extends NodeOptionsPanel {
 
     public SCTClusterOptionsPanel(SCTTANConfiguration config, boolean forAggregate) {
         
+        SCTOpenBrowserButton openBrowserButton = new SCTOpenBrowserButton(config, config.getUIConfiguration().getFrameManager());
+
+        super.addOptionButton(openBrowserButton);
+
         if(forAggregate) {
             
         } else {

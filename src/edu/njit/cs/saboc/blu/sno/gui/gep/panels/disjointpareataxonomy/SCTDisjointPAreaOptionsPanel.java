@@ -16,6 +16,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.Node
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutDetailsButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTOpenBrowserButton;
 
 /**
  * Options panel for disjoint partial-areas
@@ -26,6 +27,10 @@ public class SCTDisjointPAreaOptionsPanel extends NodeOptionsPanel<DisjointNode<
 
     public SCTDisjointPAreaOptionsPanel(SCTDisjointPAreaTaxonomyConfiguration config, boolean forAggregate) {
         
+        SCTOpenBrowserButton openBrowserButton = new SCTOpenBrowserButton(config, config.getUIConfiguration().getFrameManager());
+        
+        super.addOptionButton(openBrowserButton);
+
         if(forAggregate) {
             ExpandAggregateDisjointNodeButton expandAggregateButton = new ExpandAggregateDisjointNodeButton(config, (disjointAbN) -> {
                 DisjointAbstractionNetwork<DisjointNode<PArea>, PAreaTaxonomy<PArea>, PArea> disjointTaxonomy

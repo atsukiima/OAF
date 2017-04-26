@@ -26,9 +26,13 @@ public class SCTPAreaTaxonomyUIConfiguration extends PAreaTaxonomyUIConfiguratio
     public SCTPAreaTaxonomyUIConfiguration(
             SCTPAreaTaxonomyConfiguration config, 
             AbNDisplayManager displayListener, 
-            SCTAbNFrameManager frameManager) {
+            SCTAbNFrameManager frameManager,
+            boolean showingAreaTaxonomy) {
         
-        super(config, displayListener, new SCTPAreaTaxonomyListenerConfiguration(config));
+        super(config, 
+                displayListener, 
+                new SCTPAreaTaxonomyListenerConfiguration(config), 
+                showingAreaTaxonomy);
         
         this.frameManager = frameManager;
     }

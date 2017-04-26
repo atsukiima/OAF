@@ -99,7 +99,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
 
             @Override
             public AbNConfiguration getConfiguration(PAreaTaxonomy abn, AbNDisplayManager displayManager) {
-                return new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(abn, displayManager, frameManager);
+                return new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(abn, displayManager, frameManager, false);
             }
         };
     }
@@ -119,7 +119,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
             
             @Override
             public AbNConfiguration getConfiguration(PAreaTaxonomy abn, AbNDisplayManager displayManager) {
-                return new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(abn, displayManager, frameManager);
+                return new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(abn, displayManager, frameManager, true);
             }
         };
     }
@@ -140,7 +140,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
 
             @Override
             public AbNConfiguration getConfiguration(ClusterTribalAbstractionNetwork abn, AbNDisplayManager displayManager) {
-                return new SCTTANConfigurationFactory().createConfiguration(abn, displayManager, frameManager);
+                return new SCTTANConfigurationFactory().createConfiguration(abn, displayManager, frameManager, false);
             }
         };
     }
@@ -161,7 +161,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
 
             @Override
             public AbNConfiguration getConfiguration(ClusterTribalAbstractionNetwork abn, AbNDisplayManager displayManager) {
-                return new SCTTANConfigurationFactory().createConfiguration(abn, displayManager, frameManager);
+                return new SCTTANConfigurationFactory().createConfiguration(abn, displayManager, frameManager, true);
             }
         };
     }
@@ -195,7 +195,12 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
                 
                 return new DisjointAbNExplorationPanelInitializer(
                         config,
-                        new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(taxonomy, config.getUIConfiguration().getAbNDisplayManager(), frameManager),
+                        new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(
+                                taxonomy, 
+                                config.getUIConfiguration().getAbNDisplayManager(), 
+                                frameManager,
+                                false),
+                        
                         (bound) -> {
                             DisjointAbstractionNetwork disjointAbN = config.getAbstractionNetwork().getAggregated(bound);
                             config.getUIConfiguration().getAbNDisplayManager().displayDisjointPAreaTaxonomy(disjointAbN);
@@ -224,11 +229,17 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
 
                 return new DisjointAbNExplorationPanelInitializer(
                         config,
-                        new SCTTANConfigurationFactory().createConfiguration(tan, config.getUIConfiguration().getAbNDisplayManager(), frameManager),
+                        new SCTTANConfigurationFactory().createConfiguration(
+                                tan, 
+                                config.getUIConfiguration().getAbNDisplayManager(), 
+                                frameManager,
+                                false),
+                        
                         (bound) -> {
                             DisjointAbstractionNetwork disjointAbN = config.getAbstractionNetwork().getAggregated(bound);
                             config.getUIConfiguration().getAbNDisplayManager().displayDisjointTribalAbstractionNetwork(disjointAbN);
                         },
+                        
                         (disjointAbN) -> {
                             config.getUIConfiguration().getAbNDisplayManager().displayDisjointTribalAbstractionNetwork(disjointAbN);
                         });
