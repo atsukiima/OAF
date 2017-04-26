@@ -1,5 +1,9 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan;
 
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.NodeHelpButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.CreateDisjointAbNFromPartitionNodeButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.ExportPartitionedNodeButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.CreateTANFromPartitionedNodeButton;
 import edu.njit.cs.saboc.blu.core.abn.tan.Band;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
@@ -33,7 +37,7 @@ public class SCTBandOptionsPanel extends NodeOptionsPanel {
         
         super.addOptionButton(exportBtn);
         
-        PopoutNodeDetailsButton popoutBtn = new PopoutNodeDetailsButton("band", () -> {
+        PopoutDetailsButton popoutBtn = new PopoutDetailsButton("band", () -> {
             Band band = (Band)super.getCurrentNode().get();
             
             NodeDashboardPanel anp = config.getUIConfiguration().createPartitionedNodeDetailsPanel();
@@ -44,7 +48,7 @@ public class SCTBandOptionsPanel extends NodeOptionsPanel {
 
         super.addOptionButton(popoutBtn);
 
-        HelpButton helpBtn = new HelpButton(config);
+        NodeHelpButton helpBtn = new NodeHelpButton(config);
 
         super.addOptionButton(helpBtn);
     }

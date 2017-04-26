@@ -1,5 +1,9 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy;
 
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.NodeHelpButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.CreateTANFromSinglyRootedNodeButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.CreateDisjointAbNFromSinglyRootedNodeButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.ExportSinglyRootedNodeButton;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PArea;
 import edu.njit.cs.saboc.blu.core.abn.tan.TANFactory;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
@@ -56,7 +60,7 @@ public class SCTPAreaOptionsPanel extends NodeOptionsPanel {
         super.addOptionButton(tanBtn);
         
         
-        PopoutNodeDetailsButton popoutBtn = new PopoutNodeDetailsButton("partial-area", () -> {
+        PopoutDetailsButton popoutBtn = new PopoutDetailsButton("partial-area", () -> {
             PArea parea = (PArea)super.getCurrentNode().get();
             
             NodeDashboardPanel anp = config.getUIConfiguration().createNodeDetailsPanel();
@@ -73,7 +77,7 @@ public class SCTPAreaOptionsPanel extends NodeOptionsPanel {
         super.addOptionButton(exportBtn);
         
 
-        HelpButton helpBtn = new HelpButton(config);
+        NodeHelpButton helpBtn = new NodeHelpButton(config);
 
         super.addOptionButton(helpBtn);
     }

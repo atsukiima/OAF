@@ -4,11 +4,11 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.Area;
 import edu.njit.cs.saboc.blu.core.abn.tan.TANFactory;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateDisjointAbNFromPartitionNodeButton;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANFromPartitionedNodeButton;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportPartitionedNodeButton;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.HelpButton;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.CreateDisjointAbNFromPartitionNodeButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.CreateTANFromPartitionedNodeButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.ExportPartitionedNodeButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.NodeHelpButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutDetailsButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayDisjointTaxonomyAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
@@ -32,7 +32,7 @@ public class SCTAreaOptionsPanel extends NodeOptionsPanel {
         
         super.addOptionButton(tanBtn);
                 
-        PopoutNodeDetailsButton popoutBtn = new PopoutNodeDetailsButton("area", () -> {
+        PopoutDetailsButton popoutBtn = new PopoutDetailsButton("area", () -> {
             Area area = (Area)super.getCurrentNode().get();
             
             NodeDashboardPanel anp = config.getUIConfiguration().createPartitionedNodeDetailsPanel();
@@ -47,7 +47,7 @@ public class SCTAreaOptionsPanel extends NodeOptionsPanel {
         
         super.addOptionButton(exportBtn);
 
-        HelpButton helpBtn = new HelpButton(config);
+        NodeHelpButton helpBtn = new NodeHelpButton(config);
 
         super.addOptionButton(helpBtn);
     }

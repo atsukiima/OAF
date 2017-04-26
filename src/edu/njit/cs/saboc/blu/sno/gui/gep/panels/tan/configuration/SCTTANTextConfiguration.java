@@ -13,9 +13,4 @@ public class SCTTANTextConfiguration extends TANTextConfiguration {
     public SCTTANTextConfiguration(ClusterTribalAbstractionNetwork tan) {
         super(new SCTEntityNameConfiguration(), tan);
     }
-
-    @Override
-    public String getAbNName() {
-        return "[TAN_NAME]";
-    }
 }

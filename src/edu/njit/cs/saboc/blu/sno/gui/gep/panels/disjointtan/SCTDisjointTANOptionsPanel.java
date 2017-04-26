@@ -10,10 +10,10 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.disjointabn.buttons.CreateAncestorDisjointAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.disjointabn.buttons.ExpandAggregateDisjointNodeButton;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.CreateTANFromSinglyRootedNodeButton;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.ExportSinglyRootedNodeButton;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.HelpButton;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.CreateTANFromSinglyRootedNodeButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.ExportSinglyRootedNodeButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.NodeHelpButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutDetailsButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.configuration.listener.DisplayTANAction;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointtan.configuration.SCTDisjointTANConfiguration;
 
@@ -60,7 +60,7 @@ public class SCTDisjointTANOptionsPanel extends NodeOptionsPanel {
         super.addOptionButton(exportBtn);
         
 
-        PopoutNodeDetailsButton popoutBtn = new PopoutNodeDetailsButton("disjoint cluster", () -> {
+        PopoutDetailsButton popoutBtn = new PopoutDetailsButton("disjoint cluster", () -> {
             DisjointPArea parea = (DisjointPArea) super.getCurrentNode().get();
 
             NodeDashboardPanel anp = config.getUIConfiguration().createNodeDetailsPanel();
@@ -71,7 +71,7 @@ public class SCTDisjointTANOptionsPanel extends NodeOptionsPanel {
 
         super.addOptionButton(popoutBtn);
 
-        HelpButton helpBtn = new HelpButton(config);
+        NodeHelpButton helpBtn = new NodeHelpButton(config);
 
         super.addOptionButton(helpBtn);
     }

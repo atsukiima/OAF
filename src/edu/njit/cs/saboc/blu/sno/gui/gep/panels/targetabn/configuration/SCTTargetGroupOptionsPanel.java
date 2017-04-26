@@ -3,8 +3,8 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.targetabn.configuration;
 import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetGroup;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeDashboardPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.HelpButton;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutNodeDetailsButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.node.NodeHelpButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.PopoutDetailsButton;
 
 /**
  *
@@ -14,7 +14,7 @@ public class SCTTargetGroupOptionsPanel extends NodeOptionsPanel<TargetGroup> {
 
     public SCTTargetGroupOptionsPanel(SCTTargetAbNConfiguration config) {
         
-        PopoutNodeDetailsButton popoutBtn = new PopoutNodeDetailsButton("partial-area", () -> {
+        PopoutDetailsButton popoutBtn = new PopoutDetailsButton("partial-area", () -> {
             TargetGroup group = super.getCurrentNode().get();
 
             NodeDashboardPanel anp = config.getUIConfiguration().createNodeDetailsPanel();
@@ -25,7 +25,7 @@ public class SCTTargetGroupOptionsPanel extends NodeOptionsPanel<TargetGroup> {
 
         super.addOptionButton(popoutBtn);
 
-        HelpButton helpBtn = new HelpButton(config);
+        NodeHelpButton helpBtn = new NodeHelpButton(config);
 
         super.addOptionButton(helpBtn);
     }
