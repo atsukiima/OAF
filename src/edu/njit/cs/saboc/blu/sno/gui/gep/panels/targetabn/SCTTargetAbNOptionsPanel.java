@@ -16,17 +16,17 @@ public class SCTTargetAbNOptionsPanel extends AbNOptionsPanel<TargetAbstractionN
     
     public SCTTargetAbNOptionsPanel(SCTTargetAbNConfiguration config) {
         
-        AbNHelpButton pareaHelpBtn = new AbNHelpButton(config);
+        AbNHelpButton helpBtn = new AbNHelpButton(config);
         ExportAbNButton exportBtn = new ExportAbNButton("Export Target Abstraction Network", config);
         SavePNGButton pngBtn = new SavePNGButton(config);
         PopoutAbNDetailsButton popoutBtn = new PopoutAbNDetailsButton(config);
         
-        pareaHelpBtn.setCurrentAbN(config.getAbstractionNetwork());
+        helpBtn.setCurrentAbN(config.getAbstractionNetwork());
         exportBtn.setCurrentAbN(config.getAbstractionNetwork());
         pngBtn.setCurrentAbN(config.getAbstractionNetwork());
         popoutBtn.setCurrentEntity(config.getAbstractionNetwork());
         
-        super.addOptionButton(pareaHelpBtn);
+        super.addOptionButton(helpBtn);
         super.addOptionButton(exportBtn);
         super.addOptionButton(pngBtn);
         super.addOptionButton(popoutBtn);
