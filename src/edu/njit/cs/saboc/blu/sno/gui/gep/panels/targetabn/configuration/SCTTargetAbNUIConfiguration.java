@@ -2,10 +2,13 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.targetabn.configuration;
 
 import edu.njit.cs.saboc.blu.core.gui.dialogs.concepthierarchy.ConceptPainter;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbNOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.NodeOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.targetbased.configuration.TargetAbNUIConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.AbNDisplayManager;
 import edu.njit.cs.saboc.blu.sno.gui.dialogs.panels.concepthierarchy.SCTConceptPainter;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.targetabn.SCTTargetAbNOptionsPanel;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.targetabn.SCTTargetGroupOptionsPanel;
 
 /**
  *
@@ -36,6 +39,12 @@ public class SCTTargetAbNUIConfiguration extends TargetAbNUIConfiguration {
     @Override
     public NodeOptionsPanel getNodeOptionsPanel() {
         return new SCTTargetGroupOptionsPanel(this.getConfiguration());
+    }
+    
+    
+    @Override
+    public AbNOptionsPanel getAbNOptionsPanel() {
+        return new SCTTargetAbNOptionsPanel(getConfiguration());
     }
 
     @Override

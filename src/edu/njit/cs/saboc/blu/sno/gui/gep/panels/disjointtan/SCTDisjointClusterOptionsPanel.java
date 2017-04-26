@@ -22,9 +22,9 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.optionbuttons.SCTOpenBrowserButt
  *
  * @author Chris O
  */
-public class SCTDisjointTANOptionsPanel extends NodeOptionsPanel {
+public class SCTDisjointClusterOptionsPanel extends NodeOptionsPanel {
 
-    public SCTDisjointTANOptionsPanel(SCTDisjointTANConfiguration config, boolean forAggregate) {
+    public SCTDisjointClusterOptionsPanel(SCTDisjointTANConfiguration config, boolean forAggregate) {
         
         SCTOpenBrowserButton openBrowserButton = new SCTOpenBrowserButton(config, config.getUIConfiguration().getFrameManager());
 
