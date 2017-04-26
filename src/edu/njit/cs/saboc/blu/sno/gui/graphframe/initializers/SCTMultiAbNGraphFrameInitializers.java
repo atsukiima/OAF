@@ -204,10 +204,6 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
                         (bound) -> {
                             DisjointAbstractionNetwork disjointAbN = config.getAbstractionNetwork().getAggregated(bound);
                             config.getUIConfiguration().getAbNDisplayManager().displayDisjointPAreaTaxonomy(disjointAbN);
-                        },
-                        
-                        (disjointAbN) -> {
-                            config.getUIConfiguration().getAbNDisplayManager().displayDisjointPAreaTaxonomy(disjointAbN);
                         });
             }
         };
@@ -237,10 +233,6 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
                         
                         (bound) -> {
                             DisjointAbstractionNetwork disjointAbN = config.getAbstractionNetwork().getAggregated(bound);
-                            config.getUIConfiguration().getAbNDisplayManager().displayDisjointTribalAbstractionNetwork(disjointAbN);
-                        },
-                        
-                        (disjointAbN) -> {
                             config.getUIConfiguration().getAbNDisplayManager().displayDisjointTribalAbstractionNetwork(disjointAbN);
                         });
             }
