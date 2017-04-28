@@ -25,14 +25,9 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.initializers.TargetAbN
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointtan.configuration.SCTDisjointTANConfigurationFactory;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfigurationFactory;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.reports.SCTPAreaTaxonomyReportDialog;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfigurationFactory;
-import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.reports.SCTTANReportDialog;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.targetabn.configuration.SCTTargetAbNConfigurationFactory;
-import javax.swing.JButton;
 
 /**
  *
@@ -46,42 +41,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
         this.frameManager = frameManager;
     }
     
-    private JButton createPAreaTaxonomyReportsBtn(SCTPAreaTaxonomyConfiguration config) {
-        
-        JButton sctTaxonomyReportsBtn = new JButton("Reports and Metrics");
-
-        sctTaxonomyReportsBtn.addActionListener((ae) -> {
-
-            if (config.getPAreaTaxonomy().isAggregated()) {
-
-            } else {
-                SCTPAreaTaxonomyReportDialog reportDialog = new SCTPAreaTaxonomyReportDialog(config);
-                reportDialog.showReports(config.getPAreaTaxonomy());
-
-                reportDialog.setModal(true);
-                reportDialog.setVisible(true);
-            }
-        });
-
-        return sctTaxonomyReportsBtn;
-    }
-    
-    private JButton createTANReportsBtn(SCTTANConfiguration config) {
-        
-        JButton sctTANReportsBtn = new JButton("Reports and Metrics");
-
-        sctTANReportsBtn.addActionListener((ae) -> {
-           
-                    SCTTANReportDialog reportDialog = new SCTTANReportDialog((SCTTANConfiguration)config);
-                    reportDialog.showReports(config.getAbstractionNetwork());
-                    reportDialog.setModal(true);
-
-                    reportDialog.setVisible(true);
-        });
-
-        return sctTANReportsBtn;
-    }
-
+   
     
     @Override
     public GraphFrameInitializer<PAreaTaxonomy, PAreaTaxonomyConfiguration> getPAreaTaxonomyInitializer() {
@@ -91,9 +51,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
             @Override
             public TaskBarPanel getTaskBar(MultiAbNGraphFrame graphFrame, PAreaTaxonomyConfiguration config) {
                 TaskBarPanel panel = super.getTaskBar(graphFrame, config); 
-                
-                panel.addReportButtonToMenu(createPAreaTaxonomyReportsBtn((SCTPAreaTaxonomyConfiguration)config));
-                
+
                 return panel;
             }
 
@@ -111,9 +69,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
             @Override
             public TaskBarPanel getTaskBar(MultiAbNGraphFrame graphFrame, PAreaTaxonomyConfiguration config) {
                 TaskBarPanel panel = super.getTaskBar(graphFrame, config); 
-                
-                panel.addReportButtonToMenu(createPAreaTaxonomyReportsBtn((SCTPAreaTaxonomyConfiguration)config));
-                
+
                 return panel;
             }
             
@@ -132,9 +88,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
             @Override
             public TaskBarPanel getTaskBar(MultiAbNGraphFrame graphFrame, TANConfiguration config) {
                 TaskBarPanel panel = super.getTaskBar(graphFrame, config); 
-                
-                panel.addReportButtonToMenu(createTANReportsBtn((SCTTANConfiguration)config));
-                
+
                 return panel;
             }
 
@@ -153,8 +107,6 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
             @Override
             public TaskBarPanel getTaskBar(MultiAbNGraphFrame graphFrame, TANConfiguration config) {
                 TaskBarPanel panel = super.getTaskBar(graphFrame, config); 
-                
-                panel.addReportButtonToMenu(createTANReportsBtn((SCTTANConfiguration)config));
                 
                 return panel;
             }
