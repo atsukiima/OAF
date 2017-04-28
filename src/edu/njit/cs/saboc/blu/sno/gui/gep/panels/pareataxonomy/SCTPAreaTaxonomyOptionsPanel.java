@@ -6,6 +6,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.AbNRe
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.ExportAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.PopoutAbNDetailsButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.SavePNGButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.ShowSourceHierarchyButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.PAreaTaxonomyHelpButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.reports.SCTPAreaTaxonomyReportDialog;
@@ -39,13 +40,17 @@ public class SCTPAreaTaxonomyOptionsPanel extends AbNOptionsPanel<PAreaTaxonomy>
                 this.setEnabled(true);
             }
         };
-        
+                
+        ShowSourceHierarchyButton showHierarchyBtn = new ShowSourceHierarchyButton();
+
+        showHierarchyBtn.setCurrentAbN(config.getAbstractionNetwork());
         reportsBtn.setCurrentAbN(config.getPAreaTaxonomy());
         pareaHelpBtn.setCurrentAbN(config.getPAreaTaxonomy());
         exportBtn.setCurrentAbN(config.getPAreaTaxonomy());
         pngBtn.setCurrentAbN(config.getPAreaTaxonomy());
         popoutBtn.setCurrentEntity(config.getPAreaTaxonomy());
         
+        super.addOptionButton(showHierarchyBtn);
         super.addOptionButton(reportsBtn);
         super.addOptionButton(pareaHelpBtn);
         super.addOptionButton(exportBtn);

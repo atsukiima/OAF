@@ -7,6 +7,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.AbNRe
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.ExportAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.PopoutAbNDetailsButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.SavePNGButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.ShowSourceHierarchyButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.reports.SCTTANReportDialog;
 
@@ -42,13 +43,19 @@ public class SCTTANOptionsPanel extends AbNOptionsPanel<ClusterTribalAbstraction
             }
             
         };
-        
+         
+                 
+        ShowSourceHierarchyButton showHierarchyBtn = new ShowSourceHierarchyButton();
+
+        showHierarchyBtn.setCurrentAbN(config.getAbstractionNetwork());
         reportsBtn.setCurrentAbN(config.getAbstractionNetwork());
         helpBtn.setCurrentAbN(config.getAbstractionNetwork());
         exportBtn.setCurrentAbN(config.getAbstractionNetwork());
         pngBtn.setCurrentAbN(config.getAbstractionNetwork());
         popoutBtn.setCurrentEntity(config.getAbstractionNetwork());
         
+        
+        super.addOptionButton(showHierarchyBtn);
         super.addOptionButton(reportsBtn);
         super.addOptionButton(helpBtn);
         super.addOptionButton(exportBtn);

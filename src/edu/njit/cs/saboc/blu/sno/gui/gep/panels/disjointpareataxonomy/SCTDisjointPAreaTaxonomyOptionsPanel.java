@@ -7,6 +7,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.AbNHe
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.ExportAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.PopoutAbNDetailsButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.SavePNGButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.ShowSourceHierarchyButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.ViewDisjointAbNSubsetButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfiguration;
@@ -40,6 +41,10 @@ public class SCTDisjointPAreaTaxonomyOptionsPanel extends AbNOptionsPanel<Disjoi
                 },
                 parentConfig);
         
+                
+        ShowSourceHierarchyButton showHierarchyBtn = new ShowSourceHierarchyButton();
+
+        showHierarchyBtn.setCurrentAbN(config.getAbstractionNetwork());
         
         viewSubsetBtn.setCurrentAbN(config.getAbstractionNetwork());
         helpBtn.setCurrentAbN(config.getAbstractionNetwork());
@@ -47,8 +52,9 @@ public class SCTDisjointPAreaTaxonomyOptionsPanel extends AbNOptionsPanel<Disjoi
         pngBtn.setCurrentAbN(config.getAbstractionNetwork());
         popoutBtn.setCurrentEntity(config.getAbstractionNetwork());
         
-        super.addOptionButton(viewSubsetBtn);
         
+        super.addOptionButton(showHierarchyBtn);
+        super.addOptionButton(viewSubsetBtn);
         super.addOptionButton(helpBtn);
         super.addOptionButton(exportBtn);
         super.addOptionButton(pngBtn);
