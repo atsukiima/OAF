@@ -20,18 +20,16 @@ import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Font;
+import java.awt.Dimension;
 import java.util.Optional;
 import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 
 /**
  * Panel for creating abstraction networks from a SNOMED CT release.
@@ -65,7 +63,9 @@ public class SCTAbNCreationPanel extends JPanel {
         JPanel centerPanel = new JPanel(new BorderLayout());
         
         abnSelectionTabs = new JTabbedPane();
-        abnSelectionTabs.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), 
+        abnSelectionTabs.setBorder(
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createLineBorder(Color.GREEN, 2), 
                 "Derive an Abstraction Network"));
         
         
@@ -141,14 +141,17 @@ public class SCTAbNCreationPanel extends JPanel {
         abnSelectionTabs.addTab("Target Abstraction Network", targetPanel);
 
         centerPanel.add(abnSelectionTabs, BorderLayout.CENTER);
-        
-        JPanel conceptBrowserPanel = new JPanel(new BorderLayout());
-        conceptBrowserPanel.add(Box.createVerticalStrut(20), BorderLayout.CENTER);
-        conceptBrowserPanel.add(createConceptBrowserPanel(), BorderLayout.SOUTH);
-        
-        centerPanel.add(conceptBrowserPanel, BorderLayout.SOUTH);
+                
+        JPanel browserPanel = new JPanel(new BorderLayout());
+        browserPanel.add(Box.createHorizontalStrut(10), BorderLayout.CENTER);
+        browserPanel.add(createConceptBrowserPanel(), BorderLayout.EAST);
+                
+        centerPanel.add(browserPanel, BorderLayout.EAST);
 
         this.add(centerPanel, BorderLayout.CENTER);
+
+        
+        this.setBackground(Color.WHITE);
     }
     
     private SCTTANDerivationWizardPanel getTANDerivationPanel() {
@@ -198,16 +201,17 @@ public class SCTAbNCreationPanel extends JPanel {
     }
     
     private JPanel createConceptBrowserPanel() {
-        JPanel browserPanel = new JPanel();
+        JPanel browserPanel = new JPanel(new BorderLayout());
+        browserPanel.setPreferredSize(new Dimension(250, -1));
         
-        browserPanel.setLayout(new BoxLayout(browserPanel, BoxLayout.X_AXIS));
-        browserPanel.setBorder(BorderFactory.createTitledBorder("BLUSNO Neighborhood Auditing Tool (NAT) Concept Browser"));
+        browserPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Color.BLUE, 2),
+                "Concept Browser"));
 
-        JPanel leftPanel = new JPanel(new BorderLayout());
-        leftPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-        openBrowserBtn = new JButton("<html><div align='center'>Open NAT Concept Browser");
-        openBrowserBtn.setFont(openBrowserBtn.getFont().deriveFont(Font.BOLD, 14));
+        openBrowserBtn = new JButton("<html><div align='center'>Open Concept Browser");
 
         openBrowserBtn.addActionListener( (ae) -> {
             openConceptBrowser();
@@ -215,24 +219,24 @@ public class SCTAbNCreationPanel extends JPanel {
 
         openBrowserBtn.setEnabled(false);
 
-        leftPanel.add(openBrowserBtn, BorderLayout.CENTER);
+        topPanel.add(openBrowserBtn, BorderLayout.CENTER);
 
-        JPanel rightPanel = new JPanel(new BorderLayout());
-        rightPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
         JEditorPane detailsPane = new JEditorPane();
         detailsPane.setContentType("text/html");
 
-        String detailsString = "<html>The BLUSNO Neighborhood Auditing Tool (NAT) "
-                + "concept browser allows you to browse individual concepts. ";
+        String detailsString = "<html><div align='justify'>The OAF SNOMED CT "
+                + "concept browser allows you to browse individual concepts and their "
+                + "relationships. ";
 
         detailsPane.setText(detailsString);
 
-        rightPanel.add(detailsPane, BorderLayout.CENTER);
+        bottomPanel.add(detailsPane, BorderLayout.CENTER);
 
-        browserPanel.add(leftPanel);
-        browserPanel.add(Box.createHorizontalStrut(8));
-        browserPanel.add(rightPanel);
+        browserPanel.add(topPanel, BorderLayout.NORTH);
+        browserPanel.add(bottomPanel, BorderLayout.CENTER);
 
         return browserPanel;
     }
