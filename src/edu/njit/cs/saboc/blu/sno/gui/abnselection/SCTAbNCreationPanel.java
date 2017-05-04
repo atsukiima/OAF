@@ -166,7 +166,12 @@ public class SCTAbNCreationPanel extends JPanel {
         
         this.pareaTaxonomyDerivationWizardPanel.setEnabled(value);
         this.tanDerivationWizardPanel.setEnabled(value);
-        this.targetAbNDerivationWizardPanel.setEnabled(value);
+        
+        if(this.optCurrentRelease.isPresent()) {
+             this.targetAbNDerivationWizardPanel.setEnabled(value &&
+                     this.optCurrentRelease.get().supportsStatedRelationships());
+        }
+       
         
         this.openBrowserBtn.setEnabled(value);
     }
@@ -180,11 +185,14 @@ public class SCTAbNCreationPanel extends JPanel {
 
         tanDerivationWizardPanel.initialize(release);
 
-        targetAbNDerivationWizardPanel.initialize(
+        
+        if(release.supportsStatedRelationships()) {
+            targetAbNDerivationWizardPanel.initialize(
                 release,
                 release,
                 new SCTInheritablePropertyRetriever((SCTReleaseWithStated) release),
                 new SCTTargetHierarchyRetriever((SCTReleaseWithStated) release));
+        }
     }
 
     public void clear() {
@@ -211,7 +219,7 @@ public class SCTAbNCreationPanel extends JPanel {
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-        openBrowserBtn = new JButton("<html><div align='center'>Open Concept Browser");
+        openBrowserBtn = new JButton("<html><div align='center'>Open<br>Concept<br>Browser");
 
         openBrowserBtn.addActionListener( (ae) -> {
             openConceptBrowser();
@@ -220,6 +228,7 @@ public class SCTAbNCreationPanel extends JPanel {
         openBrowserBtn.setEnabled(false);
 
         topPanel.add(openBrowserBtn, BorderLayout.CENTER);
+        topPanel.add(Box.createVerticalStrut(10), BorderLayout.SOUTH);
 
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
