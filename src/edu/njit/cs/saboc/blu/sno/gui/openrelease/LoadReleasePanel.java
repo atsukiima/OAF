@@ -13,10 +13,14 @@ import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseInfo;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +28,6 @@ import java.util.Optional;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -86,6 +89,8 @@ public class LoadReleasePanel extends JPanel {
     private JComboBox<String> chooseReleaseBox;
     private ArrayList<File> chooserReleases;
     
+    private final JButton btnDownloadRelease;
+    
     private final JButton btnOpenRecentRelease;
     
     private final JButton btnOpenReleaseFolder;
@@ -116,6 +121,11 @@ public class LoadReleasePanel extends JPanel {
         chooseReleaseBox.setPreferredSize(new Dimension(300, 24));
         
         chooserReleases = new ArrayList<>();
+        
+        btnDownloadRelease = new JButton("Download Release");
+        btnDownloadRelease.addActionListener( (ae) -> {
+            openBrowserDownloadRelease();
+        });
         
         btnOpenRecentRelease = new JButton("Select Recently Opened Release");
         btnOpenRecentRelease.addActionListener( (ae) -> {
@@ -174,8 +184,8 @@ public class LoadReleasePanel extends JPanel {
 
         JPanel localReleasePanel = new JPanel();
 
+        localReleasePanel.add(btnDownloadRelease);
         localReleasePanel.add(btnOpenRecentRelease);
-        
         localReleasePanel.add(btnOpenReleaseFolder);
         localReleasePanel.add(chooseReleaseBox);
         localReleasePanel.add(loadButton);
@@ -430,5 +440,20 @@ public class LoadReleasePanel extends JPanel {
         }
 
         return loadedDataSource.get();
+    }
+    
+    private void openBrowserDownloadRelease() {
+
+        String url = "https://www.nlm.nih.gov/healthit/snomedct/international.html";
+
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().browse(new URI(url));
+
+            } catch (URISyntaxException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }

@@ -34,10 +34,6 @@ public class SCTDiffPAreaTaxonomyTextConfiguration extends DiffPAreaTaxonomyText
     public String getNodeHelpDescription(PArea parea) {
         return "[SCT DIFF PAREA HELP DESCRIPTION]";
     }
-
-    private String getDiffPAreaTaxonomySummary() {
-        return "[OWL DIFF PAREA TAXONOMY SUMMARY]";
-    }
     
     @Override
     public String getAbNSummary() {
