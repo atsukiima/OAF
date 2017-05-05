@@ -50,7 +50,7 @@ public class CreateAndDisplayTargetAbN extends AbNCreateAndDisplayDialog<TargetA
 
     @Override
     protected TargetAbstractionNetwork create() {
-        SCTTargetAbstractionNetworkFactory rangeFactory = new SCTTargetAbstractionNetworkFactory(
+        SCTTargetAbstractionNetworkFactory factory = new SCTTargetAbstractionNetworkFactory(
                 release, 
                 sourceHierarchy, 
                 propertyType, 
@@ -58,8 +58,7 @@ public class CreateAndDisplayTargetAbN extends AbNCreateAndDisplayDialog<TargetA
         
         TargetAbstractionNetworkGenerator generator = new TargetAbstractionNetworkGenerator();
         
-        TargetAbstractionNetwork<TargetGroup> targetAbN = generator.deriveTargetAbstractionNetwork(
-                rangeFactory, 
+        TargetAbstractionNetwork<TargetGroup> targetAbN = generator.deriveTargetAbstractionNetwork(factory, 
                 (Hierarchy<Concept>)(Hierarchy<?>)sourceHierarchy, 
                 propertyType, 
                 (Hierarchy<Concept>)(Hierarchy<?>)targetHierarchy);

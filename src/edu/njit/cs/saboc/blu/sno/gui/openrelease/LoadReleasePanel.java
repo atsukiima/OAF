@@ -219,8 +219,6 @@ public class LoadReleasePanel extends JPanel {
         });
         
         frameManager.getMainFrame().closeFrames(frameManager.getMainFrame().getContentFrames());
-        
-        
     }
     
     private void displayRecentReleaseMenu() {
