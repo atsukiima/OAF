@@ -151,6 +151,9 @@ public class SCTAbNWizardPanel extends JPanel {
     }
     
     public void setCurrentRelease(SCTRelease release) {
+        
+        this.optCurrentRelease = Optional.of(release);
+        
         pareaTaxonomyDerivationWizardPanel.initialize(release);
 
         diffPAreaTaxonomyDerivationWizardPanel.initialize(release);
