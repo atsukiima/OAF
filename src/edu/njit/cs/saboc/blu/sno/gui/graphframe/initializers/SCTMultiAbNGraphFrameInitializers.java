@@ -12,6 +12,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configura
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.configuration.TANConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.targetbased.configuration.TargetAbNConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.AbNDisplayManager;
+import edu.njit.cs.saboc.blu.core.gui.graphframe.buttons.DerivationSelectionButton;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.AbNGraphFrameInitializers;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.GraphFrameInitializer;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.MultiAbNGraphFrame;
@@ -23,11 +24,13 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.initializers.PAreaTaxo
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.initializers.TANInitializer;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.initializers.TargetAbNInitializer;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
+import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNWizardPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointtan.configuration.SCTDisjointTANConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTPAreaTaxonomyConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.targetabn.configuration.SCTTargetAbNConfigurationFactory;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 
 /**
  *
@@ -41,7 +44,16 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
         this.frameManager = frameManager;
     }
     
-   
+    private DerivationSelectionButton createDerivationSelectionButton(
+            MultiAbNGraphFrame graphFrame,
+            SCTRelease release) {
+        
+        SCTAbNWizardPanel wizardPanel = new SCTAbNWizardPanel(frameManager);
+        wizardPanel.setCurrentRelease(release);
+        wizardPanel.setEnabled(true);
+        
+        return new DerivationSelectionButton(graphFrame, wizardPanel);
+    }
     
     @Override
     public GraphFrameInitializer<PAreaTaxonomy, PAreaTaxonomyConfiguration> getPAreaTaxonomyInitializer() {
@@ -51,6 +63,10 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
             @Override
             public TaskBarPanel getTaskBar(MultiAbNGraphFrame graphFrame, PAreaTaxonomyConfiguration config) {
                 TaskBarPanel panel = super.getTaskBar(graphFrame, config); 
+
+                panel.addToggleableButtonToMenu(
+                        createDerivationSelectionButton(graphFrame, 
+                                (SCTRelease)config.getPAreaTaxonomy().getDerivation().getSourceOntology()));
 
                 return panel;
             }
@@ -68,7 +84,11 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
             
             @Override
             public TaskBarPanel getTaskBar(MultiAbNGraphFrame graphFrame, PAreaTaxonomyConfiguration config) {
-                TaskBarPanel panel = super.getTaskBar(graphFrame, config); 
+                TaskBarPanel panel = super.getTaskBar(graphFrame, config);
+                
+                panel.addToggleableButtonToMenu(
+                        createDerivationSelectionButton(graphFrame, 
+                                (SCTRelease)config.getPAreaTaxonomy().getDerivation().getSourceOntology()));
 
                 return panel;
             }
@@ -87,7 +107,11 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
             
             @Override
             public TaskBarPanel getTaskBar(MultiAbNGraphFrame graphFrame, TANConfiguration config) {
-                TaskBarPanel panel = super.getTaskBar(graphFrame, config); 
+                TaskBarPanel panel = super.getTaskBar(graphFrame, config);
+                
+                panel.addToggleableButtonToMenu(
+                        createDerivationSelectionButton(graphFrame, 
+                                (SCTRelease)config.getAbstractionNetwork().getDerivation().getSourceOntology()));
 
                 return panel;
             }
@@ -106,8 +130,13 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
             
             @Override
             public TaskBarPanel getTaskBar(MultiAbNGraphFrame graphFrame, TANConfiguration config) {
-                TaskBarPanel panel = super.getTaskBar(graphFrame, config); 
                 
+                TaskBarPanel panel = super.getTaskBar(graphFrame, config);
+
+                panel.addToggleableButtonToMenu(
+                        createDerivationSelectionButton(graphFrame,
+                                (SCTRelease) config.getAbstractionNetwork().getDerivation().getSourceOntology()));
+
                 return panel;
             }
 
@@ -124,6 +153,17 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
         return new TargetAbNInitializer() {
 
             @Override
+            public TaskBarPanel getTaskBar(MultiAbNGraphFrame graphFrame, TargetAbNConfiguration config) {
+                TaskBarPanel panel = super.getTaskBar(graphFrame, config);
+
+                panel.addToggleableButtonToMenu(
+                        createDerivationSelectionButton(graphFrame,
+                                (SCTRelease) config.getAbstractionNetwork().getDerivation().getSourceOntology()));
+
+                return panel;
+            }
+
+            @Override
             public AbNConfiguration getConfiguration(TargetAbstractionNetwork abn, AbNDisplayManager displayManager) {
                 return new SCTTargetAbNConfigurationFactory().createConfiguration(abn, displayManager);
             }
@@ -135,6 +175,17 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
         
         return new DisjointAbNInitializer() {
 
+            @Override
+            public TaskBarPanel getTaskBar(MultiAbNGraphFrame graphFrame, DisjointAbNConfiguration config) {
+                TaskBarPanel panel = super.getTaskBar(graphFrame, config);
+
+                panel.addToggleableButtonToMenu(
+                        createDerivationSelectionButton(graphFrame,
+                                (SCTRelease) config.getAbstractionNetwork().getDerivation().getSourceOntology()));
+
+                return panel;
+            }
+            
             @Override
             public AbNConfiguration getConfiguration(DisjointAbstractionNetwork abn, AbNDisplayManager displayManager) {
                 return new SCTDisjointPAreaTaxonomyConfigurationFactory().createConfiguration(abn, displayManager, frameManager);
@@ -164,6 +215,17 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
     @Override
     public GraphFrameInitializer<DisjointAbstractionNetwork, DisjointAbNConfiguration> getDisjointTANInitializer() {
         return new DisjointAbNInitializer() {
+            
+            @Override
+            public TaskBarPanel getTaskBar(MultiAbNGraphFrame graphFrame, DisjointAbNConfiguration config) {
+                TaskBarPanel panel = super.getTaskBar(graphFrame, config);
+
+                panel.addToggleableButtonToMenu(
+                        createDerivationSelectionButton(graphFrame,
+                                (SCTRelease) config.getAbstractionNetwork().getDerivation().getSourceOntology()));
+
+                return panel;
+            }
 
             @Override
             public AbNConfiguration getConfiguration(DisjointAbstractionNetwork abn, AbNDisplayManager displayManager) {
