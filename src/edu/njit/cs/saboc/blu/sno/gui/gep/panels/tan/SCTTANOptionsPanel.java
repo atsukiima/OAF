@@ -5,6 +5,7 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbNOptionsPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.AbNHelpButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.AbNReportsBtn;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.ExportAbNButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.HighlightOverlappingButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.PopoutAbNDetailsButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.SavePNGButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.ShowSourceHierarchyButton;
@@ -34,20 +35,19 @@ public class SCTTANOptionsPanel extends AbNOptionsPanel<ClusterTribalAbstraction
                  reportDialog.setModal(true);
 
                  reportDialog.setVisible(true);
-
              }
 
             @Override
             public void setEnabledFor(ClusterTribalAbstractionNetwork entity) {
                 this.setEnabled(true);
             }
-            
         };
-         
                  
         ShowSourceHierarchyButton showHierarchyBtn = new ShowSourceHierarchyButton();
+        HighlightOverlappingButton showOverlappingBtn = new HighlightOverlappingButton(config);
 
         showHierarchyBtn.setCurrentAbN(config.getAbstractionNetwork());
+        showOverlappingBtn.setCurrentAbN(config.getAbstractionNetwork());
         reportsBtn.setCurrentAbN(config.getAbstractionNetwork());
         helpBtn.setCurrentAbN(config.getAbstractionNetwork());
         exportBtn.setCurrentAbN(config.getAbstractionNetwork());
@@ -56,6 +56,7 @@ public class SCTTANOptionsPanel extends AbNOptionsPanel<ClusterTribalAbstraction
         
         
         super.addOptionButton(showHierarchyBtn);
+        super.addOptionButton(showOverlappingBtn);
         super.addOptionButton(reportsBtn);
         super.addOptionButton(helpBtn);
         super.addOptionButton(exportBtn);

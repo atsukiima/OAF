@@ -5,6 +5,7 @@ import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.OntologySearche
 import edu.njit.cs.saboc.blu.core.ontology.Ontology;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
+import edu.njit.cs.saboc.blu.sno.nat.SCTConceptBrowserDataSource;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +39,6 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
 
     private final Map<Long, SCTConcept> concepts = new HashMap<>();
     
-
     // TODO: This needs to go away and be replaced by something better.
     private final HashMap<Character, Integer> startingIndex = new HashMap<>();
 
@@ -50,6 +50,8 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
     
     private final Set<SCTConcept> attributeRelationshipTypes;
     
+    private final SCTConceptBrowserDataSource conceptBrowserDataSource;
+
     public SCTRelease(
             SCTReleaseInfo releaseInfo,
             Hierarchy<SCTConcept> activeConceptHierarchy, 
@@ -102,10 +104,15 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
             }
         }
         
+        this.conceptBrowserDataSource = new SCTConceptBrowserDataSource(this);
     }
     
     public SCTReleaseInfo getReleaseInfo() {
         return releaseInfo;
+    }
+    
+    public SCTConceptBrowserDataSource getConceptBrowserDataSource() {
+        return conceptBrowserDataSource;
     }
     
     public Set<SCTConcept> getHierarchiesWithAttributeRelationships() {

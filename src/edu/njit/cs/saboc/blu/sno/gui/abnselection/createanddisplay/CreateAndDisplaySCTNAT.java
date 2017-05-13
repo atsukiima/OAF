@@ -42,6 +42,6 @@ public class CreateAndDisplaySCTNAT extends CreateAndDisplayDialog<SCTConceptBro
 
     @Override
     protected SCTConceptBrowserDataSource create() {
-        return new SCTConceptBrowserDataSource(release);
+        return release.getConceptBrowserDataSource();
     }
 }
