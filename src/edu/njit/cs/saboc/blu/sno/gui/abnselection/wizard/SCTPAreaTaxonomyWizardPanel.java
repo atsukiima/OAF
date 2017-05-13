@@ -29,6 +29,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -121,11 +122,9 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
         
         this.statusLabel = new JLabel(" ");
         
-
-        
         this.deriveBtn = new JButton("Derive Partial-area Taxonomy");
         this.deriveBtn.addActionListener( (ae) -> {
-            performedDerivationAction();
+            performDerivationAction();
         });
         
         this.chkUseStatedRelationships = new JCheckBox("Use Stated Relationships");
@@ -286,20 +285,38 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
         this.rootSelectionPanel.resetView();
         this.propertySelectionPanel.resetView();
     }
-    
-    private void performedDerivationAction() {
-        if(!optRelease.isPresent()) {
-           return;
-        }
+
+    private void performDerivationAction() {
         
-        if(!rootSelectionPanel.getSelectedRoot().isPresent()) {
+        if (!optRelease.isPresent()) {
+            JOptionPane.showMessageDialog(null, 
+                    "Cannot derive partial-area taxonomy. No SNOMED CT release loaded.", 
+                    "Error: No Release Loaded", 
+                    JOptionPane.ERROR_MESSAGE);
+            
             return;
         }
         
-        if(propertySelectionPanel.getUserSelectedProperties().isEmpty()) {
+        if (!rootSelectionPanel.getSelectedRoot().isPresent()) {
+
+            JOptionPane.showMessageDialog(null,
+                    "Cannot derive partial-area taxonomy. No root concept selected.",
+                    "Error: No Root Concept Selected",
+                    JOptionPane.ERROR_MESSAGE);
+
             return;
         }
         
+        if (propertySelectionPanel.getUserSelectedProperties().isEmpty()) {
+
+            JOptionPane.showMessageDialog(null,
+                    "Cannot derive partial-area taxonomy. No attribute relationships selected.",
+                    "Error: No Attribute Relationships Selected",
+                    JOptionPane.ERROR_MESSAGE);
+
+            return;
+        }
+
         SCTRelease release = optRelease.get();
         SCTConcept root = (SCTConcept)rootSelectionPanel.getSelectedRoot().get();
         Set<SCTInheritableProperty> availableProperties = (Set<SCTInheritableProperty>)(Set<?>)propertySelectionPanel.getAvailableProperties();
