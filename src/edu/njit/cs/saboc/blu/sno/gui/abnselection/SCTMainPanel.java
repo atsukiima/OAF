@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
-import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFRecentlyOpenedFileManager.RecentlyOpenedFileException;
-import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFStateFileManager;
+import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFRecentlyOpenedFileManager.RecentlyOpenedFileException;
+import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFStateFileManager;
 import edu.njit.cs.saboc.blu.sno.gui.openrelease.LoadReleasePanel;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import java.awt.BorderLayout;

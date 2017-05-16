@@ -1,7 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.localdatasource.load;
 
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
-import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFStateFileManager;
+import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFStateFileManager;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTStatedConcept;

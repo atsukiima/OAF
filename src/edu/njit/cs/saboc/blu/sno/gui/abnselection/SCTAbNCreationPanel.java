@@ -1,6 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
-import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFStateFileManager;
+import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFStateFileManager;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.createanddisplay.CreateAndDisplaySCTNAT;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import java.awt.BorderLayout;

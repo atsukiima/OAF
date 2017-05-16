@@ -3,15 +3,16 @@ package edu.njit.cs.saboc.blu.sno.nat;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.InheritableProperty;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.InheritableProperty.InheritanceType;
 import edu.njit.cs.saboc.blu.core.utils.comparators.ConceptNameComparator;
-import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFRecentlyOpenedFileManager;
-import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFRecentlyOpenedFileManager.RecentlyOpenedFileException;
-import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFStateFileManager;
+import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFRecentlyOpenedFileManager;
+import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFRecentlyOpenedFileManager.RecentlyOpenedFileException;
+import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFStateFileManager;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInheritableProperty;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.nat.generic.data.ConceptBrowserDataSource;
 import edu.njit.cs.saboc.nat.generic.data.NATConceptSearchResult;
 import edu.njit.cs.saboc.nat.generic.errorreport.AuditSet;
+import edu.njit.cs.saboc.nat.generic.workspace.NATWorkspaceManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -262,15 +263,34 @@ public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTCon
         
         return properties;
     }
-    
-    
+
 
     @Override
     public OAFRecentlyOpenedFileManager getRecentlyOpenedAuditSets() {
         
         if(this.stateFileManager != null) {
             try {
-                return this.stateFileManager.getRecentlyOpenedAuditSets(this.theRelease.getReleaseInfo().getReleaseDirectory());
+                
+                return this.stateFileManager.getRecentlyOpenedAuditSets(
+                        this.theRelease.getReleaseInfo().getReleaseDirectory());
+                
+            } catch(RecentlyOpenedFileException rofe) {
+                
+            }
+        }
+        
+        return null;
+    }
+
+    @Override
+    public OAFRecentlyOpenedFileManager getRecentlyOpenedWorkspaces() {
+        
+        if(this.stateFileManager != null) {
+            try {
+                
+                return this.stateFileManager.getRecentNATWorkspaces(
+                        this.theRelease.getReleaseInfo().getReleaseDirectory());
+            
             } catch(RecentlyOpenedFileException rofe) {
                 
             }

@@ -1,8 +1,8 @@
 package edu.njit.cs.saboc.blu.sno.gui.openrelease;
 
-import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.RecentlyOpenedFile;
-import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFRecentlyOpenedFileManager.RecentlyOpenedFileException;
-import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFStateFileManager;
+import edu.njit.cs.saboc.blu.core.utils.toolstate.RecentlyOpenedFile;
+import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFRecentlyOpenedFileManager.RecentlyOpenedFileException;
+import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFStateFileManager;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LoadLocalRelease;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LocalLoadStateMonitor;
