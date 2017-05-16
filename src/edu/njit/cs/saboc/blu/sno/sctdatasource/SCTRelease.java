@@ -50,7 +50,7 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
     
     private final Set<SCTConcept> attributeRelationshipTypes;
     
-    private final SCTConceptBrowserDataSource conceptBrowserDataSource;
+    private SCTConceptBrowserDataSource conceptBrowserDataSource;
 
     public SCTRelease(
             SCTReleaseInfo releaseInfo,
@@ -66,8 +66,7 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
         this.subhierarchiesWithAttributeRels = new HashSet<>();
         
 
-        activeConceptHierarchy.getChildren(
-                activeConceptHierarchy.getRoot()).forEach( (root) -> {
+        activeConceptHierarchy.getChildren(activeConceptHierarchy.getRoot()).forEach( (root) -> {
             
             Hierarchy<SCTConcept> hierarchy = activeConceptHierarchy.getSubhierarchyRootedAt(root);
             
@@ -103,8 +102,10 @@ public class SCTRelease extends Ontology implements OntologySearcher<SCTConcept>
                 lastChar = curChar;
             }
         }
-        
-        this.conceptBrowserDataSource = new SCTConceptBrowserDataSource(this);
+    }
+    
+    public void setConceptBrowserDataSource(SCTConceptBrowserDataSource dataSource) {
+        this.conceptBrowserDataSource = dataSource;
     }
     
     public SCTReleaseInfo getReleaseInfo() {

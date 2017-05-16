@@ -1,10 +1,12 @@
 package edu.njit.cs.saboc.blu.sno.localdatasource.load;
 
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
+import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFStateFileManager;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTStatedConcept;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
+import edu.njit.cs.saboc.blu.sno.nat.SCTConceptBrowserDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseInfo;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
@@ -28,6 +30,12 @@ import java.util.Set;
 public class RF1ReleaseLoader {
     
     protected LocalLoadStateMonitor loadMonitor = new LocalLoadStateMonitor();
+    
+    private final OAFStateFileManager stateFileManager;
+    
+    public RF1ReleaseLoader(OAFStateFileManager stateFileManager) {
+        this.stateFileManager = stateFileManager;
+    }
     
     public LocalLoadStateMonitor getLoadStateMonitor() {
         return loadMonitor;
@@ -71,7 +79,7 @@ public class RF1ReleaseLoader {
 
         Hierarchy<SCTConcept> hierarchy = loadRelationships(relFile, concepts);
                
-        SCTRelease localDS;
+        SCTRelease release;
         
         if(includesStatedRelationships) {
             loadMonitor.setCurrentProcess("Loading Stated Relationships", 75);
@@ -80,15 +88,17 @@ public class RF1ReleaseLoader {
             
             loadMonitor.setCurrentProcess("Building Search Index", 85);
             
-            localDS = new SCTReleaseWithStated(releaseInfo, hierarchy, new HashSet<>(concepts.values()), statedHierarchy);
+            release = new SCTReleaseWithStated(releaseInfo, hierarchy, new HashSet<>(concepts.values()), statedHierarchy);
         } else {
             loadMonitor.setCurrentProcess("Building Search Index", 75);
-            localDS = new SCTRelease(releaseInfo, hierarchy, new HashSet<>(concepts.values()));
+            release = new SCTRelease(releaseInfo, hierarchy, new HashSet<>(concepts.values()));
         }
+        
+        release.setConceptBrowserDataSource(new SCTConceptBrowserDataSource(release, stateFileManager));
         
         loadMonitor.setCurrentProcess("Complete", 100);
 
-        return localDS;
+        return release;
     }
     
     /**

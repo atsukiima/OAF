@@ -10,7 +10,5 @@ public class Main {
 
     public static void main(String[] args) {
         OAFMainFrame frame = new OAFMainFrame(new SCTSelectionFrame());
-        
-        
     }  
 }

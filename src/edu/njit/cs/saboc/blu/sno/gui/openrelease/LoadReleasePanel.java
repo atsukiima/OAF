@@ -1,8 +1,8 @@
 package edu.njit.cs.saboc.blu.sno.gui.openrelease;
 
 import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.RecentlyOpenedFile;
-import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.RecentlyOpenedFileManager;
-import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.RecentlyOpenedFileManager.RecentlyOpenedFileException;
+import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFRecentlyOpenedFileManager.RecentlyOpenedFileException;
+import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFStateFileManager;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LoadLocalRelease;
 import edu.njit.cs.saboc.blu.sno.localdatasource.load.LocalLoadStateMonitor;
@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -102,17 +101,18 @@ public class LoadReleasePanel extends JPanel {
     private JProgressBar loadProgressBar;
 
     private final ArrayList<LocalDataSourceListener> dataSourceLoadedListeners = new ArrayList<>();
-    
-    private final RecentlyOpenedFileManager recentlyOpenedFileManager;
-    
-    private final SCTAbNFrameManager frameManager;
 
-    public LoadReleasePanel(SCTAbNFrameManager frameManager) {
+    private final SCTAbNFrameManager frameManager;
+    
+    private final OAFStateFileManager stateFileManager;
+
+    public LoadReleasePanel(
+            SCTAbNFrameManager frameManager, 
+            OAFStateFileManager stateFileManager) {
         
         this.frameManager = frameManager;
-        
-        recentlyOpenedFileManager = new RecentlyOpenedFileManager(LoadReleasePanel.class, "RecentSCTReleases");
-        
+        this.stateFileManager = stateFileManager;
+         
         loadButton.setEnabled(false);
         
         chooseReleaseBox = new JComboBox();
@@ -137,6 +137,12 @@ public class LoadReleasePanel extends JPanel {
         btnOpenReleaseFolder.addActionListener((ae) -> {
             showReleaseFolderSelectionDialog();
         });
+        
+        if (!releaseHistoryAvailable()) {
+            btnOpenRecentRelease.setEnabled(false);
+            btnOpenRecentRelease.setToolTipText("An error occured when opening "
+                    + "the Recent SNOMED CT Releases configuration file...");
+        }
 
         loadButton.addActionListener((ae) -> {
             
@@ -231,8 +237,17 @@ public class LoadReleasePanel extends JPanel {
         frameManager.getMainFrame().closeFrames(frameManager.getMainFrame().getContentFrames());
     }
     
+    private boolean releaseHistoryAvailable() {
+        return stateFileManager != null && stateFileManager.getRecentlyOpenedOntologiesManager() != null;
+    }
+    
     private void displayRecentReleaseMenu() {
-        ArrayList<RecentlyOpenedFile> recentReleases = recentlyOpenedFileManager.getRecentlyOpenedFiles(5);
+        
+        if(!releaseHistoryAvailable()) {
+            return;
+        }
+        
+        ArrayList<RecentlyOpenedFile> recentReleases = stateFileManager.getRecentlyOpenedOntologiesManager().getRecentlyOpenedFiles(5);
         
         JPopupMenu recentReleaseMenu = new JPopupMenu();
         
@@ -282,7 +297,11 @@ public class LoadReleasePanel extends JPanel {
                         "No");
                 
                 if(answer == JOptionPane.YES_OPTION) {
-                    recentlyOpenedFileManager.eraseHistory();
+                    try {
+                        stateFileManager.getRecentlyOpenedOntologiesManager().eraseHistory();
+                    } catch (RecentlyOpenedFileException rofe) {
+                        
+                    }
                 }
             });
 
@@ -309,7 +328,7 @@ public class LoadReleasePanel extends JPanel {
                 if (selectedFile.getAbsolutePath().contains("RF2Release") || 
                         selectedFile.getAbsolutePath().contains("RF2_Production")) {
                     
-                    RF2ReleaseLoader rf2Importer = new RF2ReleaseLoader();
+                    RF2ReleaseLoader rf2Importer = new RF2ReleaseLoader(stateFileManager);
                     
                     loadMonitor = rf2Importer.getLoadStateMonitor();
                     
@@ -329,7 +348,7 @@ public class LoadReleasePanel extends JPanel {
                     
                     
                 } else {
-                    RF1ReleaseLoader importer = new RF1ReleaseLoader();
+                    RF1ReleaseLoader importer = new RF1ReleaseLoader(stateFileManager);
                     
                     loadMonitor = importer.getLoadStateMonitor();
                     
@@ -350,7 +369,7 @@ public class LoadReleasePanel extends JPanel {
                 loadedDataSource = Optional.of(dataSource);
                 
                 try {
-                    recentlyOpenedFileManager.addOrUpdateRecentlyOpenedFile(selectedFile);
+                    stateFileManager.getRecentlyOpenedOntologiesManager().addOrUpdateRecentlyOpenedFile(selectedFile);
                 } catch (RecentlyOpenedFileException rofe) {
                     rofe.printStackTrace();
                 }

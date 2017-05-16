@@ -3,6 +3,9 @@ package edu.njit.cs.saboc.blu.sno.nat;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.InheritableProperty;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.InheritableProperty.InheritanceType;
 import edu.njit.cs.saboc.blu.core.utils.comparators.ConceptNameComparator;
+import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFRecentlyOpenedFileManager;
+import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFRecentlyOpenedFileManager.RecentlyOpenedFileException;
+import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFStateFileManager;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInheritableProperty;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
@@ -24,11 +27,13 @@ import java.util.stream.Collectors;
 public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTConcept> {
     
     private final SCTRelease theRelease;
+    private final OAFStateFileManager stateFileManager;
     
-    public SCTConceptBrowserDataSource(SCTRelease release) {
+    public SCTConceptBrowserDataSource(SCTRelease release, OAFStateFileManager stateFileManager) {
         super(release);
         
         this.theRelease = release;
+        this.stateFileManager = stateFileManager;
     }
     
     public SCTRelease getRelease() {
@@ -256,5 +261,21 @@ public class SCTConceptBrowserDataSource extends ConceptBrowserDataSource<SCTCon
         });
         
         return properties;
+    }
+    
+    
+
+    @Override
+    public OAFRecentlyOpenedFileManager getRecentlyOpenedAuditSets() {
+        
+        if(this.stateFileManager != null) {
+            try {
+                return this.stateFileManager.getRecentlyOpenedAuditSets(this.theRelease.getReleaseInfo().getReleaseDirectory());
+            } catch(RecentlyOpenedFileException rofe) {
+                
+            }
+        }
+        
+        return null;
     }
 }

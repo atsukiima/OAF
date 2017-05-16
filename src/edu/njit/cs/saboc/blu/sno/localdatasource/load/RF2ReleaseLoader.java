@@ -1,10 +1,12 @@
 package edu.njit.cs.saboc.blu.sno.localdatasource.load;
 
 import edu.njit.cs.saboc.blu.core.datastructure.hierarchy.Hierarchy;
+import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFStateFileManager;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.Description;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTStatedConcept;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
+import edu.njit.cs.saboc.blu.sno.nat.SCTConceptBrowserDataSource;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseInfo;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
 import java.io.BufferedReader;
@@ -25,6 +27,12 @@ import java.util.Set;
 public class RF2ReleaseLoader {
     
     protected LocalLoadStateMonitor loadMonitor = new LocalLoadStateMonitor();
+    
+    private final OAFStateFileManager stateFileManager;
+
+    public RF2ReleaseLoader(OAFStateFileManager stateFileManager) {
+        this.stateFileManager = stateFileManager;
+    }
 
     public LocalLoadStateMonitor getLoadStateMonitor() {
         return loadMonitor;
@@ -72,11 +80,12 @@ public class RF2ReleaseLoader {
 
         loadMonitor.setCurrentProcess("Building Search Index", 85);
         
-        SCTReleaseWithStated localDS = new SCTReleaseWithStated(releaseInfo, hierarchy, new HashSet<>(concepts.values()), statedHierarchy);
+        SCTReleaseWithStated release = new SCTReleaseWithStated(releaseInfo, hierarchy, new HashSet<>(concepts.values()), statedHierarchy);
+        release.setConceptBrowserDataSource(new SCTConceptBrowserDataSource(release, stateFileManager));
 
         loadMonitor.setCurrentProcess("Complete", 100);
 
-        return localDS;
+        return release;
     }
 
     /**
@@ -86,7 +95,7 @@ public class RF2ReleaseLoader {
      * @return
      * @throws IOException 
      */
-    private Hierarchy<SCTConcept>  loadStatedRelationships(File relationshipsFile, HashMap<Long, SCTConcept> concepts) throws IOException {
+    private Hierarchy<SCTConcept> loadStatedRelationships(File relationshipsFile, HashMap<Long, SCTConcept> concepts) throws IOException {
 
         Hierarchy<SCTConcept>  hierarchy = new Hierarchy<>(concepts.get(138875005l));
 

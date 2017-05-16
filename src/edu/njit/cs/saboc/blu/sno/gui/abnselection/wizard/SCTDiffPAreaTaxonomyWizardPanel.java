@@ -35,7 +35,7 @@ public class SCTDiffPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
     public SCTDiffPAreaTaxonomyWizardPanel(SCTAbNFrameManager displayFrameListener) {
         this.displayFrameListener = displayFrameListener;
         
-        this.loadFromReleasePanel = new LoadReleasePanel(displayFrameListener);
+        this.loadFromReleasePanel = new LoadReleasePanel(displayFrameListener, null);
         this.loadFromReleasePanel.addLocalDataSourceLoadedListener(new LocalDataSourceListener() {
 
             @Override

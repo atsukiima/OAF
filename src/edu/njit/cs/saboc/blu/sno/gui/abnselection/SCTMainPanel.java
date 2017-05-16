@@ -1,5 +1,7 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
+import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFRecentlyOpenedFileManager.RecentlyOpenedFileException;
+import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFStateFileManager;
 import edu.njit.cs.saboc.blu.sno.gui.openrelease.LoadReleasePanel;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import java.awt.BorderLayout;
@@ -16,10 +18,20 @@ public class SCTMainPanel extends JPanel {
     
     private final SCTAbNCreationPanel abnCreationPanel;
     
+    private OAFStateFileManager stateFileManager;
+    
     public SCTMainPanel(SCTAbNFrameManager frameManager) {
+        
         super(new BorderLayout());
         
-        loadReleasePanel = new LoadReleasePanel(frameManager);
+        try {
+            this.stateFileManager = new OAFStateFileManager("BLUSNO");
+        } catch(RecentlyOpenedFileException rofe) {
+            this.stateFileManager = null;
+        }
+        
+        loadReleasePanel = new LoadReleasePanel(frameManager, stateFileManager);
+        
         loadReleasePanel.addLocalDataSourceLoadedListener(new LoadReleasePanel.LocalDataSourceListener() {
             
             @Override
@@ -47,7 +59,7 @@ public class SCTMainPanel extends JPanel {
 
         this.add(loadReleasePanel, BorderLayout.NORTH);
         
-        abnCreationPanel = new SCTAbNCreationPanel(frameManager);
+        abnCreationPanel = new SCTAbNCreationPanel(frameManager, stateFileManager);
         abnCreationPanel.setEnabled(false);
         
         this.add(abnCreationPanel, BorderLayout.CENTER);

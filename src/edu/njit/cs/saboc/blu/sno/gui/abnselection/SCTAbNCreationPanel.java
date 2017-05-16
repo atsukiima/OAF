@@ -1,5 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.abnselection;
 
+import edu.njit.cs.saboc.blu.core.utils.recentlyopenedfile.OAFStateFileManager;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.createanddisplay.CreateAndDisplaySCTNAT;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import java.awt.BorderLayout;
@@ -28,11 +29,16 @@ public class SCTAbNCreationPanel extends JPanel {
     
     private final SCTAbNFrameManager frameManager;
     
-    public SCTAbNCreationPanel(SCTAbNFrameManager frameManager) {
+    private final OAFStateFileManager stateFileManager;
+    
+    public SCTAbNCreationPanel(
+            SCTAbNFrameManager frameManager, 
+            OAFStateFileManager stateFileManager) {
         
         super(new BorderLayout());
         
         this.frameManager = frameManager;
+        this.stateFileManager = stateFileManager;
         
         this.wizardPanel = new SCTAbNWizardPanel(frameManager);
         
