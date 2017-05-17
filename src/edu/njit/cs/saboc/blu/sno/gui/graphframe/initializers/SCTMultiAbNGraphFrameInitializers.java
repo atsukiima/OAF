@@ -23,6 +23,9 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.initializers.DisjointA
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.initializers.PAreaTaxonomyInitializer;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.initializers.TANInitializer;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.initializers.TargetAbNInitializer;
+import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFRecentlyOpenedFileManager;
+import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFRecentlyOpenedFileManager.RecentlyOpenedFileException;
+import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFStateFileManager;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNWizardPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfigurationFactory;
@@ -38,9 +41,19 @@ import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
  */
 public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializers {
     
+    private final SCTRelease release;
+    
+    private final OAFStateFileManager stateFileManager;
+    
     private final SCTAbNFrameManager frameManager;
     
-    public SCTMultiAbNGraphFrameInitializers(SCTAbNFrameManager frameManager) {
+    public SCTMultiAbNGraphFrameInitializers(
+            SCTRelease release, 
+            OAFStateFileManager stateFileManager,
+            SCTAbNFrameManager frameManager) {
+        
+        this.release = release;
+        this.stateFileManager = stateFileManager;
         this.frameManager = frameManager;
     }
     
@@ -251,5 +264,19 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
                         });
             }
         };
+    }
+
+    @Override
+    public OAFRecentlyOpenedFileManager getRecentAbNWorkspaceFiles() {
+        
+        try {
+            
+            return stateFileManager.getRecentAbNWorkspaces(release.getReleaseInfo().getReleaseDirectory());
+            
+        } catch(RecentlyOpenedFileException rofe) {
+            
+        }
+        
+        return null;
     }
 }

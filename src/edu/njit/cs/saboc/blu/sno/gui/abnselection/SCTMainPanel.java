@@ -18,18 +18,16 @@ public class SCTMainPanel extends JPanel {
     
     private final SCTAbNCreationPanel abnCreationPanel;
     
-    private OAFStateFileManager stateFileManager;
+    private final OAFStateFileManager stateFileManager;
     
-    public SCTMainPanel(SCTAbNFrameManager frameManager) {
+    public SCTMainPanel(
+            SCTAbNFrameManager frameManager, 
+            OAFStateFileManager stateFileManager) {
         
         super(new BorderLayout());
         
-        try {
-            this.stateFileManager = new OAFStateFileManager("BLUSNO");
-        } catch(RecentlyOpenedFileException rofe) {
-            this.stateFileManager = null;
-        }
-        
+        this.stateFileManager = stateFileManager;
+
         loadReleasePanel = new LoadReleasePanel(frameManager, stateFileManager);
         
         loadReleasePanel.addLocalDataSourceLoadedListener(new LoadReleasePanel.LocalDataSourceListener() {
