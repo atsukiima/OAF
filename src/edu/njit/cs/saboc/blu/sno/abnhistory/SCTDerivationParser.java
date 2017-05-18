@@ -66,7 +66,7 @@ public class SCTDerivationParser extends AbNDerivationParser {
         return super.parseSimplePAreaTaxonomyDerivation(
                 obj, 
                 new SCTInferredPAreaTaxonomyFactory(release,
-                        release.getConceptHierarchy().getSubhierarchyRootedAt((SCTConcept)getRoot(obj))));
+                        release.getConceptHierarchy()));
         
     }
 

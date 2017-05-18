@@ -68,7 +68,7 @@ public class CreateAndDisplaySCTPAreaTaxonomy extends AbNCreateAndDisplayDialog<
             factory = new SCTStatedRelationshipsPAreaTaxonomyFactory(statedRelease, selectedRoot); 
         } else {
             conceptHierarchy = release.getConceptHierarchy().getSubhierarchyRootedAt(selectedRoot);
-            factory = new SCTInferredPAreaTaxonomyFactory(release, conceptHierarchy);
+            factory = new SCTInferredPAreaTaxonomyFactory(release, release.getConceptHierarchy());
         }
         
         PAreaTaxonomyGenerator taxonomyGenerator = new PAreaTaxonomyGenerator();
