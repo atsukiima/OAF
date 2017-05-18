@@ -178,7 +178,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
 
             @Override
             public AbNConfiguration getConfiguration(TargetAbstractionNetwork abn, AbNDisplayManager displayManager) {
-                return new SCTTargetAbNConfigurationFactory().createConfiguration(abn, displayManager);
+                return new SCTTargetAbNConfigurationFactory().createConfiguration(abn, displayManager, frameManager);
             }
         };
     }

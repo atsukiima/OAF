@@ -1,7 +1,6 @@
 package edu.njit.cs.saboc.blu.sno.gui.gep.panels.targetabn.configuration;
 
 import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetAbstractionNetwork;
-import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetGroup;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.targetbased.configuration.TargetAbNTextConfiguration;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTEntityNameConfiguration;
 
@@ -13,10 +12,5 @@ public class SCTTargetAbNTextConfiguration extends TargetAbNTextConfiguration {
 
     public SCTTargetAbNTextConfiguration(TargetAbstractionNetwork targetAbN) {
         super(new SCTEntityNameConfiguration(), targetAbN);
-    }
-
-    @Override
-    public String getNodeHelpDescription(TargetGroup group) {
-        return "*** SCT TARGET ABN TARGET GROUP DESCRIPTION ***";
     }
 }
