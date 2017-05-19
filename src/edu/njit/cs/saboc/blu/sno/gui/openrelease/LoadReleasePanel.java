@@ -126,6 +126,7 @@ public class LoadReleasePanel extends JPanel {
         btnDownloadRelease.addActionListener( (ae) -> {
             openBrowserDownloadRelease();
         });
+        btnDownloadRelease.setToolTipText("Download Current Interational RF2 Release from NLM UTS");
         
         btnOpenRecentRelease = new JButton("Select Recently Opened Release");
         btnOpenRecentRelease.addActionListener( (ae) -> {
