@@ -52,8 +52,6 @@ public class SCTAbNCreationPanel extends JPanel {
         centerPanel.add(browserPanel, BorderLayout.EAST);
 
         this.add(centerPanel, BorderLayout.CENTER);
-        
-        this.setBackground(Color.WHITE);
     }
 
     @Override
