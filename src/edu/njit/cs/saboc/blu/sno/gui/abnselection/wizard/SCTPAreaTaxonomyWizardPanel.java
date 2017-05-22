@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.abnselection.wizard;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.InheritableProperty;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.InheritableProperty.InheritanceType;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.buttons.PAreaTaxonomyHelpButton;
 import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.InheritablePropertySelectionPanel;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.pareataxonomy.configuration.PAreaTaxonomyConfiguration;
 import edu.njit.cs.saboc.blu.core.gui.panels.abnderivationwizard.AbNDerivationWizardPanel;
@@ -24,6 +25,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -66,6 +68,7 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
     
     private final JPanel additionalOptionsPanel;
     
+    private final PAreaTaxonomyHelpButton pareaHelpBtn;
 
     public SCTPAreaTaxonomyWizardPanel(
             SCTPAreaTaxonomyDerivationAction taxonomyDerivationAction,
@@ -122,7 +125,9 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
         
         this.statusLabel = new JLabel(" ");
         
-        this.deriveBtn = new JButton("Derive Partial-area Taxonomy");
+        this.deriveBtn = new JButton("<html><div align = 'center'>Derive Partial-area"
+                + "<br>Taxonomy");
+        
         this.deriveBtn.addActionListener( (ae) -> {
             performDerivationAction();
         });
@@ -145,6 +150,8 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
             });
         });
         
+        this.pareaHelpBtn = new PAreaTaxonomyHelpButton(config);
+        
         additionalOptionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         
         JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -154,6 +161,8 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
         JPanel derivationPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         
         derivationPanel.add(deriveBtn);
+        derivationPanel.add(Box.createHorizontalStrut(10));
+        derivationPanel.add(pareaHelpBtn);
         
         JPanel southPanel = new JPanel(new BorderLayout());
         
@@ -185,6 +194,7 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
         
         this.deriveBtn.setEnabled(value);
         this.chkUseStatedRelationships.setEnabled(value);
+        this.pareaHelpBtn.setEnabled(value);
     }
     
     public void initialize(SCTRelease release) {
@@ -209,6 +219,7 @@ public class SCTPAreaTaxonomyWizardPanel extends AbNDerivationWizardPanel {
         rootSelectionPanel.initialize(release, release);
         
         deriveBtn.setEnabled(true);
+        pareaHelpBtn.setEnabled(true);
     }
     
     private void doRootSelectedAction(SCTConcept root) {

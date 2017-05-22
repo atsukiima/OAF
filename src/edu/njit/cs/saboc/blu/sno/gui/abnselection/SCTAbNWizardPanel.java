@@ -14,6 +14,8 @@ import edu.njit.cs.saboc.blu.sno.gui.abnselection.wizard.SCTTANDerivationWizardP
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.wizard.SCTTargetHierarchyRetriever;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfigurationFactory;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.targetabn.configuration.SCTTargetAbNConfiguration;
+import edu.njit.cs.saboc.blu.sno.gui.gep.panels.targetabn.configuration.SCTTargetAbNConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
@@ -85,10 +87,10 @@ public class SCTAbNWizardPanel extends JPanel {
         diffPAreaPanel.add(diffPAreaTaxonomyDerivationWizardPanel, BorderLayout.CENTER);
         
         
-        SCTTANConfigurationFactory factory = new SCTTANConfigurationFactory();
-        SCTTANConfiguration dummyConfig = factory.createConfiguration(null, frameManager, null, false);        
+        SCTTANConfigurationFactory tanConfigFactory = new SCTTANConfigurationFactory();
+        SCTTANConfiguration dummyTANConfig = tanConfigFactory.createConfiguration(null, frameManager, null, false);        
         
-        tanDerivationWizardPanel = new SCTTANDerivationWizardPanel(dummyConfig, (patriarchs) -> {
+        tanDerivationWizardPanel = new SCTTANDerivationWizardPanel(dummyTANConfig, (patriarchs) -> {
             
             CreateAndDisplaySCTTAN creatingTANDialog = new CreateAndDisplaySCTTAN(
                     "Creating Tribal Abstraction Network", 
@@ -104,7 +106,10 @@ public class SCTAbNWizardPanel extends JPanel {
         JPanel tanPanel = new JPanel(new BorderLayout());
         tanPanel.add(tanDerivationWizardPanel, BorderLayout.CENTER);
         
-        targetAbNDerivationWizardPanel = new TargetAbNDerivationWizardPanel(dummyConfig,
+        SCTTargetAbNConfigurationFactory targetConfigFactory = new SCTTargetAbNConfigurationFactory();
+        SCTTargetAbNConfiguration dummyTargetConfig = targetConfigFactory.createConfiguration(null, frameManager, null);       
+        
+        targetAbNDerivationWizardPanel = new TargetAbNDerivationWizardPanel(dummyTargetConfig,
                 (sourceHierarchy, type, targetHierarchy) -> {
                     CreateAndDisplayTargetAbN createRangeAbN = new CreateAndDisplayTargetAbN(
                             "Creating Attribute Relationship Target Abstraction Network",
@@ -117,7 +122,7 @@ public class SCTAbNWizardPanel extends JPanel {
 
                     createRangeAbN.run();
                 },
-                new AttributeRelationshipRootSelectionPanel<>(dummyConfig));
+                new AttributeRelationshipRootSelectionPanel<>(dummyTargetConfig));
 
         JPanel targetPanel = new JPanel(new BorderLayout());
         targetPanel.add(targetAbNDerivationWizardPanel, BorderLayout.CENTER);
@@ -128,7 +133,6 @@ public class SCTAbNWizardPanel extends JPanel {
         abnSelectionTabs.addTab("Target Abstraction Network (Target AbN)", targetPanel);
 
         this.add(abnSelectionTabs, BorderLayout.CENTER);
-        
     }
 
     public final SCTTANDerivationWizardPanel getTANDerivationPanel() {
