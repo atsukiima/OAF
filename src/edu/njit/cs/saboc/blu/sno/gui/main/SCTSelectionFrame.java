@@ -2,6 +2,8 @@ package edu.njit.cs.saboc.blu.sno.gui.main;
 
 import edu.njit.cs.saboc.blu.core.gui.frame.AbnSelectionFrameFactory;
 import edu.njit.cs.saboc.blu.core.gui.frame.OAFMainFrame;
+import edu.njit.cs.saboc.blu.core.gui.gep.warning.AbNWarningManager;
+import edu.njit.cs.saboc.blu.core.gui.gep.warning.DisjointAbNWarningManager;
 import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFRecentlyOpenedFileManager;
 import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFStateFileManager;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
@@ -16,6 +18,8 @@ public class SCTSelectionFrame implements AbnSelectionFrameFactory {
     
     private OAFStateFileManager stateFileManager;
     
+    private final AbNWarningManager warningManager = new DisjointAbNWarningManager();
+    
     @Override
     public JInternalFrame createAbNSelectionFrame(OAFMainFrame parentFrame) {
         
@@ -28,10 +32,10 @@ public class SCTSelectionFrame implements AbnSelectionFrameFactory {
         } catch (OAFRecentlyOpenedFileManager.RecentlyOpenedFileException rofe) {
             this.stateFileManager = null;
         }
-        
+
         SCTAbNFrameManager sctFrameManager = new SCTAbNFrameManager(parentFrame, (frame) -> {
                     parentFrame.addInternalFrame(frame);
-                }, stateFileManager);
+                }, stateFileManager, warningManager);
 
         SCTMainPanel sctMainPanel = new SCTMainPanel(sctFrameManager, stateFileManager);
 

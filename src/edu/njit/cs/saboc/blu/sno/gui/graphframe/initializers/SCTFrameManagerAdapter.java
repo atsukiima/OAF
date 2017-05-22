@@ -21,7 +21,8 @@ public class SCTFrameManagerAdapter extends SCTAbNFrameManager {
     private final MultiAbNGraphFrame frame;
     
     public SCTFrameManagerAdapter(MultiAbNGraphFrame frame) {
-        super(null, null, null);
+        
+        super(null, null, null, null);
         
         this.frame = frame;
     }
