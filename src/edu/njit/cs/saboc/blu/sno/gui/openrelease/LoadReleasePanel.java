@@ -370,7 +370,11 @@ public class LoadReleasePanel extends JPanel {
                 loadedDataSource = Optional.of(dataSource);
                 
                 try {
-                    stateFileManager.getRecentlyOpenedOntologiesManager().addOrUpdateRecentlyOpenedFile(selectedFile);
+                    
+                    if(stateFileManager != null) {
+                        stateFileManager.getRecentlyOpenedOntologiesManager().
+                                addOrUpdateRecentlyOpenedFile(selectedFile);
+                    }
                 } catch (RecentlyOpenedFileException rofe) {
                     rofe.printStackTrace();
                 }

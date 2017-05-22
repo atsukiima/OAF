@@ -127,10 +127,10 @@ public class SCTAbNWizardPanel extends JPanel {
         JPanel targetPanel = new JPanel(new BorderLayout());
         targetPanel.add(targetAbNDerivationWizardPanel, BorderLayout.CENTER);
         
-        abnSelectionTabs.addTab("Partial-area Taxonomy", pareaPanel);
-        abnSelectionTabs.addTab("Diff Partial-area Taxonomy", diffPAreaPanel);
-        abnSelectionTabs.addTab("Tribal Abstraction Network (TAN)", tanPanel);
-        abnSelectionTabs.addTab("Target Abstraction Network (Target AbN)", targetPanel);
+        abnSelectionTabs.addTab("<html>Partial-area Taxonomy", pareaPanel);
+        abnSelectionTabs.addTab("<html>Diff Partial-area Taxonomy (<font color = 'RED'><i>Under development</i></font>)", diffPAreaPanel);
+        abnSelectionTabs.addTab("<html>Tribal Abstraction Network (TAN)", tanPanel);
+        abnSelectionTabs.addTab("<html>Target Abstraction Network (Target AbN)", targetPanel);
 
         this.add(abnSelectionTabs, BorderLayout.CENTER);
     }
