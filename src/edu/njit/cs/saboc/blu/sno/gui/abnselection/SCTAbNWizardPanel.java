@@ -49,7 +49,7 @@ public class SCTAbNWizardPanel extends JPanel {
     
     
     
-    public SCTAbNWizardPanel(SCTAbNFrameManager frameManager) {
+    public SCTAbNWizardPanel(SCTAbNFrameManager frameManager, boolean includeDiff) {
         this.setLayout(new BorderLayout());
         
         this.abnSelectionTabs = new JTabbedPane();
@@ -128,7 +128,11 @@ public class SCTAbNWizardPanel extends JPanel {
         targetPanel.add(targetAbNDerivationWizardPanel, BorderLayout.CENTER);
         
         abnSelectionTabs.addTab("<html>Partial-area Taxonomy", pareaPanel);
-        abnSelectionTabs.addTab("<html>Diff Partial-area Taxonomy (<font color = 'RED'><i>Under development</i></font>)", diffPAreaPanel);
+        
+        if(includeDiff) {
+            abnSelectionTabs.addTab("<html>Diff Partial-area Taxonomy (<font color = 'RED'><i>Under development</i></font>)", diffPAreaPanel);
+        }
+        
         abnSelectionTabs.addTab("<html>Tribal Abstraction Network (TAN)", tanPanel);
         abnSelectionTabs.addTab("<html>Target Abstraction Network (Target AbN)", targetPanel);
 

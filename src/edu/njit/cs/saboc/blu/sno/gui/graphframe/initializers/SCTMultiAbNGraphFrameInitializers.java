@@ -66,7 +66,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
             MultiAbNGraphFrame graphFrame,
             SCTRelease release) {
         
-        SCTAbNWizardPanel wizardPanel = new SCTAbNWizardPanel(new SCTFrameManagerAdapter(graphFrame));
+        SCTAbNWizardPanel wizardPanel = new SCTAbNWizardPanel(new SCTFrameManagerAdapter(graphFrame), false);
         wizardPanel.setCurrentRelease(release);
         wizardPanel.setEnabled(true);
         

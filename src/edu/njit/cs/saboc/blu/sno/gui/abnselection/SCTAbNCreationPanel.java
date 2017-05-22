@@ -40,7 +40,7 @@ public class SCTAbNCreationPanel extends JPanel {
         this.frameManager = frameManager;
         this.stateFileManager = stateFileManager;
         
-        this.wizardPanel = new SCTAbNWizardPanel(frameManager);
+        this.wizardPanel = new SCTAbNWizardPanel(frameManager, true);
         
         JPanel centerPanel = new JPanel(new BorderLayout());
                 
