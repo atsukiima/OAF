@@ -54,7 +54,6 @@ public class NATOnlyMainFrame extends JFrame {
             @Override
             public void localDataSourceUnloaded() {
                 browserPanel.setEnabled(false);
-                
                 browserPanel.reset();
             }
         });
