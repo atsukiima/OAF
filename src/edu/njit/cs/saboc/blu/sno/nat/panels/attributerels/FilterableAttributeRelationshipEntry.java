@@ -7,10 +7,8 @@ import edu.njit.cs.saboc.blu.core.utils.filterable.list.Filterable;
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInheritableProperty;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
-import edu.njit.cs.saboc.blu.sno.nat.SCTConceptBrowserDataSource;
 import edu.njit.cs.saboc.nat.generic.NATBrowserPanel;
 import edu.njit.cs.saboc.nat.generic.errorreport.AuditSet;
-import edu.njit.cs.saboc.nat.generic.errorreport.error.parent.IncorrectParentError;
 import edu.njit.cs.saboc.nat.generic.errorreport.error.semanticrel.IncorrectSemanticRelationshipError;
 import edu.njit.cs.saboc.nat.generic.errorreport.error.semanticrel.SemanticRelationshipError;
 import java.util.List;
@@ -24,15 +22,12 @@ public class FilterableAttributeRelationshipEntry extends Filterable<AttributeRe
     private final AttributeRelationship rel;
     
     private final NATBrowserPanel<SCTConcept> mainPanel;
-    private final SCTConceptBrowserDataSource dataSource;
     
     public FilterableAttributeRelationshipEntry(
             NATBrowserPanel<SCTConcept> mainPanel,
-            SCTConceptBrowserDataSource dataSource,
             AttributeRelationship rel) {
         
         this.mainPanel = mainPanel;
-        this.dataSource = dataSource;
         
         this.rel = rel;
     }

@@ -28,14 +28,9 @@ import javax.swing.JSeparator;
 public class AttributeRelationshipRightClickMenu extends AuditReportRightClickMenu<SCTConcept, AttributeRelationship> {
     
     private final NATBrowserPanel<SCTConcept> mainPanel;
-    private final SCTConceptBrowserDataSource dataSource;
     
-    public AttributeRelationshipRightClickMenu(
-            NATBrowserPanel<SCTConcept> mainPanel, 
-            SCTConceptBrowserDataSource dataSource) {
-        
+    public AttributeRelationshipRightClickMenu(NATBrowserPanel<SCTConcept> mainPanel) {
         this.mainPanel = mainPanel;
-        this.dataSource = dataSource;
     }
 
     @Override
@@ -72,8 +67,7 @@ public class AttributeRelationshipRightClickMenu extends AuditReportRightClickMe
             removeRelBtn.setFont(removeRelBtn.getFont().deriveFont(14.0f));
             removeRelBtn.addActionListener((ae) -> {
                 ErrorReportDialog.displayErroneousSemanticRelationshipDialog(
-                        mainPanel, 
-                        dataSource,
+                        mainPanel,
                         new SCTInheritableProperty(item.getType(), InheritanceType.Introduced), 
                         item.getTarget());
             });
@@ -83,7 +77,6 @@ public class AttributeRelationshipRightClickMenu extends AuditReportRightClickMe
             changeTargetBtn.addActionListener((ae) -> {
                 ErrorReportDialog.displayReplaceTargetDialog(
                         mainPanel, 
-                        dataSource,
                         new SCTInheritableProperty(item.getType(), InheritanceType.Introduced), 
                         item.getTarget());
             });
@@ -93,7 +86,6 @@ public class AttributeRelationshipRightClickMenu extends AuditReportRightClickMe
             replaceRelBtn.addActionListener((ae) -> {
                 ErrorReportDialog.displayReplaceSemanticRelationshipDialog(
                         mainPanel, 
-                        dataSource,
                         new SCTInheritableProperty(item.getType(), InheritanceType.Introduced), 
                         item.getTarget());
             });
@@ -103,7 +95,6 @@ public class AttributeRelationshipRightClickMenu extends AuditReportRightClickMe
             otherErrorBtn.addActionListener((ae) -> {
                 ErrorReportDialog.displayOtherSemanticRelationshipErrorDialog(
                         mainPanel,
-                        dataSource,
                         new SCTInheritableProperty(item.getType(), InheritanceType.Introduced),
                         item.getTarget());
             });
@@ -118,7 +109,7 @@ public class AttributeRelationshipRightClickMenu extends AuditReportRightClickMe
             JMenuItem reportMissingRel = new JMenuItem("Report missing attribute relationship");
             reportMissingRel.setFont(reportMissingRel.getFont().deriveFont(14.0f));
             reportMissingRel.addActionListener((ae) -> {
-                ErrorReportDialog.displayMissingSemanticRelationshipDialog(mainPanel, dataSource);
+                ErrorReportDialog.displayMissingSemanticRelationshipDialog(mainPanel);
             });
             
             components.add(reportMissingRel);
@@ -149,7 +140,7 @@ public class AttributeRelationshipRightClickMenu extends AuditReportRightClickMe
             JMenuItem reportMissingRel = new JMenuItem("Report missing attribute relationship");
             reportMissingRel.setFont(reportMissingRel.getFont().deriveFont(14.0f));
             reportMissingRel.addActionListener((ae) -> {
-                ErrorReportDialog.displayMissingSemanticRelationshipDialog(mainPanel, dataSource);
+                ErrorReportDialog.displayMissingSemanticRelationshipDialog(mainPanel);
             });
             
             ArrayList<JComponent> components = new ArrayList<>();

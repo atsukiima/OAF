@@ -34,7 +34,6 @@ public class AttributeRelationshipEntryPanel extends FilterableEntryPanel<Filter
 
     public AttributeRelationshipEntryPanel(
             NATBrowserPanel<SCTConcept> mainPanel,
-            SCTConceptBrowserDataSource dataSource,
             FilterableAttributeRelationshipEntry relEntry) {
         
         super(relEntry, relEntry.getCurrentFilter());

@@ -21,7 +21,6 @@ public class RelationshipGroupPanel extends FilterableNestedEntryPanel<Filterabl
     
     public RelationshipGroupPanel(
             NATBrowserPanel<SCTConcept> mainPanel,
-            SCTConceptBrowserDataSource dataSource,
             FilterableRelationshipGroupEntry entry) {
         
         super(entry);
@@ -52,7 +51,6 @@ public class RelationshipGroupPanel extends FilterableNestedEntryPanel<Filterabl
             if (!rel.getCurrentFilter().isPresent() || rel.containsFilter(rel.getCurrentFilter().get())) {
                 AttributeRelationshipEntryPanel relPanel = new AttributeRelationshipEntryPanel(
                         mainPanel, 
-                        dataSource, 
                         (FilterableAttributeRelationshipEntry) rel);
 
                 this.add(relPanel);

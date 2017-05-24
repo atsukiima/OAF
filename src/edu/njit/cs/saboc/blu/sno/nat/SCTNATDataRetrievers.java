@@ -4,6 +4,7 @@ import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTStatedConcept;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTReleaseWithStated;
+import edu.njit.cs.saboc.nat.generic.NATBrowserPanel;
 import edu.njit.cs.saboc.nat.generic.gui.panels.ResultPanel.DataRetriever;
 import edu.njit.cs.saboc.nat.generic.gui.panels.dataretrievers.CommonBrowserDataRetrievers;
 import java.util.ArrayList;
@@ -19,10 +20,11 @@ public class SCTNATDataRetrievers {
     /**
      * Returns the attribute relationships of the given concept
      * 
-     * @param dataSource
+     * @param browserPanel
      * @return 
      */
-    public static DataRetriever<SCTConcept, ArrayList<AttributeRelationship>> getAttributeRelationshipRetriever(SCTConceptBrowserDataSource dataSource) {
+    public static DataRetriever<SCTConcept, ArrayList<AttributeRelationship>> 
+        getAttributeRelationshipRetriever(NATBrowserPanel<SCTConcept> browserPanel) {
         
         return new DataRetriever<SCTConcept, ArrayList<AttributeRelationship>>() {
 
@@ -41,19 +43,29 @@ public class SCTNATDataRetrievers {
     /**
      * Retriever for obtaining the stated parents of the given concept
      * 
-     * @param dataSource
+     * @param browserPanel
      * @return 
      */
     public static DataRetriever<SCTConcept, ArrayList<SCTConcept>> getStatedParentRetriever(
-            SCTConceptBrowserDataSource dataSource) {
+            NATBrowserPanel<SCTConcept> browserPanel) {
         
         return new DataRetriever<SCTConcept, ArrayList<SCTConcept>>() {
 
             @Override
             public ArrayList<SCTConcept> getData(SCTConcept concept) {
-                SCTReleaseWithStated statedRelease = (SCTReleaseWithStated)dataSource.getRelease();
-                
-                return CommonBrowserDataRetrievers.getSortedConceptList(statedRelease.getStatedHierarchy().getParents(concept));
+
+                if (browserPanel.getDataSource().isPresent()) {
+
+                    SCTConceptBrowserDataSource dataSource = (SCTConceptBrowserDataSource)browserPanel.getDataSource().get();
+                    
+                    SCTReleaseWithStated statedRelease = (SCTReleaseWithStated)dataSource.getRelease();
+
+                    return CommonBrowserDataRetrievers.getSortedConceptList(statedRelease.getStatedHierarchy().getParents(concept));
+
+                } else {
+                    return new ArrayList<>();
+                }
+
             }
 
             @Override
@@ -67,18 +79,26 @@ public class SCTNATDataRetrievers {
     /**
      * Retriever for obtaining the stated children (i.e., concepts with the given concept as a stated parent)
      * 
-     * @param dataSource
+     * @param browserPanel
      * @return 
      */
     public static DataRetriever<SCTConcept, ArrayList<SCTConcept>> getStatedChildrenRetriever(
-            SCTConceptBrowserDataSource dataSource) {
+            NATBrowserPanel<SCTConcept> browserPanel) {
         
         return new DataRetriever<SCTConcept, ArrayList<SCTConcept>>() {
             @Override
             public ArrayList<SCTConcept> getData(SCTConcept concept) {
-                SCTReleaseWithStated statedRelease = (SCTReleaseWithStated)dataSource.getRelease();
                 
-                return CommonBrowserDataRetrievers.getSortedConceptList(statedRelease.getStatedHierarchy().getChildren(concept));
+                if (browserPanel.getDataSource().isPresent()) {
+
+                    SCTConceptBrowserDataSource dataSource = (SCTConceptBrowserDataSource)browserPanel.getDataSource().get();
+                    
+                    SCTReleaseWithStated statedRelease = (SCTReleaseWithStated)dataSource.getRelease();
+     
+                    return CommonBrowserDataRetrievers.getSortedConceptList(statedRelease.getStatedHierarchy().getChildren(concept));
+                } else {
+                    return new ArrayList<>();
+                }
             }
 
             @Override
@@ -92,18 +112,27 @@ public class SCTNATDataRetrievers {
      * Retriever for obtaining the stated siblings of a concept (i.e., concepts 
      * with at least one of the same stated parents).
      * 
-     * @param dataSource
+     * @param browserPanel
      * @return 
      */
     public static DataRetriever<SCTConcept, ArrayList<SCTConcept>> getStatedSiblingRetriever(
-            SCTConceptBrowserDataSource dataSource) {
+            NATBrowserPanel<SCTConcept> browserPanel) {
         
         return new DataRetriever<SCTConcept, ArrayList<SCTConcept>>() {
+            
             @Override
             public ArrayList<SCTConcept> getData(SCTConcept concept) {
-                SCTReleaseWithStated statedRelease = (SCTReleaseWithStated)dataSource.getRelease();
                 
-                return CommonBrowserDataRetrievers.getSortedConceptList(statedRelease.getStatedHierarchy().getSiblings(concept));
+                if (browserPanel.getDataSource().isPresent()) {
+
+                    SCTConceptBrowserDataSource dataSource = (SCTConceptBrowserDataSource)browserPanel.getDataSource().get();
+                    
+                    SCTReleaseWithStated statedRelease = (SCTReleaseWithStated)dataSource.getRelease();
+     
+                    return CommonBrowserDataRetrievers.getSortedConceptList(statedRelease.getStatedHierarchy().getSiblings(concept));
+                } else {
+                    return new ArrayList<>();
+                }
             }
 
             @Override
@@ -117,18 +146,26 @@ public class SCTNATDataRetrievers {
      * Retriever for obtaining the stated strict siblings of the given concept 
      * (i.e., concepts with the exact same set of stated parents).
      * 
-     * @param dataSource
+     * @param browserPanel
      * @return 
      */
     public static DataRetriever<SCTConcept, ArrayList<SCTConcept>> getStatedStrictSiblingRetriever(
-            SCTConceptBrowserDataSource dataSource) {
+            NATBrowserPanel<SCTConcept> browserPanel) {
         
         return new DataRetriever<SCTConcept, ArrayList<SCTConcept>>() {
             @Override
             public ArrayList<SCTConcept> getData(SCTConcept concept) {
-                SCTReleaseWithStated statedRelease = (SCTReleaseWithStated)dataSource.getRelease();
                 
-                return CommonBrowserDataRetrievers.getSortedConceptList(statedRelease.getStatedHierarchy().getStrictSiblings(concept));
+                if (browserPanel.getDataSource().isPresent()) {
+
+                    SCTConceptBrowserDataSource dataSource = (SCTConceptBrowserDataSource)browserPanel.getDataSource().get();
+                    
+                    SCTReleaseWithStated statedRelease = (SCTReleaseWithStated)dataSource.getRelease();
+     
+                    return CommonBrowserDataRetrievers.getSortedConceptList(statedRelease.getStatedHierarchy().getStrictSiblings(concept));
+                } else {
+                    return new ArrayList<>();
+                }
             }
 
             @Override
@@ -141,15 +178,17 @@ public class SCTNATDataRetrievers {
     /**
      * Returns the stated attribute relationships of the given concept
      * 
-     * @param dataSource
+     * @param browserPanel
+     * 
      * @return 
      */
-    public static DataRetriever<SCTConcept, ArrayList<AttributeRelationship>> getStatedAttributRelationshipsRetriever(
-            SCTConceptBrowserDataSource dataSource) {
+    public static DataRetriever<SCTConcept, ArrayList<AttributeRelationship>> 
+        getStatedAttributRelationshipsRetriever(NATBrowserPanel<SCTConcept> browserPanel) {
         
         return new DataRetriever<SCTConcept, ArrayList<AttributeRelationship>>() {
             @Override
             public ArrayList<AttributeRelationship> getData(SCTConcept concept) {
+                
                 SCTStatedConcept statedConcept = (SCTStatedConcept)concept;
                 
                 return SCTNATDataRetrievers.getSortedAttributeRelationships(statedConcept.getStatedRelationships());
@@ -169,7 +208,9 @@ public class SCTNATDataRetrievers {
      * @param attributeRels
      * @return 
      */
-    public static ArrayList<AttributeRelationship> getSortedAttributeRelationships(Set<AttributeRelationship> attributeRels) {
+    public static ArrayList<AttributeRelationship> getSortedAttributeRelationships(
+            Set<AttributeRelationship> attributeRels) {
+        
         ArrayList<AttributeRelationship> relationships = new ArrayList<>(attributeRels);
 
         relationships.sort((a, b) -> {

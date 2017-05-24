@@ -2,8 +2,11 @@ package edu.njit.cs.saboc.blu.sno.nat;
 
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
 import edu.njit.cs.saboc.blu.sno.nat.panels.AttributeRelationshipPanel;
+import edu.njit.cs.saboc.nat.generic.DataSourceChangeListener;
 import edu.njit.cs.saboc.nat.generic.NATBrowserPanel;
+import edu.njit.cs.saboc.nat.generic.data.ConceptBrowserDataSource;
 import edu.njit.cs.saboc.nat.generic.gui.layout.BasicNATAdjustableLayout;
+import javax.swing.JRadioButton;
 
 /**
  * SNOMED CT specific layout for the NAT. Displays SNOMED CT-specific panels.
@@ -14,29 +17,58 @@ public class SCTNATLayout extends BasicNATAdjustableLayout<SCTConcept> {
     
     private AttributeRelationshipPanel attributeRelList;
     
-    public SCTNATLayout(SCTConceptBrowserDataSource dataSource) {
-        super(dataSource);
+    private SCTStatedParentsList statedParentsList;
+    
+    private SCTStatedChildrenList statedChildrenList;
+    
+    private JRadioButton statedParentsBtn;
+    
+    private JRadioButton statedChildrenBtn;
+    
+    public SCTNATLayout() {
+        
     }
     
     @Override
-    public SCTConceptBrowserDataSource getDataSource() {
-        return (SCTConceptBrowserDataSource)super.getDataSource();
-    }
-
-    @Override
     public void createLayout(NATBrowserPanel mainPanel) {
         super.createLayout(mainPanel);
-        
-        attributeRelList = new AttributeRelationshipPanel(mainPanel, getDataSource());
-        
+
+        attributeRelList = new AttributeRelationshipPanel(mainPanel);
+
         super.setRightPanelContents(attributeRelList);
+
+        statedParentsList = new SCTStatedParentsList(mainPanel);
+        statedChildrenList = new SCTStatedChildrenList(mainPanel);
+
+        statedParentsBtn = super.getAncestorPanel().addResultListPanel(statedParentsList, "Stated Parents");
+        statedChildrenBtn = super.getDescendantsPanel().addResultListPanel(statedChildrenList, "Stated Children");
         
-        if(getDataSource().getRelease().supportsStatedRelationships()) {
-            SCTStatedParentsList statedParentsList = new SCTStatedParentsList(mainPanel, getDataSource());
-            SCTStatedChildrenList statedChildrenList = new SCTStatedChildrenList(mainPanel, getDataSource());
-            
-            super.getAncestorPanel().addResultListPanel(statedParentsList, "Stated Parents");
-            super.getDescendantsPanel().addResultListPanel(statedChildrenList, "Stated Children");
-        }
+        this.statedChildrenList.setActive(false);
+        this.statedParentsList.setActive(false);
+        
+        this.statedParentsBtn.setEnabled(false);
+        this.statedChildrenBtn.setEnabled(false);
+        
+        mainPanel.addDataSourceChangeListener(new DataSourceChangeListener<SCTConcept>() {
+            @Override
+            public void dataSourceLoaded(ConceptBrowserDataSource<SCTConcept> dataSource) {
+                SCTConceptBrowserDataSource sctDataSource = (SCTConceptBrowserDataSource) dataSource;
+
+                setStatedRelsEnabled(sctDataSource.getRelease().supportsStatedRelationships());
+            }
+
+            @Override
+            public void dataSourceRemoved() {
+                
+            }
+        });
+    }
+    
+    private void setStatedRelsEnabled(boolean value) {
+        this.statedChildrenList.setActive(value);
+        this.statedParentsList.setActive(value);
+
+        this.statedParentsBtn.setEnabled(value);
+        this.statedChildrenBtn.setEnabled(value);
     }
 }

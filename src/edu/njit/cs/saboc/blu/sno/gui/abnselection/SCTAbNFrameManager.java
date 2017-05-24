@@ -182,7 +182,7 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
         NATBrowserFrame<SCTConcept> browserFrame = new NATBrowserFrame<>(
             mainFrame,
             dataSource, 
-            new SCTNATLayout(dataSource));
+            new SCTNATLayout());
         
         if(focusConcept.isPresent()) {
             browserFrame.nagivateTo(focusConcept.get());

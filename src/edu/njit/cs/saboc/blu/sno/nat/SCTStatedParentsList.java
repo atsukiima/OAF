@@ -12,14 +12,11 @@ import edu.njit.cs.saboc.nat.generic.gui.panels.ConceptListPanel;
  */
 public class SCTStatedParentsList extends ConceptListPanel<SCTConcept> {
     
-    public SCTStatedParentsList(
-            NATBrowserPanel<SCTConcept> mainPanel, 
-            SCTConceptBrowserDataSource dataSource) {
+    public SCTStatedParentsList(NATBrowserPanel<SCTConcept> mainPanel) {
         
         super(mainPanel, 
-                dataSource,
-                SCTNATDataRetrievers.getStatedParentRetriever(dataSource),
-                new SimpleConceptRenderer<>(mainPanel, dataSource), 
+                SCTNATDataRetrievers.getStatedParentRetriever(mainPanel),
+                new SimpleConceptRenderer<>(mainPanel), 
                 true,
                 true,
                 true);

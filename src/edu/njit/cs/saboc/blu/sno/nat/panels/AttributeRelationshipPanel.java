@@ -10,7 +10,9 @@ import edu.njit.cs.saboc.blu.sno.nat.panels.attributerels.FilterableAttributeRel
 import edu.njit.cs.saboc.blu.sno.nat.panels.attributerels.FilterableRelationshipGroupEntry;
 import edu.njit.cs.saboc.blu.sno.nat.panels.attributerels.RelationshipGroup;
 import edu.njit.cs.saboc.blu.sno.nat.panels.attributerels.RelationshipGroupPanel;
+import edu.njit.cs.saboc.nat.generic.DataSourceChangeListener;
 import edu.njit.cs.saboc.nat.generic.NATBrowserPanel;
+import edu.njit.cs.saboc.nat.generic.data.ConceptBrowserDataSource;
 import edu.njit.cs.saboc.nat.generic.gui.filterable.nestedlist.FilterableNestedEntry;
 import edu.njit.cs.saboc.nat.generic.gui.filterable.nestedlist.FilterableNestedEntryPanel;
 import edu.njit.cs.saboc.nat.generic.gui.filterable.nestedlist.NestedFilterableList;
@@ -43,13 +45,10 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
     
     private final JCheckBox chkDisplayOnlyStatedRels;
     
-    public AttributeRelationshipPanel(
-            NATBrowserPanel<SCTConcept> mainPanel,
-            SCTConceptBrowserDataSource dataSource) {
+    public AttributeRelationshipPanel(NATBrowserPanel<SCTConcept> mainPanel) {
 
         super(mainPanel, 
-                dataSource, 
-                SCTNATDataRetrievers.getAttributeRelationshipRetriever(dataSource));
+                SCTNATDataRetrievers.getAttributeRelationshipRetriever(mainPanel));
         
         this.setBorder(BorderFactory.createTitledBorder(
                     BorderFactory.createLineBorder(Color.BLACK), 
@@ -68,7 +67,7 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
                 
                 FilterableRelationshipGroupEntry groupEntry = (FilterableRelationshipGroupEntry)entry;
                 
-                RelationshipGroupPanel relGroupPanel = new RelationshipGroupPanel(mainPanel, dataSource, groupEntry);
+                RelationshipGroupPanel relGroupPanel = new RelationshipGroupPanel(mainPanel, groupEntry);
                 
                 return  (FilterableNestedEntryPanel<FilterableNestedEntry<RelationshipGroup, AttributeRelationship>>)
                         (FilterableNestedEntryPanel<?>)relGroupPanel;
@@ -93,7 +92,7 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
             }
         });
         
-        this.attributeRelaitonshipList.setRightClickMenuGenerator(new AttributeRelationshipRightClickMenu(mainPanel, dataSource));
+        this.attributeRelaitonshipList.setRightClickMenuGenerator(new AttributeRelationshipRightClickMenu(mainPanel));
         
         
         this.chkHideRelationshipGroups = new JCheckBox("Hide Relationship Groups");
@@ -105,9 +104,9 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
         this.chkDisplayOnlyStatedRels.addActionListener( (ae) -> {
             
             if(chkDisplayOnlyStatedRels.isSelected()) {
-                super.setDataRetriever(SCTNATDataRetrievers.getStatedAttributRelationshipsRetriever(dataSource));
+                super.setDataRetriever(SCTNATDataRetrievers.getStatedAttributRelationshipsRetriever(mainPanel));
             } else {
-                super.setDataRetriever(SCTNATDataRetrievers.getAttributeRelationshipRetriever(dataSource));
+                super.setDataRetriever(SCTNATDataRetrievers.getAttributeRelationshipRetriever(mainPanel));
             }
             
         });
@@ -115,10 +114,23 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
         JPanel optionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         
         optionPanel.add(chkHideRelationshipGroups);
+        optionPanel.add(chkDisplayOnlyStatedRels);
         
-        if(dataSource.getRelease().supportsStatedRelationships()) {
-            optionPanel.add(chkDisplayOnlyStatedRels);
-        }
+        this.chkDisplayOnlyStatedRels.setEnabled(false);
+        
+        mainPanel.addDataSourceChangeListener(new DataSourceChangeListener<SCTConcept>() {
+            
+            @Override
+            public void dataSourceLoaded(ConceptBrowserDataSource<SCTConcept> dataSource) {
+                SCTConceptBrowserDataSource sctDataSource = (SCTConceptBrowserDataSource)dataSource;
+                chkDisplayOnlyStatedRels.setEnabled(sctDataSource.getRelease().supportsStatedRelationships());
+            }
+
+            @Override
+            public void dataSourceRemoved() {
+                
+            }
+        });
         
         this.attributeRelaitonshipList.addOptionPanelComponent(optionPanel);
         
@@ -134,6 +146,10 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
 
     @Override
     public void displayResults(ArrayList<AttributeRelationship> data) {
+        
+        if(!getMainPanel().getDataSource().isPresent()) {
+            return;
+        }
         
         ArrayList<RelationshipGroup> relGroups = new ArrayList<>();
         
@@ -172,7 +188,9 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
                     uniqueTargets.add(rel.getTarget());
                 });
                 
-                Hierarchy<SCTConcept> ancestorHierarchy = getDataSource().getOntology().getConceptHierarchy().getAncestorHierarchy(uniqueTargets);
+                Hierarchy<SCTConcept> ancestorHierarchy = 
+                        getMainPanel().getDataSource().get().getOntology().
+                                getConceptHierarchy().getAncestorHierarchy(uniqueTargets);
                 
                 Map<SCTConcept, Integer> longestPathDepths = ancestorHierarchy.getAllLongestPathDepths();
                 
@@ -225,7 +243,6 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
             relGroup.getAttributeRelationships().forEach( (rel) -> {
                 relEntries.add(new FilterableAttributeRelationshipEntry(
                         getMainPanel(), 
-                        (SCTConceptBrowserDataSource)getDataSource(), 
                         rel));
             });
             
