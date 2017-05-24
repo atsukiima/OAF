@@ -64,6 +64,34 @@ public class SCTNATLayout extends BasicNATAdjustableLayout<SCTConcept> {
         });
     }
     
+    @Override
+    public void setEnabled(boolean value) {
+        super.setEnabled(value);
+        
+        this.attributeRelList.setEnabled(value);
+        
+        boolean enableStatedRels = false;
+        
+        if (value) {
+            if (getMainPanel().getDataSource().isPresent()) {
+                SCTConceptBrowserDataSource sctDataSource = (SCTConceptBrowserDataSource) getMainPanel().getDataSource().get();
+                enableStatedRels = sctDataSource.getRelease().supportsStatedRelationships();
+            }
+        }
+        
+        this.setStatedRelsEnabled(enableStatedRels);
+    }
+    
+    @Override
+    public void reset() {
+        super.reset();
+        
+        this.attributeRelList.reset();
+        
+        statedParentsList.reset();
+        statedChildrenList.reset();
+    }
+    
     private void setStatedRelsEnabled(boolean value) {
         this.statedChildrenList.setActive(value);
         this.statedParentsList.setActive(value);

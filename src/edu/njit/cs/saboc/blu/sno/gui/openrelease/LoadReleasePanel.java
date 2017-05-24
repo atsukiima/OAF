@@ -168,8 +168,7 @@ public class LoadReleasePanel extends JPanel {
 
                 int answer = JOptionPane.showOptionDialog(
                         null,
-                        "The opened release will be unloaded and all windows will be closed."
-                        + "\nAre you sure you want to unload the current release?",
+                        "Are you sure you want to unload the current release?",
                         "Unload current release?",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE,
@@ -235,7 +234,9 @@ public class LoadReleasePanel extends JPanel {
             listener.localDataSourceUnloaded();
         });
         
-        frameManager.getMainFrame().closeFrames(frameManager.getMainFrame().getContentFrames());
+        if(frameManager != null) {
+            frameManager.getMainFrame().closeFrames(frameManager.getMainFrame().getContentFrames());
+        }
     }
     
     private boolean releaseHistoryAvailable() {
@@ -283,7 +284,10 @@ public class LoadReleasePanel extends JPanel {
 
             recentReleaseMenu.add(new JSeparator());
 
-            JMenuItem clearHistoryItem = new JMenuItem("<html><font size = '4' color = 'red'>Clear recently opened release history</font>");
+            JMenuItem clearHistoryItem = new JMenuItem(""
+                    + "<html><font size = '4' color = 'red'>"
+                    + "Clear recently opened release history</font>");
+            
             clearHistoryItem.addActionListener((ae) -> {
 
                 int answer = JOptionPane.showOptionDialog(

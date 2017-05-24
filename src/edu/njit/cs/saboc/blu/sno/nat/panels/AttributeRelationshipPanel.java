@@ -39,7 +39,7 @@ import javax.swing.JPanel;
  */
 public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayList<AttributeRelationship>> {
     
-    private final NestedFilterableList<RelationshipGroup, AttributeRelationship> attributeRelaitonshipList;
+    private final NestedFilterableList<RelationshipGroup, AttributeRelationship> attributeRelationshipList;
     
     private final JCheckBox chkHideRelationshipGroups;
     
@@ -55,7 +55,7 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
                     "Attribute Relationships")
             );
         
-        this.attributeRelaitonshipList = new NestedFilterableList<RelationshipGroup, AttributeRelationship>() {
+        this.attributeRelationshipList = new NestedFilterableList<RelationshipGroup, AttributeRelationship>() {
 
             @Override
             public FilterableNestedEntryPanel<FilterableNestedEntry<RelationshipGroup, AttributeRelationship>> getEntry(
@@ -74,7 +74,7 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
             }
         };
         
-        this.attributeRelaitonshipList.addEntrySelectionListener(new EntrySelectionListener<AttributeRelationship>() {
+        this.attributeRelationshipList.addEntrySelectionListener(new EntrySelectionListener<AttributeRelationship>() {
 
             @Override
             public void entryClicked(AttributeRelationship entry) {
@@ -92,8 +92,7 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
             }
         });
         
-        this.attributeRelaitonshipList.setRightClickMenuGenerator(new AttributeRelationshipRightClickMenu(mainPanel));
-        
+        this.attributeRelationshipList.setRightClickMenuGenerator(new AttributeRelationshipRightClickMenu(mainPanel));
         
         this.chkHideRelationshipGroups = new JCheckBox("Hide Relationship Groups");
         this.chkHideRelationshipGroups.addActionListener( (ae) -> {
@@ -132,16 +131,16 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
             }
         });
         
-        this.attributeRelaitonshipList.addOptionPanelComponent(optionPanel);
+        this.attributeRelationshipList.addOptionPanelComponent(optionPanel);
         
         this.setLayout(new BorderLayout());
         
-        this.add(attributeRelaitonshipList, BorderLayout.CENTER);
+        this.add(attributeRelationshipList, BorderLayout.CENTER);
     }
 
     @Override
     public void dataPending() {
-        attributeRelaitonshipList.clearContents();
+        attributeRelationshipList.clearContents();
     }
 
     @Override
@@ -249,11 +248,36 @@ public class AttributeRelationshipPanel extends ResultPanel<SCTConcept, ArrayLis
             relGroupEntries.add(new FilterableRelationshipGroupEntry(relGroup, relEntries));
         });
         
-        attributeRelaitonshipList.displayContents(relGroupEntries);
+        attributeRelationshipList.displayContents(relGroupEntries);
         
         this.setBorder(BorderFactory.createTitledBorder(
                     BorderFactory.createLineBorder(Color.BLACK), 
                     String.format("Attribute Relationships (%d)", data.size()))
             );
+    }
+
+    @Override
+    public void setEnabled(boolean value) {
+        super.setEnabled(value);
+        
+        this.attributeRelationshipList.setEnabled(value);
+        
+        this.chkHideRelationshipGroups.setEnabled(value);
+        
+        boolean enableStatedRels = false;
+        
+        if(value) {
+            if(getMainPanel().getDataSource().isPresent()) {
+                SCTConceptBrowserDataSource sctDataSource = (SCTConceptBrowserDataSource)getMainPanel().getDataSource().get();
+                enableStatedRels = sctDataSource.getRelease().supportsStatedRelationships();
+            }
+        }
+        
+        this.chkDisplayOnlyStatedRels.setEnabled(enableStatedRels);
+    }
+
+    @Override
+    public void reset() {
+        this.attributeRelationshipList.clearContents();
     }
 }
