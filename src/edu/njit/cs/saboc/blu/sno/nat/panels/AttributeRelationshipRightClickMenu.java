@@ -4,7 +4,6 @@ import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.InheritableProperty.Inherita
 import edu.njit.cs.saboc.blu.sno.abn.pareataxonomy.SCTInheritableProperty;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.AttributeRelationship;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
-import edu.njit.cs.saboc.blu.sno.nat.SCTConceptBrowserDataSource;
 import edu.njit.cs.saboc.nat.generic.NATBrowserPanel;
 import edu.njit.cs.saboc.nat.generic.errorreport.AuditSet;
 import edu.njit.cs.saboc.nat.generic.errorreport.error.semanticrel.SemanticRelationshipError;
@@ -35,6 +34,8 @@ public class AttributeRelationshipRightClickMenu extends AuditReportRightClickMe
 
     @Override
     public ArrayList<JComponent> buildRightClickMenuFor(AttributeRelationship item) {
+        
+        
         if (mainPanel.getAuditDatabase().getLoadedAuditSet().isPresent()) {
 
             AuditSet<SCTConcept> auditSet = mainPanel.getAuditDatabase().getLoadedAuditSet().get();
@@ -68,6 +69,7 @@ public class AttributeRelationshipRightClickMenu extends AuditReportRightClickMe
             removeRelBtn.addActionListener((ae) -> {
                 ErrorReportDialog.displayErroneousSemanticRelationshipDialog(
                         mainPanel,
+                        focusConcept,
                         new SCTInheritableProperty(item.getType(), InheritanceType.Introduced), 
                         item.getTarget());
             });
@@ -77,6 +79,7 @@ public class AttributeRelationshipRightClickMenu extends AuditReportRightClickMe
             changeTargetBtn.addActionListener((ae) -> {
                 ErrorReportDialog.displayReplaceTargetDialog(
                         mainPanel, 
+                        focusConcept,
                         new SCTInheritableProperty(item.getType(), InheritanceType.Introduced), 
                         item.getTarget());
             });
@@ -86,6 +89,7 @@ public class AttributeRelationshipRightClickMenu extends AuditReportRightClickMe
             replaceRelBtn.addActionListener((ae) -> {
                 ErrorReportDialog.displayReplaceSemanticRelationshipDialog(
                         mainPanel, 
+                        focusConcept,
                         new SCTInheritableProperty(item.getType(), InheritanceType.Introduced), 
                         item.getTarget());
             });
@@ -95,6 +99,7 @@ public class AttributeRelationshipRightClickMenu extends AuditReportRightClickMe
             otherErrorBtn.addActionListener((ae) -> {
                 ErrorReportDialog.displayOtherSemanticRelationshipErrorDialog(
                         mainPanel,
+                        focusConcept,
                         new SCTInheritableProperty(item.getType(), InheritanceType.Introduced),
                         item.getTarget());
             });
@@ -109,7 +114,7 @@ public class AttributeRelationshipRightClickMenu extends AuditReportRightClickMe
             JMenuItem reportMissingRel = new JMenuItem("Report missing attribute relationship");
             reportMissingRel.setFont(reportMissingRel.getFont().deriveFont(14.0f));
             reportMissingRel.addActionListener((ae) -> {
-                ErrorReportDialog.displayMissingSemanticRelationshipDialog(mainPanel);
+                ErrorReportDialog.displayMissingSemanticRelationshipDialog(mainPanel, focusConcept);
             });
             
             components.add(reportMissingRel);
@@ -140,7 +145,7 @@ public class AttributeRelationshipRightClickMenu extends AuditReportRightClickMe
             JMenuItem reportMissingRel = new JMenuItem("Report missing attribute relationship");
             reportMissingRel.setFont(reportMissingRel.getFont().deriveFont(14.0f));
             reportMissingRel.addActionListener((ae) -> {
-                ErrorReportDialog.displayMissingSemanticRelationshipDialog(mainPanel);
+                ErrorReportDialog.displayMissingSemanticRelationshipDialog(mainPanel, focusConcept);
             });
             
             ArrayList<JComponent> components = new ArrayList<>();
