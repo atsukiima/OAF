@@ -108,7 +108,8 @@ public class SCTAbNCreationPanel extends JPanel {
 
         String detailsString = "<html><div align='justify'>The OAF SNOMED CT "
                 + "concept browser allows you to browse individual concepts and their "
-                + "relationships. ";
+                + "relationships. This is a \"Hybrid Browser\" that shows text lines in a layout. "
+                + "This is the second generation of the NAT (Neighborhood Auditing Tool).";
 
         detailsPane.setText(detailsString);
 
