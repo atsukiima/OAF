@@ -22,6 +22,7 @@ public class SCTTargetGroupOptionsPanel extends NodeOptionsPanel<TargetGroup> {
         
         SCTOpenBrowserButton openBrowserButton = new SCTOpenBrowserButton(
                 config, 
+                config.getRelease(),
                 config.getUIConfiguration().getFrameManager());
         
         super.addOptionButton(openBrowserButton);

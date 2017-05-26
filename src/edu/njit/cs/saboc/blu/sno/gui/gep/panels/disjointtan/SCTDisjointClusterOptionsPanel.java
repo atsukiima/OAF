@@ -26,7 +26,10 @@ public class SCTDisjointClusterOptionsPanel extends NodeOptionsPanel {
 
     public SCTDisjointClusterOptionsPanel(SCTDisjointTANConfiguration config, boolean forAggregate) {
         
-        SCTOpenBrowserButton openBrowserButton = new SCTOpenBrowserButton(config, config.getUIConfiguration().getFrameManager());
+        SCTOpenBrowserButton openBrowserButton = new SCTOpenBrowserButton(
+                config, 
+                config.getRelease(),
+                config.getUIConfiguration().getFrameManager());
 
         super.addOptionButton(openBrowserButton);
         
@@ -53,7 +56,7 @@ public class SCTDisjointClusterOptionsPanel extends NodeOptionsPanel {
                 
         
         CreateTANFromSinglyRootedNodeButton tanBtn = new CreateTANFromSinglyRootedNodeButton(
-                new TANFactory(config.getAbstractionNetwork().getDerivation().getSourceOntology()),
+                new TANFactory(config.getRelease()),
                 config, 
                 new DisplayTANAction(config.getUIConfiguration().getAbNDisplayManager()));
         

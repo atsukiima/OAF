@@ -19,8 +19,7 @@ public class SCTDisjointPAreaTaxonomyListenerConfiguration extends DisjointPArea
     @Override
     public EntitySelectionListener<Concept> getGroupConceptListListener() {
         SCTDisjointPAreaTaxonomyConfiguration config = (SCTDisjointPAreaTaxonomyConfiguration)super.getConfiguration();
-        SCTRelease release = (SCTRelease)config.getAbstractionNetwork().getDerivation().getSourceOntology();
         
-        return new SCTDisplayNATListener(config.getUIConfiguration().getFrameManager(), release);
+        return new SCTDisplayNATListener(config.getUIConfiguration().getFrameManager(), config.getRelease());
     }
 }

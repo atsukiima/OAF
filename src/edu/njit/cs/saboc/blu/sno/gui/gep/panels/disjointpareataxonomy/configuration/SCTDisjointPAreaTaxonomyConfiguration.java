@@ -2,6 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configura
 
 import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.disjointabn.pareataxonomy.DisjointPAreaTaxonomyConfiguration;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 
 /**
  *
@@ -9,8 +10,19 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.disjointabn.pareataxono
  */
 public class SCTDisjointPAreaTaxonomyConfiguration extends DisjointPAreaTaxonomyConfiguration {
     
-    public SCTDisjointPAreaTaxonomyConfiguration(DisjointAbstractionNetwork disjointAbN) {
+    private final SCTRelease release;
+    
+    public SCTDisjointPAreaTaxonomyConfiguration(
+            SCTRelease release, 
+            DisjointAbstractionNetwork disjointAbN) {
+        
         super(disjointAbN);
+        
+        this.release = release;
+    }
+    
+    public SCTRelease getRelease() {
+        return release;
     }
     
     public void setUIConfiguration(SCTDisjointPAreaTaxonomyUIConfiguration uiConfiguation) {

@@ -7,6 +7,7 @@ import edu.njit.cs.saboc.blu.core.abn.tan.Cluster;
 import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.AbNDisplayManager;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 
 /**
  *
@@ -15,11 +16,12 @@ import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 public class SCTDisjointTANConfigurationFactory {
     
     public SCTDisjointTANConfiguration createConfiguration(
+            SCTRelease release,
             DisjointAbstractionNetwork<DisjointNode<Cluster>, ClusterTribalAbstractionNetwork<Cluster>, Cluster> disjointTAN, 
             AbNDisplayManager displayListener,
             SCTAbNFrameManager frameManager) {
         
-        SCTDisjointTANConfiguration disjointConfiguration = new SCTDisjointTANConfiguration(disjointTAN);
+        SCTDisjointTANConfiguration disjointConfiguration = new SCTDisjointTANConfiguration(release, disjointTAN);
         disjointConfiguration.setUIConfiguration(new SCTDisjointTANUIConfiguration(disjointConfiguration, displayListener, frameManager));
         disjointConfiguration.setTextConfiguration(new SCTDisjointTANTextConfiguration(disjointTAN));
         

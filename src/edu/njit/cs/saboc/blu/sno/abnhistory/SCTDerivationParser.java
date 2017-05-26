@@ -135,7 +135,6 @@ public class SCTDerivationParser extends AbNDerivationParser {
                 targetHierarchy);
 
         return new TargetAbNDerivation(
-                release,
                 factory,
                 sourceHierarchyRoot,
                 property.iterator().next(),

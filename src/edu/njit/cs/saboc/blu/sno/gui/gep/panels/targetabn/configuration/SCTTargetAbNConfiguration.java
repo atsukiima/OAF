@@ -2,6 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.targetabn.configuration;
 
 import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.targetbased.configuration.TargetAbNConfiguration;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 
 /**
  *
@@ -9,8 +10,19 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.targetbased.configurati
  */
 public class SCTTargetAbNConfiguration extends TargetAbNConfiguration {
 
-    public SCTTargetAbNConfiguration(TargetAbstractionNetwork targetAbN) {
+    private final SCTRelease release;
+    
+    public SCTTargetAbNConfiguration(
+            SCTRelease release, 
+            TargetAbstractionNetwork targetAbN) {
+        
         super(targetAbN);
+        
+        this.release = release;
+    }
+    
+    public SCTRelease getRelease() {
+        return release;
     }
   
     public void setUIConfiguration(SCTTargetAbNUIConfiguration config) {

@@ -4,7 +4,6 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.disjointabn.tan.Disjoin
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.listeners.EntitySelectionListener;
 import edu.njit.cs.saboc.blu.core.ontology.Concept;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.listeners.SCTDisplayNATListener;
-import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 
 /**
  *
@@ -18,8 +17,9 @@ public class SCTDisjointTANListenerConfiguration extends DisjointTANListenerConf
     @Override
     public EntitySelectionListener<Concept> getGroupConceptListListener() {
         SCTDisjointTANConfiguration config = (SCTDisjointTANConfiguration)super.getConfiguration();
-        SCTRelease release = (SCTRelease)config.getAbstractionNetwork().getDerivation().getSourceOntology();
         
-        return new SCTDisplayNATListener(config.getUIConfiguration().getFrameManager(), release);
+        return new SCTDisplayNATListener(
+                config.getUIConfiguration().getFrameManager(), 
+                config.getRelease());
     }
 }

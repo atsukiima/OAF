@@ -40,7 +40,10 @@ public class SCTPAreaOptionsPanel extends NodeOptionsPanel {
 
     public SCTPAreaOptionsPanel(SCTPAreaTaxonomyConfiguration config, boolean aggregated) {
         
-        SCTOpenBrowserButton openBrowserButton = new SCTOpenBrowserButton(config, config.getUIConfiguration().getFrameManager());
+        SCTOpenBrowserButton openBrowserButton = new SCTOpenBrowserButton(
+                config, 
+                config.getRelease(),
+                config.getUIConfiguration().getFrameManager());
         
         super.addOptionButton(openBrowserButton);
 
@@ -73,14 +76,14 @@ public class SCTPAreaOptionsPanel extends NodeOptionsPanel {
         
         
         CreateTANFromSinglyRootedNodeButton tanBtn = new CreateTANFromSinglyRootedNodeButton(
-                new TANFactory(config.getPAreaTaxonomy().getDerivation().getSourceOntology()),
+                new TANFactory(config.getRelease()),
                 config, 
                 new DisplayTANAction(config.getUIConfiguration().getAbNDisplayManager()));
         
         super.addOptionButton(tanBtn);
         
         
-        SCTRelease release = (SCTRelease)config.getPAreaTaxonomy().getDerivation().getSourceOntology();
+        SCTRelease release = config.getRelease();
         
         if (release.supportsStatedRelationships()) {
             CreateTargetAbNFromPAreaButton targetAbNBtn = new CreateTargetAbNFromPAreaButton() {
@@ -110,7 +113,7 @@ public class SCTPAreaOptionsPanel extends NodeOptionsPanel {
                         });
                     });
 
-                    SCTReleaseWithStated release = (SCTReleaseWithStated) sourceTaxonomy.getDerivation().getSourceOntology();
+                    SCTReleaseWithStated release = (SCTReleaseWithStated) config.getRelease();
 
                     Hierarchy<SCTConcept> targetHierarchy = release.getConceptHierarchy().getAncestorHierarchy(targets);
 

@@ -17,18 +17,23 @@ public class SCTOpenBrowserButton<T extends SinglyRootedNode> extends OpenBrowse
     
     private final AbNConfiguration config;
     private final SCTAbNFrameManager frameManager;
+    private final SCTRelease release;
     
-    public SCTOpenBrowserButton(AbNConfiguration config, SCTAbNFrameManager frameManager) {
+    public SCTOpenBrowserButton(
+            AbNConfiguration config, 
+            SCTRelease release,
+            SCTAbNFrameManager frameManager) {
+        
         super(config.getTextConfiguration().getNodeTypeName(false));
         
         this.config = config;
+        this.release = release;
         this.frameManager = frameManager;
     }
 
     @Override
     public void displayBrowserWindowAction() {
-        SCTRelease release = (SCTRelease)config.getAbstractionNetwork().getDerivation().getSourceOntology();
-        
+
         SCTDisplayNATListener displayNATListener = new SCTDisplayNATListener(
                 frameManager, 
                 release);

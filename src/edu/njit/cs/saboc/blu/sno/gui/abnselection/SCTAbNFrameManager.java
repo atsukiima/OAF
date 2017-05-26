@@ -16,7 +16,6 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.AbNDisplayManager;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.FrameCreationAction;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.MultiAbNGraphFrame;
 import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFStateFileManager;
-import edu.njit.cs.saboc.blu.sno.abnhistory.SCTDerivationParser;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.SCTDiffPAreaTaxonomyGraphFrame;
 import edu.njit.cs.saboc.blu.sno.gui.graphframe.initializers.SCTMultiAbNGraphFrameInitializers;
 import edu.njit.cs.saboc.blu.sno.localdatasource.concept.SCTConcept;
@@ -40,6 +39,8 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
     
     private final AbNWarningManager warningManager;
     
+    private Optional<SCTRelease> optRelease = Optional.empty();
+    
     public SCTAbNFrameManager(
             OAFMainFrame mainFrame, 
             FrameCreationAction fca, 
@@ -50,8 +51,15 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
 
         this.stateFileManager = stateFileManager;
         this.mainFrame = mainFrame;
-        
         this.warningManager = warningManager;
+    }
+    
+    public void setCurrentRelease(SCTRelease release) {
+        this.optRelease = Optional.of(release);
+    }
+    
+    public void clearCurrentRelease() {
+        this.optRelease = Optional.empty();
     }
     
     public OAFMainFrame getMainFrame() {
@@ -61,12 +69,20 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
     @Override
     public void displayPAreaTaxonomy(PAreaTaxonomy taxonomy) {
         
-        SCTRelease release = (SCTRelease)taxonomy.getDerivation().getSourceOntology();
+        if(!optRelease.isPresent()) {
+            return;
+        }
         
-        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(
-                mainFrame, 
-                new SCTMultiAbNGraphFrameInitializers(release, stateFileManager, this, warningManager), 
-                new SCTDerivationParser(release));
+        SCTRelease release = optRelease.get();
+        
+        SCTMultiAbNGraphFrameInitializers initializers = new SCTMultiAbNGraphFrameInitializers(
+                release, 
+                stateFileManager, 
+                this, 
+                warningManager);
+        
+        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame);
+        graphFrame.setInitializers(initializers);
 
         graphFrame.displayPAreaTaxonomy(taxonomy);
 
@@ -77,13 +93,21 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
     @Override
     public void displayTribalAbstractionNetwork(ClusterTribalAbstractionNetwork tan) {
         
-        SCTRelease release = (SCTRelease)tan.getDerivation().getSourceOntology();
+        if(!optRelease.isPresent()) {
+            return;
+        }
         
-        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(
-                mainFrame, 
-                new SCTMultiAbNGraphFrameInitializers(release, stateFileManager, this, warningManager), 
-                new SCTDerivationParser(release));
+        SCTRelease release = optRelease.get();
         
+        SCTMultiAbNGraphFrameInitializers initializers = new SCTMultiAbNGraphFrameInitializers(
+                release, 
+                stateFileManager, 
+                this, 
+                warningManager);
+        
+        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame);
+        graphFrame.setInitializers(initializers);
+
         graphFrame.displayTAN(tan);
 
         this.getFrameCreationAction().displayFrame(graphFrame);
@@ -93,12 +117,20 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
     public void displayDisjointPAreaTaxonomy(
             DisjointAbstractionNetwork<DisjointNode<PArea>, PAreaTaxonomy<PArea>, PArea> disjointTaxonomy) {
         
-        SCTRelease release = (SCTRelease)disjointTaxonomy.getDerivation().getSourceOntology();
-
-        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(
-                mainFrame, 
-                new SCTMultiAbNGraphFrameInitializers(release, stateFileManager, this, warningManager), 
-                new SCTDerivationParser(release));
+        if(!optRelease.isPresent()) {
+            return;
+        }
+        
+        SCTRelease release = optRelease.get();
+        
+        SCTMultiAbNGraphFrameInitializers initializers = new SCTMultiAbNGraphFrameInitializers(
+                release, 
+                stateFileManager, 
+                this, 
+                warningManager);
+        
+        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame);
+        graphFrame.setInitializers(initializers);
         
         graphFrame.displayDisjointPAreaTaxonomy(
                 (DisjointAbstractionNetwork<DisjointPArea, PAreaTaxonomy<PArea>, PArea>)(DisjointAbstractionNetwork<?, ?, ?>)disjointTaxonomy);
@@ -109,31 +141,45 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
     @Override
     public void displayDisjointTribalAbstractionNetwork(
             DisjointAbstractionNetwork<DisjointNode<Cluster>, ClusterTribalAbstractionNetwork<Cluster>, Cluster> disjointTAN) {
-        
-        SCTRelease release = (SCTRelease)disjointTAN.getDerivation().getSourceOntology();
-        
-        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(
-                mainFrame, 
-                new SCTMultiAbNGraphFrameInitializers(release, stateFileManager, this, warningManager), 
-                new SCTDerivationParser((SCTRelease)disjointTAN.getDerivation().getSourceOntology()));
-        
+
+        if (!optRelease.isPresent()) {
+            return;
+        }
+
+        SCTRelease release = optRelease.get();
+
+        SCTMultiAbNGraphFrameInitializers initializers = new SCTMultiAbNGraphFrameInitializers(
+                release,
+                stateFileManager,
+                this,
+                warningManager);
+
+        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame);
+        graphFrame.setInitializers(initializers);
+
         graphFrame.displayDisjointTAN(
-                (DisjointAbstractionNetwork<DisjointCluster, ClusterTribalAbstractionNetwork<Cluster>, Cluster>)(DisjointAbstractionNetwork<?, ?, ?>)
-                        disjointTAN);
+                (DisjointAbstractionNetwork<DisjointCluster, ClusterTribalAbstractionNetwork<Cluster>, Cluster>) (DisjointAbstractionNetwork<?, ?, ?>) disjointTAN);
 
         this.getFrameCreationAction().displayFrame(graphFrame);
     }
 
     @Override
     public void displayTargetAbstractionNetwork(TargetAbstractionNetwork targetAbN) {
-        
-        SCTRelease release = (SCTRelease)targetAbN.getDerivation().getSourceOntology();
-        
-        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(
-                mainFrame, 
-                new SCTMultiAbNGraphFrameInitializers(release, stateFileManager, this, warningManager), 
-                new SCTDerivationParser(release));
-        
+        if (!optRelease.isPresent()) {
+            return;
+        }
+
+        SCTRelease release = optRelease.get();
+
+        SCTMultiAbNGraphFrameInitializers initializers = new SCTMultiAbNGraphFrameInitializers(
+                release,
+                stateFileManager,
+                this,
+                warningManager);
+
+        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame);
+        graphFrame.setInitializers(initializers);
+
         graphFrame.displayTargetAbstractionNetwork(targetAbN);
 
         this.getFrameCreationAction().displayFrame(graphFrame);
@@ -141,13 +187,21 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
 
     @Override
     public void displayAreaTaxonomy(PAreaTaxonomy taxonomy) {
-        
-        SCTRelease release = (SCTRelease)taxonomy.getDerivation().getSourceOntology();
-        
-        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(
-                mainFrame, 
-                new SCTMultiAbNGraphFrameInitializers(release, stateFileManager, this, warningManager),
-                new SCTDerivationParser(release));
+
+        if (!optRelease.isPresent()) {
+            return;
+        }
+
+        SCTRelease release = optRelease.get();
+
+        SCTMultiAbNGraphFrameInitializers initializers = new SCTMultiAbNGraphFrameInitializers(
+                release,
+                stateFileManager,
+                this,
+                warningManager);
+
+        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame);
+        graphFrame.setInitializers(initializers);
         
         graphFrame.displayAreaTaxonomy(taxonomy);
 
@@ -156,14 +210,22 @@ public class SCTAbNFrameManager extends AbNDisplayManager  {
 
     @Override
     public void displayBandTribalAbstractionNetwork(ClusterTribalAbstractionNetwork tan) {
-        
-        SCTRelease release = (SCTRelease)tan.getDerivation().getSourceOntology();
-        
-        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(
-                mainFrame, 
-                new SCTMultiAbNGraphFrameInitializers(release, stateFileManager, this, warningManager), 
-                new SCTDerivationParser(release));
-        
+
+        if (!optRelease.isPresent()) {
+            return;
+        }
+
+        SCTRelease release = optRelease.get();
+
+        SCTMultiAbNGraphFrameInitializers initializers = new SCTMultiAbNGraphFrameInitializers(
+                release,
+                stateFileManager,
+                this,
+                warningManager);
+
+        MultiAbNGraphFrame graphFrame = new MultiAbNGraphFrame(mainFrame);
+        graphFrame.setInitializers(initializers);
+
         graphFrame.displayBandTAN(tan);
 
         this.getFrameCreationAction().displayFrame(graphFrame);

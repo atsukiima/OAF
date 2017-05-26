@@ -20,7 +20,7 @@ public class SCTPAreaTaxonomyListenerConfiguration extends PAreaTaxonomyListener
     @Override
     public EntitySelectionListener<Concept> getGroupConceptListListener() {
         SCTPAreaTaxonomyConfiguration config = (SCTPAreaTaxonomyConfiguration)super.getConfiguration();
-        SCTRelease release = (SCTRelease)config.getAbstractionNetwork().getDerivation().getSourceOntology();
+        SCTRelease release = config.getRelease();
         
         return new SCTDisplayNATListener(config.getUIConfiguration().getFrameManager(), release);
     }

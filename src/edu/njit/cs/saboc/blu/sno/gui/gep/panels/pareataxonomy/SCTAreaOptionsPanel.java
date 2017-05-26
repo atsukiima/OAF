@@ -35,7 +35,7 @@ public class SCTAreaOptionsPanel extends NodeOptionsPanel {
         super.addOptionButton(createDisjointSubjectSubtaxonomyBtn);
 
         CreateTANFromPartitionedNodeButton tanBtn = new CreateTANFromPartitionedNodeButton(
-                new TANFactory(config.getPAreaTaxonomy().getDerivation().getSourceOntology()),
+                new TANFactory(config.getRelease()),
                 config,
                 new DisplayTANAction(config.getUIConfiguration().getAbNDisplayManager()));
         

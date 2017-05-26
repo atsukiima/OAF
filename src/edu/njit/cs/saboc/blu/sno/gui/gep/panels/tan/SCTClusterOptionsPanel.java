@@ -24,7 +24,10 @@ public class SCTClusterOptionsPanel extends NodeOptionsPanel {
 
     public SCTClusterOptionsPanel(SCTTANConfiguration config, boolean forAggregate) {
         
-        SCTOpenBrowserButton openBrowserButton = new SCTOpenBrowserButton(config, config.getUIConfiguration().getFrameManager());
+        SCTOpenBrowserButton openBrowserButton = new SCTOpenBrowserButton(
+                config, 
+                config.getRelease(),
+                config.getUIConfiguration().getFrameManager());
 
         super.addOptionButton(openBrowserButton);
 

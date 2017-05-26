@@ -3,6 +3,7 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration;
 
 import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.configuration.TANConfiguration;
+import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
 
 /**
  *
@@ -10,8 +11,16 @@ import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.configuration.TANCo
  */
 public class SCTTANConfiguration extends TANConfiguration {
     
-    public SCTTANConfiguration(ClusterTribalAbstractionNetwork tan) {
+    private final SCTRelease release;
+    
+    public SCTTANConfiguration(SCTRelease release, ClusterTribalAbstractionNetwork tan) {
         super(tan);
+        
+        this.release = release;
+    }
+    
+    public SCTRelease getRelease() {
+        return release;
     }
 
     public void setTextConfiguration(SCTTANTextConfiguration textConfiguration) {

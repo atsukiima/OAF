@@ -30,6 +30,7 @@ public class SCTDisjointPAreaTaxonomyOptionsPanel extends AbNOptionsPanel<Disjoi
         PAreaTaxonomy taxonomy = (PAreaTaxonomy)config.getAbstractionNetwork().getParentAbstractionNetwork();
                 
         SCTPAreaTaxonomyConfiguration parentConfig = new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(
+                                config.getRelease(),
                                 taxonomy, 
                                 config.getUIConfiguration().getAbNDisplayManager(), 
                                 config.getUIConfiguration().getFrameManager(),

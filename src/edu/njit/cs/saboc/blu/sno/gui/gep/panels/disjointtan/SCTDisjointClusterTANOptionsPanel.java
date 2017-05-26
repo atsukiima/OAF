@@ -29,6 +29,7 @@ public class SCTDisjointClusterTANOptionsPanel extends AbNOptionsPanel<DisjointA
         ClusterTribalAbstractionNetwork tan = (ClusterTribalAbstractionNetwork)config.getAbstractionNetwork().getParentAbstractionNetwork();
                 
         SCTTANConfiguration parentConfig = new SCTTANConfigurationFactory().createConfiguration(
+                                config.getRelease(),
                                 tan, 
                                 config.getUIConfiguration().getAbNDisplayManager(), 
                                 config.getUIConfiguration().getFrameManager(),

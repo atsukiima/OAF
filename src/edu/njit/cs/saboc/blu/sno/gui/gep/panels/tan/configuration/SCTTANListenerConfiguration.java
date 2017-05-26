@@ -19,9 +19,11 @@ public class SCTTANListenerConfiguration extends TANListenerConfiguration {
     
     @Override
     public EntitySelectionListener<Concept> getGroupConceptListListener() {
+        
         SCTTANConfiguration config = (SCTTANConfiguration)super.getConfiguration();
-        SCTRelease release = (SCTRelease)config.getAbstractionNetwork().getDerivation().getSourceOntology();
+        SCTRelease release = (SCTRelease)config.getRelease();
         
         return new SCTDisplayNATListener(config.getUIConfiguration().getFrameManager(), release);
+        
     }
 }

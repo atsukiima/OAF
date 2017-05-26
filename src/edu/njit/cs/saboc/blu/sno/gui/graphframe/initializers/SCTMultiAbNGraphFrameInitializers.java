@@ -2,6 +2,7 @@ package edu.njit.cs.saboc.blu.sno.gui.graphframe.initializers;
 
 import edu.njit.cs.saboc.blu.core.abn.disjoint.DisjointAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.abn.pareataxonomy.PAreaTaxonomy;
+import edu.njit.cs.saboc.blu.core.abn.provenance.AbNDerivationParser;
 import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.gep.initializer.AbNExplorationPanelGUIInitializer;
@@ -24,9 +25,11 @@ import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.initializers.DisjointA
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.initializers.PAreaTaxonomyInitializer;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.initializers.TANInitializer;
 import edu.njit.cs.saboc.blu.core.gui.graphframe.multiabn.initializers.TargetAbNInitializer;
+import edu.njit.cs.saboc.blu.core.ontology.Ontology;
 import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFRecentlyOpenedFileManager;
 import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFRecentlyOpenedFileManager.RecentlyOpenedFileException;
 import edu.njit.cs.saboc.blu.core.utils.toolstate.OAFStateFileManager;
+import edu.njit.cs.saboc.blu.sno.abnhistory.SCTDerivationParser;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNFrameManager;
 import edu.njit.cs.saboc.blu.sno.gui.abnselection.SCTAbNWizardPanel;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.disjointpareataxonomy.configuration.SCTDisjointPAreaTaxonomyConfigurationFactory;
@@ -83,15 +86,15 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
                 TaskBarPanel panel = super.getTaskBar(graphFrame, config); 
 
                 panel.addToggleableButtonToMenu(
-                        createDerivationSelectionButton(graphFrame, 
-                                (SCTRelease)config.getPAreaTaxonomy().getDerivation().getSourceOntology()));
+                        createDerivationSelectionButton(graphFrame, release));
 
                 return panel;
             }
 
             @Override
             public AbNConfiguration getConfiguration(PAreaTaxonomy abn, AbNDisplayManager displayManager) {
-                return new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(abn, displayManager, frameManager, false);
+                return new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(
+                        release, abn, displayManager, frameManager, false);
             }
         };
     }
@@ -105,15 +108,15 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
                 TaskBarPanel panel = super.getTaskBar(graphFrame, config);
                 
                 panel.addToggleableButtonToMenu(
-                        createDerivationSelectionButton(graphFrame, 
-                                (SCTRelease)config.getPAreaTaxonomy().getDerivation().getSourceOntology()));
+                        createDerivationSelectionButton(graphFrame, release));
 
                 return panel;
             }
             
             @Override
             public AbNConfiguration getConfiguration(PAreaTaxonomy abn, AbNDisplayManager displayManager) {
-                return new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(abn, displayManager, frameManager, true);
+                return new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(
+                        release, abn, displayManager, frameManager, true);
             }
         };
     }
@@ -128,15 +131,15 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
                 TaskBarPanel panel = super.getTaskBar(graphFrame, config);
                 
                 panel.addToggleableButtonToMenu(
-                        createDerivationSelectionButton(graphFrame, 
-                                (SCTRelease)config.getAbstractionNetwork().getDerivation().getSourceOntology()));
+                        createDerivationSelectionButton(graphFrame, release));
 
                 return panel;
             }
 
             @Override
             public AbNConfiguration getConfiguration(ClusterTribalAbstractionNetwork abn, AbNDisplayManager displayManager) {
-                return new SCTTANConfigurationFactory().createConfiguration(abn, displayManager, frameManager, false);
+                return new SCTTANConfigurationFactory().createConfiguration(
+                        release, abn, displayManager, frameManager, false);
             }
         };
     }
@@ -152,15 +155,15 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
                 TaskBarPanel panel = super.getTaskBar(graphFrame, config);
 
                 panel.addToggleableButtonToMenu(
-                        createDerivationSelectionButton(graphFrame,
-                                (SCTRelease) config.getAbstractionNetwork().getDerivation().getSourceOntology()));
+                        createDerivationSelectionButton(graphFrame, release));
 
                 return panel;
             }
 
             @Override
             public AbNConfiguration getConfiguration(ClusterTribalAbstractionNetwork abn, AbNDisplayManager displayManager) {
-                return new SCTTANConfigurationFactory().createConfiguration(abn, displayManager, frameManager, true);
+                return new SCTTANConfigurationFactory().createConfiguration(
+                        release, abn, displayManager, frameManager, true);
             }
         };
     }
@@ -175,15 +178,15 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
                 TaskBarPanel panel = super.getTaskBar(graphFrame, config);
 
                 panel.addToggleableButtonToMenu(
-                        createDerivationSelectionButton(graphFrame,
-                                (SCTRelease) config.getAbstractionNetwork().getDerivation().getSourceOntology()));
+                        createDerivationSelectionButton(graphFrame, release));
 
                 return panel;
             }
 
             @Override
             public AbNConfiguration getConfiguration(TargetAbstractionNetwork abn, AbNDisplayManager displayManager) {
-                return new SCTTargetAbNConfigurationFactory().createConfiguration(abn, displayManager, frameManager);
+                return new SCTTargetAbNConfigurationFactory().createConfiguration(
+                        release, abn, displayManager, frameManager);
             }
         };
     }
@@ -198,15 +201,15 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
                 TaskBarPanel panel = super.getTaskBar(graphFrame, config);
 
                 panel.addToggleableButtonToMenu(
-                        createDerivationSelectionButton(graphFrame,
-                                (SCTRelease) config.getAbstractionNetwork().getDerivation().getSourceOntology()));
+                        createDerivationSelectionButton(graphFrame, release));
 
                 return panel;
             }
             
             @Override
             public AbNConfiguration getConfiguration(DisjointAbstractionNetwork abn, AbNDisplayManager displayManager) {
-                return new SCTDisjointPAreaTaxonomyConfigurationFactory().createConfiguration(abn, displayManager, frameManager);
+                return new SCTDisjointPAreaTaxonomyConfigurationFactory().createConfiguration(
+                        release, abn, displayManager, frameManager);
             }
 
             @Override
@@ -217,6 +220,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
                 return new DisjointAbNExplorationPanelInitializer(
                         config,
                         new SCTPAreaTaxonomyConfigurationFactory().createConfiguration(
+                                release,
                                 taxonomy, 
                                 config.getUIConfiguration().getAbNDisplayManager(), 
                                 frameManager,
@@ -233,6 +237,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
 
     @Override
     public GraphFrameInitializer<DisjointAbstractionNetwork, DisjointAbNConfiguration> getDisjointTANInitializer() {
+        
         return new DisjointAbNInitializer() {
             
             @Override
@@ -240,15 +245,15 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
                 TaskBarPanel panel = super.getTaskBar(graphFrame, config);
 
                 panel.addToggleableButtonToMenu(
-                        createDerivationSelectionButton(graphFrame,
-                                (SCTRelease) config.getAbstractionNetwork().getDerivation().getSourceOntology()));
+                        createDerivationSelectionButton(graphFrame, release));
 
                 return panel;
             }
 
             @Override
             public AbNConfiguration getConfiguration(DisjointAbstractionNetwork abn, AbNDisplayManager displayManager) {
-                return new SCTDisjointTANConfigurationFactory().createConfiguration(abn, displayManager, frameManager);
+                return new SCTDisjointTANConfigurationFactory().createConfiguration(
+                        release, abn, displayManager, frameManager);
             }
 
             @Override
@@ -259,6 +264,7 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
                 return new DisjointAbNExplorationPanelInitializer(
                         config,
                         new SCTTANConfigurationFactory().createConfiguration(
+                                release,
                                 tan, 
                                 config.getUIConfiguration().getAbNDisplayManager(), 
                                 frameManager,
@@ -285,5 +291,15 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
         }
         
         return null;
+    }
+
+    @Override
+    public Ontology getSourceOntology() {
+        return release;
+    }
+
+    @Override
+    public AbNDerivationParser getAbNParser() {
+        return new SCTDerivationParser(release);
     }
 }

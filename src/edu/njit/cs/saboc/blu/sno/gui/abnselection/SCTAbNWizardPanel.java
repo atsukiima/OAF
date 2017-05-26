@@ -37,8 +37,6 @@ public class SCTAbNWizardPanel extends JPanel {
     
     private final JTabbedPane abnSelectionTabs;
     
-    
-    
     private final SCTPAreaTaxonomyWizardPanel pareaTaxonomyDerivationWizardPanel;
     
     private final SCTDiffPAreaTaxonomyWizardPanel diffPAreaTaxonomyDerivationWizardPanel;
@@ -47,10 +45,12 @@ public class SCTAbNWizardPanel extends JPanel {
     
     private final TargetAbNDerivationWizardPanel targetAbNDerivationWizardPanel;
     
-    
-    
+    private final SCTAbNFrameManager frameManager;
+
     public SCTAbNWizardPanel(SCTAbNFrameManager frameManager, boolean includeDiff) {
         this.setLayout(new BorderLayout());
+        
+        this.frameManager = frameManager;
         
         this.abnSelectionTabs = new JTabbedPane();
         this.abnSelectionTabs.setBorder(
@@ -88,7 +88,7 @@ public class SCTAbNWizardPanel extends JPanel {
         
         
         SCTTANConfigurationFactory tanConfigFactory = new SCTTANConfigurationFactory();
-        SCTTANConfiguration dummyTANConfig = tanConfigFactory.createConfiguration(null, frameManager, null, false);        
+        SCTTANConfiguration dummyTANConfig = tanConfigFactory.createConfiguration(null, null, frameManager, null, false);        
         
         tanDerivationWizardPanel = new SCTTANDerivationWizardPanel(dummyTANConfig, (patriarchs) -> {
             
@@ -107,7 +107,7 @@ public class SCTAbNWizardPanel extends JPanel {
         tanPanel.add(tanDerivationWizardPanel, BorderLayout.CENTER);
         
         SCTTargetAbNConfigurationFactory targetConfigFactory = new SCTTargetAbNConfigurationFactory();
-        SCTTargetAbNConfiguration dummyTargetConfig = targetConfigFactory.createConfiguration(null, frameManager, null);       
+        SCTTargetAbNConfiguration dummyTargetConfig = targetConfigFactory.createConfiguration(null, null, frameManager, null);       
         
         targetAbNDerivationWizardPanel = new TargetAbNDerivationWizardPanel(dummyTargetConfig,
                 (sourceHierarchy, type, targetHierarchy) -> {
@@ -162,6 +162,8 @@ public class SCTAbNWizardPanel extends JPanel {
         
         this.optCurrentRelease = Optional.of(release);
         
+        this.frameManager.setCurrentRelease(release);
+        
         pareaTaxonomyDerivationWizardPanel.initialize(release);
 
         diffPAreaTaxonomyDerivationWizardPanel.initialize(release);
@@ -179,6 +181,7 @@ public class SCTAbNWizardPanel extends JPanel {
     
     public void clear() {
         this.optCurrentRelease = Optional.empty();
+        this.frameManager.clearCurrentRelease();
 
         pareaTaxonomyDerivationWizardPanel.clearContents();
         tanDerivationWizardPanel.clearContents();
