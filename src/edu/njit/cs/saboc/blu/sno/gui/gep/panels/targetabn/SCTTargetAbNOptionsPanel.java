@@ -2,10 +2,10 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.targetabn;
 
 import edu.njit.cs.saboc.blu.core.abn.targetbased.TargetAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbNOptionsPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.AbNHelpButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.ExportAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.PopoutAbNDetailsButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.SavePNGButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.targetabn.buttons.TargetAbNHelpButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.targetabn.configuration.SCTTargetAbNConfiguration;
 
 /**
@@ -16,7 +16,7 @@ public class SCTTargetAbNOptionsPanel extends AbNOptionsPanel<TargetAbstractionN
     
     public SCTTargetAbNOptionsPanel(SCTTargetAbNConfiguration config) {
         
-        AbNHelpButton helpBtn = new AbNHelpButton(config);
+        TargetAbNHelpButton helpBtn = new TargetAbNHelpButton(config);
         ExportAbNButton exportBtn = new ExportAbNButton("Export Target Abstraction Network", config);
         SavePNGButton pngBtn = new SavePNGButton(config);
         PopoutAbNDetailsButton popoutBtn = new PopoutAbNDetailsButton(config);
