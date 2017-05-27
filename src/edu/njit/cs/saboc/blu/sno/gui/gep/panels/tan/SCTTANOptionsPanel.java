@@ -2,13 +2,13 @@ package edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan;
 
 import edu.njit.cs.saboc.blu.core.abn.tan.ClusterTribalAbstractionNetwork;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.AbNOptionsPanel;
-import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.AbNHelpButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.AbNReportsBtn;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.ExportAbNButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.HighlightOverlappingButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.PopoutAbNDetailsButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.SavePNGButton;
 import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.optionbuttons.abn.ShowSourceHierarchyButton;
+import edu.njit.cs.saboc.blu.core.gui.gep.panels.details.tan.buttons.TANHelpButton;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfiguration;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.reports.SCTTANReportDialog;
 
@@ -20,7 +20,7 @@ public class SCTTANOptionsPanel extends AbNOptionsPanel<ClusterTribalAbstraction
     
     public SCTTANOptionsPanel(SCTTANConfiguration config) {
         
-        AbNHelpButton helpBtn = new AbNHelpButton(config);
+        TANHelpButton helpBtn = new TANHelpButton(config);
         ExportAbNButton exportBtn = new ExportAbNButton("Export Tribal Abstraction Network", config);
         SavePNGButton pngBtn = new SavePNGButton(config);
         PopoutAbNDetailsButton popoutBtn = new PopoutAbNDetailsButton(config);
