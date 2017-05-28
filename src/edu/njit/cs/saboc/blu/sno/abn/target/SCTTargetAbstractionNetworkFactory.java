@@ -29,8 +29,6 @@ public class SCTTargetAbstractionNetworkFactory extends TargetAbstractionNetwork
             SCTInheritableProperty propertyType,
             Hierarchy<SCTConcept> targetHierarchy) {
         
-        super(release);
-        
         this.release = release;
     }
     
