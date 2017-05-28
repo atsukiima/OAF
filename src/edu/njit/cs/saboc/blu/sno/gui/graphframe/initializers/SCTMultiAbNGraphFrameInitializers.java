@@ -38,6 +38,7 @@ import edu.njit.cs.saboc.blu.sno.gui.gep.panels.pareataxonomy.configuration.SCTP
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.tan.configuration.SCTTANConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.gui.gep.panels.targetabn.configuration.SCTTargetAbNConfigurationFactory;
 import edu.njit.cs.saboc.blu.sno.sctdatasource.SCTRelease;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -70,9 +71,12 @@ public class SCTMultiAbNGraphFrameInitializers implements AbNGraphFrameInitializ
             SCTRelease release) {
         
         SCTAbNWizardPanel wizardPanel = new SCTAbNWizardPanel(new SCTFrameManagerAdapter(graphFrame), false);
-        wizardPanel.setCurrentRelease(release);
-        wizardPanel.setEnabled(true);
         
+        SwingUtilities.invokeLater(() -> {
+            wizardPanel.setCurrentRelease(release);
+            wizardPanel.setEnabled(true);
+        });
+
         return new DerivationSelectionButton(graphFrame, wizardPanel);
     }
     
