@@ -89,7 +89,8 @@ public class SCTAbNCreationPanel extends JPanel {
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-        openBrowserBtn = new JButton("<html><div align='center'>Open<br>Concept<br>Browser");
+        openBrowserBtn = new JButton("<html><div align='center'>Open<br>Concept<br>Browser"
+                + "<br><b>(NAT)</b>");
 
         openBrowserBtn.addActionListener( (ae) -> {
             openConceptBrowser();
@@ -109,7 +110,7 @@ public class SCTAbNCreationPanel extends JPanel {
         String detailsString = "<html><div align='justify'>The OAF SNOMED CT "
                 + "concept browser allows you to browse individual concepts and their "
                 + "relationships. This is a \"Hybrid Browser\" that shows text lines in a layout. "
-                + "This is the second generation of the NAT (Neighborhood Auditing Tool).";
+                + "This is the second generation of the <b>NAT (Neighborhood Auditing Tool)</b>.";
 
         detailsPane.setText(detailsString);
 
